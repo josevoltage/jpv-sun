@@ -574,7 +574,6 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       this.promotionDriver.requestApplyPromotion( pPromotion )
     } else {
       this.promotionDriver.requestCancelPromotion( pPromotion )
-      //promotionList.remove( 0 )
     }
   }
 
