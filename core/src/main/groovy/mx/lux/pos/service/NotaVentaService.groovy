@@ -36,4 +36,6 @@ interface NotaVentaService {
 
   NotaVenta obtenerNotaVentaPorFactura( String factura )
 
+  List<NotaVenta> obtenerDevolucionesPendientes( Date fecha )
+
 }
