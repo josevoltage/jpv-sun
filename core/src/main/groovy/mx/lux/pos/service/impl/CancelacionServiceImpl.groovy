@@ -398,13 +398,13 @@ class CancelacionServiceImpl implements CancelacionService {
 
     @Override
     @Transactional
-    Modificacion registrarCambiodeEmpleado(Modificacion modificacion, String idEmpAnterior) {
+    Modificacion registrarCambiodeEmpleado(Modificacion modificacion, String idEmpAnterior, String idEmpleadoFinal) {
         log.info("registrando cambio de empleado")
         Modificacion mod = modificacionRepository.save( modificacion )
         ModificacionEmp modEmp = new ModificacionEmp()
         modEmp.id = mod.id
         modEmp.empleadoAnterior = idEmpAnterior
-        modEmp.empleadoActual = mod.idEmpleado
+        modEmp.empleadoActual = idEmpleadoFinal
         modificacionEmpRepository.save( modEmp )
         return mod
     }
