@@ -31,7 +31,6 @@ class InvTr {
   Sucursal postSiteTo = null
   Sucursal postSiteFrom = null
   String postReference = ""
-  String postReferenceDet = ""
   String postRemarks = ""
   Integer postQty = 1
   Shipment receiptDocument = null
@@ -52,14 +51,7 @@ class InvTr {
   // Extraordinary Return
   String ticketNum
   String empName
-  Double returnAmount1
-  Double returnAmount2
-  Double returnAmount3
-  Double returnAmount4
-  String sku1
-  String sku2
-  String sku3
-  String sku4
+  Double returnAmount
 
   Boolean flagOnSiteTo = false
   Boolean flagOnPartSeed = false
@@ -133,19 +125,11 @@ class InvTr {
     adjustDocument = null
     inFile = null
     postReference = ""
-    postReferenceDet = ""
     postRemarks = ""
     partSeed = ""
     this.ticketNum = ""
     this.empName = ""
-    this.returnAmount1 = 0
-    this.returnAmount2 =
-    this.returnAmount3 = 0
-    this.returnAmount4 = 0
-    this.sku1 = ""
-    this.sku2 = ""
-    this.sku3 = ""
-    this.sku4 = ""
+    this.returnAmount = 0
     skuList.clear()
     flagOnSiteTo = false
     flagOnPartSeed = false
@@ -219,25 +203,8 @@ class InvTr {
   }
 
   void postReturn( ) {
-    Double precio1 = 0.0
-    Double precio2 = 0.0
-    Double precio3 = 0.0
-    Double precio4 = 0.0
-    Double montoTotal = 0.0
-    try{
-        precio1 = this.returnAmount1 > 0.0 ? this.returnAmount1 : 0.0
-        precio2 = this.returnAmount2 > 0.0 ? this.returnAmount2 : 0.0
-        precio3 = this.returnAmount3 > 0.0 ? this.returnAmount3 : 0.0
-        precio4 = this.returnAmount4 > 0.0 ? this.returnAmount4 : 0.0
-        montoTotal = precio1+precio2+precio3+precio4
-    } catch (Exception e){ }
-    this.postReference = String.format( '%s%s%.2f%s%s%s', this.ticketNum, REF_DELIMITER,
-        montoTotal, REF_DELIMITER, this.empName, REF_DELIMITER )
-
-    /*this.postReferenceDet = String.format( '%.2f%s%.2f%s%.2f%s%.2f%s', this.sku1+","+precio1,REF_DELIMITER,this.sku2+","+precio2,REF_DELIMITER,
-            this.sku3+","+precio3,REF_DELIMITER,this.sku1+","+precio4,REF_DELIMITER )*/
-      this.postReferenceDet = String.format( '%.2f%s%.2f%s%.2f%s%.2f%s', precio1,REF_DELIMITER,precio2,REF_DELIMITER,
-              precio3,REF_DELIMITER,precio4,REF_DELIMITER )
+    this.postReference = String.format( '%s%s%,.2f%s%s%s', this.ticketNum, REF_DELIMITER,
+        this.returnAmount, REF_DELIMITER, this.empName, REF_DELIMITER )
   }
 
   void setQryInvTr( TransInv pTransInv ) {

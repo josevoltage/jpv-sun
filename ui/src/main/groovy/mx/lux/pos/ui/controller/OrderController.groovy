@@ -31,10 +31,8 @@ class OrderController {
   private static Boolean displayUsd
   private static PromotionService promotionService
   private static CancelacionService cancelacionService
-  private static EmpleadoService empleadoService
 
   private static final String TAG_USD = "USD"
-  private static final String TAG_TIPO_PAGO_NOTA_CREDITO = "NOT"
 
   @Autowired
   public OrderController(
@@ -46,8 +44,7 @@ class OrderController {
       InventarioService inventarioService,
       MonedaExtranjeraService monedaExtranjeraService,
       PromotionService promotionService,
-      CancelacionService cancelacionService,
-      EmpleadoService empleadoService
+      CancelacionService cancelacionService
   ) {
     this.notaVentaService = notaVentaService
     this.detalleNotaVentaService = detalleNotaVentaService
@@ -57,8 +54,7 @@ class OrderController {
     this.inventarioService = inventarioService
     fxService = monedaExtranjeraService
     this.promotionService = promotionService
-    this.cancelacionService = cancelacionService
-    this.empleadoService = empleadoService
+      this.cancelacionService = cancelacionService
   }
 
   static Order getOrder( String orderId ) {
@@ -244,15 +240,6 @@ class OrderController {
         notaVenta.empEntrego = user?.username
         notaVenta.udf2 = order.country.toUpperCase()
         notaVenta = notaVentaService.cerrarNotaVenta( notaVenta )
-        for(Pago pago : notaVenta.pagos){
-            if( pago.idFPago.equalsIgnoreCase(TAG_TIPO_PAGO_NOTA_CREDITO)){
-                Retorno retorno = pagoService.obtenerRetorno( pago.referenciaPago.trim() )
-                if(retorno != null ){
-                    retorno.ticketDestino = notaVenta.factura
-                    pagoService.actualizarRetorno( retorno )
-                }
-            }
-        }
         if ( inventarioService.solicitarTransaccionVenta( notaVenta ) ) {
           log.debug( "transaccion de inventario correcta" )
         } else {
@@ -406,55 +393,6 @@ class OrderController {
       }
     }
     return cust
-  }
-
-
-  static boolean validaDatos( String factura, String vendedor ){
-      log.debug( "Cambiando vendedor de factura $factura" )
-      Boolean cambioValido = false
-      NotaVenta notaVenta = notaVentaService.obtenerNotaVentaPorFactura( factura.trim() )
-      Empleado empleado = empleadoService.obtenerEmpleado( vendedor.trim() )
-      if( empleado != null && notaVenta != null ){
-          cambioValido = true
-      } else {
-          cambioValido = false
-      }
-      return cambioValido
-  }
-
-  static boolean cambiaVendedor( String factura, String vendedor, String observaciones ){
-      log.debug( "Cambiando factura $factura" )
-      try{
-          User user = Session.get( SessionItem.USER ) as User
-          Empleado employee = empleadoService.obtenerEmpleado( user.username )
-          NotaVenta notaVenta = notaVentaService.obtenerNotaVentaPorFactura( factura.trim() )
-          String idEmpleadoOrig = notaVenta.idEmpleado
-          notaVenta.idEmpleado = vendedor.trim()
-          notaVentaService.saveOrder( notaVenta )
-
-          Modificacion mod = new Modificacion()
-          mod.idFactura = notaVenta.id
-          mod.tipo = 'emp'
-          mod.fecha = new Date()
-          mod.idEmpleado = employee.id
-          mod.causa = ''
-          mod.observaciones = observaciones
-          cancelacionService.registrarCambiodeEmpleado( mod, idEmpleadoOrig )
-
-          return true
-      }catch (Exception e){
-          println e
-          return false
-      }
-  }
-
-  static BigDecimal obtenerNotaCredito( String folio ){
-      Retorno retorno = pagoService.obtenerRetorno( folio.trim() )
-      BigDecimal monto = BigDecimal.ZERO
-      if( retorno != null){
-          monto = retorno.monto
-      }
-      return monto
   }
 
 }

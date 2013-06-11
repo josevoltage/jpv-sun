@@ -13,7 +13,6 @@ class PromotionEngine {
 
   // Singleton
   static PromotionEngine instance = new PromotionEngine()
-  private static final Double PORCENTAJE_CIEN = 100.0
 
   private PromotionEngine( ) { }
 
@@ -102,7 +101,7 @@ class PromotionEngine {
     // Verify discount is under restriction
     if ( verified ) {
       Double pTopDiscount = NumberUtils.createDouble( key.substring( 1, 3 ) )
-      verified = ( pDiscountPct < pTopDiscount || (pDiscountPct == PORCENTAJE_CIEN && pTopDiscount == 0.0) )
+      verified = ( pDiscountPct < pTopDiscount )
     }
 
     // Verify discount has not been registered

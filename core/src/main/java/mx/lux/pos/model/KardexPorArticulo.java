@@ -17,8 +17,6 @@ public class KardexPorArticulo {
     private Integer existenciaFinal;
     private String tipoTransaccion;
     private String empleado;
-    private Integer idArticulo;
-    private String articulo;
 
     public KardexPorArticulo( TransInvDetalle transInvDetalle, String idFactura ) {
 
@@ -31,7 +29,6 @@ public class KardexPorArticulo {
         saldoFinal = 0;
         existenciaInicial = 0;
         existenciaFinal = 0;
-        idArticulo = 0;
     }
 
     public Date getFecha() {
@@ -120,21 +117,5 @@ public class KardexPorArticulo {
 
     public void setEmpleado( String empleado ) {
         this.empleado = empleado;
-    }
-
-    public Integer getIdArticulo() {
-        return idArticulo;
-    }
-
-    public void setIdArticulo(Integer idArticulo) {
-        this.idArticulo = idArticulo;
-    }
-
-    public String getArticulo() {
-        return articulo;
-    }
-
-    public void setArticulo(String articulo) {
-        this.articulo = articulo;
     }
 }

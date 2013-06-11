@@ -8,8 +8,6 @@ import mx.lux.pos.ui.model.SessionItem
 import mx.lux.pos.ui.model.User
 import mx.lux.pos.ui.resources.ServiceManager
 import mx.lux.pos.ui.view.action.ExitAction
-import mx.lux.pos.ui.view.dialog.ChangePasswordDialog
-import mx.lux.pos.ui.view.dialog.ChangeSellerDialog
 import mx.lux.pos.ui.view.dialog.PartClassDialog
 import net.miginfocom.swing.MigLayout
 import org.slf4j.Logger
@@ -89,8 +87,6 @@ class MainWindow extends JFrame implements KeyListener {
   private JMenuItem kardexMenuItem
   private JMenuItem salesTodayMenuItem
   private JMenuItem salesByPeriodMenuItem
-  private JMenuItem changePasswordMenuItem
-  private JMenuItem changeSellerMenuItem
   private PromotionService promotionService
 
 
@@ -379,24 +375,8 @@ class MainWindow extends JFrame implements KeyListener {
                 boolean userLoggedIn = Session.contains( SessionItem.USER )
                 sessionMenuItem.visible = userLoggedIn
                 newSalesDayMenuItem.visible = userLoggedIn
-                changePasswordMenuItem.visible = userLoggedIn
-                changeSellerMenuItem.visible = userLoggedIn
               }
           ) {
-            changePasswordMenuItem = menuItem( text: 'Cambio de Password',
-                visible: true,
-                actionPerformed: {
-                    ChangePasswordDialog dialog = new ChangePasswordDialog()
-                    dialog.show()
-                }
-            )
-            changeSellerMenuItem = menuItem( text: 'Cambio de Vendedor',
-                    visible: true,
-                    actionPerformed: {
-                        ChangeSellerDialog dialog = new ChangeSellerDialog()
-                        dialog.show()
-                    }
-            )
             newSalesDayMenuItem = menuItem( text: 'Registrar Efectivo Caja',
                 visible: true,
                 actionPerformed: {

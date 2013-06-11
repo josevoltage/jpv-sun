@@ -21,7 +21,6 @@
 	</parameter>
 	<parameter name="existenciaInicial" class="java.lang.Integer"/>
 	<parameter name="existenciaActual" class="java.lang.Integer"/>
-	<parameter name="ConArticulos" class="java.lang.Boolean"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -101,45 +100,35 @@
 	<detail>
 		<band height="137" splitType="Stretch">
 			<textField>
-				<reportElement uuid="2b364db0-7a73-420f-b58d-f3c1c11584c0" x="25" y="20" width="52" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="2b364db0-7a73-420f-b58d-f3c1c11584c0" x="25" y="20" width="52" height="14"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{articuloSku}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="e63d9425-95b9-4ee9-b545-ba87eb317d71" x="77" y="20" width="113" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="e63d9425-95b9-4ee9-b545-ba87eb317d71" x="77" y="20" width="113" height="14"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{articuloArticulo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="eec075d2-5929-4cd0-878e-f1a77e51c383" x="193" y="20" width="266" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="eec075d2-5929-4cd0-878e-f1a77e51c383" x="193" y="20" width="266" height="14"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{articuloDescripcion}]]></textFieldExpression>
 			</textField>
 			<textField pattern="$#,##0.00">
-				<reportElement uuid="3882b2b7-7a57-42f8-b1a5-0997977584a4" x="459" y="20" width="100" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="3882b2b7-7a57-42f8-b1a5-0997977584a4" x="459" y="20" width="100" height="14"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{articuloPrecio}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement uuid="70e5e5eb-f7bf-4292-85ea-db06631e1ba8" x="0" y="85" width="572" height="51">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="70e5e5eb-f7bf-4292-85ea-db06631e1ba8" x="0" y="83" width="572" height="51"/>
 				<subreportParameter name="existenciaInicial">
 					<subreportParameterExpression><![CDATA[$P{existenciaInicial}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -147,87 +136,61 @@
 				<subreportExpression><![CDATA["reports/Kardex_Detalle.jasper"]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement uuid="85736524-5358-439c-9804-ca21dde8c22d" x="25" y="6" width="52" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="85736524-5358-439c-9804-ca21dde8c22d" x="25" y="6" width="52" height="14"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[SKU]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="10004fc3-f0ee-4656-a3d7-305019c13b50" x="77" y="6" width="113" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="10004fc3-f0ee-4656-a3d7-305019c13b50" x="77" y="6" width="113" height="14"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Artículo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="c6ee7e6c-52a0-4ff6-a075-8ca56591e6cc" x="193" y="6" width="266" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="c6ee7e6c-52a0-4ff6-a075-8ca56591e6cc" x="193" y="6" width="266" height="14"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Descripción]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="ff3aaf75-0d51-4eee-b3fb-b8cdc30b4d89" x="459" y="6" width="100" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="ff3aaf75-0d51-4eee-b3fb-b8cdc30b4d89" x="459" y="6" width="100" height="14"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Precio]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="149f3d08-b724-4844-8434-1fa8ad4ed82e" x="25" y="44" width="100" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="149f3d08-b724-4844-8434-1fa8ad4ed82e" x="25" y="44" width="100" height="14"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Existencia Inicial:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="867dc162-86a4-4e46-86d2-597f89a1c035" x="214" y="44" width="100" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="867dc162-86a4-4e46-86d2-597f89a1c035" x="214" y="44" width="100" height="14"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Existencia Actual:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="5b71bcc8-7476-476e-81ef-e394e26df7b0" x="125" y="44" width="68" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="5b71bcc8-7476-476e-81ef-e394e26df7b0" x="125" y="44" width="68" height="14"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{existenciaInicial}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="786387ae-8dae-4e64-8739-04a5ef56fff4" x="314" y="44" width="68" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == false]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="786387ae-8dae-4e64-8739-04a5ef56fff4" x="314" y="44" width="68" height="14"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{existenciaActual}]]></textFieldExpression>
 			</textField>
-			<subreport>
-				<reportElement uuid="70e5e5eb-f7bf-4292-85ea-db06631e1ba8" x="-12" y="28" width="572" height="51">
-					<printWhenExpression><![CDATA[$P{ConArticulos} == true]]></printWhenExpression>
-				</reportElement>
-				<subreportParameter name="existenciaInicial">
-					<subreportParameterExpression><![CDATA[$P{existenciaInicial}]]></subreportParameterExpression>
-				</subreportParameter>
-				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{lstKardex})]]></dataSourceExpression>
-				<subreportExpression><![CDATA["reports/Kardex_Detalle_Articulos.jasper"]]></subreportExpression>
-			</subreport>
 		</band>
 	</detail>
 </jasperReport>

@@ -39,9 +39,6 @@ class CancelacionServiceImpl implements CancelacionService {
     private ModificacionRepository modificacionRepository
 
     @Resource
-    private ModificacionEmpRepository modificacionEmpRepository
-
-    @Resource
     private ModificacionCanRepository modificacionCanRepository
 
     @Resource
@@ -394,19 +391,4 @@ class CancelacionServiceImpl implements CancelacionService {
           }
         }
     }
-
-
-    @Override
-    @Transactional
-    Modificacion registrarCambiodeEmpleado(Modificacion modificacion, String idEmpAnterior) {
-        log.info("registrando cambio de empleado")
-        Modificacion mod = modificacionRepository.save( modificacion )
-        ModificacionEmp modEmp = new ModificacionEmp()
-        modEmp.id = mod.id
-        modEmp.empleadoAnterior = idEmpAnterior
-        modEmp.empleadoActual = mod.idEmpleado
-        modificacionEmpRepository.save( modEmp )
-        return mod
-    }
-
 }

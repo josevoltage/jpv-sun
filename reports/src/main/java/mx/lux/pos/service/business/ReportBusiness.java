@@ -1414,26 +1414,15 @@ public class ReportBusiness {
         List<TransInvDetalle> lstMovimientos = new ArrayList<TransInvDetalle>();
         List<TransInv> lstTransInvDate = ( List<TransInv> ) transInvRepository.findAll( transInv.fecha.between( fechaInicio, new Date() ), transInv.fechaMod.desc() );
         List<KardexPorArticulo> lstKardezSku = new ArrayList<KardexPorArticulo>();
-
-        BooleanBuilder builderTodo = new BooleanBuilder();
-        if ( sku > 0 ) {
-            builderTodo.and( transInvDet.sku.eq( sku ) );
-        } else {
-            builderTodo.and( transInvDet.sku.isNotNull() );
-        }
-
         for( TransInv movimiento : lstTransInvDate ){
-            List<TransInvDetalle> transInvSku = (List<TransInvDetalle>) transInvDetalleRepository.findAll( transInvDet.idTipoTrans.eq(movimiento.getIdTipoTrans()).
-                    and( transInvDet.folio.eq( movimiento.getFolio() )).and( builderTodo ) );
-            if( transInvSku != null && transInvSku.size() > 0 ){
-                lstMovimientos.addAll( transInvSku );
+            TransInvDetalle transInvSku = ( TransInvDetalle ) transInvDetalleRepository.findOne( transInvDet.idTipoTrans.eq(movimiento.getIdTipoTrans()).
+                    and( transInvDet.folio.eq( movimiento.getFolio() )).and( transInvDet.sku.eq( sku ) ) );
+            if( transInvSku != null ){
+                lstMovimientos.add( transInvSku );
             }
         }
         Articulo articulo = articuloRepository.findOne( sku );
-        Integer exisActual = 0;
-        if( articulo != null ){
-            exisActual = articulo.getCantExistencia();
-        }
+        Integer exisActual = articulo.getCantExistencia();
         Integer saldoInicio = 0;
         Integer saldoFin = 0;
         for( TransInvDetalle movimiento : lstMovimientos ){
@@ -1447,13 +1436,10 @@ public class ReportBusiness {
                 factura = "-";
             }
             KardexPorArticulo kardexArticulo = new KardexPorArticulo( movimiento, factura );
-            Articulo art = articuloRepository.findOne( movimiento.getSku() );
             kardexArticulo.setFecha( movimiento.getTransInv().getFecha() );
             kardexArticulo.setFolio( movimiento.getFolio().toString() );
             kardexArticulo.setReferencia( factura );
             kardexArticulo.setTipoTransaccion( movimiento.getIdTipoTrans() );
-            kardexArticulo.setIdArticulo( movimiento.getSku() );
-            kardexArticulo.setArticulo( art.getArticulo() );
             Empleado empleado = empleadoRepository.findById( movimiento.getTransInv().getIdEmpleado() );
             kardexArticulo.setEmpleado( empleado.getNombreCompleto() );
             if( movimiento.getTipoMov().equalsIgnoreCase( "S" )){

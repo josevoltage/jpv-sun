@@ -1,7 +1,6 @@
 package mx.lux.pos.ui.view.dialog.dailyclose
 
 import groovy.swing.SwingBuilder
-import mx.lux.pos.service.business.Registry
 import mx.lux.pos.ui.controller.DailyCloseController
 import mx.lux.pos.ui.controller.PaymentController
 import mx.lux.pos.ui.model.Payment
@@ -9,7 +8,6 @@ import mx.lux.pos.ui.model.Plan
 import mx.lux.pos.ui.model.Terminal
 import net.miginfocom.swing.MigLayout
 
-import javax.swing.JLabel
 import java.awt.event.ActionEvent
 import java.awt.event.ItemEvent
 import java.text.NumberFormat
@@ -24,7 +22,6 @@ class EditPaymentDialog extends JDialog {
   private Payment tmpPayment
   private JComboBox terminal
   private JComboBox plan
-  private JLabel lblPlan
   private List<Terminal> terminals
   private List<Plan> plans
 
@@ -54,8 +51,8 @@ class EditPaymentDialog extends JDialog {
         label( amount )
         label( 'Terminal' )
         terminal = comboBox( items: terminals*.description, itemStateChanged: terminalChanged )
-        lblPlan = label( 'Plan', constraints: 'hidemode 3' )
-        plan = comboBox( items: plans*.description, itemStateChanged: planChanged, constraints: 'hidemode 3' )
+        label( 'Plan' )
+        plan = comboBox( items: plans*.description, itemStateChanged: planChanged )
       }
 
       panel( layout: new MigLayout( 'fill', '[right]' ) ) {
@@ -78,16 +75,11 @@ class EditPaymentDialog extends JDialog {
         tmp?.description?.equalsIgnoreCase( ev.item as String )
       }
       tmpPayment.terminalId = terminalTmp?.id
-      if ( !Registry.isCardPaymentInDollars( tmpPayment.paymentTypeId ) ) {
-          plans = PaymentController.findPlansByTerminal( terminalTmp?.id )
-          plans?.each { Plan tmp ->
-              plan.addItem( tmp?.description )
-          }
-          plan.selectedIndex = -1
-      } else {
-          lblPlan.visible = false
-          plan.visible = false
+      plans = PaymentController.findPlansByTerminal( terminalTmp?.id )
+      plans?.each { Plan tmp ->
+        plan.addItem( tmp?.description )
       }
+      plan.selectedIndex = -1
     } else {
       tmpPayment.terminalId = null
       plan.removeAllItems()
@@ -121,9 +113,8 @@ class EditPaymentDialog extends JDialog {
     JButton source = ev.source as JButton
     source.enabled = false
     Payment payment = DailyCloseController.updatePayment( tmpPayment )
-    Boolean terminalUpdate = DailyCloseController.updateTerminal( tmpPayment.date )
-    if ( payment?.id && terminalUpdate ) {
-      //sb.optionPane().showMessageDialog( null, 'Se ha aztualizado correctamente el Terminal y/o Plan del Pago', 'Ok', JOptionPane.INFORMATION_MESSAGE )
+    if ( payment?.id ) {
+      sb.optionPane().showMessageDialog( null, 'Se ha aztualizado correctamente el Terminal y/o Plan del Pago', 'Ok', JOptionPane.INFORMATION_MESSAGE )
       dispose()
     } else {
       sb.optionPane().showMessageDialog( null, 'Se ha producido un error al actualizar el Terminal y/o Plan del Pago', 'Error', JOptionPane.ERROR_MESSAGE )

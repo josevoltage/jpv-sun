@@ -34,6 +34,4 @@ interface NotaVentaService {
 
   void saveOrder( NotaVenta pNotaVenta )
 
-  NotaVenta obtenerNotaVentaPorFactura( String factura )
-
 }

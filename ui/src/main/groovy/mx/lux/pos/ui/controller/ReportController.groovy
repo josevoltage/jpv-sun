@@ -470,11 +470,8 @@ class ReportController {
     String strSku =kardexReportDialog.getSku()
     Date reportForDateStart = kardexReportDialog.getSelectedDateStart()
     Date reportForDateEnd = kardexReportDialog.getSelectedDateEnd()
-    if( reportForDateStart != null && reportForDateEnd != null ){
-      Integer sku = 0
-        if( StringUtils.trimToEmpty(strSku).length() > 0 ){
-            sku = NumberFormat.getInstance().parse( strSku )
-        }
+    if( StringUtils.trimToEmpty(strSku) != '' && reportForDateStart != null && reportForDateEnd != null ){
+      Integer sku = NumberFormat.getInstance().parse( strSku )
       reportService.obtenerReporteDeKardex( sku, reportForDateStart, reportForDateEnd )
     }
   }

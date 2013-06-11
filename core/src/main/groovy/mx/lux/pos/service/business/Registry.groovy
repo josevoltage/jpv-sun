@@ -147,10 +147,6 @@ class Registry {
     return asString( TipoParametro.TIPO_PAGO_DOLARES )
   }
 
-  static String getPlanNormalTarjeta( ){
-      return asString( TipoParametro.PLAN_NORMAL_TARJETA_CREDITO )
-  }
-
   static String getTipoPagoCreditoEmpleado( ){
     return asString( TipoParametro.TIPO_PAGO_CRE_EMP )
   }
@@ -306,10 +302,6 @@ class Registry {
      return asTipoTransInv( TipoParametro.TRANS_INV_TIPO_SALIDA_ALMACEN )
   }
 
-  static String getInvTrTypeConfirmaEntrada( ) {
-      return asString( TipoParametro.TRANS_INV_TIPO_CONFIRMA_ENTRADA )
-  }
-
   static TipoTransInv getInvTrTypeEntradaAlmacen( ) {
      return asTipoTransInv( TipoParametro.TRANS_INV_TIPO_ENTRADA_ALMACEN )
   }
@@ -356,8 +348,6 @@ class Registry {
         url = getURLSalidaAlmacen()
     }  else if ( AckType.ENTRADA_ALMACEN.equals(type) ) {
         url = getURLEntradaAlmacen()
-    }  else if ( AckType.CONFIRMACION_ENTRADA.equals(type) ) {
-        url = getURLConfirmaEntradaAlmacen()
     }
     return url
   }
@@ -384,10 +374,6 @@ class Registry {
       isPaymentDollar = true
     }
     return isPaymentDollar
-  }
-
-  static String normalPlanCreditCard( ){
-    return getPlanNormalTarjeta()
   }
 
   private static String getInvAdjustPasswd( ) {

@@ -432,14 +432,4 @@ class NotaVentaServiceImpl implements NotaVentaService {
       notaVentaRepository.save( pNotaVenta )
     }
   }
-
-
-  @Override
-  NotaVenta obtenerNotaVentaPorFactura( String factura ){
-      log.debug( String.format( 'Obteniendo factura %s', factura) )
-      QNotaVenta nv = QNotaVenta.notaVenta
-      NotaVenta notaVenta = notaVentaRepository.findOne( nv.factura.eq(factura.trim()))
-      return notaVenta
-  }
-
 }
