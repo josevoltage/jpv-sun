@@ -147,6 +147,7 @@ class DailyCloseController {
             CancellationController.printOrderCancellation( nota.id )
           }
       }
+      cierreDiarioService.cargarDatosCierreDiario( closeDate )
       cierreDiarioService.cerrarCierreDiario( closeDate, observations )
 	  User user = Session.get( SessionItem.USER ) as User
 	  Empleado employee = empleadoService.obtenerEmpleado( user.username )

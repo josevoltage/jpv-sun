@@ -2,12 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/DailyCloseController.groovy" afterPath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/DailyCloseController.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jpv.iws" afterPath="$PROJECT_DIR$/jpv.iws" />
     </list>
     <ignored path="jpv.iws" />
     <ignored path=".idea/workspace.xml" />
+<<<<<<< HEAD
     <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371059943307" ignored="false" />
     <file path="/database.properties" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370906708348" ignored="false" />
+=======
+    <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371061775427" ignored="false" />
+    <file path="/database.properties" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370985163119" ignored="false" />
+>>>>>>> cierre
     <file path="/ReportBusiness.java" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370532252179" ignored="false" />
     <file path="/IngresoPorFactura.java" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1368393454576" ignored="false" />
     <file path="/ReportServiceImpl.java" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1369775240551" ignored="false" />
@@ -74,8 +80,13 @@
     <file path="/ZInFile.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1369416117041" ignored="false" />
     <file path="/MainWindow.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370442707853" ignored="false" />
     <file path="/TerminalCloseDialog.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1369668920409" ignored="false" />
+<<<<<<< HEAD
     <file path="/DailyClosePanel.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370537000232" ignored="false" />
     <file path="/DailyCloseController.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1369670713454" ignored="false" />
+=======
+    <file path="/DailyClosePanel.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371061853609" ignored="false" />
+    <file path="/DailyCloseController.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371062575430" ignored="false" />
+>>>>>>> cierre
     <file path="/EditPaymentDialog.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370293862507" ignored="false" />
     <file path="/version" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1369676946672" ignored="false" />
     <file path="/CustomerPanel.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1369680629004" ignored="false" />
@@ -202,7 +213,11 @@
       <file leaf-file-name="PromotionSingle.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/model/PromotionSingle.groovy">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state line="32" column="0" selection-start="1215" selection-end="1215" vertical-scroll-proportion="0.41366908">
+=======
+            <state line="127" column="56" selection-start="5063" selection-end="5063" vertical-scroll-proportion="0.0">
+>>>>>>> cierre
               <folding />
             </state>
           </provider>
@@ -211,7 +226,11 @@
       <file leaf-file-name="PromotionPart.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/model/PromotionPart.groovy">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state line="20" column="15" selection-start="443" selection-end="443" vertical-scroll-proportion="0.0">
+=======
+            <state line="30" column="51" selection-start="957" selection-end="957" vertical-scroll-proportion="0.0">
+>>>>>>> cierre
               <folding />
             </state>
           </provider>
@@ -220,6 +239,7 @@
       <file leaf-file-name="OrderPanel.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/OrderPanel.groovy">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state line="584" column="44" selection-start="22953" selection-end="22953" vertical-scroll-proportion="0.0">
               <folding />
             </state>
@@ -257,6 +277,9 @@
         <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/model/PromotionModel.groovy">
           <provider selected="true" editor-type-id="text-editor">
             <state line="182" column="24" selection-start="5664" selection-end="5664" vertical-scroll-proportion="0.0">
+=======
+            <state line="150" column="0" selection-start="5436" selection-end="5436" vertical-scroll-proportion="0.33275864">
+>>>>>>> cierre
               <folding />
             </state>
           </provider>
@@ -296,6 +319,19 @@
         <option value="$PROJECT_DIR$/core/src/main/resources/database.properties" />
         <option value="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/InventarioServiceImpl.groovy" />
         <option value="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/OrderPanel.groovy" />
+<<<<<<< HEAD
+=======
+        <option value="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/CancellationController.groovy" />
+        <option value="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/PagoService.groovy" />
+        <option value="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/PagoServiceImpl.groovy" />
+        <option value="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/NotaVentaService.groovy" />
+        <option value="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/NotaVentaServiceImpl.groovy" />
+        <option value="$PROJECT_DIR$/core/src/main/resources/database.properties" />
+        <option value="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/CancelacionService.groovy" />
+        <option value="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/OrderController.groovy" />
+        <option value="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/CancelacionServiceImpl.groovy" />
+        <option value="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/DailyCloseController.groovy" />
+>>>>>>> cierre
       </list>
     </option>
   </component>
@@ -713,14 +749,18 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="24" width="1546" height="1233" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.6723096" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32650602" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24878444" sideWeight="0.7258454" order="1" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27173913" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+=======
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26811594" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+>>>>>>> cierre
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2741546" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298217" sideWeight="0.72705317" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -733,6 +773,10 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
+=======
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32729468" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+>>>>>>> cierre
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -891,23 +935,44 @@
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
     <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/model/PromotionPart.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="20" column="15" selection-start="443" selection-end="443" vertical-scroll-proportion="0.0">
+=======
+    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/model/DailyClose.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="6" selection-start="216" selection-end="216" vertical-scroll-proportion="0.13059701">
+>>>>>>> cierre
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/model/PromotionPriceType.groovy">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state line="6" column="2" selection-start="101" selection-end="101" vertical-scroll-proportion="0.16187051">
+=======
+        <state line="30" column="51" selection-start="957" selection-end="957" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/DailyClosePanel.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="127" column="56" selection-start="5063" selection-end="5063" vertical-scroll-proportion="0.0">
+>>>>>>> cierre
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/model/PromotionSingle.groovy">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state line="32" column="0" selection-start="1215" selection-end="1215" vertical-scroll-proportion="0.41366908">
+=======
+        <state line="150" column="0" selection-start="5436" selection-end="5436" vertical-scroll-proportion="0.33275864">
+>>>>>>> cierre
           <folding />
         </state>
       </provider>
