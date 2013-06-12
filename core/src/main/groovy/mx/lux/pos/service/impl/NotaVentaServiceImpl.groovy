@@ -442,4 +442,25 @@ class NotaVentaServiceImpl implements NotaVentaService {
       return notaVenta
   }
 
+  @Override
+  List<NotaVenta> obtenerDevolucionesPendientes( Date fecha ) {
+      log.info( "obteniendo pagos del dia: ${fecha}" )
+      Date fechaInicio = DateUtils.truncate( fecha, Calendar.DAY_OF_MONTH );
+      Date fechaFin = new Date( DateUtils.ceiling( fecha, Calendar.DAY_OF_MONTH ).getTime() - 1 );
+      QNotaVenta nv = QNotaVenta.notaVenta
+      BigDecimal sumaPagos = BigDecimal.ZERO
+      List<NotaVenta> lstNotasVenta = new ArrayList<NotaVenta>()
+      List<NotaVenta> lstNotas = notaVentaRepository.findAll( nv.fechaHoraFactura.between(fechaInicio,fechaFin).
+              and(nv.sFactura.eq('T')) )
+      for(NotaVenta nota : lstNotas){
+          sumaPagos = BigDecimal.ZERO
+          for(Pago pago : nota.pagos){
+              sumaPagos = sumaPagos.add(pago.porDevolver)
+          }
+          if( sumaPagos.compareTo(BigDecimal.ZERO) > 0){
+              lstNotasVenta.add(nota)
+          }
+       }
+      return lstNotasVenta
+  }
 }

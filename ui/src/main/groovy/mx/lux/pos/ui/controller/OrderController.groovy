@@ -429,6 +429,7 @@ class OrderController {
           Empleado employee = empleadoService.obtenerEmpleado( user.username )
           NotaVenta notaVenta = notaVentaService.obtenerNotaVentaPorFactura( factura.trim() )
           String idEmpleadoOrig = notaVenta.idEmpleado
+          String idEmpleadoFinal = vendedor.trim()
           notaVenta.idEmpleado = vendedor.trim()
           notaVentaService.saveOrder( notaVenta )
 
@@ -439,9 +440,12 @@ class OrderController {
           mod.idEmpleado = employee.id
           mod.causa = ''
           mod.observaciones = observaciones
-          cancelacionService.registrarCambiodeEmpleado( mod, idEmpleadoOrig )
-
-          return true
+          Modificacion modificacion = cancelacionService.registrarCambiodeEmpleado( mod, idEmpleadoOrig, idEmpleadoFinal )
+          if( modificacion != null ){
+              return true
+          } else {
+              return false
+          }
       }catch (Exception e){
           println e
           return false
