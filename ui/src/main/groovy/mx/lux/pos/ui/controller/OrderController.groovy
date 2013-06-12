@@ -32,6 +32,7 @@ class OrderController {
   private static PromotionService promotionService
   private static CancelacionService cancelacionService
   private static EmpleadoService empleadoService
+  private static CierreDiarioService cierreDiarioService
 
   private static final String TAG_USD = "USD"
   private static final String TAG_TIPO_PAGO_NOTA_CREDITO = "NOT"
@@ -47,7 +48,8 @@ class OrderController {
       MonedaExtranjeraService monedaExtranjeraService,
       PromotionService promotionService,
       CancelacionService cancelacionService,
-      EmpleadoService empleadoService
+      EmpleadoService empleadoService,
+      CierreDiarioService cierreDiarioService
   ) {
     this.notaVentaService = notaVentaService
     this.detalleNotaVentaService = detalleNotaVentaService
@@ -59,6 +61,7 @@ class OrderController {
     this.promotionService = promotionService
     this.cancelacionService = cancelacionService
     this.empleadoService = empleadoService
+    this.cierreDiarioService = cierreDiarioService
   }
 
   static Order getOrder( String orderId ) {
@@ -415,9 +418,10 @@ class OrderController {
       NotaVenta notaVenta = notaVentaService.obtenerNotaVentaPorFactura( factura.trim() )
       Empleado empleado = empleadoService.obtenerEmpleado( vendedor.trim() )
       if( empleado != null && notaVenta != null ){
-          cambioValido = true
-      } else {
-          cambioValido = false
+          CierreDiario diaCerrado = cierreDiarioService.buscarPorFecha( notaVenta.fechaHoraFactura )
+          if( diaCerrado.estado.equalsIgnoreCase('a')){
+              cambioValido = true
+          }
       }
       return cambioValido
   }
