@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="" />
+    <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/src/main/resources/version" afterPath="$PROJECT_DIR$/core/src/main/resources/version" />
+    </list>
     <ignored path="jpv.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371056826819" ignored="false" />
@@ -177,10 +179,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="InvTrPanel.groovy" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="InvTrPanel.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/InvTrPanel.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="124" column="41" selection-start="5345" selection-end="5345" vertical-scroll-proportion="0.0">
+            <state line="124" column="41" selection-start="5345" selection-end="5345" vertical-scroll-proportion="0.59585494">
               <folding />
             </state>
           </provider>
@@ -217,15 +219,6 @@
         <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/business/PrepareInvTrBusiness.groovy">
           <provider selected="true" editor-type-id="text-editor">
             <state line="215" column="117" selection-start="7395" selection-end="7395" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AsynchronousNotificationDispatcher.groovy" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/io/AsynchronousNotificationDispatcher.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="6" selection-start="646" selection-end="646" vertical-scroll-proportion="-0.44041452">
               <folding />
             </state>
           </provider>
@@ -983,13 +976,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/InvTrPanel.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="124" column="41" selection-start="5345" selection-end="5345" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/InvTrView.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="182" column="29" selection-start="5561" selection-end="5561" vertical-scroll-proportion="0.0">
@@ -1011,6 +997,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/io/AsynchronousNotificationDispatcher.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="6" selection-start="646" selection-end="646" vertical-scroll-proportion="-0.44041452">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/business/PrepareInvTrBusiness.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="215" column="117" selection-start="7395" selection-end="7395" vertical-scroll-proportion="0.0">
@@ -1018,9 +1011,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/io/AsynchronousNotificationDispatcher.groovy">
+    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/InvTrPanel.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="6" selection-start="646" selection-end="646" vertical-scroll-proportion="-0.44041452">
+        <state line="124" column="41" selection-start="5345" selection-end="5345" vertical-scroll-proportion="0.59585494">
           <folding />
         </state>
       </provider>
