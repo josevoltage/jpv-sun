@@ -8,17 +8,8 @@
     </list>
     <ignored path="jpv.iws" />
     <ignored path=".idea/workspace.xml" />
-<<<<<<< HEAD
-<<<<<<< HEAD
     <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371044702662" ignored="false" />
-=======
-    <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371049574555" ignored="false" />
->>>>>>> empleado
     <file path="/database.properties" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370969096888" ignored="false" />
-=======
-    <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371041720569" ignored="false" />
-    <file path="/database.properties" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370985163119" ignored="false" />
->>>>>>> cierre
     <file path="/ReportBusiness.java" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370532252179" ignored="false" />
     <file path="/IngresoPorFactura.java" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1368393454576" ignored="false" />
     <file path="/ReportServiceImpl.java" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1369775240551" ignored="false" />
