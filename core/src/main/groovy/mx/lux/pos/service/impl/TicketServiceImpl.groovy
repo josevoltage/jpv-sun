@@ -869,9 +869,9 @@ class TicketServiceImpl implements TicketService {
           parts: parts
       ]
       imprimeTicket( "template/ticket-devolucion.vm", tkInvTr )
-      if ( Registry.isReceiptDuplicate() && pNewTransaction ) {
+      /*if ( Registry.isReceiptDuplicate() && pNewTransaction ) {
         imprimeTicket( 'template/ticket-devolucion.vm', tkInvTr )
-      }
+      }*/
 
     } else if ( InventorySearch.esTipoTransaccionSalidaSucursal( pTrans.idTipoTrans ) ) {
         def tkInvTr = [
