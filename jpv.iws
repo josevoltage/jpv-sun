@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="" />
+    <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jpv.iws" afterPath="$PROJECT_DIR$/jpv.iws" />
+    </list>
     <ignored path="jpv.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371061775427" ignored="false" />
@@ -72,8 +74,8 @@
     <file path="/ZInFile.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1369416117041" ignored="false" />
     <file path="/MainWindow.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370442707853" ignored="false" />
     <file path="/TerminalCloseDialog.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1369668920409" ignored="false" />
-    <file path="/DailyClosePanel.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371075186441" ignored="false" />
-    <file path="/DailyCloseController.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371069651109" ignored="false" />
+    <file path="/DailyClosePanel.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371078887974" ignored="false" />
+    <file path="/DailyCloseController.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371078176119" ignored="false" />
     <file path="/EditPaymentDialog.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370293862507" ignored="false" />
     <file path="/version" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1369676946672" ignored="false" />
     <file path="/CustomerPanel.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1369680629004" ignored="false" />
@@ -121,6 +123,7 @@
     <file path="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/business/Registry.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370955580849" ignored="false" />
     <file path="/RefundDialog.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370981645978" ignored="false" />
     <file path="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/OrderController.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371068760691" ignored="false" />
+    <file path="/DailyCloseDepositsDialog.groovy" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371077183672" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,28 +201,28 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="DailyClosePanel.groovy" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="DailyClosePanel.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/DailyClosePanel.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="125" column="68" selection-start="4953" selection-end="4953" vertical-scroll-proportion="0.0">
+            <state line="132" column="135" selection-start="5407" selection-end="5407" vertical-scroll-proportion="0.76551723">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DailyCloseDepositsDialog.groovy" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="DailyCloseDepositsDialog.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/dailyclose/DailyCloseDepositsDialog.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="51" selection-start="957" selection-end="957" vertical-scroll-proportion="0.02586207">
+            <state line="217" column="17" selection-start="8848" selection-end="8848" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DailyCloseController.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/DailyCloseController.groovy">
+      <file leaf-file-name="TerminalFixDialog.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/dailyclose/TerminalFixDialog.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="132" column="73" selection-start="4714" selection-end="4714" vertical-scroll-proportion="0.0">
+            <state line="82" column="60" selection-start="2834" selection-end="2834" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -243,7 +246,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/business/Registry.groovy" />
         <option value="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/TicketServiceImpl.groovy" />
         <option value="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/PaymentDialog.groovy" />
         <option value="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/InventarioServiceImpl.groovy" />
@@ -257,6 +259,7 @@
         <option value="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/CancelacionService.groovy" />
         <option value="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/OrderController.groovy" />
         <option value="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/CancelacionServiceImpl.groovy" />
+        <option value="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/dailyclose/DailyCloseDepositsDialog.groovy" />
         <option value="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/DailyCloseController.groovy" />
         <option value="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/DailyClosePanel.groovy" />
       </list>
@@ -716,13 +719,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="24" width="1546" height="1233" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.6723096" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24878444" sideWeight="0.7258454" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26811594" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26811594" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26811594" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298217" sideWeight="0.72705317" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -809,11 +812,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/PagoServiceImpl.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="107" column="0" selection-start="2980" selection-end="2980" vertical-scroll-proportion="0.8467433" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/model/Payment.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="25" column="9" selection-start="525" selection-end="525" vertical-scroll-proportion="0.0">
@@ -894,23 +892,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/DailyClosePanel.groovy">
+    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/dailyclose/DailyCloseDepositsDialog.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="125" column="68" selection-start="4953" selection-end="4953" vertical-scroll-proportion="0.0">
+        <state line="217" column="17" selection-start="8848" selection-end="8848" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/DailyCloseController.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="132" column="73" selection-start="4714" selection-end="4714" vertical-scroll-proportion="0.0">
+        <state line="111" column="22" selection-start="3827" selection-end="3827" vertical-scroll-proportion="0.38448277">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/dailyclose/DailyCloseDepositsDialog.groovy">
+    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/dailyclose/TerminalFixDialog.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="51" selection-start="957" selection-end="957" vertical-scroll-proportion="0.02586207">
+        <state line="82" column="60" selection-start="2834" selection-end="2834" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/DailyClosePanel.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="132" column="135" selection-start="5407" selection-end="5407" vertical-scroll-proportion="0.76551723">
           <folding />
         </state>
       </provider>
