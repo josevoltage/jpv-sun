@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jpv.iws" afterPath="$PROJECT_DIR$/jpv.iws" />
-    </list>
+    <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="" />
     <ignored path="jpv.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371148324718" ignored="false" />
+    <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371151305712" ignored="false" />
     <file path="/database.properties" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370985163119" ignored="false" />
     <file path="/ReportBusiness.java" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370532252179" ignored="false" />
     <file path="/IngresoPorFactura.java" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1368393454576" ignored="false" />
@@ -173,7 +171,6 @@
         <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
       </breakpoint>
     </breakpoint_any>
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint url="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/InvTrController.groovy" line="394" class="mx.lux.pos.ui.controller.InvTrController" package="mx.lux.pos.ui.controller">
         <option name="ENABLED" value="true" />
@@ -191,6 +188,7 @@
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </line_breakpoints>
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -239,7 +237,7 @@
       <file leaf-file-name="InvTr.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/model/InvTr.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="264" column="60" selection-start="7308" selection-end="7308" vertical-scroll-proportion="0.5062189">
+            <state line="274" column="9" selection-start="7746" selection-end="7746" vertical-scroll-proportion="0.6927861">
               <folding />
             </state>
           </provider>
@@ -697,9 +695,9 @@
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="dynamic.classpath" value="false" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="dynamic.classpath" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -986,9 +984,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/MainWindow.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="190" column="40" selection-start="7435" selection-end="7435" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="190" column="40" selection-start="7435" selection-end="7435" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/driver/InvTrQueryDriver.groovy">
@@ -1035,7 +1031,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/model/InvTr.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="264" column="60" selection-start="7308" selection-end="7308" vertical-scroll-proportion="0.5062189">
+        <state line="274" column="9" selection-start="7746" selection-end="7746" vertical-scroll-proportion="0.6927861">
           <folding />
         </state>
       </provider>
