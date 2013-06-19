@@ -29,11 +29,6 @@ class ZInFile {
   // Private Methods
   protected String formatTrans( TransInv pTrMstr, TransInvDetalle pTrDet ) {
     String idTipoTrans = pTrMstr.idTipoTrans
-    if( pTrMstr.idTipoTrans.contains('SALIDA_TIENDA') ){
-        idTipoTrans = 'SALIDA'
-    } else if( pTrMstr.idTipoTrans.contains('ENTRADA_TIENDA') ){
-        idTipoTrans = 'ENTRADA'
-    }
     StringList list = new StringList()
     list.addInteger( nTrans++ )
     list.add( idTipoTrans )
