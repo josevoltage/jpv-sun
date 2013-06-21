@@ -1,0 +1,56 @@
+*.class
+# linux editor backup
+*~
+# Package files
+*.jar
+*.war
+*.ear
+*.zip
+*.gz
+*.pydevproject
+.project
+.metadata
+tmp/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+# External tool builders
+.externalToolBuilders/
+# Locally stored "Eclipse launch configurations"
+*.launch
+# CDT-specific
+.cproject
+# PDT-specific
+.buildpath
+*.iml
+*.ipr
+*.iws
+*.ids
+.idea/
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+.svn/
+out/
+# jasper files
+#*.jasper
+# gradle files
+.gradle/
+# maven files
+target/
+# project files
+libs/
+lib/
+acusar_tipo.sh
+*.log
+.groovy/
