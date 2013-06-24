@@ -333,13 +333,20 @@ class PaymentDialog extends JDialog implements KeyListener{
       Double diff = tmpPayment.amount.doubleValue() - order.due.doubleValue()
       if ( diff < ZERO_TOLERANCE ) {
         if( PaymentController.findTypePaymentsDollar(tmpPayment?.paymentTypeId)){
-          if(dollarsReceived.text != ''){
-            messages.text = null
-            valid &= true
+            Double tipoCambio = OrderController.requestUsdRate()
+            if(StringUtils.trimToEmpty(dollarsReceived.text) != '' && dollarsReceived.text.isNumber() ){
+                BigDecimal pesosRec = new BigDecimal(NumberFormat.getInstance().parse(amount.text))
+                BigDecimal dolaresRec = new BigDecimal(NumberFormat.getInstance().parse(dollarsReceived.text))
+                BigDecimal dolaresCalc = pesosRec.divide(tipoCambio, 10, RoundingMode.HALF_EVEN)
+                Double diferencia = dolaresCalc.subtract(dolaresRec).doubleValue()
+                if( (diferencia < 1.0) && (diferencia > -1.0) ){
+                    messages.text = null
+                    valid &= true
+                } else {
+                    messages.text = "- Cantidad de dolares incorrecta"
+                    valid &= false
+                }
           } else {
-            valid &= false
-          }
-        } else {
             valid &= false
           }
         } else if( paymentType.selectedItem.equals(TAG_PAGO_NOTA_CREDITO) ){
@@ -351,9 +358,10 @@ class PaymentDialog extends JDialog implements KeyListener{
             } else {
                 messages.text = "- monto o folio invalidos"
                 valid &= false
+            }
         }
       } else {
-          if( paymentType.selectedItem.equals('MN EFECTIVO') ){
+          if( paymentType.selectedItem.equals(TAG_PAGO_MN_PESOS) ){
               amount.text = order.due.toString()
               BigDecimal cambio = tmpPayment.amount.subtract(order.due)
               new ChangeDialog( cambio, tmpPayment.amount, order.due ).show()
