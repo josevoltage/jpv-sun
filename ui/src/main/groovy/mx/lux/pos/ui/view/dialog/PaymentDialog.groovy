@@ -410,6 +410,7 @@ class PaymentDialog extends JDialog implements KeyListener{
 
 
   BigDecimal getProposedAmount( String folio ){
+
       OrderController.obtenerNotaCredito( tmpPayment.paymentReference )
   }
 
