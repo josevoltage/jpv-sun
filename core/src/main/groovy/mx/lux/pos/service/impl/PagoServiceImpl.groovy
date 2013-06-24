@@ -2,14 +2,25 @@ package mx.lux.pos.service.impl
 
 import groovy.util.logging.Slf4j
 import mx.lux.pos.model.Pago
+import mx.lux.pos.model.NotaVenta
+import mx.lux.pos.model.QNotaVenta
+import mx.lux.pos.model.QPago
+import mx.lux.pos.model.QRetorno
+import mx.lux.pos.model.Retorno
+import mx.lux.pos.repository.NotaVentaRepository
 import mx.lux.pos.repository.PagoRepository
+import mx.lux.pos.repository.RetornoRepository
 import mx.lux.pos.service.PagoService
+import mx.lux.pos.service.NotaVentaService
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.time.DateUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
 import mx.lux.pos.service.business.Registry
+
+import java.text.NumberFormat
 
 @Slf4j
 @Service( "pagoService" )
@@ -18,6 +29,12 @@ class PagoServiceImpl implements PagoService {
 
   @Resource
   private PagoRepository pagoRepository
+
+  @Resource
+  private NotaVentaRepository notaVentaRepository
+
+  @Resource
+  private RetornoRepository retornoRepository
 
   @Override
   Pago obtenerPago( Integer id ) {
@@ -54,4 +71,39 @@ class PagoServiceImpl implements PagoService {
     log.info( 'obtenerTipoPagosDolares( )' )
     return Registry.isCardPaymentInDollars( formaPago )
   }
+
+  @Override
+  String obtenerPlanNormalTarjetaCredito( ) {
+      log.info( 'obtenerPlanNormalTarjetaCredito( )' )
+      return Registry.normalPlanCreditCard()
+  }
+
+  @Override
+  Retorno obtenerRetorno( String folio ) {
+      log.debug( "obteniendo retorno con folio $folio" )
+      Retorno retorno = new Retorno()
+      Integer folioInt = 0
+      try{
+          folioInt = NumberFormat.getInstance().parse( folio ).intValue()
+      } catch (Exception e){
+          retorno = null
+      }
+      if( folioInt != 0 ){
+          QRetorno ret = QRetorno.retorno
+          retorno = retornoRepository.findOne( folioInt )
+          if( (retorno == null) || (StringUtils.trimToEmpty(retorno.ticketDestino) != '') ){
+              retorno = null
+          }
+      }
+      return retorno
+  }
+
+
+  @Override
+  @Transactional
+  Retorno actualizarRetorno( Retorno retorno ) {
+      return retornoRepository.save( retorno )
+  }
+
+
 }

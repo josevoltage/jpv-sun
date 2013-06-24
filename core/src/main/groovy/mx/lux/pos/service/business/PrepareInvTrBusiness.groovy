@@ -2,6 +2,8 @@ package mx.lux.pos.service.business
 
 import mx.lux.pos.repository.AcuseRepository
 import mx.lux.pos.repository.ParametroRepository
+import mx.lux.pos.repository.RetornoDetRepository
+import mx.lux.pos.repository.RetornoRepository
 import mx.lux.pos.service.ArticuloService
 import mx.lux.pos.service.InventarioService
 import mx.lux.pos.service.SucursalService
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component
 import mx.lux.pos.model.*
 
 import javax.annotation.Resource
+import java.text.NumberFormat
 
 @Component
 class PrepareInvTrBusiness {
@@ -26,6 +29,8 @@ class PrepareInvTrBusiness {
   private static SucursalService sites
   private static ParametroRepository parameters
   private static AcuseRepository acuseRepository
+  private static RetornoRepository retornoRepository
+  private static RetornoDetRepository retornoDetRepository
 
   static PrepareInvTrBusiness instance
 
@@ -33,12 +38,15 @@ class PrepareInvTrBusiness {
 
   @Autowired
   PrepareInvTrBusiness( ArticuloService pArticuloService, InventarioService pInventarioService, SucursalService pSucursalService,
-                        ParametroRepository pParametroRepository, AcuseRepository pAcuseRepository ) {
+                        ParametroRepository pParametroRepository, AcuseRepository pAcuseRepository, RetornoRepository pRetornoRepository,
+                        RetornoDetRepository pRetornoDetRepository) {
     parts = pArticuloService
     inventory = pInventarioService
     sites = pSucursalService
     parameters = pParametroRepository
     acuseRepository = pAcuseRepository
+    retornoRepository = pRetornoRepository
+    retornoDetRepository = pRetornoDetRepository
     instance = this
   }
 
@@ -63,15 +71,17 @@ class PrepareInvTrBusiness {
         String aleatoria = claveAleatoria(trMstr.sucursal, trType.ultimoFolio+1)
         Parametro p = Registry.find( TipoParametro.TRANS_INV_TIPO_SALIDA_ALMACEN )
         if (trType.idTipoTrans.equalsIgnoreCase(p.valor)) {
+            Integer ultimoFolio = trType.ultimoFolio+1
             String url = Registry.getURL( trType.idTipoTrans);
             String variable = trMstr.sucursal + '>' + trMstr.sucursalDestino + '>' +
-                    trType.ultimoFolio+1 + '>' +
+                     ultimoFolio+ '>' +
                     aleatoria + '>' +
                     trMstr.idEmpleado.trim() + '>'
 
             for (int i = 0; i < pRequest.skuList.size(); i++) {
                 variable += pRequest.skuList[i].sku + ',' + pRequest.skuList[i].qty +'|'
             }
+            log.debug( "cadena a enviar: ${variable}" )
             url += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', variable ), 'UTF-8' ) )
             String response = ''
             try{
@@ -101,6 +111,10 @@ class PrepareInvTrBusiness {
         }
       }
       trMstr.idTipoTrans = trType.idTipoTrans
+      Parametro param = Registry.find( TipoParametro.TRANS_INV_TIPO_CANCELACION_EXTRA )
+      if (trType.idTipoTrans.equalsIgnoreCase(param.valor)) {
+          insertaRetorno( trType.ultimoFolio+1, pRequest, trMstr )
+      }
     }
     return trMstr
   }
@@ -224,6 +238,48 @@ class PrepareInvTrBusiness {
         acuse.intentos = 0
         acuse.contenido = contenido
         acuse.fechaCarga = new Date()
+        acuseRepository.save( acuse )
+    }
+
+
+    private void insertaRetorno( Integer folio, InvTrRequest invTrRequest, TransInv transInv ){
+        log.debug( "Insertando Retorno" )
+        String[] articulos = invTrRequest.reference.split("--")
+        String ref = articulos[0]
+        String refDet = articulos[1]
+        String[] dataRef = ref.split(/\|/)
+        String[] dataRefDet = refDet.split(/\|/)
+        String ticketOrigen = dataRef[0]
+        String price = dataRef[1].trim().replace( ',','' )
+        BigDecimal montoTotal = new BigDecimal(price)
+
+        Retorno retorno = new Retorno()
+        retorno.id = folio
+        retorno.ticketOrigen = ticketOrigen
+        retorno.monto = montoTotal
+        retornoRepository.save( retorno )
+
+        Integer flag = 0;
+        List<RetornoDet> lstRetornoDet = new ArrayList<RetornoDet>()
+        for( InvTrDetRequest item : invTrRequest.skuList ){
+            String importe = dataRefDet[flag].trim()
+            RetornoDet retornoDet = new RetornoDet()
+            retornoDet.idTransaccion = retorno.id
+            retornoDet.sku = item.sku
+            retornoDet.cantidad = item.qty
+            retornoDet.importe = new BigDecimal( importe )
+            flag = flag+1
+            lstRetornoDet.add( retornoDet )
+        }
+
+        for(RetornoDet retDet : lstRetornoDet){
+            retornoDetRepository.save( retDet )
+        }
+        retornoRepository.flush()
+        retornoDetRepository.flush()
+    }
+
+    void saveAcuse( Acuse acuse ){
         acuseRepository.save( acuse )
     }
 }

@@ -13,6 +13,9 @@ import java.awt.Component
 import java.awt.Font
 import java.awt.event.ActionEvent
 import java.awt.event.ItemEvent
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
+import java.math.RoundingMode
 import java.text.NumberFormat
 
 import mx.lux.pos.ui.model.*
@@ -20,7 +23,7 @@ import mx.lux.pos.ui.model.*
 import javax.swing.*
 import mx.lux.pos.ui.view.panel.OrderPanel
 
-class PaymentDialog extends JDialog {
+class PaymentDialog extends JDialog implements KeyListener{
 
   private static Double ZERO_TOLERANCE = 0.005
 
@@ -49,7 +52,12 @@ class PaymentDialog extends JDialog {
   private List<Bank> issuingBanks
   private List<Terminal> terminals
   private List<Plan> plans
-  private BigDecimal cambio
+  private String folio = ''
+  private static final Integer ID_TERM_AMERICANEXP = 7;
+  private static final String PLAN_TERM_AMERICANEXP = 'NORMAL AMERICAN EXPRESS';
+  private static final String TAG_PAGO_MN_PESOS = 'MN EFECTIVO';
+  private static final String TAG_PAGO_NOTA_CREDITO = 'NOTA DE CREDITO TIENDA';
+  private static final String TAG_ID_PAGO_NOTA_CREDITO = 'NOT';
 
   private static final String DOLARES = 'USD Recibidos'
 
@@ -221,6 +229,9 @@ class PaymentDialog extends JDialog {
               medium.visible = false
             }
           }
+          if( paymentType?.id.trim().equalsIgnoreCase( TAG_ID_PAGO_NOTA_CREDITO ) ){
+              medium.addKeyListener( this )
+          }
           pack()
         }
       } else {
@@ -329,8 +340,17 @@ class PaymentDialog extends JDialog {
             valid &= false
           }
         } else {
-          messages.text = null
-          valid &= true
+            valid &= false
+          }
+        } else if( paymentType.selectedItem.equals(TAG_PAGO_NOTA_CREDITO) ){
+            BigDecimal monto = OrderController.obtenerNotaCredito( tmpPayment.paymentReference)
+            Double diferencia = tmpPayment.amount.doubleValue()-monto.doubleValue()
+            if( ( monto > BigDecimal.ZERO ) && ( diferencia <= 0.0 ) ){
+                messages.text = null
+                valid &= true
+            } else {
+                messages.text = "- monto o folio invalidos"
+                valid &= false
         }
       } else {
           if( paymentType.selectedItem.equals('MN EFECTIVO') ){
@@ -379,4 +399,31 @@ class PaymentDialog extends JDialog {
     return valid
   }
 
+
+  BigDecimal getProposedAmount( String folio ){
+      OrderController.obtenerNotaCredito( tmpPayment.paymentReference )
+  }
+
+  @Override
+  void keyTyped(KeyEvent e) {
+    //keyTyped
+  }
+
+  @Override
+  void keyPressed(KeyEvent e) {
+    //KeyPressed
+  }
+
+  @Override
+  void keyReleased(KeyEvent e) {
+    if( e.keyCode == 8 ){
+        folio = medium.text.trim()
+    } else {
+        folio = folio+e.keyChar
+    }
+    BigDecimal propuesta = OrderController.obtenerNotaCredito( folio.trim() )
+    if( propuesta > BigDecimal.ZERO ){
+        amount.value = propuesta
+    }
+  }
 }

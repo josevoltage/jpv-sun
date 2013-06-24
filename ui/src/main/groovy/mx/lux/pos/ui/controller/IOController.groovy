@@ -1,5 +1,6 @@
 package mx.lux.pos.ui.controller
 
+import mx.lux.pos.model.Sucursal
 import mx.lux.pos.ui.resources.ServiceManager
 import mx.lux.pos.ui.view.dialog.ImportPartMasterDialog
 import org.slf4j.LoggerFactory
@@ -87,5 +88,14 @@ class IOController {
         Map<String, Object> importSummary = ServiceManager.ioServices.loadPartClassFile( pFile )
     }
 
+
+    Boolean validateCentroCostos( String centroCostos ){
+        Boolean valid = false
+        Sucursal sucActual = ServiceManager.storeService.obtenSucursalActual()
+        if( !sucActual.centroCostos.trim().equalsIgnoreCase(centroCostos.trim()) ){
+            valid = true
+        }
+        return valid
+    }
 }
 

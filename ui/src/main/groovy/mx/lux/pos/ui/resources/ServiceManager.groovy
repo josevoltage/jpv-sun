@@ -19,6 +19,7 @@ class ServiceManager {
   private static ConvenioService convenioService
   private static CotizacionService cotizacionService
   private static SettingsService settingsService
+  private static SucursalService sucursalService
 
   @Autowired
   ServiceManager( InventarioService pInventarioService, ArticuloService pArticuloService,
@@ -26,7 +27,7 @@ class ServiceManager {
                   PromotionService pPromotionService, MonedaExtranjeraService pMonedaExtranjeraService,
                   OpenSalesDayService pOpenSalesDaysService, IOService pIOService,
                   ConvenioService pConvenioService, CotizacionService pCotizacionService,
-                  SettingsService pSettingsService
+                  SettingsService pSettingsService, SucursalService pSucursalService
   ) {
     employeeService = pEmpMaster
     invService = pInventarioService
@@ -40,6 +41,7 @@ class ServiceManager {
     convenioService = pConvenioService
     cotizacionService = pCotizacionService
     settingsService = pSettingsService
+    sucursalService = pSucursalService
   }
 
   static EmpleadoService getEmployeeService( ) {
@@ -92,6 +94,10 @@ class ServiceManager {
 
   static SettingsService getSettingsService( ) {
     return settingsService
+  }
+
+  static SucursalService getStoreService( ) {
+      return sucursalService
   }
 
 }
