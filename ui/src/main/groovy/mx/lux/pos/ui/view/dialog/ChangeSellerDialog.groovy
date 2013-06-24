@@ -36,7 +36,7 @@ class ChangeSellerDialog extends JDialog {
   // UI Layout Definition
   void buildUI( ) {
     sb.dialog( this,
-        title: "Cambio de Password",
+        title: "Cambio de Vendedor",
         resizable: true,
         pack: true,
         modal: true,
