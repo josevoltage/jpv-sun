@@ -231,7 +231,6 @@ class PaymentDialog extends JDialog implements KeyListener{
           }
           if( paymentType?.id.trim().equalsIgnoreCase( TAG_ID_PAGO_NOTA_CREDITO ) ){
               medium.addKeyListener( this )
-              mediumLabel.text = 'Retorno'
           }
           pack()
         }
@@ -410,7 +409,6 @@ class PaymentDialog extends JDialog implements KeyListener{
 
 
   BigDecimal getProposedAmount( String folio ){
-
       OrderController.obtenerNotaCredito( tmpPayment.paymentReference )
   }
 
