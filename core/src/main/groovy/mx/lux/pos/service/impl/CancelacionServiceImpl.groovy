@@ -39,6 +39,9 @@ class CancelacionServiceImpl implements CancelacionService {
     private ModificacionRepository modificacionRepository
 
     @Resource
+    private ModificacionEmpRepository modificacionEmpRepository
+
+    @Resource
     private ModificacionCanRepository modificacionCanRepository
 
     @Resource
@@ -391,8 +394,6 @@ class CancelacionServiceImpl implements CancelacionService {
           }
         }
     }
-<<<<<<< HEAD
-
 
     @Override
     @Transactional
@@ -407,6 +408,4 @@ class CancelacionServiceImpl implements CancelacionService {
         return mod
     }
 
-=======
->>>>>>> 2.04.7
 }

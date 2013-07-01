@@ -36,10 +36,7 @@ class OrderController {
   private static CancelacionService cancelacionService
   private static EmpleadoService empleadoService
   private static CierreDiarioService cierreDiarioService
-<<<<<<< HEAD
-=======
   private static SucursalService sucursalService
->>>>>>> 2.04.7
 
   private static final String TAG_USD = "USD"
   private static final String TAG_TIPO_PAGO_NOTA_CREDITO = "NOT"
@@ -56,12 +53,8 @@ class OrderController {
       PromotionService promotionService,
       CancelacionService cancelacionService,
       EmpleadoService empleadoService,
-<<<<<<< HEAD
-      CierreDiarioService cierreDiarioService
-=======
       CierreDiarioService cierreDiarioService,
       SucursalService sucursalService
->>>>>>> 2.04.7
   ) {
     this.notaVentaService = notaVentaService
     this.detalleNotaVentaService = detalleNotaVentaService
@@ -74,10 +67,7 @@ class OrderController {
     this.cancelacionService = cancelacionService
     this.empleadoService = empleadoService
     this.cierreDiarioService = cierreDiarioService
-<<<<<<< HEAD
-=======
     this.sucursalService = sucursalService
->>>>>>> 2.04.7
   }
 
   static Order getOrder( String orderId ) {
