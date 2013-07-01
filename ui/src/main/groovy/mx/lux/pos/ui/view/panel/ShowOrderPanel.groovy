@@ -49,6 +49,9 @@ class ShowOrderPanel extends JPanel {
   private static final BigDecimal montoCentavos = BigDecimal.ZERO
   private List<IPromotion> lstPromociones = new ArrayList<IPromotion>()
 
+  private static final String MSJ_FECHA_INCORRECTA = 'Verifique la fecha de la computadora.'
+  private static final String TXT_FECHA_INCORRECTA_TITULO = 'Error al crear orden'
+
 
   ShowOrderPanel( ) {
     sb = new SwingBuilder()
@@ -209,14 +212,20 @@ class ShowOrderPanel extends JPanel {
   private def doCancel = { ActionEvent ev ->
     JButton source = ev.source as JButton
     source.enabled = false
-    if ( 'T'.equalsIgnoreCase( order.status ) ) {
-      sb.optionPane( message: "La venta ya ha sido cancelada, estado: ${order?.status}", optionType: JOptionPane.DEFAULT_OPTION )
+    if( OrderController.validDate() ){
+      if ( 'T'.equalsIgnoreCase( order.status ) ) {
+        sb.optionPane( message: "La venta ya ha sido cancelada, estado: ${order?.status}", optionType: JOptionPane.DEFAULT_OPTION )
           .createDialog( this, "No se puede cancelar" )
           .show()
+      } else {
+        new CancellationDialog( this, order.id ).show()
+        CancellationController.refreshOrder( order )
+        doBindings()
+      }
     } else {
-      new CancellationDialog( this, order.id ).show()
-      CancellationController.refreshOrder( order )
-      doBindings()
+        sb.optionPane( message: MSJ_FECHA_INCORRECTA, messageType: JOptionPane.ERROR_MESSAGE, )
+                .createDialog( this, TXT_FECHA_INCORRECTA_TITULO )
+                .show()
     }
     source.enabled = true
   }

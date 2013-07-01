@@ -1393,4 +1393,12 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
     List<CierreDiario> lstDias = cierreDiarioRepository.findByFechaBetween( fechaInicio, fechaFin )
     return lstDias
   }
+
+  @Override
+  List<CierreDiario> diasCerrados(){
+      log.debug( "Validando venta en dia cerrado" )
+      QCierreDiario cierre = QCierreDiario.cierreDiario
+      List<CierreDiario> lstDias = cierreDiarioRepository.findAll( cierre.estado.equalsIgnoreCase('c'), cierre.fecha.asc() )
+      return lstDias
+  }
 }

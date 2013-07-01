@@ -441,33 +441,39 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
 
   private void validarVentaNegativa( Item item ) {
     if( OrderController.validDate() ){
-      if ( item.stock > 0 ) {
-        order = OrderController.addItemToOrder( order.id, item )
-        if (customer != null) {
-          order.customer = customer
-        }
-      } else {
-        SalesWithNoInventory onSalesWithNoInventory = OrderController.requestConfigSalesWithNoInventory()
-        if ( SalesWithNoInventory.ALLOWED.equals( onSalesWithNoInventory ) ) {
-          order = OrderController.addItemToOrder( order.id, item )
-        } else if ( SalesWithNoInventory.REQUIRE_AUTHORIZATION.equals( onSalesWithNoInventory ) ) {
-          boolean authorized
-          if ( AccessController.authorizerInSession ) {
-            authorized = true
-          } else {
-            AuthorizationDialog authDialog = new AuthorizationDialog( this, "Cancelaci\u00f3n requiere autorizaci\u00f3n" )
-            authDialog.show()
-            authorized = authDialog.authorized
-          }
-          if ( authorized ) {
-            order = OrderController.addItemToOrder( order.id, item )
-          }
+        if( OrderController.validateCloseDate() ){
+            if ( item.stock > 0 ) {
+                order = OrderController.addItemToOrder( order.id, item )
+                if (customer != null) {
+                    order.customer = customer
+                }
+            } else {
+                SalesWithNoInventory onSalesWithNoInventory = OrderController.requestConfigSalesWithNoInventory()
+                if ( SalesWithNoInventory.ALLOWED.equals( onSalesWithNoInventory ) ) {
+                    order = OrderController.addItemToOrder( order.id, item )
+                } else if ( SalesWithNoInventory.REQUIRE_AUTHORIZATION.equals( onSalesWithNoInventory ) ) {
+                    boolean authorized
+                    if ( AccessController.authorizerInSession ) {
+                        authorized = true
+                    } else {
+                        AuthorizationDialog authDialog = new AuthorizationDialog( this, "Cancelaci\u00f3n requiere autorizaci\u00f3n" )
+                        authDialog.show()
+                        authorized = authDialog.authorized
+                    }
+                    if ( authorized ) {
+                        order = OrderController.addItemToOrder( order.id, item )
+                    }
+                } else {
+                    sb.optionPane( message: MSJ_VENTA_NEGATIVA, messageType: JOptionPane.ERROR_MESSAGE, )
+                            .createDialog( this, TXT_VENTA_NEGATIVA_TITULO )
+                            .show()
+                }
+            }
         } else {
-          sb.optionPane( message: MSJ_VENTA_NEGATIVA, messageType: JOptionPane.ERROR_MESSAGE, )
-              .createDialog( this, TXT_VENTA_NEGATIVA_TITULO )
-              .show()
+            sb.optionPane( message: MSJ_FECHA_INCORRECTA, messageType: JOptionPane.ERROR_MESSAGE, )
+                    .createDialog( this, TXT_FECHA_INCORRECTA_TITULO )
+                    .show()
         }
-      }
     } else {
         sb.optionPane( message: MSJ_FECHA_INCORRECTA, messageType: JOptionPane.ERROR_MESSAGE, )
                 .createDialog( this, TXT_FECHA_INCORRECTA_TITULO )

@@ -41,4 +41,6 @@ public interface CierreDiarioService {
 
   void regenerarArchivosZ( Date fechaCierre )
 
+    List<CierreDiario> diasCerrados()
+
 }

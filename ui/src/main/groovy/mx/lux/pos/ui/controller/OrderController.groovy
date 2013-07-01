@@ -477,4 +477,16 @@ class OrderController {
       return df.format(new Date()).equalsIgnoreCase(StringUtils.trimToEmpty(fechaLogeo.trim()))
   }
 
+  static Boolean validateCloseDate(){
+      Boolean diaValido = false
+      DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
+      String fechaLogeo = sucursalService.obtenerParametroFecha()
+      List<CierreDiario> lstCierre = cierreDiarioService.diasCerrados()
+      CierreDiario ultimoCierre = lstCierre.last()
+      if( new Date().compareTo(ultimoCierre.fecha) >= 0 ){
+          diaValido = true
+      }
+      return diaValido
+  }
+
 }
