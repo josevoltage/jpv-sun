@@ -12,6 +12,9 @@ import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 @Slf4j
 @Component
 class AccessController {
@@ -117,5 +120,18 @@ class AccessController {
       log.warn( "credenciales erroneas" )
     }
     return false
+  }
+
+  static String lastDate( ){
+      sucursalService.obtenerParametroFecha()
+  }
+
+  static Boolean validDate( String date ){
+      log.debug( "validando fecha" )
+      DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
+      Boolean compare = df.format(new Date()).equalsIgnoreCase(StringUtils.trimToEmpty(date.trim()))
+      if( compare ){
+          sucursalService.registrarFechaSistema( new Date() )
+      }
   }
 }

@@ -3,6 +3,7 @@ package mx.lux.pos.service.impl
 import groovy.util.logging.Slf4j
 import mx.lux.pos.model.QSucursal
 import mx.lux.pos.model.Sucursal
+import mx.lux.pos.model.Parametro
 import mx.lux.pos.model.TipoParametro
 import mx.lux.pos.repository.ParametroRepository
 import mx.lux.pos.repository.SucursalRepository
@@ -12,8 +13,10 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
+import java.text.DateFormat
 import java.text.NumberFormat
 import java.text.ParseException
+import java.text.SimpleDateFormat
 
 @Slf4j
 @Service( 'sucursalService' )
@@ -81,5 +84,20 @@ class SucursalServiceImpl implements SucursalService {
         }
         Collections.sort( lstSucursales, sorter )
         return lstSucursales
+    }
+
+    String obtenerParametroFecha(){
+        log.debug( "obteniendo fecha de parametro" )
+        return Registry.getFechaSistema()
+    }
+
+    void registrarFechaSistema( Date fecha ){
+        log.debug( "Insertando fecha en gParametro" )
+        DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
+        Parametro parametro = parametroRepository.findOne(Registry.getFechaSistema())
+        if( parametro != null ){
+            parametro.valor = df.format(fecha)
+            parametroRepository.save(parametro)
+        }
     }
 }

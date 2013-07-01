@@ -151,6 +151,10 @@ class Registry {
     return asString( TipoParametro.TIPO_PAGO_CRE_EMP )
   }
 
+  static String getFechaSistema( ){
+      return asString( TipoParametro.FECHA_ACTUAL )
+  }
+
   static Contribuyente getCompany( ) {
     Contribuyente company = null
     String rfc = asString( TipoParametro.COMPANIA_RFC )

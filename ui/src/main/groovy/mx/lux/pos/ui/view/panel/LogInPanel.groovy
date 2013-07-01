@@ -37,7 +37,7 @@ class LogInPanel extends JPanel {
   private void buildUI( ) {
     sb.panel( this, layout: new MigLayout( 'wrap,center', '[fill]', '[top]' ) ) {
       panel( border: new TitledBorder( 'Ingresa tus datos:' ),
-          layout: new MigLayout( 'wrap 2', '[fill,100!][fill,130!]', '[fill,30!][fill,30!][][]' ),
+          layout: new MigLayout( 'wrap 2', '[fill,100!][fill,130!]', '[fill,30!][fill,30!][fill,30!][]' ),
       ) {
         label( 'Empleado' )
         username = textField( font: new Font( '', Font.BOLD, 14 ),
@@ -54,7 +54,7 @@ class LogInPanel extends JPanel {
 
         label( 'Fecha Actual' )
         date = textField( font: new Font( '', Font.BOLD, 14 ),
-                document: new UpperCaseDocument(),
+                text: AccessController.lastDate(),
                 horizontalAlignment: JTextField.CENTER,
                 actionPerformed: {logInButton.doClick()}
         )
@@ -71,16 +71,14 @@ class LogInPanel extends JPanel {
   private def doLogIn = {
     logInButton.enabled = false
     User user = AccessController.logIn( username.text, password.text )
-
-    Boolean validDate = df.format(new Date()).equalsIgnoreCase(StringUtils.trimToEmpty(date.text.trim()))
-
+    Boolean validDate = AccessController.validDate(date.text)
     if ( StringUtils.isNotBlank( user?.username ) && validDate ) {
       messages.text = null
       messages.visible = false
       doAction()
     } else {
         if(validDate){
-            messages.text = 'La fecha no corresponde al dia de la maquina'
+            messages.text = 'La fecha no corresponde al dia de la computadora'
         } else {
             messages.text = 'Empleado/Contrase\u00f1a incorrectos'
         }
