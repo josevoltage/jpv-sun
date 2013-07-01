@@ -94,10 +94,11 @@ class SucursalServiceImpl implements SucursalService {
     void registrarFechaSistema( Date fecha ){
         log.debug( "Insertando fecha en gParametro" )
         DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
-        Parametro parametro = parametroRepository.findOne(Registry.getFechaSistema())
+        Parametro parametro = parametroRepository.findOne(TipoParametro.FECHA_ACTUAL.value)
         if( parametro != null ){
             parametro.valor = df.format(fecha)
             parametroRepository.save(parametro)
+            parametroRepository.flush()
         }
     }
 }

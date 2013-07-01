@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.Font
+import java.text.DateFormat
 import java.text.NumberFormat
 
 import mx.lux.pos.ui.controller.*
@@ -27,6 +28,8 @@ import javax.swing.*
 import org.slf4j.LoggerFactory
 import org.slf4j.Logger
 
+import java.text.SimpleDateFormat
+
 class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener {
 
   static final String MSG_INPUT_QUOTE_ID = 'Indique el número de cotización'
@@ -37,7 +40,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private static final String TXT_NO_ORDER_PRESENT = 'Se debe agregar al menos un artículo.'
   private static final String TXT_PAYMENTS_PRESENT = 'Elimine los pagosregistrados y reintente.'
   private static final String MSJ_VENTA_NEGATIVA = 'No se pueden agregar artículos sin existencia.'
+  private static final String MSJ_FECHA_INCORRECTA = 'Verifique la fecha de la computadora.'
   private static final String TXT_VENTA_NEGATIVA_TITULO = 'Error al agregar artículo'
+  private static final String TXT_FECHA_INCORRECTA_TITULO = 'Error al crear orden'
   private static final String MSJ_QUITAR_PAGOS = 'Elimine los pagos antes de cerrar la sesion.'
   private static final String TXT_QUITAR_PAGOS = 'Error al cerrar sesion.'
   private static final String MSJ_CAMBIAR_VENDEDOR = 'Esta seguro que desea salir de esta sesion.'
@@ -69,6 +74,8 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private DiscountContextMenu discountMenu
   private String autorizacion
   private OperationType currentOperationType
+
+  DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
 
   OrderPanel( ) {
     sb = new SwingBuilder()
@@ -433,32 +440,38 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
 
 
   private void validarVentaNegativa( Item item ) {
-    if ( item.stock > 0 ) {
-      order = OrderController.addItemToOrder( order.id, item )
-      if (customer != null) {
-        order.customer = customer
-      }
-    } else {
-      SalesWithNoInventory onSalesWithNoInventory = OrderController.requestConfigSalesWithNoInventory()
-      if ( SalesWithNoInventory.ALLOWED.equals( onSalesWithNoInventory ) ) {
+    if( OrderController.validDate() ){
+      if ( item.stock > 0 ) {
         order = OrderController.addItemToOrder( order.id, item )
-      } else if ( SalesWithNoInventory.REQUIRE_AUTHORIZATION.equals( onSalesWithNoInventory ) ) {
-        boolean authorized
-        if ( AccessController.authorizerInSession ) {
-          authorized = true
-        } else {
-          AuthorizationDialog authDialog = new AuthorizationDialog( this, "Cancelaci\u00f3n requiere autorizaci\u00f3n" )
-          authDialog.show()
-          authorized = authDialog.authorized
-        }
-        if ( authorized ) {
-          order = OrderController.addItemToOrder( order.id, item )
+        if (customer != null) {
+          order.customer = customer
         }
       } else {
-        sb.optionPane( message: MSJ_VENTA_NEGATIVA, messageType: JOptionPane.ERROR_MESSAGE, )
-            .createDialog( this, TXT_VENTA_NEGATIVA_TITULO )
-            .show()
+        SalesWithNoInventory onSalesWithNoInventory = OrderController.requestConfigSalesWithNoInventory()
+        if ( SalesWithNoInventory.ALLOWED.equals( onSalesWithNoInventory ) ) {
+          order = OrderController.addItemToOrder( order.id, item )
+        } else if ( SalesWithNoInventory.REQUIRE_AUTHORIZATION.equals( onSalesWithNoInventory ) ) {
+          boolean authorized
+          if ( AccessController.authorizerInSession ) {
+            authorized = true
+          } else {
+            AuthorizationDialog authDialog = new AuthorizationDialog( this, "Cancelaci\u00f3n requiere autorizaci\u00f3n" )
+            authDialog.show()
+            authorized = authDialog.authorized
+          }
+          if ( authorized ) {
+            order = OrderController.addItemToOrder( order.id, item )
+          }
+        } else {
+          sb.optionPane( message: MSJ_VENTA_NEGATIVA, messageType: JOptionPane.ERROR_MESSAGE, )
+              .createDialog( this, TXT_VENTA_NEGATIVA_TITULO )
+              .show()
+        }
       }
+    } else {
+        sb.optionPane( message: MSJ_FECHA_INCORRECTA, messageType: JOptionPane.ERROR_MESSAGE, )
+                .createDialog( this, TXT_FECHA_INCORRECTA_TITULO )
+                .show()
     }
   }
 

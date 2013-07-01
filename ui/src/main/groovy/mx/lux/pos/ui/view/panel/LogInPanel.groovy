@@ -54,7 +54,7 @@ class LogInPanel extends JPanel {
 
         label( 'Fecha Actual' )
         date = textField( font: new Font( '', Font.BOLD, 14 ),
-                text: AccessController.lastDate(),
+                text: StringUtils.trimToEmpty(AccessController.lastDate()) != '' ? AccessController.lastDate() : df.format(new Date()),
                 horizontalAlignment: JTextField.CENTER,
                 actionPerformed: {logInButton.doClick()}
         )
@@ -77,8 +77,8 @@ class LogInPanel extends JPanel {
       messages.visible = false
       doAction()
     } else {
-        if(validDate){
-            messages.text = 'La fecha no corresponde al dia de la computadora'
+        if(!validDate){
+            messages.text = 'La fecha no corresponde'
         } else {
             messages.text = 'Empleado/Contrase\u00f1a incorrectos'
         }

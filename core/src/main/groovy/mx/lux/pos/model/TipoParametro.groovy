@@ -18,7 +18,7 @@ enum TipoParametro {
   DESPLIEGA_USD( 'despliega_dolares', 'no' ),
   EMP_ELECTRONICO( 'emp_electronico', '' ),
   FORMATO_ARCHIVO( 'formato_archivo_salida', '//' ),
-  FECHA_ACTUAL( 'fecha_actual', 'default' ),
+  FECHA_ACTUAL( 'fecha_actual', '' ),
   GRUPO_COMPANIA( 'grupo_compania', 'lux' ),
   GENERICO_PRECIO_VARIABLE( 'generico_precio_variable', 'S' ),
   ID_CLIENTE_GENERICO( 'cli_gen', '1' ),

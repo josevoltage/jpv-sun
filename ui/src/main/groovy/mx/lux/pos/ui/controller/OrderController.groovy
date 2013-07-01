@@ -17,6 +17,9 @@ import mx.lux.pos.model.*
 import mx.lux.pos.service.*
 import mx.lux.pos.ui.model.*
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 @Slf4j
 @Component
 class OrderController {
@@ -33,6 +36,7 @@ class OrderController {
   private static CancelacionService cancelacionService
   private static EmpleadoService empleadoService
   private static CierreDiarioService cierreDiarioService
+  private static SucursalService sucursalService
 
   private static final String TAG_USD = "USD"
   private static final String TAG_TIPO_PAGO_NOTA_CREDITO = "NOT"
@@ -49,7 +53,8 @@ class OrderController {
       PromotionService promotionService,
       CancelacionService cancelacionService,
       EmpleadoService empleadoService,
-      CierreDiarioService cierreDiarioService
+      CierreDiarioService cierreDiarioService,
+      SucursalService sucursalService
   ) {
     this.notaVentaService = notaVentaService
     this.detalleNotaVentaService = detalleNotaVentaService
@@ -62,6 +67,7 @@ class OrderController {
     this.cancelacionService = cancelacionService
     this.empleadoService = empleadoService
     this.cierreDiarioService = cierreDiarioService
+    this.sucursalService = sucursalService
   }
 
   static Order getOrder( String orderId ) {
@@ -463,6 +469,12 @@ class OrderController {
           monto = retorno.monto
       }
       return monto
+  }
+
+  static Boolean validDate(){
+      String fechaLogeo = sucursalService.obtenerParametroFecha()
+      DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
+      return df.format(new Date()).equalsIgnoreCase(StringUtils.trimToEmpty(fechaLogeo.trim()))
   }
 
 }

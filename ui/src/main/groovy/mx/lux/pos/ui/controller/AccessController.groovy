@@ -133,5 +133,6 @@ class AccessController {
       if( compare ){
           sucursalService.registrarFechaSistema( new Date() )
       }
+      return compare
   }
 }
