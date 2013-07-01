@@ -12,6 +12,9 @@ import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 @Slf4j
 @Component
 class AccessController {
@@ -119,30 +122,17 @@ class AccessController {
     return false
   }
 
+  static String lastDate( ){
+      sucursalService.obtenerParametroFecha()
+  }
 
-  static boolean cambiaPassword( String usuario, String nuevoPass ){
-      log.debug( "Cambiando password de usuario $usuario" )
-      try{
-      Empleado empleado = empleadoService.obtenerEmpleado( usuario )
-      empleado.passwd = nuevoPass
-      empleadoService.actualizarPass( empleado )
-      return true
-      }catch (Exception e){
-          println e
-          return false
+  static Boolean validDate( String date ){
+      log.debug( "validando fecha" )
+      DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
+      Boolean compare = df.format(new Date()).equalsIgnoreCase(StringUtils.trimToEmpty(date.trim()))
+      if( compare ){
+          sucursalService.registrarFechaSistema( new Date() )
       }
+      return compare
   }
-
-  static boolean validaDatos( String usuario, String password, String nuevoPass, String confirmPass ){
-        log.debug( "Cambiando password de usuario $usuario" )
-        Boolean empleadoValido = false
-        Empleado empleado = empleadoService.obtenerEmpleado( usuario )
-        if( empleado != null && empleado.passwd.trim().equalsIgnoreCase(password.trim()) && nuevoPass.trim().equalsIgnoreCase(confirmPass.trim()) ){
-            empleadoValido = true
-        } else {
-            empleadoValido = false
-        }
-        return empleadoValido
-  }
-
 }

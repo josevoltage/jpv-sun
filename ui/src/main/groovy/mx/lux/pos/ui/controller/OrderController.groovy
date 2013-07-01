@@ -17,6 +17,9 @@ import mx.lux.pos.model.*
 import mx.lux.pos.service.*
 import mx.lux.pos.ui.model.*
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 @Slf4j
 @Component
 class OrderController {
@@ -33,6 +36,10 @@ class OrderController {
   private static CancelacionService cancelacionService
   private static EmpleadoService empleadoService
   private static CierreDiarioService cierreDiarioService
+<<<<<<< HEAD
+=======
+  private static SucursalService sucursalService
+>>>>>>> 2.04.7
 
   private static final String TAG_USD = "USD"
   private static final String TAG_TIPO_PAGO_NOTA_CREDITO = "NOT"
@@ -49,7 +56,12 @@ class OrderController {
       PromotionService promotionService,
       CancelacionService cancelacionService,
       EmpleadoService empleadoService,
+<<<<<<< HEAD
       CierreDiarioService cierreDiarioService
+=======
+      CierreDiarioService cierreDiarioService,
+      SucursalService sucursalService
+>>>>>>> 2.04.7
   ) {
     this.notaVentaService = notaVentaService
     this.detalleNotaVentaService = detalleNotaVentaService
@@ -62,6 +74,10 @@ class OrderController {
     this.cancelacionService = cancelacionService
     this.empleadoService = empleadoService
     this.cierreDiarioService = cierreDiarioService
+<<<<<<< HEAD
+=======
+    this.sucursalService = sucursalService
+>>>>>>> 2.04.7
   }
 
   static Order getOrder( String orderId ) {
@@ -463,6 +479,24 @@ class OrderController {
           monto = retorno.monto
       }
       return monto
+  }
+
+  static Boolean validDate(){
+      String fechaLogeo = sucursalService.obtenerParametroFecha()
+      DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
+      return df.format(new Date()).equalsIgnoreCase(StringUtils.trimToEmpty(fechaLogeo.trim()))
+  }
+
+  static Boolean validateCloseDate(){
+      Boolean diaValido = false
+      DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
+      String fechaLogeo = sucursalService.obtenerParametroFecha()
+      List<CierreDiario> lstCierre = cierreDiarioService.diasCerrados()
+      CierreDiario ultimoCierre = lstCierre.last()
+      if( new Date().compareTo(ultimoCierre.fecha) >= 0 ){
+          diaValido = true
+      }
+      return diaValido
   }
 
 }

@@ -223,13 +223,4 @@ class DailyCloseController {
     }
   }
 
-  static Boolean updateTerminal( Date fecha ) {
-      Boolean vauchers = cierreDiarioService.cargarVouchersResumenes( fecha )
-      Boolean terminales = cierreDiarioService.cargarResumenTerminales( fecha )
-      if( vauchers && terminales ){
-          return true
-      } else {
-          return false
-      }
-  }
 }

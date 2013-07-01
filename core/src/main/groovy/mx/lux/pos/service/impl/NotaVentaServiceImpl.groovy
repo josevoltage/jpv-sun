@@ -435,6 +435,7 @@ class NotaVentaServiceImpl implements NotaVentaService {
       notaVentaRepository.save( pNotaVenta )
     }
   }
+<<<<<<< HEAD
 
 
   @Override
@@ -462,4 +463,6 @@ class NotaVentaServiceImpl implements NotaVentaService {
       }
       return lstNotasVentas
   }
+=======
+>>>>>>> 2.04.7
 }

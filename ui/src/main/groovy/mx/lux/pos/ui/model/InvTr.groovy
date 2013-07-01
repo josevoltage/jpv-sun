@@ -238,6 +238,8 @@ class InvTr {
             this.sku3+","+precio3,REF_DELIMITER,this.sku1+","+precio4,REF_DELIMITER )*/
       this.postReferenceDet = String.format( '%.2f%s%.2f%s%.2f%s%.2f%s', precio1,REF_DELIMITER,precio2,REF_DELIMITER,
               precio3,REF_DELIMITER,precio4,REF_DELIMITER )
+
+      this.postReference = String.format( "%s--%s", postReference,postReferenceDet )
   }
 
   void setQryInvTr( TransInv pTransInv ) {

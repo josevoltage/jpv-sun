@@ -41,8 +41,6 @@ public interface CierreDiarioService {
 
   void regenerarArchivosZ( Date fechaCierre )
 
-  boolean cargarResumenTerminales( Date fecha )
-
-  boolean cargarVouchersResumenes( Date fecha )
+    List<CierreDiario> diasCerrados()
 
 }

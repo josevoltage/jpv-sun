@@ -10,7 +10,8 @@ import java.math.BigDecimal;
 @Table( name = "retorno_det", schema = "public" )
 public class RetornoDet implements Serializable {
 
-    private static final long serialVersionUID = 7231129005281765479L;
+
+    private static final long serialVersionUID = 5738096520490563528L;
 
     @Id
     @GeneratedValue( strategy = GenerationType.AUTO, generator = "retorno_det_seq" )

@@ -16,4 +16,8 @@ interface SucursalService {
 
   Boolean validarSucursal( Integer pSucursal )
 
+  String obtenerParametroFecha()
+
+  void registrarFechaSistema( Date fecha )
+
 }

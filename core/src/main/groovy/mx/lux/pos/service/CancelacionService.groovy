@@ -26,6 +26,9 @@ interface CancelacionService {
 
   void restablecerMontoAlBorrarPago( Integer idPago )
 
+<<<<<<< HEAD
   Modificacion registrarCambiodeEmpleado(Modificacion modificacion, String idEmpleadoAnterior, String idEmpleadoFinal)
 
+=======
+>>>>>>> 2.04.7
 }

@@ -15,11 +15,9 @@ class RequestAdapter {
       if("ENTRADA_TIENDA".equalsIgnoreCase(pBuffer.postTrType.idTipoTrans)){
           request.siteFrom = ( pBuffer.receiptDocument.siteFrom != null ? pBuffer.receiptDocument.siteFrom : null )
           request.reference = pBuffer.claveCodificada
-      } else if( "RETORNO".equalsIgnoreCase(pBuffer.postTrType.idTipoTrans) ){
-          request.reference = pBuffer.postReference+"--"+pBuffer.postReferenceDet
       } else {
-              request.reference = pBuffer.postReference
-        }
+          request.reference = pBuffer.postReference
+      }
     request.siteTo = ( pBuffer.postSiteTo != null ? pBuffer.postSiteTo.id : null )
     request.trType = pBuffer.postTrType.idTipoTrans
     for (InvTrSku inSku in pBuffer.skuList) {

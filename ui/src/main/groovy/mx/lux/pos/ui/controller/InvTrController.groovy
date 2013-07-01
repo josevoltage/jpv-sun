@@ -1,6 +1,5 @@
 package mx.lux.pos.ui.controller
 
-import mx.lux.pos.model.Acuse
 import mx.lux.pos.model.Articulo
 import mx.lux.pos.model.InvTrRequest
 import mx.lux.pos.model.Shipment
@@ -8,7 +7,6 @@ import mx.lux.pos.model.Sucursal
 import mx.lux.pos.model.TransInv
 import mx.lux.pos.service.ArticuloService
 import mx.lux.pos.service.SucursalService
-import mx.lux.pos.service.business.PrepareInvTrBusiness
 import mx.lux.pos.ui.model.InvTrViewMode
 import mx.lux.pos.ui.model.Session
 import mx.lux.pos.ui.model.SessionItem
@@ -40,7 +38,6 @@ class InvTrController {
   private PartSelectionDialog dlgPartSelection
   private InvTrSelectorDialog dlgSelector
   private JFileChooser dlgFile
-  private static final String TIPO_CONFIRMACION_ENTRADA_PRESTAMO = 'CONFIRMACION_ENTRADA'
 
  // private static SucursalService sucursalService
 
@@ -174,7 +171,6 @@ class InvTrController {
         url += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', variable ), 'UTF-8' ) )
         String response = url.toURL().text
         response = response?.find( /<XX>\s*(.*)\s*<\/XX>/ ) {m, r -> return r}
-        insertAcuseTransaction( variable, response.trim(), )
         log.debug( "resultado solicitud: ${response}" )
         return response
       }
@@ -475,23 +471,6 @@ class InvTrController {
   void requestViewModeChange( InvTrView pView ) {
     log.debug( String.format( "[Controller] View Mode change: <%s>", pView.panel.comboViewMode.selection ) )
     fireChangeViewMode( pView, pView.panel.comboViewMode.selection )
-  }
-
-
-  private void insertAcuseTransaction( String contenido, String folio ){
-      log.debug( "Insertando Acuse" )
-      Acuse acuse = new Acuse()
-      acuse.idTipo = Registry.invTrTypeConfirmaEntrada
-      acuse.folio = StringUtils.trimToEmpty(folio)
-      if( StringUtils.trimToEmpty(folio) != '' ){
-          acuse.fechaAcuso = new Date()
-      }
-      acuse.intentos = 0
-      acuse.contenido = contenido
-      acuse.fechaCarga = new Date()
-
-      PrepareInvTrBusiness serviceBusiness = PrepareInvTrBusiness.getInstance()
-      serviceBusiness.saveAcuse( acuse )
   }
 
 }

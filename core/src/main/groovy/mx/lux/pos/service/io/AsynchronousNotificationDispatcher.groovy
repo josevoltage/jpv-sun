@@ -56,7 +56,7 @@ class AsynchronousNotificationDispatcher implements Runnable {
     String url = Registry.getURL( pNotification.idTipo )
     if ( StringUtils.trimToNull( url ) != null ) {
       pNotification.intentos = pNotification.intentos + 1
-      if( pNotification.idTipo.trim().equalsIgnoreCase(p.valor) || pNotification.idTipo.trim().equalsIgnoreCase(Registry.invTrTypeConfirmaEntrada.trim()) ){
+      if( pNotification.idTipo.trim().equalsIgnoreCase(p.valor) ){
         url += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', pNotification.contenido ), 'UTF-8' ) )
       } else {
         url += String.format( '?%s', pNotification.contenido )
@@ -144,6 +144,15 @@ class AsynchronousNotificationDispatcher implements Runnable {
     while ( true ) {
       this.debug( MSG_START_CYCLE )
       Collection<Acuse> pending = this.getPendingNotifications()
+      //Collection<TransInv> transPending = this.getTransPendingNotifications()
+      /*if( transPending.size() > 0 ){
+          for( TransInv trans : transPending ){
+              TipoTransInv trType = RepositoryFactory.typeTransaction.findOne( trans.idTipoTrans.toUpperCase() )
+              this.dispatchTransaction( trans, trType )
+          }
+      } else {
+          this.debug( MSG_NOTHING_TO_PROCESS )
+      }*/
       if ( pending.size() > 0 ) {
         this.debug( String.format( FMT_LOG_PENDING_QUEUE, pending.size() ) )
         for ( Acuse notification : pending ) {

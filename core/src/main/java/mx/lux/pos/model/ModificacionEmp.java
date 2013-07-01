@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Table( name = "mod_emp", schema = "public" )
 public class ModificacionEmp implements Serializable {
 
-    private static final long serialVersionUID = 7681608500170946463L;
+    private static final long serialVersionUID = -2938104383552091092L;
 
     @Id
     @Column( name = "id_mod" )

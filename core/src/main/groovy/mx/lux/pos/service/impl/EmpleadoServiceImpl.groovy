@@ -33,14 +33,4 @@ class EmpleadoServiceImpl implements EmpleadoService {
     }
     return null
   }
-
-  @Override
-  void actualizarPass( empleado ){
-    log.info( "actualizando password de empleado id: ${empleado.id}" )
-    if ( StringUtils.isNotBlank( empleado.id ) ) {
-        empleadoRepository.save( empleado )
-        empleadoRepository.flush()
-    }
-  }
-
 }

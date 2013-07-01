@@ -34,8 +34,11 @@ interface NotaVentaService {
 
   void saveOrder( NotaVenta pNotaVenta )
 
+<<<<<<< HEAD
   NotaVenta obtenerNotaVentaPorFactura( String factura )
 
   List<NotaVenta> obtenerDevolucionesPendientes( Date fecha )
 
+=======
+>>>>>>> 2.04.7
 }

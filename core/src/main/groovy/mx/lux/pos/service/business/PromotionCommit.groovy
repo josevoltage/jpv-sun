@@ -59,7 +59,7 @@ class PromotionCommit {
       if ( pModel.orderDiscount.discountPercent < 1 ) {
         descuento.porcentaje = String.format( "%.0f", pModel.orderDiscount.discountPercent * 100.0 )
       } else {
-        descuento.porcentaje = "100"
+        descuento.porcentaje = "99"
       }
       descuento.idEmpleado = empId
       descuento.idTipoD = pModel.orderDiscount.discountType.idType

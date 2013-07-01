@@ -1253,12 +1253,11 @@ public class ReportServiceImpl implements ReportService {
         parametros.put( "fechaInicio", new SimpleDateFormat( "dd/MM/yyyy" ).format( fechaInicio ) );
         parametros.put( "fechaFin", new SimpleDateFormat( "dd/MM/yyyy" ).format( fechaFin ) );
         parametros.put( "sucursal", sucursal.getNombre() );
-        parametros.put( "articuloSku", articulo != null ? articulo.getId() : "" );
-        parametros.put( "articuloArticulo", articulo != null ? articulo.getArticulo() : "" );
-        parametros.put( "articuloDescripcion", articulo != null ? articulo.getDescripcion() : "" );
-        parametros.put( "articuloPrecio", articulo != null ? articulo.getPrecio() : BigDecimal.ZERO );
+        parametros.put( "articuloSku", articulo.getId() );
+        parametros.put( "articuloArticulo", articulo.getArticulo() );
+        parametros.put( "articuloDescripcion", articulo.getDescripcion() );
+        parametros.put( "articuloPrecio", articulo.getPrecio() );
         parametros.put( "lstKardex", lstKardex );
-        parametros.put( "ConArticulos", articulo != null ? false : true );
         parametros.put( "existenciaInicial", exisInicial );
         parametros.put( "existenciaActual", exisActual );
 

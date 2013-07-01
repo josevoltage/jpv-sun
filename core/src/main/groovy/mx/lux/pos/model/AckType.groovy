@@ -6,5 +6,4 @@ public interface AckType {
   public final String MODIF_VENTA = 'MODIFICACION VENTA'
   public final String SALIDA_ALMACEN = 'SALIDA_TIENDA'
   public final String ENTRADA_ALMACEN = 'ENTRADA_TIENDA'
-  public final String CONFIRMACION_ENTRADA = 'CONFIRMACION_ENTRADA'
 }

@@ -875,7 +875,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   }
 
   @Transactional
-  boolean cargarVouchersResumenes( Date fecha ) {
+  private boolean cargarVouchersResumenes( Date fecha ) {
     log.info( "cargando vouchers y resumenes para la fecha: ${fecha?.format( DATE_FORMAT )}" )
     if ( fecha ) {
       limpiarVouchersResumenes( fecha )
@@ -1120,7 +1120,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   }
 
   @Transactional
-  boolean cargarResumenTerminales( Date fecha ) {
+  private boolean cargarResumenTerminales( Date fecha ) {
     log.info( "cargando resumenes terminales para la fecha: ${fecha?.format( DATE_FORMAT )}" )
     if ( fecha ) {
       Set<ResumenTerminal> existentes = resumenTerminalRepository.findByFechaCierre( fecha ) ?: [ ]
@@ -1392,5 +1392,13 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
     log.debug( "Obteniendo dias por fechas" )
     List<CierreDiario> lstDias = cierreDiarioRepository.findByFechaBetween( fechaInicio, fechaFin )
     return lstDias
+  }
+
+  @Override
+  List<CierreDiario> diasCerrados(){
+      log.debug( "Validando venta en dia cerrado" )
+      QCierreDiario cierre = QCierreDiario.cierreDiario
+      List<CierreDiario> lstDias = cierreDiarioRepository.findAll( cierre.estado.equalsIgnoreCase('c'), cierre.fecha.asc() )
+      return lstDias
   }
 }
