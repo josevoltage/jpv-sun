@@ -46,6 +46,9 @@ class NotaVentaServiceImpl implements NotaVentaService {
   @Resource
   private ParametroRepository parametroRepository
 
+  @Resource
+  private ModificacionRepository modificacionRepository
+
   @Override
   NotaVenta obtenerNotaVenta( String idNotaVenta ) {
     log.info( "obteniendo notaVenta: ${idNotaVenta}" )
@@ -447,20 +450,16 @@ class NotaVentaServiceImpl implements NotaVentaService {
       log.info( "obteniendo pagos del dia: ${fecha}" )
       Date fechaInicio = DateUtils.truncate( fecha, Calendar.DAY_OF_MONTH );
       Date fechaFin = new Date( DateUtils.ceiling( fecha, Calendar.DAY_OF_MONTH ).getTime() - 1 );
-      QNotaVenta nv = QNotaVenta.notaVenta
-      BigDecimal sumaPagos = BigDecimal.ZERO
-      List<NotaVenta> lstNotasVenta = new ArrayList<NotaVenta>()
-      List<NotaVenta> lstNotas = notaVentaRepository.findAll( nv.fechaHoraFactura.between(fechaInicio,fechaFin).
-              and(nv.sFactura.eq('T')) )
-      for(NotaVenta nota : lstNotas){
-          sumaPagos = BigDecimal.ZERO
-          for(Pago pago : nota.pagos){
-              sumaPagos = sumaPagos.add(pago.porDevolver)
+      List<NotaVenta> lstNotasVentas = new ArrayList<NotaVenta>()
+      QModificacion mod = QModificacion.modificacion
+      List<Modificacion> lstModificaciones = modificacionRepository.findAll( mod.fecha.between(fechaInicio, fechaFin).
+              and(mod.tipo.equalsIgnoreCase('can')))
+      for(Modificacion modificacion : lstModificaciones){
+          NotaVenta notaVenta = notaVentaRepository.findOne( modificacion.idFactura )
+          if(notaVenta != null){
+              lstNotasVentas.add(notaVenta)
           }
-          if( sumaPagos.compareTo(BigDecimal.ZERO) > 0){
-              lstNotasVenta.add(nota)
-          }
-       }
-      return lstNotasVenta
+      }
+      return lstNotasVentas
   }
 }
