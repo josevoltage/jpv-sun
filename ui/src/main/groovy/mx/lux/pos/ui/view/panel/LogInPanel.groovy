@@ -11,16 +11,21 @@ import java.awt.Color
 import java.awt.Font
 import javax.swing.border.TitledBorder
 import javax.swing.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 class LogInPanel extends JPanel {
 
   private SwingBuilder sb
   private JTextField username
+  private JTextField date
   private JPasswordField password
   private JLabel messages
   private JButton logInButton
   private Closure doAction
   private String version
+
+  private DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
 
   LogInPanel( Closure doAction, String version ) {
     this.version = version
@@ -47,6 +52,13 @@ class LogInPanel extends JPanel {
             actionPerformed: {logInButton.doClick()}
         )
 
+        label( 'Fecha Actual' )
+        date = textField( font: new Font( '', Font.BOLD, 14 ),
+                document: new UpperCaseDocument(),
+                horizontalAlignment: JTextField.CENTER,
+                actionPerformed: {logInButton.doClick()}
+        )
+
         messages = label( foreground: Color.RED, constraints: "span 2" )
         label()
         label( text: version, horizontalAlignment: JLabel.RIGHT )
@@ -59,12 +71,19 @@ class LogInPanel extends JPanel {
   private def doLogIn = {
     logInButton.enabled = false
     User user = AccessController.logIn( username.text, password.text )
-    if ( StringUtils.isNotBlank( user?.username ) ) {
+
+    Boolean validDate = df.format(new Date()).equalsIgnoreCase(StringUtils.trimToEmpty(date.text.trim()))
+
+    if ( StringUtils.isNotBlank( user?.username ) && validDate ) {
       messages.text = null
       messages.visible = false
       doAction()
     } else {
-      messages.text = 'Empleado/Contrase\u00f1a incorrectos'
+        if(validDate){
+            messages.text = 'La fecha no corresponde al dia de la maquina'
+        } else {
+            messages.text = 'Empleado/Contrase\u00f1a incorrectos'
+        }
       messages.visible = true
     }
     password.text = null
