@@ -41,8 +41,10 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private static final String TXT_PAYMENTS_PRESENT = 'Elimine los pagosregistrados y reintente.'
   private static final String MSJ_VENTA_NEGATIVA = 'No se pueden agregar artículos sin existencia.'
   private static final String MSJ_FECHA_INCORRECTA = 'Verifique la fecha de la computadora.'
+  private static final String MSJ_ARTICULO_PROMOCIONAL_PARAM_NO = 'Esta promocion incluye un articulo de regalo ¿Desea agregarlo?'
   private static final String TXT_VENTA_NEGATIVA_TITULO = 'Error al agregar artículo'
   private static final String TXT_FECHA_INCORRECTA_TITULO = 'Error al crear orden'
+  private static final String TXT_ARTICULO_PROMOCIONAL_TITULO = 'Articulo Promocional'
   private static final String MSJ_QUITAR_PAGOS = 'Elimine los pagos antes de cerrar la sesion.'
   private static final String TXT_QUITAR_PAGOS = 'Error al cerrar sesion.'
   private static final String MSJ_CAMBIAR_VENDEDOR = 'Esta seguro que desea salir de esta sesion.'
@@ -60,6 +62,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private JTextArea comments
   private JTextField itemSearch
   private List<IPromotionAvailable> promotionList
+  private List<String> lstPromotioSelected
   private DefaultTableModel itemsModel
   private DefaultTableModel paymentsModel
   private DefaultTableModel promotionModel
@@ -82,6 +85,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     order = new Order()
     customer = CustomerController.findDefaultCustomer()
     promotionList = new ArrayList<PromotionAvailable>()
+    lstPromotioSelected = new ArrayList<String>()
     this.promotionDriver.init( this )
     buildUI()
     doBindings()
@@ -532,6 +536,21 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
     private void saveOrder (){
+        if( promotionalsArticles() ){
+            Integer question =JOptionPane.showConfirmDialog( new JDialog(), 'Existen artículos promocional que no se han agregado, ¿Desea incluirlos?',
+                    TXT_ARTICULO_PROMOCIONAL_TITULO,
+                    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
+            if( question == 0){
+                updateOrder( order?.id )
+            } else {
+                save()
+            }
+        } else {
+            save()
+        }
+    }
+
+    private void save(){
         Order newOrder = OrderController.placeOrder( order )
         CustomerController.saveOrderCountries( order.country )
         this.promotionDriver.requestPromotionSave()
@@ -591,8 +610,15 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   protected void onTogglePromotion( IPromotionAvailable pPromotion, Boolean pNewValue ) {
     if ( pNewValue ) {
       this.promotionDriver.requestApplyPromotion( pPromotion )
+      lstPromotioSelected.add( promotionModel.rowModel.value.properties.get( 'idPromotion' ).toString() )
+      Promotion promotion = OrderController.findPromotionalArticle( promotionModel.rowModel.value.properties.get( 'idPromotion' ).toString() )
+      if( promotion != null ){
+          addUniquePromotionalArticle( promotion )
+      }
     } else {
       this.promotionDriver.requestCancelPromotion( pPromotion )
+      lstPromotioSelected.remove( promotionModel.rowModel.value.properties.get( 'idPromotion' ).toString() )
+      removeUniquePromotionalArticle( pPromotion )
     }
   }
 
@@ -656,5 +682,77 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         OrderController.saveCustomerForOrder(order.id, customer.id)
       }
     }
+  }
+
+  protected void addUniquePromotionalArticle( Promotion promotion ){
+      if(OrderController.isPromotionalArticleAutomatic() &&
+              (!promotion.articleProm.contains(',') && promotion.articleProm.isNumber()) ){
+          List<Item> results = ItemController.findItemsByQuery( promotion.articleProm.trim() )
+          if ( ( results.size() == 0 ) && ( promotion.articleProm.trim().length() > 6 ) ) {
+              results = ItemController.findItemsByQuery( promotion.articleProm.trim().substring( 0, 6 ) )
+          }
+          if( results.first().stock > 0 ){
+              validarVentaNegativa( results.first() )
+              updateOrder( order?.id )
+              if ( !order.customer.equals(customer) ) {
+                  order.customer = customer
+              }
+          }
+      } else {
+          if( !promotion.articleProm.contains(',') ){
+              Integer question =JOptionPane.showConfirmDialog( new JDialog(), MSJ_ARTICULO_PROMOCIONAL_PARAM_NO, TXT_ARTICULO_PROMOCIONAL_TITULO,
+                      JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
+              if( question == 0){
+                  List<Item> results = ItemController.findItemsByQuery( promotion.articleProm.trim() )
+                  if ( ( results.size() == 0 ) && ( promotion.articleProm.trim().length() > 6 ) ) {
+                      results = ItemController.findItemsByQuery( promotion.articleProm.trim().substring( 0, 6 ) )
+                  }
+                  if( results.first().stock > 0 ){
+                      validarVentaNegativa( results.first() )
+                      updateOrder( order?.id )
+                      if ( !order.customer.equals(customer) ) {
+                          order.customer = customer
+                      }
+                  } else {
+                      sb.optionPane( message: 'El art\u00edculo promocional se ha agotado', messageType: JOptionPane.INFORMATION_MESSAGE, )
+                              .createDialog( this, 'Articulo sin existencia' )
+                              .show()
+                  }
+              }
+          }
+      }
+  }
+
+  protected void removeUniquePromotionalArticle( IPromotionAvailable pPromotion ){
+      Promotion promotion = OrderController.findPromotionalArticle( promotionModel.rowModel.value.properties.get( 'idPromotion' ).toString() )
+      if( promotion != null ){
+          if( !promotion.articleProm.contains(',') && promotion.articleProm.isNumber() ){
+              List<Item> results = ItemController.findItemsByQuery( promotion.articleProm.trim() )
+              if ( ( results.size() == 0 ) && ( promotion.articleProm.trim().length() > 6 ) ) {
+                  results = ItemController.findItemsByQuery( promotion.articleProm.trim().substring( 0, 6 ) )
+              }
+              for(OrderItem item : order.items){
+                  if(item.item.id == results.first().id){
+                      OrderController.removeOrderItemFromOrder( order.id, item )
+                      updateOrder( order?.id )
+                  }
+              }
+          }
+      }
+  }
+
+  protected Boolean promotionalsArticles( ){
+      Boolean validPromotionalsArticles = false
+      for(String idPromotion : lstPromotioSelected ){
+          Promotion promotion = OrderController.findPromotionalArticle( idPromotion )
+          if( promotion != null && promotion.articleProm.contains(',') ){
+              for(OrderItem orderItem : order.items){
+                  if( !promotion.articleProm.contains(orderItem.item.id.toString()) ){
+                      validPromotionalsArticles = true
+                  }
+              }
+          }
+      }
+      return validPromotionalsArticles
   }
 }

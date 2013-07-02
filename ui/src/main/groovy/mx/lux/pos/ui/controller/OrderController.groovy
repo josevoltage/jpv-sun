@@ -18,6 +18,8 @@ import mx.lux.pos.service.*
 import mx.lux.pos.ui.model.*
 
 import java.text.DateFormat
+import java.text.NumberFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 
 @Slf4j
@@ -487,6 +489,25 @@ class OrderController {
           diaValido = true
       }
       return diaValido
+  }
+
+
+  static Promotion findPromotionalArticle( String idPromotion ){
+      log.debug( "find article from id ${idPromotion}" )
+      Integer idPromocion = 0
+      try{
+          idPromocion = NumberFormat.getInstance().parse(idPromotion).intValue()
+      } catch(ParseException e){}
+      Promocion promocion = promotionService.obtenerPromocion( idPromocion )
+      if( StringUtils.trimToEmpty(promocion.articuloProm) != '' ){
+          return Promotion.toPromotion( promocion )
+      } else {
+          return null
+      }
+  }
+
+  static Boolean isPromotionalArticleAutomatic(){
+      return promotionService.esArticuloPromocionalAutomatico()
   }
 
 }

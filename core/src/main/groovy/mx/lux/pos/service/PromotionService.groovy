@@ -31,4 +31,8 @@ interface PromotionService {
 
   Promocion obtenerPromocion( Integer idPromocion )
 
+  Promocion obtenerPromocionByDescripcion( String descripcion )
+
+  Boolean esArticuloPromocionalAutomatico( )
+
 }

@@ -211,6 +211,10 @@ class Registry {
       return asString( TipoParametro.ARCHIVO_CLASIFICACION_ARTICULOS )
   }
 
+  static Boolean getAutomaticPromotionalArticle( ) {
+      return isTrue( TipoParametro.ARTICULO_PROMOCIONAL_AUTOMATICO )
+  }
+
   static String getManualPriceTypeList( ) {
     return asString( TipoParametro.GENERICO_PRECIO_VARIABLE )
   }

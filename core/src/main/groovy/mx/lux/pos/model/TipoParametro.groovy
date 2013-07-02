@@ -8,6 +8,7 @@ enum TipoParametro {
   ARCHIVO_PRODUCTOS( 'archivo_productos', 'Prod*_{REGION}.txt' ),
   ARCHIVO_TIPO_CAMBIO( 'archivo_tipo_cambio', 'tc.*.{FECHA}.txt' ),
   ARCHIVO_CLASIFICACION_ARTICULOS( 'archivo_clasificacion_articulos', 'articulos.*.csv' ),
+  ARTICULO_PROMOCIONAL_AUTOMATICO( 'articulo_promocional_automatico', 'si' ),
   CAN_MISMO_DIA( 'can_mismo_dia', 'no' ),
   CONV_NOMINA( 'conv_nomina' ),
   COMANDO_ZIP( 'comando_zip', '/Apps/7z/7za a -tzip' ),
