@@ -3,6 +3,7 @@ package mx.lux.pos.service.impl
 import mx.lux.pos.model.Parametro
 import mx.lux.pos.model.PromotionAvailable
 import mx.lux.pos.model.PromotionModel
+import mx.lux.pos.model.QPromocion
 import mx.lux.pos.model.TipoParametro
 import mx.lux.pos.repository.ParametroRepository
 import mx.lux.pos.repository.PromocionRepository
@@ -129,8 +130,21 @@ class PromotionServiceImpl implements PromotionService {
   @Override
   Promocion obtenerPromocion( Integer idPromocion ){
     log.debug( "obtenerPromocion( Integer idPromocion )" )
-
     Promocion promocion = promocionRepository.findOne( idPromocion )
     return promocion
   }
+
+  @Override
+  Promocion obtenerPromocionByDescripcion( String descripcion ){
+    log.debug( "obtener promocion por descripcion" )
+    QPromocion promo = QPromocion.promocion
+    Promocion promocion = promocionRepository.findOne( promo.descripcion.equalsIgnoreCase(descripcion.trim()) )
+    return promocion
+  }
+
+  @Override
+  Boolean esArticuloPromocionalAutomatico( ){
+      return Registry.automaticPromotionalArticle
+  }
+
 }
