@@ -742,13 +742,13 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
   protected Boolean promotionalsArticles( ){
-      Boolean validPromotionalsArticles = false
+      Boolean validPromotionalsArticles = true
       for(String idPromotion : lstPromotioSelected ){
           Promotion promotion = OrderController.findPromotionalArticle( idPromotion )
           if( promotion != null && promotion.articleProm.contains(',') ){
               for(OrderItem orderItem : order.items){
-                  if( !promotion.articleProm.contains(orderItem.item.id.toString()) ){
-                      validPromotionalsArticles = true
+                  if( promotion.articleProm.contains(orderItem.item.id.toString()) ){
+                      validPromotionalsArticles = false
                   }
               }
           }
