@@ -35,4 +35,6 @@ interface PromotionService {
 
   Boolean esArticuloPromocionalAutomatico( )
 
+  String articulosGupoPromocion( Integer idGrupo )
+
 }

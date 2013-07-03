@@ -28,6 +28,7 @@ import javax.swing.*
 import org.slf4j.LoggerFactory
 import org.slf4j.Logger
 
+import java.text.ParseException
 import java.text.SimpleDateFormat
 
 class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener {
@@ -39,7 +40,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private static final String TXT_BTN_PRINT = 'Imprimir'
   private static final String TXT_NO_ORDER_PRESENT = 'Se debe agregar al menos un artículo.'
   private static final String TXT_PAYMENTS_PRESENT = 'Elimine los pagosregistrados y reintente.'
-  private static final String MSJ_VENTA_NEGATIVA = 'No se pueden agregar artículos sin existencia.'
+  private static final String MSJ_VENTA_NEGATIVA = 'No se pueden agregar art\u00edculos sin existencia.'
   private static final String MSJ_FECHA_INCORRECTA = 'Verifique la fecha de la computadora.'
   private static final String MSJ_ARTICULO_PROMOCIONAL_PARAM_NO = 'Esta promocion incluye un articulo de regalo ¿Desea agregarlo?'
   private static final String TXT_VENTA_NEGATIVA_TITULO = 'Error al agregar artículo'
@@ -685,41 +686,35 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
   protected void addUniquePromotionalArticle( Promotion promotion ){
+      List<Item> results = ItemController.findItemsByQuery( promotion.articleProm.trim() )
+      if ( ( results.size() == 0 ) && ( promotion.articleProm.trim().length() > 6 ) ) {
+          results = ItemController.findItemsByQuery( promotion.articleProm.trim().substring( 0, 6 ) )
+      }
       if(OrderController.isPromotionalArticleAutomatic() &&
-              (!promotion.articleProm.contains(',') && promotion.articleProm.isNumber()) ){
-          List<Item> results = ItemController.findItemsByQuery( promotion.articleProm.trim() )
-          if ( ( results.size() == 0 ) && ( promotion.articleProm.trim().length() > 6 ) ) {
-              results = ItemController.findItemsByQuery( promotion.articleProm.trim().substring( 0, 6 ) )
-          }
+              (!promotion.articleProm.contains(',') && promotion.articleProm.isNumber())
+              && results.first().price.compareTo(BigDecimal.ZERO) <= 0){
           if( results.first().stock > 0 ){
               validarVentaNegativa( results.first() )
               updateOrder( order?.id )
               if ( !order.customer.equals(customer) ) {
                   order.customer = customer
               }
-          }
-      } else {
-          if( !promotion.articleProm.contains(',') ){
+          } else {
               Integer question =JOptionPane.showConfirmDialog( new JDialog(), MSJ_ARTICULO_PROMOCIONAL_PARAM_NO, TXT_ARTICULO_PROMOCIONAL_TITULO,
                       JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
               if( question == 0){
-                  List<Item> results = ItemController.findItemsByQuery( promotion.articleProm.trim() )
-                  if ( ( results.size() == 0 ) && ( promotion.articleProm.trim().length() > 6 ) ) {
-                      results = ItemController.findItemsByQuery( promotion.articleProm.trim().substring( 0, 6 ) )
-                  }
-                  if( results.first().stock > 0 ){
-                      validarVentaNegativa( results.first() )
-                      updateOrder( order?.id )
-                      if ( !order.customer.equals(customer) ) {
-                          order.customer = customer
-                      }
-                  } else {
-                      sb.optionPane( message: 'El art\u00edculo promocional se ha agotado', messageType: JOptionPane.INFORMATION_MESSAGE, )
-                              .createDialog( this, 'Articulo sin existencia' )
-                              .show()
+                  validarVentaNegativa( results.first() )
+                  updateOrder( order?.id )
+                  if ( !order.customer.equals(customer) ) {
+                      order.customer = customer
                   }
               }
           }
+      } else if( !promotion.articleProm.contains(',') && promotion.articleProm.isNumber()
+              && results.first().price.compareTo(BigDecimal.ZERO) <= 0 ){
+          sb.optionPane( message: 'Esta promocion incluye un art\u00edculo de regalo', messageType: JOptionPane.INFORMATION_MESSAGE, )
+                  .createDialog( this, 'Art\u00edculo Promocional' )
+                  .show()
       }
   }
 
@@ -745,12 +740,29 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       Boolean validPromotionalsArticles = true
       for(String idPromotion : lstPromotioSelected ){
           Promotion promotion = OrderController.findPromotionalArticle( idPromotion )
-          if( promotion != null && promotion.articleProm.contains(',') ){
-              for(OrderItem orderItem : order.items){
-                  if( promotion.articleProm.contains(orderItem.item.id.toString()) ){
-                      validPromotionalsArticles = false
+          if(promotion != null){
+              if( promotion.articleProm.contains(',') ){
+                  for(OrderItem orderItem : order.items){
+                      if( promotion.articleProm.contains(orderItem.item.id.toString()) ){
+                          validPromotionalsArticles = false
+                      }
+                  }
+              } else if( promotion != null && promotion.articleProm.isNumber() ){
+                  Integer idGrupo = 0
+                  try{
+                      idGrupo = NumberFormat.getInstance().parse( promotion.articleProm )
+                  } catch ( ParseException e ){}
+                  String idArticulos = OrderController.findArticlesOfGroupPromotion( idGrupo )
+                  if(idArticulos.contains(',')){
+                      for(OrderItem orderItem : order.items){
+                          if( idArticulos.contains(orderItem.item.name) ){
+                              validPromotionalsArticles = false
+                          }
+                      }
                   }
               }
+          } else {
+              validPromotionalsArticles = false
           }
       }
       return validPromotionalsArticles
