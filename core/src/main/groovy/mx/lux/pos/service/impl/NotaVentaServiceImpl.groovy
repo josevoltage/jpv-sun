@@ -456,7 +456,15 @@ class NotaVentaServiceImpl implements NotaVentaService {
       for(Modificacion modificacion : lstModificaciones){
           NotaVenta notaVenta = notaVentaRepository.findOne( modificacion.idFactura )
           if(notaVenta != null){
-              lstNotasVentas.add(notaVenta)
+              Boolean pendiente = false
+              for(Pago pago : notaVenta.pagos){
+                  if( pago.porDevolver.compareTo(BigDecimal.ZERO) > 0){
+                      pendiente = true
+                  }
+              }
+              if(pendiente){
+                  lstNotasVentas.add(notaVenta)
+              }
           }
       }
       return lstNotasVentas

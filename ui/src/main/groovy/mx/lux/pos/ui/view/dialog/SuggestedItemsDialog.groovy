@@ -1,6 +1,7 @@
 package mx.lux.pos.ui.view.dialog
 
 import groovy.swing.SwingBuilder
+import mx.lux.pos.ui.controller.*
 import mx.lux.pos.ui.model.Item
 import mx.lux.pos.ui.view.renderer.MoneyCellRenderer
 
@@ -35,7 +36,7 @@ class SuggestedItemsDialog extends JDialog {
   private JLabel lblDescripcion
   private DefaultTableModel model
   private JTable tableItems
-  private static final Integer COLUMN_DESCRIPTION = 2
+  private static final Integer COLUMN_ID = 0
 
   SuggestedItemsDialog( Component parent, String code, List<Item> suggestions ) {
     this.code = code
@@ -86,9 +87,10 @@ class SuggestedItemsDialog extends JDialog {
           @Override
           void valueChanged( ListSelectionEvent ev ) {
 
-            String description = tableItems.getModel().getValueAt( tableItems.selectedRow, COLUMN_DESCRIPTION )
-            if( description != null ){
-              description = description.trim().replace( ' ','' )
+            String idArticle = tableItems.getValueAt( tableItems.selectedRow, COLUMN_ID ).toString()
+            List<Item> item = ItemController.findItemsByQuery( idArticle )
+            if( item.first() != null ){
+              String description = item.first().reference.trim().replace( ' ','' )
               if( description.length() > 80 ){
                 if( description.length() < 160 ){
                   lblDescripcion.text = "<html>${description.substring(0,80)}<br>${description.substring(80)}<br><html>"

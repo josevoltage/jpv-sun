@@ -146,6 +146,7 @@ class DailyCloseController {
           if( CancellationController.refundPaymentsCreditFromOrder( nota.id, creditRefunds ) ){
             CancellationController.printOrderCancellation( nota.id )
           }
+          payments = new ArrayList<Pago>()
       }
       cierreDiarioService.cargarDatosCierreDiario( closeDate )
       cierreDiarioService.cerrarCierreDiario( closeDate, observations )

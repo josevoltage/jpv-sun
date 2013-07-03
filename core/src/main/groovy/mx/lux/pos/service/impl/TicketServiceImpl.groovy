@@ -953,7 +953,8 @@ class TicketServiceImpl implements TicketService {
           }
           totalPagos += monto
           def item = [
-              descripcion: "${pmt?.eTipoPago?.descripcion ?: ''} ${referenciaPago ?: ''}",
+              descripcion: "${pmt?.eTipoPago?.descripcion ?: ''}",
+              referencia: "${referenciaPago ?: ''}",
               monto: formatter.format( monto )
           ]
           log.debug( "genera pago: ${item}" )
@@ -968,8 +969,15 @@ class TicketServiceImpl implements TicketService {
           BigDecimal monto = dev?.monto ?: 0
           if ( 'd'.equalsIgnoreCase( dev?.tipo ) ) {
             totalDevoluciones += monto
+            String desc = dev?.pago?.eTipoPago?.descripcion
+            String desc1 = ''
+            if( dev?.pago?.eTipoPago?.descripcion.length() > 15 ){
+                desc = dev?.pago?.eTipoPago?.descripcion.substring(0,15)
+                desc1 = dev?.pago?.eTipoPago?.descripcion.substring(15)
+            }
             def item = [
-                original: "${dev?.pago?.eTipoPago?.descripcion ?: ''}",
+                original: "${desc ?: ''}",
+                original1: "${desc1 ?: ''}",
                 devolucion: "${dev?.formaPago?.descripcion ?: ''}",
                 importe: formatter.format( monto )
             ]
@@ -1047,7 +1055,8 @@ class TicketServiceImpl implements TicketService {
           referenciaPago = pmt?.referenciaPago
         }
         def item = [
-            descripcion: "${pmt?.eTipoPago?.descripcion} ${referenciaPago}",
+            descripcion: "${pmt?.eTipoPago?.descripcion}",
+            descripcion1: "${referenciaPago}",
             monto: formatter.format( monto )
         ]
         log.debug( "genera pago: ${item}" )

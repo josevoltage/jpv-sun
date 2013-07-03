@@ -16,6 +16,7 @@ ${COLUMNAS}
 #SET_STYLE(${FUENTE_B} 0 0 0 0)
 #foreach( $pmt in ${pagos} )
   ${pmt.descripcion}${COL_PAGO_2}${pmt.monto}${CR}
+  ${pmt.descripcion1}${CR}
   ${COL_PAGO_1}TR${COL_PAGO_2}$__________${CR}
   ${COL_PAGO_1}TR${COL_PAGO_2}$__________${CR}
   ${COL_PAGO_1}TR${COL_PAGO_2}$__________${CR}
