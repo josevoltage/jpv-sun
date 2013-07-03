@@ -1,10 +1,12 @@
 package mx.lux.pos.service.impl
 
+import mx.lux.pos.model.GrupoArticuloDet
 import mx.lux.pos.model.Parametro
 import mx.lux.pos.model.PromotionAvailable
 import mx.lux.pos.model.PromotionModel
 import mx.lux.pos.model.QPromocion
 import mx.lux.pos.model.TipoParametro
+import mx.lux.pos.repository.GrupoArticuloDetRepository
 import mx.lux.pos.repository.ParametroRepository
 import mx.lux.pos.repository.PromocionRepository
 import mx.lux.pos.repository.SucursalRepository
@@ -37,6 +39,9 @@ class PromotionServiceImpl implements PromotionService {
 
   @Resource
   private SucursalRepository sucursalRepository
+
+  @Resource
+  private GrupoArticuloDetRepository grupoArticuloDetRepository
 
 
   public void updateOrder( PromotionModel pModel, String pOrderNbr ) {
@@ -145,6 +150,16 @@ class PromotionServiceImpl implements PromotionService {
   @Override
   Boolean esArticuloPromocionalAutomatico( ){
       return Registry.automaticPromotionalArticle
+  }
+
+  @Override
+  String articulosGupoPromocion( Integer idGrupo ){
+      String lstArticulos = ''
+      List<GrupoArticuloDet> articulos = grupoArticuloDetRepository.findByIdGrupo( idGrupo )
+      for(GrupoArticuloDet grupo : articulos){
+          lstArticulos = lstArticulos+grupo.articulo+','
+      }
+      return lstArticulos
   }
 
 }

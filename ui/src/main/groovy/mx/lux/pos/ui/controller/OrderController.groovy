@@ -510,4 +510,8 @@ class OrderController {
       return promotionService.esArticuloPromocionalAutomatico()
   }
 
+  static String findArticlesOfGroupPromotion( Integer idGroup ){
+      return promotionService.articulosGupoPromocion( idGroup )
+  }
+
 }
