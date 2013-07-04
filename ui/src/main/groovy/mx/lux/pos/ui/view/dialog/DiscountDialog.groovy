@@ -210,10 +210,16 @@ class DiscountDialog extends JDialog {
   }
   
   void onButtonOk() {
-    discountSelected = true
-    setDiscountAmt( txtDiscountAmount.getValue( ) )
-    setDiscountPct( txtDiscountPercent.getValue( ) )
-    setVisible( false ) 
+    boolean authorized
+    AuthorizationDialog authDialog = new AuthorizationDialog( this, "Descuento requiere autorizaci\u00f3n", true )
+    authDialog.show()
+    authorized = authDialog.authorized
+      if( authorized ){
+          discountSelected = true
+          setDiscountAmt( txtDiscountAmount.getValue( ) )
+          setDiscountPct( txtDiscountPercent.getValue( ) )
+          setVisible( false )
+      }
   }
   
   void onDiscountAmountLeave( ) {

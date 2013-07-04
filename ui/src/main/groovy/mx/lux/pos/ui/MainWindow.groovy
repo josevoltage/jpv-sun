@@ -391,7 +391,6 @@ class MainWindow extends JFrame implements KeyListener {
                 }
             )
             changeSellerMenuItem = menuItem( text: 'Cambio de Vendedor',
-                    visible: true,
                     actionPerformed: {
                         ChangeSellerDialog dialog = new ChangeSellerDialog()
                         dialog.show()
@@ -454,6 +453,7 @@ class MainWindow extends JFrame implements KeyListener {
     branchLabel.text = "[${branch?.id ?: ''}] ${branch?.name ?: ''}"
     versionLabel.text = version
     infoBar.visible = true
+    changeSellerMenuItem.enabled = IOController.getInstance().isManagerLogged( )
   }
 
   private void initialize( ) {

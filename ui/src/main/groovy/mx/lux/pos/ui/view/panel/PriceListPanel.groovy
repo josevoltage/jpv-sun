@@ -55,7 +55,7 @@ class PriceListPanel {
           }
           menuItem {
             action( name: 'Cargar Lista', shortDescription: 'Cargar Lista de Precios' ) {
-              def authDialog = new AuthorizationDialog( source, 'Requiere autorización para cargar Lista de Precios' )
+              def authDialog = new AuthorizationDialog( source, 'Requiere autorización para cargar Lista de Precios', false )
               authDialog.show()
               if ( authDialog.authorized ) {
                 def priceList = PriceListController.loadPriceList( selectedItem, PriceListLoadType.MANUAL )

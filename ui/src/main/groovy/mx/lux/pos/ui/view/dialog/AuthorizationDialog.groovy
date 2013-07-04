@@ -21,10 +21,12 @@ class AuthorizationDialog extends JDialog {
   private JPasswordField password
   private JLabel fullName
   private JLabel messages
+  private Boolean authorizationByManager
   private boolean authorized
 
-  AuthorizationDialog( Component parent, String message ) {
+  AuthorizationDialog( Component parent, String message, Boolean authorizationByManager ) {
     sb = new SwingBuilder()
+    this.authorizationByManager = authorizationByManager
     definedMessage = message ?: ''
     authorized = false
     buildUI( parent )
@@ -81,7 +83,11 @@ class AuthorizationDialog extends JDialog {
   private def doAuthorize = { ActionEvent ev ->
     JButton source = ev.source as JButton
     source.enabled = false
-    authorized = AccessController.canAuthorize( username.text, password.text )
+    if( authorizationByManager ){
+        authorized = AccessController.canAuthorizeByManager( username.text, password.text )
+    } else {
+        authorized = AccessController.canAuthorize( username.text, password.text )
+    }
     if ( authorized ) {
       dispose()
     } else {

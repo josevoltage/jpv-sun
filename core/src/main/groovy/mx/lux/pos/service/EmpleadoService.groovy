@@ -6,4 +6,6 @@ interface EmpleadoService {
 
   Empleado obtenerEmpleado( String id )
 
+  Empleado gerente( )
+
 }

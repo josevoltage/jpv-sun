@@ -137,7 +137,7 @@ class CancellationDialog extends JDialog {
       if ( AccessController.authorizerInSession ) {
         authorized = true
       } else {
-        AuthorizationDialog authDialog = new AuthorizationDialog( this, "Cancelaci\u00f3n requiere autorizaci\u00f3n" )
+        AuthorizationDialog authDialog = new AuthorizationDialog( this, "Cancelaci\u00f3n requiere autorizaci\u00f3n", false )
         authDialog.show()
         authorized = authDialog.authorized
       }

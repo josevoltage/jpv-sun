@@ -461,7 +461,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                     if ( AccessController.authorizerInSession ) {
                         authorized = true
                     } else {
-                        AuthorizationDialog authDialog = new AuthorizationDialog( this, "Cancelaci\u00f3n requiere autorizaci\u00f3n" )
+                        AuthorizationDialog authDialog = new AuthorizationDialog( this, "Operaci\u00f3n requiere autorizaci\u00f3n", false )
                         authDialog.show()
                         authorized = authDialog.authorized
                     }
@@ -737,8 +737,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
   protected Boolean promotionalsArticles( ){
-      Boolean validPromotionalsArticles = true
+      Boolean validPromotionalsArticles = false
       for(String idPromotion : lstPromotioSelected ){
+          validPromotionalsArticles = true
           Promotion promotion = OrderController.findPromotionalArticle( idPromotion )
           if(promotion != null){
               if( promotion.articleProm.contains(',') ){
