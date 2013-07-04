@@ -191,7 +191,7 @@ class DailyCloseDepositsDialog extends JDialog {
     JButton source = ev.source as JButton
     source.enabled = false
     if ( DailyCloseController.closeDailyClose( closeDate, observations.text ) ) {
-      sb.optionPane().showMessageDialog( null, 'Se ha cerrado correctamente', 'Ok', JOptionPane.INFORMATION_MESSAGE )
+      //sb.optionPane().showMessageDialog( null, 'Se ha cerrado correctamente', 'Ok', JOptionPane.INFORMATION_MESSAGE )
     } else {
       sb.optionPane().showMessageDialog( null, 'Error al cerrar', 'Error', JOptionPane.ERROR_MESSAGE )
     }

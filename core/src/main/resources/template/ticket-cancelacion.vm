@@ -21,7 +21,8 @@ ELABORO: #altnull(${empleado.nombreCompleto})${COL_HEAD}#SET_STYLE(${FUENTE_B} $
 ${CR}
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 ${SUBRAYADO})DETALLES${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 ${SUBRAYADO})CANT.${COL_DET_1}CODIGO${COL_DET_2}SURTE${COL_DET_3}PRECIO
-#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $det in ${detalles} )${det.cantidad}${COL_DET_1}${det.codigo}${COL_DET_2}${det.surte}${COL_DET_3}${det.precio}${LF}#end
+#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $det in ${detalles} )${det.cantidad}${COL_DET_1}${det.codigo}${COL_DET_2}${det.surte}${COL_DET_3}${det.precio}
+${COL_DET_1}${det.codigo1}${LF}#end
 #SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)${COL_DET_3}----------
 #SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)TOTAL:${COL_DET_3}#altnull(${venta_neta})${LF}
 #SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)PAGOS:#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $pmt in ${pagos} )${COL_DET_1}${pmt.descripcion}${COL_DET_3}${pmt.monto}

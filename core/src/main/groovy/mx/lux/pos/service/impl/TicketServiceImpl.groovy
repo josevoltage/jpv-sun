@@ -931,9 +931,12 @@ class TicketServiceImpl implements TicketService {
         List<DetalleNotaVenta> detallesLst = detalleNotaVentaRepository.findByIdFacturaOrderByIdArticuloAsc( idNotaVenta )
         detallesLst.each { DetalleNotaVenta det ->
           BigDecimal precio = det?.precioUnitFinal?.multiply( det?.cantidadFac )
+          String articuloDesc = det?.articulo?.articulo.length() <= 13 ?det?.articulo?.articulo: det?.articulo?.articulo.substring(0,13)
+          String articuloDesc1 = det?.articulo?.articulo.length() > 13 ? det?.articulo?.articulo.substring(13) : ''
           def item = [
               cantidad: "${det?.cantidadFac?.toInteger() ?: 0}",
-              codigo: "${det?.articulo?.articulo ?: ''} ${det?.articulo?.codigoColor ?: ''}",
+              codigo: "[${det?.idArticulo}]${articuloDesc} ${det?.articulo?.codigoColor ?: ''}",
+              codigo1: articuloDesc1,
               surte: "${det?.surte ?: ''}",
               precio: formatter.format( precio ?: 0 )
           ]
