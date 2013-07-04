@@ -1,12 +1,19 @@
 package mx.lux.pos.service.io
 
+import mx.lux.pos.model.NotaVenta
 import mx.lux.pos.model.TransInv
 import mx.lux.pos.model.TransInvDetalle
+import mx.lux.pos.repository.BancoRepository
+import mx.lux.pos.repository.NotaVentaRepository
+import mx.lux.pos.repository.impl.RepositoryFactory
+import mx.lux.pos.service.NotaVentaService
+import mx.lux.pos.service.TicketService
 import mx.lux.pos.service.business.Registry
 import mx.lux.pos.util.CustomDateUtils
 import mx.lux.pos.util.StringList
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+
 
 class ZInFile {
 
@@ -28,13 +35,20 @@ class ZInFile {
 
   // Private Methods
   protected String formatTrans( TransInv pTrMstr, TransInvDetalle pTrDet ) {
+    String referencia = ''
+    if( pTrMstr.referencia.startsWith( 'A0' ) ){
+        NotaVenta nota = RepositoryFactory.orders.findOne( pTrMstr.referencia.trim() )
+        referencia = nota != null ? nota.factura : pTrMstr.referencia
+    } else {
+        referencia = pTrMstr.referencia.replace( DELIMITER, DELIMITER_2 )
+    }
     String idTipoTrans = pTrMstr.idTipoTrans
     StringList list = new StringList()
     list.addInteger( nTrans++ )
     list.add( idTipoTrans )
     list.addInteger( pTrMstr.folio )
     list.addDate( pTrMstr.fecha )
-    list.add( pTrMstr.referencia.replace( DELIMITER, DELIMITER_2 ) )
+    list.add( referencia )
     list.add( pTrMstr.observaciones )
     list.add( pTrMstr.idEmpleado )
     if ( pTrMstr.sucursalDestino != null ) {
