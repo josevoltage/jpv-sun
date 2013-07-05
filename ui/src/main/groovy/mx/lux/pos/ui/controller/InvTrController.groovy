@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory
 import javax.annotation.Resource
 import javax.swing.JFileChooser
 import javax.swing.JOptionPane
+import javax.swing.JTextField
 import javax.swing.SwingUtilities
 import mx.lux.pos.model.InvAdjustSheet
 import mx.lux.pos.service.business.Registry
