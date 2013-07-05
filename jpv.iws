@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/CierreDiarioServiceImpl.groovy" afterPath="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/CierreDiarioServiceImpl.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/InvTrController.groovy" afterPath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/InvTrController.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/driver/InvTrReceiptDriver.groovy" afterPath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/driver/InvTrReceiptDriver.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/InvTrView.groovy" afterPath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/InvTrView.groovy" />
@@ -203,7 +204,7 @@
       <file leaf-file-name="CierreDiarioServiceImpl.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/CierreDiarioServiceImpl.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="196" column="6" selection-start="6442" selection-end="6442" vertical-scroll-proportion="0.54195803">
+            <state line="196" column="8" selection-start="6444" selection-end="6444" vertical-scroll-proportion="0.54195803">
               <folding />
             </state>
           </provider>
@@ -1022,7 +1023,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/CierreDiarioServiceImpl.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="196" column="6" selection-start="6442" selection-end="6442" vertical-scroll-proportion="0.54195803">
+        <state line="196" column="8" selection-start="6444" selection-end="6444" vertical-scroll-proportion="0.54195803">
           <folding />
         </state>
       </provider>

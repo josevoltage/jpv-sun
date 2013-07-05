@@ -194,7 +194,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
         generarFicheroInv( )
       }
       InventorySearch.generateInFile( fechaCierre, fechaCierre )
-      archivarCierre( fechaCierre )
+      //archivarCierre( fechaCierre )
     } catch ( Exception e ) {
       log.error( e.getMessage(), e )
     }
