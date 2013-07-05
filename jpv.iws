@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/src/main/resources/template/fichero-ZZ.vm" afterPath="$PROJECT_DIR$/core/src/main/resources/template/fichero-ZZ.vm" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/src/main/resources/version" afterPath="$PROJECT_DIR$/core/src/main/resources/version" />
     </list>
     <ignored path="jpv.iws" />
     <ignored path=".idea/workspace.xml" />
