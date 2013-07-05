@@ -22,8 +22,10 @@ class InventoryCommit {
 
   static void exportarTransaccion( TransInv pTransInv ) {
     if ( Registry.isExportEnabledForInventory( pTransInv.idTipoTrans ) ) {
-      InvTrFile file = ResourceManager.getInvTrFile()
-      file.write( pTransInv )
+      if( !pTransInv.idTipoTrans.trim().equalsIgnoreCase('SALIDA_TIENDA') ){
+          InvTrFile file = ResourceManager.getInvTrFile()
+          file.write( pTransInv )
+      }
     }
     if ( InvTrType.ISSUE.equals( pTransInv ) && Registry.isExchangeDataFileRequired() ) {
       ShippingNoticeFile file = ResourceManager.getShippingNoticeFile()
