@@ -49,6 +49,7 @@ class InvTrReceiptDriver extends InvTrDriver {
         pView.data.addPart( part, det.qty )
       } else {
           unknownArticle = true
+          pView.data.claveCodificada = det.sku.toString()
       }
     }
     if( unknownArticle ){
@@ -62,7 +63,7 @@ class InvTrReceiptDriver extends InvTrDriver {
           quantity = quantity+article.qty
       }
     if( pView.data.postReference != "" && pView.data.skuList.size() <= 0 ){
-        pView.panel.lblStatus.setText( 'Archivo contiene un articulo no registrado' )
+        pView.panel.lblStatus.setText( 'Articulo '+'['+pView.data.claveCodificada+']'+' no existe' )
     } else {
         pView.panel.lblStatus.setText( pView.data.accessStatus() )
     }
