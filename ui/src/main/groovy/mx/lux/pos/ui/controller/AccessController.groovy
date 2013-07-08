@@ -2,6 +2,7 @@ package mx.lux.pos.ui.controller
 
 import groovy.util.logging.Slf4j
 import mx.lux.pos.model.Empleado
+import mx.lux.pos.model.Parametro
 import mx.lux.pos.service.EmpleadoService
 import mx.lux.pos.service.SucursalService
 import mx.lux.pos.ui.model.Branch
@@ -11,6 +12,9 @@ import mx.lux.pos.ui.model.User
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 @Slf4j
 @Component
@@ -118,4 +122,22 @@ class AccessController {
     }
     return false
   }
+
+  static boolean canAuthorizeByManager( String username, String password ) {
+      log.info( "solicitando autorizacion por usuario: $username" )
+      if ( checkCredentials( username, password ) ) {
+          Empleado gerente = empleadoService.gerente()
+          Empleado empleado = empleadoService.obtenerEmpleado( username )
+          if ( gerente.id.trim().equalsIgnoreCase(empleado.id.trim()) ) {
+              log.info( "autorizacion realizada: $username" )
+              return true
+          } else {
+              log.info( "autorizacion rechazada, no es usuario autorizador" )
+          }
+      } else {
+          log.warn( "credenciales erroneas" )
+      }
+      return false
+  }
+
 }
