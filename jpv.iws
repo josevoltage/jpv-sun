@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/AccessController.groovy" afterPath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/AccessController.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/AuthorizationDialog.groovy" afterPath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/AuthorizationDialog.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/CancellationDialog.groovy" afterPath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/CancellationDialog.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/DiscountDialog.groovy" afterPath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/DiscountDialog.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/EmpleadoService.groovy" afterPath="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/EmpleadoService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/EmpleadoServiceImpl.groovy" afterPath="$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/EmpleadoServiceImpl.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/OrderPanel.groovy" afterPath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/OrderPanel.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/PriceListPanel.groovy" afterPath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/PriceListPanel.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/ShowOrderPanel.groovy" afterPath="$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/ShowOrderPanel.groovy" />
-    </list>
+    <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="" />
     <ignored path="jpv.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1373299911585" ignored="false" />
