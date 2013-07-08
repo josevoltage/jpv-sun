@@ -77,7 +77,11 @@ class InvTrReturnDriver extends InvTrDriver {
   }
 
   Boolean doBeforeSave( InvTrView pView ) {
-    InvTrReturnDialog dialog = new InvTrReturnDialog()
+    List<String> lstItems = new ArrayList<>()
+      for(InvTrSku item : pView.data.skuList){
+          lstItems.add( item.sku.toString() )
+      }
+    InvTrReturnDialog dialog = new InvTrReturnDialog( lstItems )
     dialog.setData( pView.data )
     dialog.activate()
     return !dialog.isCancel()

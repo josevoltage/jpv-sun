@@ -1,5 +1,11 @@
 package mx.lux.pos.ui.controller
 
+import mx.lux.pos.model.Empleado
+import mx.lux.pos.model.Parametro
+import mx.lux.pos.model.Sucursal
+import mx.lux.pos.ui.model.Session
+import mx.lux.pos.ui.model.SessionItem
+import mx.lux.pos.ui.model.User
 import mx.lux.pos.ui.resources.ServiceManager
 import mx.lux.pos.ui.view.dialog.ImportPartMasterDialog
 import org.slf4j.LoggerFactory
@@ -87,5 +93,28 @@ class IOController {
         Map<String, Object> importSummary = ServiceManager.ioServices.loadPartClassFile( pFile )
     }
 
+
+    Boolean validateCentroCostos( String centroCostos ){
+        Boolean valid = false
+        Sucursal sucActual = ServiceManager.storeService.obtenSucursalActual()
+        if( !sucActual.centroCostos.trim().equalsIgnoreCase(centroCostos.trim()) ){
+            valid = true
+        }
+        return valid
+    }
+
+    Boolean isManagerLogged( ){
+        Boolean isManager = false
+        User user = Session.get( SessionItem.USER ) as User
+        Empleado gerente = ServiceManager.employeeService.gerente( )
+        log.debug( "usuario en sesion: ${user?.username}" )
+        if ( org.apache.commons.lang3.StringUtils.isNotBlank( user?.username ) ) {
+            Empleado empleado = ServiceManager.employeeService.obtenerEmpleado( user.username )
+            if( empleado.id.equalsIgnoreCase(gerente.id) ){
+                isManager = true
+            }
+        }
+        return isManager
+    }
 }
 

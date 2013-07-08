@@ -17,6 +17,11 @@ import mx.lux.pos.model.*
 import mx.lux.pos.service.*
 import mx.lux.pos.ui.model.*
 
+import java.text.DateFormat
+import java.text.NumberFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+
 @Slf4j
 @Component
 class OrderController {
@@ -31,8 +36,12 @@ class OrderController {
   private static Boolean displayUsd
   private static PromotionService promotionService
   private static CancelacionService cancelacionService
+  private static EmpleadoService empleadoService
+  private static CierreDiarioService cierreDiarioService
+  private static SucursalService sucursalService
 
   private static final String TAG_USD = "USD"
+  private static final String TAG_TIPO_PAGO_NOTA_CREDITO = "NOT"
 
   @Autowired
   public OrderController(
@@ -44,7 +53,10 @@ class OrderController {
       InventarioService inventarioService,
       MonedaExtranjeraService monedaExtranjeraService,
       PromotionService promotionService,
-      CancelacionService cancelacionService
+      CancelacionService cancelacionService,
+      EmpleadoService empleadoService,
+      CierreDiarioService cierreDiarioService,
+      SucursalService sucursalService
   ) {
     this.notaVentaService = notaVentaService
     this.detalleNotaVentaService = detalleNotaVentaService
@@ -54,7 +66,10 @@ class OrderController {
     this.inventarioService = inventarioService
     fxService = monedaExtranjeraService
     this.promotionService = promotionService
-      this.cancelacionService = cancelacionService
+    this.cancelacionService = cancelacionService
+    this.empleadoService = empleadoService
+    this.cierreDiarioService = cierreDiarioService
+    this.sucursalService = sucursalService
   }
 
   static Order getOrder( String orderId ) {
@@ -240,6 +255,15 @@ class OrderController {
         notaVenta.empEntrego = user?.username
         notaVenta.udf2 = order.country.toUpperCase()
         notaVenta = notaVentaService.cerrarNotaVenta( notaVenta )
+        for(Pago pago : notaVenta.pagos){
+            if( pago.idFPago.equalsIgnoreCase(TAG_TIPO_PAGO_NOTA_CREDITO)){
+                Retorno retorno = pagoService.obtenerRetorno( pago.referenciaPago.trim() )
+                if(retorno != null ){
+                    retorno.ticketDestino = notaVenta.factura
+                    pagoService.actualizarRetorno( retorno )
+                }
+            }
+        }
         if ( inventarioService.solicitarTransaccionVenta( notaVenta ) ) {
           log.debug( "transaccion de inventario correcta" )
         } else {
@@ -393,6 +417,15 @@ class OrderController {
       }
     }
     return cust
+  }
+
+  static BigDecimal obtenerNotaCredito( String folio ){
+      Retorno retorno = pagoService.obtenerRetorno( folio.trim() )
+      BigDecimal monto = BigDecimal.ZERO
+      if( retorno != null){
+          monto = retorno.monto
+      }
+      return monto
   }
 
 }
