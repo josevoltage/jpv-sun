@@ -78,7 +78,7 @@ class LogInPanel extends JPanel {
       doAction()
     } else {
         if(!validDate){
-            messages.text = 'La fecha no corresponde'
+            messages.text = 'La fecha es incorrecta'
         } else {
             messages.text = 'Empleado/Contrase\u00f1a incorrectos'
         }

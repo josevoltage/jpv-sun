@@ -91,12 +91,18 @@ class ChangeSellerDialog extends JDialog {
     if( factura.length() > 0 && vendedor.length() > 0 && observaciones.length() > 0 ){
         button = true
         Boolean existFactura = OrderController.validaDatos( factura, vendedor )
+        Boolean diaAbierto = OrderController.validaDiaAbierto( factura, vendedor )
         if( existFactura ){
-            Boolean actualizo = OrderController.cambiaVendedor( factura, vendedor, observaciones )
-            if( !actualizo ){
-                println 'error al actualizar'
+            if( diaAbierto ){
+                Boolean actualizo = OrderController.cambiaVendedor( factura, vendedor, observaciones )
+                if( !actualizo ){
+                    println 'error al actualizar'
+                } else {
+                    dispose()
+                }
             } else {
-                dispose()
+                lblWarning.visible = true
+                lblWarning.text = 'Día cerrado, no procede cambio'
             }
         } else {
             lblWarning.visible = true

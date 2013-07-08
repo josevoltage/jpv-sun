@@ -426,12 +426,20 @@ class OrderController {
       NotaVenta notaVenta = notaVentaService.obtenerNotaVentaPorFactura( factura.trim() )
       Empleado empleado = empleadoService.obtenerEmpleado( vendedor.trim() )
       if( empleado != null && notaVenta != null ){
-          CierreDiario diaCerrado = cierreDiarioService.buscarPorFecha( notaVenta.fechaHoraFactura )
-          if( diaCerrado.estado.equalsIgnoreCase('a')){
-              cambioValido = true
-          }
+          cambioValido = true
       }
       return cambioValido
+  }
+
+  static boolean validaDiaAbierto( String factura, String vendedor ){
+      Boolean diaAbierto = false
+      NotaVenta notaVenta = notaVentaService.obtenerNotaVentaPorFactura( factura.trim() )
+      Empleado empleado = empleadoService.obtenerEmpleado( vendedor.trim() )
+      CierreDiario diaCerrado = cierreDiarioService.buscarPorFecha( notaVenta.fechaHoraFactura )
+      if( diaCerrado.estado.equalsIgnoreCase('a')){
+          diaAbierto = true
+      }
+      return diaAbierto
   }
 
   static boolean cambiaVendedor( String factura, String vendedor, String observaciones ){

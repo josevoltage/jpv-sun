@@ -101,7 +101,7 @@ class PromotionEngine {
     // Verify discount is under restriction
     if ( verified ) {
       Double pTopDiscount = NumberUtils.createDouble( key.substring( 1, 3 ) )
-      verified = ( pDiscountPct < pTopDiscount )
+      verified = ( pDiscountPct < pTopDiscount || pDiscountPct == 100.0 )
     }
 
     // Verify discount has not been registered
