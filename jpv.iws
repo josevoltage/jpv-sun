@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="" />
+    <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jpv.iws" afterPath="$PROJECT_DIR$/jpv.iws" />
+    </list>
     <ignored path="jpv.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1373299911585" ignored="false" />
+    <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1373310109842" ignored="false" />
     <file path="/database.properties" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371648210350" ignored="false" />
     <file path="/ReportBusiness.java" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370532252179" ignored="false" />
     <file path="/IngresoPorFactura.java" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1368393454576" ignored="false" />
@@ -130,7 +132,6 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
-    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -167,6 +168,7 @@
         <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
       </breakpoint>
     </breakpoint_any>
+    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
@@ -199,9 +201,7 @@
         <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/AccessController.groovy">
           <provider selected="true" editor-type-id="text-editor">
             <state line="22" column="28" selection-start="648" selection-end="648" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#34#66#0" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -209,7 +209,7 @@
       <file leaf-file-name="EmpleadoServiceImpl.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/EmpleadoServiceImpl.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="73" selection-start="1283" selection-end="1283" vertical-scroll-proportion="0.8148148">
+            <state line="43" column="23" selection-start="1209" selection-end="1209" vertical-scroll-proportion="0.780332">
               <folding>
                 <element signature="e#33#65#0" expanded="true" />
               </folding>
@@ -667,9 +667,9 @@
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -822,13 +822,11 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.6723096" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32729468" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24878444" sideWeight="0.7258454" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2584541" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2584541" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32729468" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298217" sideWeight="0.72705317" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32729468" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -837,6 +835,8 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32942554" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32729468" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32729468" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -912,32 +912,22 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/InvTrReturnDialog.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="10" selection-start="1604" selection-end="1604" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#35#72#0" expanded="true" />
-          </folding>
-        </state>
+        <state line="45" column="10" selection-start="1604" selection-end="1604" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/IOController.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="98" column="37" selection-start="3358" selection-end="3358" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="98" column="37" selection-start="3358" selection-end="3358" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/driver/InvTrReturnDriver.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="78" column="43" selection-start="2458" selection-end="2458" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="78" column="43" selection-start="2458" selection-end="2458" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/resources/ServiceManager.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="48" selection-start="680" selection-end="680" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="18" column="48" selection-start="680" selection-end="680" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/component/DiscountContextMenu.groovy">
@@ -954,13 +944,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/CancellationDialog.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="139" column="8" selection-start="4643" selection-end="4643" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/DiscountDialog.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="220" column="70" selection-start="7235" selection-end="7235" vertical-scroll-proportion="0.0">
@@ -970,11 +953,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/PriceListPanel.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="37" selection-start="630" selection-end="630" vertical-scroll-proportion="0.5588235">
-          <folding>
-            <element signature="e#34#66#0" expanded="true" />
-          </folding>
-        </state>
+        <state line="19" column="37" selection-start="630" selection-end="630" vertical-scroll-proportion="0.5588235" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/OrderPanel.groovy">
@@ -1008,9 +987,7 @@
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/AccessController.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="22" column="28" selection-start="648" selection-end="648" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#34#66#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1021,9 +998,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/CancellationDialog.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="139" column="8" selection-start="4643" selection-end="4643" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/EmpleadoServiceImpl.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="73" selection-start="1283" selection-end="1283" vertical-scroll-proportion="0.8148148">
+        <state line="43" column="23" selection-start="1209" selection-end="1209" vertical-scroll-proportion="0.780332">
           <folding>
             <element signature="e#33#65#0" expanded="true" />
           </folding>
