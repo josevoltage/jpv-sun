@@ -54,7 +54,6 @@ class LogInPanel extends JPanel {
 
         label( 'Fecha Actual' )
         date = textField( font: new Font( '', Font.BOLD, 14 ),
-                text: StringUtils.trimToEmpty(AccessController.lastDate()) != '' ? AccessController.lastDate() : df.format(new Date()),
                 horizontalAlignment: JTextField.CENTER,
                 actionPerformed: {logInButton.doClick()}
         )
@@ -85,6 +84,7 @@ class LogInPanel extends JPanel {
       messages.visible = true
     }
     password.text = null
+    date.text = null
     logInButton.enabled = true
   }
 }

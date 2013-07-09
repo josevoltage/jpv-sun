@@ -146,8 +146,18 @@ class AccessController {
 
   static Boolean validDate( String date ){
       log.debug( "validando fecha" )
-      DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
-      Boolean compare = df.format(new Date()).equalsIgnoreCase(StringUtils.trimToEmpty(date.trim()))
+      DateFormat df = new SimpleDateFormat( "ddMMyyyy" )
+      DateFormat dfHyphen = new SimpleDateFormat( "dd-MM-yyyy" )
+      DateFormat dfDiagonal = new SimpleDateFormat( "dd/MM/yyyy" )
+      String dateFormat = ''
+      if( date.contains( '/' ) ){
+          dateFormat = dfDiagonal.format( new Date() )
+      } else if( date.contains( '-' ) ){
+          dateFormat = dfHyphen.format( new Date() )
+      } else {
+          dateFormat = df.format( new Date() )
+      }
+      Boolean compare = dateFormat.trim().equalsIgnoreCase(StringUtils.trimToEmpty(date.trim()))
       if( compare ){
           sucursalService.registrarFechaSistema( new Date() )
       }
