@@ -522,4 +522,15 @@ class OrderController {
       return promotionService.articulosGupoPromocion( idGroup )
   }
 
+  static String obtenerNotaVenta( String factura ){
+      String empleado = ''
+      NotaVenta nota = notaVentaService.obtenerNotaVentaPorFactura( factura )
+      if( nota != null ){
+          empleado = String.format( '[%s]%s',nota.empleado.id.trim(), nota.empleado.nombreCompleto.trim() )
+      } else {
+          empleado = 'No existe ticket'
+      }
+      return empleado
+  }
+
 }

@@ -10,10 +10,14 @@ import net.miginfocom.swing.MigLayout
 
 import javax.swing.*
 import java.awt.*
+import java.awt.event.FocusEvent
+import java.awt.event.FocusListener
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
-class ChangeSellerDialog extends JDialog {
+class ChangeSellerDialog extends JDialog implements FocusListener {
 
   private DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
   private DateVerifier dv = DateVerifier.instance
@@ -22,10 +26,12 @@ class ChangeSellerDialog extends JDialog {
   private JTextField txtFactura
   private JTextField txtVendedor
   private JTextField txtObservaciones
+  private JTextField txtEmpleadoOrig
   private JLabel lblWarning
   private String factura
   private String vendedor
   private String observaciones
+  private String ticket = ''
 
   public boolean button = false
 
@@ -40,7 +46,7 @@ class ChangeSellerDialog extends JDialog {
         resizable: true,
         pack: true,
         modal: true,
-        preferredSize: [ 400, 280 ],
+        preferredSize: [ 450, 330 ],
         location: [ 200, 250 ],
     ) {
       panel() {
@@ -50,6 +56,9 @@ class ChangeSellerDialog extends JDialog {
           label( text: " ", constraints: "span 2" )
           label( text: "Factura:" )
           txtFactura = textField( document: new UpperCaseDocument() )
+          txtFactura.addFocusListener( this )
+          label( text: "Empleado Original:" )
+          txtEmpleadoOrig = textField( document: new UpperCaseDocument(), enabled: false )
           label( text: "Vendedor:" )
           txtVendedor = textField( document: new UpperCaseDocument() )
           label( text: "Observaciones:" )
@@ -112,5 +121,17 @@ class ChangeSellerDialog extends JDialog {
         lblWarning.visible = true
         lblWarning.text = 'Verifique los datos'
     }
+  }
+
+
+
+  @Override
+  void focusGained(FocusEvent e) {
+      //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  void focusLost(FocusEvent e) {
+      txtEmpleadoOrig.text = OrderController.obtenerNotaVenta( txtFactura.text.trim() )
   }
 }

@@ -163,4 +163,30 @@ class AccessController {
       }
       return compare
   }
+
+    static boolean validaDatos( String usuario, String password, String nuevoPass, String confirmPass ){
+        log.debug( "Cambiando password de usuario $usuario" )
+        Boolean empleadoValido = false
+        Empleado empleado = empleadoService.obtenerEmpleado( usuario )
+        if( empleado != null && empleado.passwd.trim().equalsIgnoreCase(password.trim()) && nuevoPass.trim().equalsIgnoreCase(confirmPass.trim()) ){
+            empleadoValido = true
+        } else {
+            empleadoValido = false
+        }
+        return empleadoValido
+    }
+
+
+    static boolean cambiaPassword( String usuario, String nuevoPass ){
+        log.debug( "Cambiando password de usuario $usuario" )
+        try{
+            Empleado empleado = empleadoService.obtenerEmpleado( usuario )
+            empleado.passwd = nuevoPass
+            empleadoService.actualizarPass( empleado )
+            return true
+        }catch (Exception e){
+            println e
+            return false
+        }
+    }
 }

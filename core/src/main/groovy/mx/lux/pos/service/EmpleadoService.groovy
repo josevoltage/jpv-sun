@@ -8,4 +8,6 @@ interface EmpleadoService {
 
   Empleado gerente( )
 
+  void actualizarPass( empleado )
+
 }
