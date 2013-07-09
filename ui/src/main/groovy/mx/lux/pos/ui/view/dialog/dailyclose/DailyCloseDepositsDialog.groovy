@@ -154,7 +154,7 @@ class DailyCloseDepositsDialog extends JDialog {
               boolean isDeleted = DailyCloseController.deleteDeposit( selection?.id )
               if ( isDeleted ) {
                 fetchDeposits()
-                sb.optionPane().showMessageDialog( null, "Se ha eliminado el Deposito correctamente", 'Deposito', JOptionPane.INFORMATION_MESSAGE )
+                //sb.optionPane().showMessageDialog( null, "Se ha eliminado el Deposito correctamente", 'Deposito', JOptionPane.INFORMATION_MESSAGE )
               } else {
                 sb.optionPane().showMessageDialog( null, "Se ha producido un error al eliminar el Deposito", 'Error', JOptionPane.ERROR_MESSAGE )
               }

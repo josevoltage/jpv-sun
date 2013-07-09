@@ -129,7 +129,7 @@ class EditDepositDialog extends JDialog {
     if ( isValid( deposit ) ) {
       if ( DailyCloseController.saveDeposit( deposit, depositEdit ) ) {
         dispose()
-        sb.optionPane().showMessageDialog( null, 'Se ha actualizado el Deposito correctamente', 'Deposito', JOptionPane.INFORMATION_MESSAGE )
+        //sb.optionPane().showMessageDialog( null, 'Se ha actualizado el Deposito correctamente', 'Deposito', JOptionPane.INFORMATION_MESSAGE )
       } else {
         sb.optionPane().showMessageDialog( null, 'Se ha producido un error al actualizar el Deposito', 'Error', JOptionPane.ERROR_MESSAGE )
       }
