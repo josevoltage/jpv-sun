@@ -3,11 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jpv.iws" afterPath="$PROJECT_DIR$/jpv.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui/ui.iml" afterPath="$PROJECT_DIR$/ui/ui.iml" />
     </list>
     <ignored path="jpv.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1373388097814" ignored="false" />
+    <file path="/Dummy.txt" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1373463331341" ignored="false" />
     <file path="/database.properties" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1371648210350" ignored="false" />
     <file path="/ReportBusiness.java" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1370532252179" ignored="false" />
     <file path="/IngresoPorFactura.java" changelist="d4923a83-3a28-4c03-bd3f-343bac50e2d8" time="1368393454576" ignored="false" />
@@ -214,7 +213,7 @@
       <file leaf-file-name="EmpleadoServiceImpl.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/EmpleadoServiceImpl.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="43" column="23" selection-start="1209" selection-end="1209" vertical-scroll-proportion="0.8148148">
+            <state line="43" column="23" selection-start="1209" selection-end="1209" vertical-scroll-proportion="0.7394366">
               <folding>
                 <element signature="e#33#65#0" expanded="true" />
               </folding>
@@ -672,9 +671,9 @@
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -822,13 +821,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="24" width="1282" height="977" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.6723096" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24878444" sideWeight="0.7258454" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2584541" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25724638" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32729468" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298217" sideWeight="0.72705317" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -935,6 +934,46 @@
         <state line="18" column="48" selection-start="680" selection-end="680" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/PriceListPanel.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="37" selection-start="630" selection-end="630" vertical-scroll-proportion="0.5588235" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/EmpleadoService.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="0" selection-start="157" selection-end="157" vertical-scroll-proportion="0.29100528">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/model/TipoParametro.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="2" selection-start="1162" selection-end="1162" vertical-scroll-proportion="0.33333334">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/OrderPanel.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="430" column="140" selection-start="17206" selection-end="17206" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/ShowOrderPanel.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="234" column="53" selection-start="9789" selection-end="9789" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/AccessController.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="28" selection-start="315" selection-end="315" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/component/DiscountContextMenu.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="43" column="23" selection-start="1232" selection-end="1232" vertical-scroll-proportion="0.0">
@@ -956,49 +995,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/PriceListPanel.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="37" selection-start="630" selection-end="630" vertical-scroll-proportion="0.5588235" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/OrderPanel.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="430" column="140" selection-start="17206" selection-end="17206" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/panel/ShowOrderPanel.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="234" column="53" selection-start="9789" selection-end="9789" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/AuthorizationDialog.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="86" column="34" selection-start="2623" selection-end="2623" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/EmpleadoService.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="0" selection-start="157" selection-end="157" vertical-scroll-proportion="0.29100528">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/controller/AccessController.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="28" selection-start="315" selection-end="315" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/model/TipoParametro.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="2" selection-start="1162" selection-end="1162" vertical-scroll-proportion="0.33333334">
           <folding />
         </state>
       </provider>
@@ -1012,7 +1011,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/src/main/groovy/mx/lux/pos/service/impl/EmpleadoServiceImpl.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="23" selection-start="1209" selection-end="1209" vertical-scroll-proportion="0.8148148">
+        <state line="43" column="23" selection-start="1209" selection-end="1209" vertical-scroll-proportion="0.7394366">
           <folding>
             <element signature="e#33#65#0" expanded="true" />
           </folding>
