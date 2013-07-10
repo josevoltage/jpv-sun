@@ -27,9 +27,11 @@ class EditPaymentDialog extends JDialog {
   private JLabel lblPlan
   private List<Terminal> terminals
   private List<Plan> plans
+  private String planId
 
   EditPaymentDialog( final Payment payment ) {
     this.tmpPayment = payment ?: new Payment()
+    planId = payment.planId
     sb = new SwingBuilder()
     terminals = PaymentController.findTerminals()
     plans = [ ]
@@ -87,6 +89,7 @@ class EditPaymentDialog extends JDialog {
       } else {
           lblPlan.visible = false
           plan.visible = false
+          tmpPayment.planId = planId
       }
     } else {
       tmpPayment.terminalId = null
