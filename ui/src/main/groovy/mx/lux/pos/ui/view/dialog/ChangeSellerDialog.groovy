@@ -132,6 +132,6 @@ class ChangeSellerDialog extends JDialog implements FocusListener {
 
   @Override
   void focusLost(FocusEvent e) {
-      txtEmpleadoOrig.text = OrderController.obtenerNotaVenta( txtFactura.text.trim() )
+      txtEmpleadoOrig.text = OrderController.obtenerEmpleadoPorNotaVenta( txtFactura.text.trim() )
   }
 }

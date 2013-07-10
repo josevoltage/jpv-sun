@@ -522,7 +522,7 @@ class OrderController {
       return promotionService.articulosGupoPromocion( idGroup )
   }
 
-  static String obtenerNotaVenta( String factura ){
+  static String obtenerEmpleadoPorNotaVenta( String factura ){
       String empleado = ''
       NotaVenta nota = notaVentaService.obtenerNotaVentaPorFactura( factura )
       if( nota != null ){
