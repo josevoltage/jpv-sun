@@ -45,4 +45,6 @@ public interface CierreDiarioService {
 
   boolean cargarVouchersResumenes( Date fecha )
 
+    List<CierreDiario> diasCerrados()
+
 }
