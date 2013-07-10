@@ -289,7 +289,16 @@ class PaymentDialog extends JDialog implements KeyListener{
       plans?.each { Plan tmp ->
         plan.addItem( tmp?.description )
       }
-      plan.selectedIndex = -1
+      if( PaymentController.findTypePaymentsDollar( tmpPayment.paymentTypeId ) ){
+          plan.selectedIndex = -1
+      } else {
+          String planId = PaymentController.findDefaultPlanCreditCard()
+          if( tmpPayment.terminalId.trim().equalsIgnoreCase(ID_TERM_AMERICANEXP.toString().trim()) ){
+              plan.selectedItem = PLAN_TERM_AMERICANEXP
+          } else {
+              plan.selectedItem = planId
+          }
+      }
     } else {
       tmpPayment.terminalId = null
       plan.removeAllItems()

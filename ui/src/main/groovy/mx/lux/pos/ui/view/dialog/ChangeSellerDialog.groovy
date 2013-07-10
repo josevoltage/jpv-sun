@@ -58,7 +58,7 @@ class ChangeSellerDialog extends JDialog implements FocusListener {
           txtFactura = textField( document: new UpperCaseDocument() )
           txtFactura.addFocusListener( this )
           label( text: "Vendedor Original:" )
-          txtEmpleadoOrig = textField( document: new UpperCaseDocument(), enabled: false )
+          txtEmpleadoOrig = textField( document: new UpperCaseDocument(), editable: false )
           label( text: "Vendedor Actual:" )
           txtVendedor = textField( document: new UpperCaseDocument() )
           label( text: "Observaciones:" )
@@ -97,7 +97,7 @@ class ChangeSellerDialog extends JDialog implements FocusListener {
     factura = txtFactura.getText().trim()
     vendedor = txtVendedor.getText().trim()
     observaciones = txtObservaciones.getText().trim()
-    if( factura.length() > 0 && vendedor.length() > 0 && observaciones.length() > 0 ){
+    if( factura.length() > 0 && vendedor.length() > 0 ){
         button = true
         Boolean existFactura = OrderController.validaDatos( factura, vendedor )
         Boolean diaAbierto = OrderController.validaDiaAbierto( factura, vendedor )

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 @Slf4j
 @Service( 'empleadoService' )
@@ -55,5 +57,12 @@ class EmpleadoServiceImpl implements EmpleadoService {
             empleadoRepository.save( empleado )
             empleadoRepository.flush()
         }
+    }
+
+    @Override
+    Boolean sesionPrimeraVez(){
+        DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
+        Parametro parametro = parametroRepository.findOne( TipoParametro.FECHA_ACTUAL.value )
+        return !df.format(new Date()).equalsIgnoreCase(parametro.valor)
     }
 }

@@ -32,6 +32,9 @@ class LogInPanel extends JPanel {
     this.doAction = doAction ?: {}
     sb = new SwingBuilder()
     buildUI()
+    if(!AccessController.iniciaSesionPrimeraVez()){
+        date.text = AccessController.lastDate()
+    }
   }
 
   private void buildUI( ) {
@@ -78,13 +81,13 @@ class LogInPanel extends JPanel {
     } else {
         if(!validDate){
             messages.text = 'La fecha es incorrecta'
+            date.text = null
         } else {
             messages.text = 'Empleado/Contrase\u00f1a incorrectos'
         }
       messages.visible = true
     }
     password.text = null
-    date.text = null
     logInButton.enabled = true
   }
 }

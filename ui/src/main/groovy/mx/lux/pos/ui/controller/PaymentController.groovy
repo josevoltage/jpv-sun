@@ -108,4 +108,9 @@ class PaymentController {
     return pagoService.obtenerTipoPagosDolares( formaPago )
   }
 
+  static String findDefaultPlanCreditCard(){
+      log.debug( 'findDefaultPlanCreditCard( )' )
+      return pagoService.obtenerPlanNormalTarjetaCredito()
+  }
+
 }

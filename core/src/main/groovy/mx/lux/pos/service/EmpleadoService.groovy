@@ -10,4 +10,6 @@ interface EmpleadoService {
 
   void actualizarPass( empleado )
 
+  Boolean sesionPrimeraVez()
+
 }
