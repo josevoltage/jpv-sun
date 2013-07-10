@@ -113,8 +113,9 @@ class EditPaymentDialog extends JDialog {
     JButton source = ev.source as JButton
     source.enabled = false
     Payment payment = DailyCloseController.updatePayment( tmpPayment )
-    if ( payment?.id ) {
-      sb.optionPane().showMessageDialog( null, 'Se ha aztualizado correctamente el Terminal y/o Plan del Pago', 'Ok', JOptionPane.INFORMATION_MESSAGE )
+    Boolean terminalUpdate = DailyCloseController.updateTerminal( tmpPayment.date )
+    if ( payment?.id && terminalUpdate ) {
+      //sb.optionPane().showMessageDialog( null, 'Se ha aztualizado correctamente el Terminal y/o Plan del Pago', 'Ok', JOptionPane.INFORMATION_MESSAGE )
       dispose()
     } else {
       sb.optionPane().showMessageDialog( null, 'Se ha producido un error al actualizar el Terminal y/o Plan del Pago', 'Error', JOptionPane.ERROR_MESSAGE )
