@@ -506,17 +506,26 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private def doPrint = { ActionEvent ev ->
     JButton source = ev.source as JButton
     source.enabled = false
-    if ( isValidOrder() ) {
-        if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.WALKIN.value) ||
-                operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.DOMESTIC.value) ){
-            order.country = 'MEXICO'
-            saveOrder()
-        } else if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.FOREIGN.value) ){
-            String paisCliente = CustomerController.countryCustomer( order )
-            if( paisCliente.length() > 0 ){
-                order.country = paisCliente
+    if( OrderController.validDate() ){
+          if ( isValidOrder() ) {
+            if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.WALKIN.value) ||
+                    operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.DOMESTIC.value) ){
+                order.country = 'MEXICO'
                 saveOrder()
-            } else {
+            } else if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.FOREIGN.value) ){
+                String paisCliente = CustomerController.countryCustomer( order )
+                if( paisCliente.length() > 0 ){
+                    order.country = paisCliente
+                    saveOrder()
+                } else {
+                    CountryCustomerDialog dialog = new CountryCustomerDialog( MainWindow.instance )
+                    dialog.show()
+                    if( dialog.button == true ){
+                        order.country = dialog.pais
+                        saveOrder()
+                    }
+                }
+            } else if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.DEFAULT.value) ){
                 CountryCustomerDialog dialog = new CountryCustomerDialog( MainWindow.instance )
                 dialog.show()
                 if( dialog.button == true ){
@@ -524,14 +533,11 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                     saveOrder()
                 }
             }
-        } else if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.DEFAULT.value) ){
-            CountryCustomerDialog dialog = new CountryCustomerDialog( MainWindow.instance )
-            dialog.show()
-            if( dialog.button == true ){
-                order.country = dialog.pais
-                saveOrder()
-            }
         }
+    } else {
+        sb.optionPane( message: MSJ_FECHA_INCORRECTA, messageType: JOptionPane.ERROR_MESSAGE, )
+                .createDialog( this, TXT_FECHA_INCORRECTA_TITULO )
+                .show()
     }
     source.enabled = true
   }
