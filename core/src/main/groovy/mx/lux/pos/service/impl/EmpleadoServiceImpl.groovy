@@ -61,8 +61,19 @@ class EmpleadoServiceImpl implements EmpleadoService {
 
     @Override
     Boolean sesionPrimeraVez(){
+        Boolean sesionPrimera = false
         DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
         Parametro parametro = parametroRepository.findOne( TipoParametro.FECHA_ACTUAL.value )
-        return !df.format(new Date()).equalsIgnoreCase(parametro.valor)
+        if( parametro != null ){
+            sesionPrimera = !df.format(new Date()).equalsIgnoreCase(parametro.valor)
+        } else {
+            parametro = new Parametro()
+            parametro.id = 'fecha_actual'
+            parametro.valor = ''
+            parametroRepository.save( parametro )
+            parametroRepository.flush()
+            sesionPrimera = !df.format(new Date()).equalsIgnoreCase(parametro.valor)
+        }
+        return sesionPrimera
     }
 }
