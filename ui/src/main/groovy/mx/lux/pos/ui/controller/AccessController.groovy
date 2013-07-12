@@ -140,6 +140,7 @@ class AccessController {
       return false
   }
 
+
   static String lastDate( ){
       return sucursalService.obtenerParametroFecha()
   }
@@ -194,4 +195,5 @@ class AccessController {
     static Boolean iniciaSesionPrimeraVez(){
         return empleadoService.sesionPrimeraVez()
     }
+
 }

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory
 import javax.annotation.Resource
 import javax.swing.JFileChooser
 import javax.swing.JOptionPane
+import javax.swing.JTextField
 import javax.swing.SwingUtilities
 import mx.lux.pos.model.InvAdjustSheet
 import mx.lux.pos.service.business.Registry
@@ -334,6 +335,9 @@ class InvTrController {
       log.debug( String.format( "[Controller] Request Part with seed <%s>", part[0] ) )
     String seed = part[0]
     List<Articulo> partList = ItemController.findPartsByQuery( seed, false )
+    if(seed.startsWith('00')){
+        seed = seed.substring(1)
+    }
     if ( ( partList.size() == 0 ) && ( seed.length() > 6 ) ) {
       partList = ItemController.findPartsByQuery( seed.substring( 0, 6 ), false )
     }

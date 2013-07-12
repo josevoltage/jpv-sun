@@ -221,7 +221,7 @@ class DiscountDialog extends JDialog {
           setVisible( false )
       }
   }
-  
+
   void onDiscountAmountLeave( ) {
     txtDiscountPercent.setValue( 100.0 * txtDiscountAmount.getValue( ) / orderTotal )
     if ( !corporateEnabled && isMaximumDiscountEnabled( ) ) {

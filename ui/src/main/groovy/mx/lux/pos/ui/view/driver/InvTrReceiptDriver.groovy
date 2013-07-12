@@ -40,13 +40,20 @@ class InvTrReceiptDriver extends InvTrDriver {
   }
 
   public void processRemission( InvTrView pView ) {
+    Boolean unknownArticle = false
     ArticuloService partMaster = ServiceManager.partService
     pView.data.postReference = pView.data.receiptDocument.fullRef
     for ( ShipmentLine det in pView.data.receiptDocument.lines ) {
       Articulo part = partMaster.obtenerArticulo( det.sku, false )
       if ( part != null ) {
         pView.data.addPart( part, det.qty )
+      } else {
+          unknownArticle = true
+          pView.data.claveCodificada = det.sku.toString()
       }
+    }
+    if( unknownArticle ){
+        pView.data.skuList.clear()
     }
   }
 
@@ -55,7 +62,11 @@ class InvTrReceiptDriver extends InvTrDriver {
       for(InvTrSku article : pView.data.skuList){
           quantity = quantity+article.qty
       }
-      pView.panel.lblStatus.setText( pView.data.accessStatus() )
+    if( pView.data.postReference != "" && pView.data.skuList.size() <= 0 ){
+        pView.panel.lblStatus.setText( 'Articulo '+'['+pView.data.claveCodificada+']'+' no existe' )
+    } else {
+        pView.panel.lblStatus.setText( pView.data.accessStatus() )
+    }
     pView.panel.txtEffDate.setText( pView.adapter.getText( pView.data, InvTrAdapter.FLD_TODAY ) )
     pView.panel.txtRef.setText( pView.data.postReference )
       pView.panel.txtType.setText( String.format( '%d', quantity ) )

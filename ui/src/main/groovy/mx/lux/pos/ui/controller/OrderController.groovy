@@ -419,7 +419,6 @@ class OrderController {
     return cust
   }
 
-
   static boolean validaDatos( String factura, String vendedor ){
       log.debug( "Cambiando vendedor de factura $factura" )
       Boolean cambioValido = false
@@ -472,6 +471,7 @@ class OrderController {
       }
   }
 
+
   static BigDecimal obtenerNotaCredito( String folio ){
       Retorno retorno = pagoService.obtenerRetorno( folio.trim() )
       BigDecimal monto = BigDecimal.ZERO
@@ -480,6 +480,7 @@ class OrderController {
       }
       return monto
   }
+
 
   static Boolean validDate(){
       String fechaLogeo = sucursalService.obtenerParametroFecha()

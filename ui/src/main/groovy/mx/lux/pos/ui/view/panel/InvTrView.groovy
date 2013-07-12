@@ -10,6 +10,7 @@ import mx.lux.pos.ui.view.component.NavigationBarListener
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import javax.swing.JTextField
 import java.awt.event.MouseListener
 import javax.swing.SwingUtilities
 
