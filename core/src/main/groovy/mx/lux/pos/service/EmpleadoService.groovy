@@ -6,7 +6,7 @@ interface EmpleadoService {
 
   Empleado obtenerEmpleado( String id )
 
-  Empleado gerente( )
+  String gerente( )
 
   void actualizarPass( empleado )
 
