@@ -52,9 +52,11 @@ class DiscountDialog extends JDialog {
   Double discountPct = 0
   Boolean discountSelected
   Boolean authorizationManager = false
+  Boolean needAuthorization = false
 
-  DiscountDialog( Boolean pCorporate, Boolean authorizationManager ) {
+  DiscountDialog( Boolean pCorporate, Boolean authorizationManager, Boolean needAuthorization ) {
     corporateEnabled = pCorporate
+    this.needAuthorization = needAuthorization
     this.authorizationManager = authorizationManager
     init( )
     buildUI( )
@@ -213,9 +215,13 @@ class DiscountDialog extends JDialog {
   
   void onButtonOk() {
     boolean authorized
-    AuthorizationDialog authDialog = new AuthorizationDialog( this, "Descuento requiere autorizaci\u00f3n", authorizationManager )
-    authDialog.show()
-    authorized = authDialog.authorized
+    if( needAuthorization ){
+        AuthorizationDialog authDialog = new AuthorizationDialog( this, "Descuento requiere autorizaci\u00f3n", authorizationManager )
+        authDialog.show()
+        authorized = authDialog.authorized
+    } else {
+        authorized = true
+    }
       if( authorized ){
           discountSelected = true
           setDiscountAmt( txtDiscountAmount.getValue( ) )
