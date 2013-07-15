@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="d4923a83-3a28-4c03-bd3f-343bac50e2d8" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jpv.iws" afterPath="$PROJECT_DIR$/jpv.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/src/main/resources/version" afterPath="$PROJECT_DIR$/core/src/main/resources/version" />
     </list>
     <ignored path="jpv.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -225,7 +226,7 @@
       <file leaf-file-name="DiscountDialog.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/DiscountDialog.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="56" column="2" selection-start="1976" selection-end="1976" vertical-scroll-proportion="0.025906736">
+            <state line="56" column="97" selection-start="2071" selection-end="2071" vertical-scroll-proportion="0.18134715">
               <folding />
             </state>
           </provider>
@@ -680,7 +681,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/src/main/groovy/mx/lux/pos/ui/view/dialog/DiscountDialog.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="2" selection-start="1976" selection-end="1976" vertical-scroll-proportion="0.025906736">
+        <state line="56" column="97" selection-start="2071" selection-end="2071" vertical-scroll-proportion="0.18134715">
           <folding />
         </state>
       </provider>
