@@ -106,11 +106,11 @@ class IOController {
     Boolean isManagerLogged( ){
         Boolean isManager = false
         User user = Session.get( SessionItem.USER ) as User
-        Empleado gerente = ServiceManager.employeeService.gerente( )
+        String gerente = ServiceManager.employeeService.gerente( )
         log.debug( "usuario en sesion: ${user?.username}" )
         if ( org.apache.commons.lang3.StringUtils.isNotBlank( user?.username ) ) {
             Empleado empleado = ServiceManager.employeeService.obtenerEmpleado( user.username )
-            if( empleado.id.equalsIgnoreCase(gerente.id) ){
+            if( gerente.trim().contains(empleado.id.trim()) ){
                 isManager = true
             }
         }
