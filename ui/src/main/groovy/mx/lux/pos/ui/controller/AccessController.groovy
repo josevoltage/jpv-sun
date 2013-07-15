@@ -126,9 +126,9 @@ class AccessController {
   static boolean canAuthorizeByManager( String username, String password ) {
       log.info( "solicitando autorizacion por usuario: $username" )
       if ( checkCredentials( username, password ) ) {
-          Empleado gerente = empleadoService.gerente()
+          String gerentes = empleadoService.gerente()
           Empleado empleado = empleadoService.obtenerEmpleado( username )
-          if ( gerente.id.trim().equalsIgnoreCase(empleado.id.trim()) ) {
+          if ( gerentes.contains( empleado.id.trim() ) ) {
               log.info( "autorizacion realizada: $username" )
               return true
           } else {

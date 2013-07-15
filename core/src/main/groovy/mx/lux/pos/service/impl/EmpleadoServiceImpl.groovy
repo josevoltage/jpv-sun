@@ -41,10 +41,10 @@ class EmpleadoServiceImpl implements EmpleadoService {
   }
 
   @Override
-  Empleado gerente( ) {
+  String gerente( ) {
       Parametro parametro = parametroRepository.findOne( TipoParametro.ID_GERENTE.value )
-      Empleado empleado = empleadoRepository.findOne( parametro.valor.trim() )
-      return empleado
+      //Empleado empleado = empleadoRepository.findOne( parametro.valor.trim() )
+      return parametro.valor
 
   }
 }
