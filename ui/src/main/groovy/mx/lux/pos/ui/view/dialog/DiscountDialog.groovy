@@ -211,7 +211,7 @@ class DiscountDialog extends JDialog {
   
   void onButtonOk() {
     boolean authorized
-    AuthorizationDialog authDialog = new AuthorizationDialog( this, "Descuento requiere autorizaci\u00f3n", true )
+    AuthorizationDialog authDialog = new AuthorizationDialog( this, "Descuento requiere autorizaci\u00f3n", false )
     authDialog.show()
     authorized = authDialog.authorized
       if( authorized ){
