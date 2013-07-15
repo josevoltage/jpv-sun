@@ -41,11 +41,11 @@ class DiscountContextMenu extends JPopupMenu {
   
   // UI Response
   protected void onDiscountSelected( ) {
-    driver.requestDiscount( true )
+    driver.requestDiscount( true, true )
   }
   
   protected void onCorporateDiscountSelected( ) {
-    driver.requestCorporateDiscount( false )
+    driver.requestCorporateDiscount( false, false )
   }
 
   

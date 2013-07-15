@@ -121,9 +121,9 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
     }
   }
 
-  void requestDiscount( Boolean authorizationManager ) {
+  void requestDiscount( Boolean authorizationManager, Boolean needAuthorization ) {
     log.debug( "Discount Selected" )
-    DiscountDialog dlgDiscount = new DiscountDialog( false, authorizationManager )
+    DiscountDialog dlgDiscount = new DiscountDialog( false, authorizationManager, needAuthorization )
     dlgDiscount.setOrderTotal( view.order.total )
     dlgDiscount.setMaximumDiscount( service.requestTopStoreDiscount() )
     dlgDiscount.activate()
@@ -144,9 +144,9 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
     }
   }
 
-  void requestCorporateDiscount( Boolean authorizationManager ) {
+  void requestCorporateDiscount( Boolean authorizationManager, Boolean needAuthorization ) {
     log.debug( "Corporate Discount Selected" )
-    DiscountDialog dlgDiscount = new DiscountDialog( true, authorizationManager )
+    DiscountDialog dlgDiscount = new DiscountDialog( true, authorizationManager, needAuthorization )
     dlgDiscount.setOrderTotal( view.order.total )
     dlgDiscount.setVerifier( this )
     dlgDiscount.activate()
