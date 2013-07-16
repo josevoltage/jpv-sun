@@ -6,6 +6,7 @@ import mx.lux.pos.model.Shipment
 import mx.lux.pos.model.Sucursal
 import mx.lux.pos.model.TransInv
 import mx.lux.pos.service.ArticuloService
+import mx.lux.pos.service.InventarioService
 import mx.lux.pos.service.SucursalService
 import mx.lux.pos.ui.model.InvTrViewMode
 import mx.lux.pos.ui.model.Session
@@ -70,13 +71,17 @@ class InvTrController {
     pView.notifyDocument( pDocument )
   }
 
-  protected void dispatchDocumentEmpty( InvTrView pView ) {
+  protected void dispatchDocumentEmpty( InvTrView pView, Boolean fileAlreadyProccessed ) {
     log.debug( "[Controller] Dispatch document unavailable" )
     InvTrController controller = this
     SwingUtilities.invokeLater( new Runnable() {
       public void run( ) {
         controller.dispatchViewModeQuery( pView )
-        pView.data.txtStatus = pView.panel.MSG_NO_DOCUMENT_AVAILABLE
+        if( fileAlreadyProccessed ){
+          pView.data.txtStatus = pView.panel.MSG_DOCUMENT_ALREADY_PROCCESED
+        } else {
+          pView.data.txtStatus = pView.panel.MSG_NO_DOCUMENT_AVAILABLE
+        }
         pView.fireRefreshUI()
       }
     } )
@@ -304,7 +309,7 @@ class InvTrController {
       pView.data.inFile = new File( filename )
       log.debug ( String.format('Adjust File: %s', document.headerToString()) )
     } else {
-      dispatchDocumentEmpty( pView )
+      dispatchDocumentEmpty( pView, false )
       log.debug ( 'No document' )
     }
 
@@ -375,10 +380,17 @@ class InvTrController {
       document = ServiceManager.getInventoryService().leerArchivoRemesa( dlgFile.getSelectedFile().absolutePath )
     }
     if ( document != null ) {
-      dispatchPartMasterUpdate( document )
-      dispatchDocument( pView, document )
+      InventarioService service = ServiceManager.inventoryService
+      List<TransInv> trList = service.listarTransaccionesPorTipoAndReferencia( InvTrViewMode.RECEIPT.trType.idTipoTrans,
+              document?.ref.trim() )
+      if( trList.size() <= 0 ){
+          dispatchPartMasterUpdate( document )
+          dispatchDocument( pView, document )
+      } else {
+          dispatchDocumentEmpty( pView, true )
+      }
     } else {
-      dispatchDocumentEmpty( pView )
+      dispatchDocumentEmpty( pView, false )
     }
 
   }
@@ -400,7 +412,7 @@ class InvTrController {
                   dispatchPartMasterUpdate( document )
                   dispatchDocument( pView, document )
               } else {
-                  dispatchDocumentEmpty( pView )
+                  dispatchDocumentEmpty( pView, false )
               }
       }
     }

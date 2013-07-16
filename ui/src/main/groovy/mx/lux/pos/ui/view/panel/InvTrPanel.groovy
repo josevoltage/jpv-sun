@@ -27,6 +27,7 @@ class InvTrPanel extends JPanel {
   static final String MSG_NO_RESULTS_FOUND = "No se encontraron resultados para: <%s>"
   static final String MSG_POST_FAILED = "La transacción NO fue registrada.\nNotifique a soporte técnico."
   static final String MSG_NO_DOCUMENT_AVAILABLE = "Remisión no disponible."
+  static final String MSG_DOCUMENT_ALREADY_PROCCESED = "El archivo ya fue cargado."
   static final String MSG_CUM_QTY_ADJUST_WRONG = "Cantidad de piezas incorrecta. Reintente."
   static final String MSG_RECEIPT_WARNING = "%,d transacciones registradas con Tipo:<%s> y Ref:<%s> (%s - %s)"
   static final String MSG_TRANSACTION_POSTED = "Transaccion aplicada"
