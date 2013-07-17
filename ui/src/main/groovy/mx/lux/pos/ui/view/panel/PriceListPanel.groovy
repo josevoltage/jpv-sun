@@ -55,9 +55,9 @@ class PriceListPanel {
           }
           menuItem {
             action( name: 'Cargar Lista', shortDescription: 'Cargar Lista de Precios' ) {
-              def authDialog = new AuthorizationDialog( source, 'Requiere autorización para cargar Lista de Precios', false )
+              /*def authDialog = new AuthorizationDialog( source, 'Requiere autorización para cargar Lista de Precios', false )
               authDialog.show()
-              if ( authDialog.authorized ) {
+              if ( authDialog.authorized ) {*/
                 def priceList = PriceListController.loadPriceList( selectedItem, PriceListLoadType.MANUAL )
                 if ( priceList?.loaded ) {
                   optionPane( message: "Lista de precios: ${priceList.id} cargada el: ${priceList.loaded.format( 'dd/MM/yyyy HH:mm' )}",
@@ -71,7 +71,7 @@ class PriceListPanel {
                 pending.clear()
                 pending.addAll( PriceListController.getPendingPriceLists() )
                 pendingTable.model.fireTableDataChanged()
-              }
+              //}
             }
           }
         }.show( source, ev.x, ev.y )
