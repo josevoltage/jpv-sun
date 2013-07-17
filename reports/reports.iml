@@ -14,106 +14,106 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/joda-time/2.1/jar/joda-time-2.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/joda-time/2.1/jar/joda-time-2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/joda-time/2.1/source/joda-time-2.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/joda-time/2.1/source/joda-time-2.1.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/ant/1.8.4/jar/ant-1.8.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/ant/1.8.4/jar/ant-1.8.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/ant/1.8.4/source/ant-1.8.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/ant/1.8.4/source/ant-1.8.4.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/commons-lang3/3.1/jar/commons-lang3-3.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/commons-lang3/3.1/jar/commons-lang3-3.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/commons-lang3/3.1/source/commons-lang3-3.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/commons-lang3/3.1/source/commons-lang3-3.1.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/slf4j-api/1.6.1/jar/slf4j-api-1.6.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/slf4j-api/1.6.1/jar/slf4j-api-1.6.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/slf4j-api/1.6.1/source/slf4j-api-1.6.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/slf4j-api/1.6.1/source/slf4j-api-1.6.1.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/jcl-over-slf4j/1.6.1/jar/jcl-over-slf4j-1.6.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/jcl-over-slf4j/1.6.1/jar/jcl-over-slf4j-1.6.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/jcl-over-slf4j/1.6.1/source/jcl-over-slf4j-1.6.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/jcl-over-slf4j/1.6.1/source/jcl-over-slf4j-1.6.1.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/slf4j-log4j12/1.6.1/jar/slf4j-log4j12-1.6.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/slf4j-log4j12/1.6.1/jar/slf4j-log4j12-1.6.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/slf4j-log4j12/1.6.1/source/slf4j-log4j12-1.6.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/slf4j-log4j12/1.6.1/source/slf4j-log4j12-1.6.1.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/velocity/1.7/jar/velocity-1.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/velocity/1.7/jar/velocity-1.7.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/velocity/1.7/source/velocity-1.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/velocity/1.7/source/velocity-1.7.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/apache-log4j-extras/1.1/bundle/apache-log4j-extras-1.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/apache-log4j-extras/1.1/bundle/apache-log4j-extras-1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/apache-log4j-extras/1.1/source/apache-log4j-extras-1.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/apache-log4j-extras/1.1/source/apache-log4j-extras-1.1.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/jasperreports/4.7.0/jar/jasperreports-4.7.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/jasperreports/4.7.0/jar/jasperreports-4.7.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/jasperreports/4.7.0/source/jasperreports-4.7.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/jasperreports/4.7.0/source/jasperreports-4.7.0.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/jasperreports-fonts/4.0.0/jar/jasperreports-fonts-4.0.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/jasperreports-fonts/4.0.0/jar/jasperreports-fonts-4.0.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -122,95 +122,95 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/groovy-all/1.8.6/jar/groovy-all-1.8.6.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/groovy-all/1.8.6/jar/groovy-all-1.8.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/groovy-all/1.8.6/source/groovy-all-1.8.6.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/groovy-all/1.8.6/source/groovy-all-1.8.6.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/ant-launcher/1.8.4/jar/ant-launcher-1.8.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/ant-launcher/1.8.4/jar/ant-launcher-1.8.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/ant-launcher/1.8.4/source/ant-launcher-1.8.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/ant-launcher/1.8.4/source/ant-launcher-1.8.4.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/log4j/1.2.16/bundle/log4j-1.2.16.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/log4j/1.2.16/bundle/log4j-1.2.16.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/log4j/1.2.16/source/log4j-1.2.16.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/log4j/1.2.16/source/log4j-1.2.16.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/commons-collections/3.2.1/jar/commons-collections-3.2.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/commons-collections/3.2.1/jar/commons-collections-3.2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/commons-collections/3.2.1/source/commons-collections-3.2.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/commons-collections/3.2.1/source/commons-collections-3.2.1.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/commons-lang/2.4/jar/commons-lang-2.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/commons-lang/2.4/jar/commons-lang-2.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/commons-lang/2.4/source/commons-lang-2.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/commons-lang/2.4/source/commons-lang-2.4.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/commons-logging/1.1.1/jar/commons-logging-1.1.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/commons-logging/1.1.1/jar/commons-logging-1.1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/commons-logging/1.1.1/source/commons-logging-1.1.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/commons-logging/1.1.1/source/commons-logging-1.1.1.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/commons-beanutils/1.8.3/jar/commons-beanutils-1.8.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/commons-beanutils/1.8.3/jar/commons-beanutils-1.8.3.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/commons-beanutils/1.8.3/source/commons-beanutils-1.8.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/commons-beanutils/1.8.3/source/commons-beanutils-1.8.3.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/commons-digester/2.1/jar/commons-digester-2.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/commons-digester/2.1/jar/commons-digester-2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/commons-digester/2.1/source/commons-digester-2.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/commons-digester/2.1/source/commons-digester-2.1.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/bcmail-jdk14/138/jar/bcmail-jdk14-138.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/bcmail-jdk14/138/jar/bcmail-jdk14-138.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -219,7 +219,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/bcprov-jdk14/138/jar/bcprov-jdk14-138.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/bcprov-jdk14/138/jar/bcprov-jdk14-138.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -228,51 +228,51 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/bcprov-jdk14/1.38/jar/bcprov-jdk14-1.38.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/bcprov-jdk14/1.38/jar/bcprov-jdk14-1.38.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/bcprov-jdk14/1.38/source/bcprov-jdk14-1.38.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/bcprov-jdk14/1.38/source/bcprov-jdk14-1.38.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/bcmail-jdk14/1.38/jar/bcmail-jdk14-1.38.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/bcmail-jdk14/1.38/jar/bcmail-jdk14-1.38.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/bcmail-jdk14/1.38/source/bcmail-jdk14-1.38.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/bcmail-jdk14/1.38/source/bcmail-jdk14-1.38.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/bctsp-jdk14/1.38/jar/bctsp-jdk14-1.38.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/bctsp-jdk14/1.38/jar/bctsp-jdk14-1.38.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/bctsp-jdk14/1.38/source/bctsp-jdk14-1.38.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/bctsp-jdk14/1.38/source/bctsp-jdk14-1.38.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/itext/2.1.7/jar/itext-2.1.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/itext/2.1.7/jar/itext-2.1.7.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/itext/2.1.7/source/itext-2.1.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/itext/2.1.7/source/itext-2.1.7.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/jcommon/1.0.15/jar/jcommon-1.0.15.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/jcommon/1.0.15/jar/jcommon-1.0.15.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -281,7 +281,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/jfreechart/1.0.12/jar/jfreechart-1.0.12.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/jfreechart/1.0.12/jar/jfreechart-1.0.12.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -290,7 +290,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/xml-apis/1.3.02/jar/xml-apis-1.3.02.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/xml-apis/1.3.02/jar/xml-apis-1.3.02.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -299,7 +299,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/jdtcore/3.1.0/jar/jdtcore-3.1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/jdtcore/3.1.0/jar/jdtcore-3.1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -308,40 +308,40 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/castor/1.2/jar/castor-1.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/castor/1.2/jar/castor-1.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/castor/1.2/source/castor-1.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/castor/1.2/source/castor-1.2.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/dom4j/1.6.1/jar/dom4j-1.6.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/dom4j/1.6.1/jar/dom4j-1.6.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/dom4j/1.6.1/source/dom4j-1.6.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/dom4j/1.6.1/source/dom4j-1.6.1.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/poi/3.7/jar/poi-3.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/poi/3.7/jar/poi-3.7.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/poi/3.7/source/poi-3.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/poi/3.7/source/poi-3.7.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/stax-api/1.0.1/jar/stax-api-1.0.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/stax-api/1.0.1/jar/stax-api-1.0.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -350,7 +350,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/xmlbeans/2.3.0/jar/xmlbeans-2.3.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/xmlbeans/2.3.0/jar/xmlbeans-2.3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -359,18 +359,18 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/geronimo-stax-api_1.0_spec/1.0/jar/geronimo-stax-api_1.0_spec-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/geronimo-stax-api_1.0_spec/1.0/jar/geronimo-stax-api_1.0_spec-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/geronimo-stax-api_1.0_spec/1.0/source/geronimo-stax-api_1.0_spec-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/geronimo-stax-api_1.0_spec/1.0/source/geronimo-stax-api_1.0_spec-1.0.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/poi-ooxml-schemas/3.7/jar/poi-ooxml-schemas-3.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/poi-ooxml-schemas/3.7/jar/poi-ooxml-schemas-3.7.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -379,33 +379,33 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/poi-ooxml/3.7/jar/poi-ooxml-3.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/poi-ooxml/3.7/jar/poi-ooxml-3.7.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/poi-ooxml/3.7/source/poi-ooxml-3.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/poi-ooxml/3.7/source/poi-ooxml-3.7.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/jackson-core-asl/1.9.4/jar/jackson-core-asl-1.9.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/jackson-core-asl/1.9.4/jar/jackson-core-asl-1.9.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/jackson-core-asl/1.9.4/source/jackson-core-asl-1.9.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/jackson-core-asl/1.9.4/source/jackson-core-asl-1.9.4.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/jackson-mapper-asl/1.9.4/jar/jackson-mapper-asl-1.9.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/jackson-mapper-asl/1.9.4/jar/jackson-mapper-asl-1.9.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/jackson-mapper-asl/1.9.4/source/jackson-mapper-asl-1.9.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/jackson-mapper-asl/1.9.4/source/jackson-mapper-asl-1.9.4.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -413,66 +413,66 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/junit/4.9/jar/junit-4.9.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/junit/4.9/jar/junit-4.9.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/junit/4.9/source/junit-4.9.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/junit/4.9/source/junit-4.9.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/spring-test/3.1.2.RELEASE/jar/spring-test-3.1.2.RELEASE.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/spring-test/3.1.2.RELEASE/jar/spring-test-3.1.2.RELEASE.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/spring-test/3.1.2.RELEASE/source/spring-test-3.1.2.RELEASE.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/spring-test/3.1.2.RELEASE/source/spring-test-3.1.2.RELEASE.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/spock-core/0.6-groovy-1.8/jar/spock-core-0.6-groovy-1.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/spock-core/0.6-groovy-1.8/jar/spock-core-0.6-groovy-1.8.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/spock-core/0.6-groovy-1.8/source/spock-core-0.6-groovy-1.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/spock-core/0.6-groovy-1.8/source/spock-core-0.6-groovy-1.8.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/spock-spring/0.6-groovy-1.8/jar/spock-spring-0.6-groovy-1.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/spock-spring/0.6-groovy-1.8/jar/spock-spring-0.6-groovy-1.8.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/spock-spring/0.6-groovy-1.8/source/spock-spring-0.6-groovy-1.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/spock-spring/0.6-groovy-1.8/source/spock-spring-0.6-groovy-1.8.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/hamcrest-core/1.2/jar/hamcrest-core-1.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/hamcrest-core/1.2/jar/hamcrest-core-1.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/hamcrest-core/1.2/source/hamcrest-core-1.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/hamcrest-core/1.2/source/hamcrest-core-1.2.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar:///soi/lib/contents/junit-dep/4.9/jar/junit-dep-4.9.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/junit-dep/4.9/jar/junit-dep-4.9.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///soi/lib/contents/junit-dep/4.9/source/junit-dep-4.9.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/contents/junit-dep/4.9/source/junit-dep-4.9.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
