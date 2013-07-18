@@ -28,9 +28,10 @@ class PendingPriceListDialog {
       scrollPane {
         table() {
           tableModel( list: items ) {
+            closureColumn( header: 'SKU', read: {Item em -> em?.id} )
             closureColumn( header: 'Artículo', read: {Item em -> em?.name} )
             closureColumn( header: 'Descripción', read: {Item em -> em?.reference} )
-            closureColumn( header: 'Tipo Precio', read: {Item em -> em?.priceType} )
+            //closureColumn( header: 'Tipo Precio', read: {Item em -> em?.priceType} )
             closureColumn( header: 'Precio', read: {Item em -> em?.price}, cellRenderer: new MoneyCellRenderer() )
           }
         }

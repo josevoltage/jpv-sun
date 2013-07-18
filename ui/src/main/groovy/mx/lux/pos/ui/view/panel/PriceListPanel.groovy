@@ -48,11 +48,11 @@ class PriceListPanel {
         }
       } else if ( ev.button == 3 ) {
         popupMenu {
-          menuItem {
+          /*menuItem {
             action( name: 'Validar', shortDescription: 'Validar Lista de Precios' ) {
               new ValidatePriceListDialog( source, selectedItem )
             }
-          }
+          }*/
           menuItem {
             action( name: 'Cargar Lista', shortDescription: 'Cargar Lista de Precios' ) {
               /*def authDialog = new AuthorizationDialog( source, 'Requiere autorización para cargar Lista de Precios', false )
