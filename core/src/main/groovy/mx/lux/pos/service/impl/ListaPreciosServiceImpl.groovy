@@ -87,10 +87,11 @@ class ListaPreciosServiceImpl implements ListaPreciosService {
         log.debug( "obteniendo articulo: ${tmpArticulo?.articulo} en lista de precios a validar" )
         def a = QArticulo.articulo1
         List<Articulo> existencias = articuloRepository.findAll(
-            a.articulo.eq( tmpArticulo?.articulo ).and( a.existencia.cantidad.gt( 0 ) )
+            a.id.eq( tmpArticulo?.id ).and( a.cantExistencia.gt( 0 ) )
+            //a.articulo.eq( tmpArticulo?.articulo ).and( a.existencia.cantidad.gt( 0 ) )
         ) as List<Articulo>
         existencias.each {
-          log.debug( "validando articulo: ${it?.articulo}, id: ${it?.id}, color: ${it?.codigoColor}, cantidad: ${it?.existencia?.cantidad}" )
+          /*log.debug( "validando articulo: ${it?.articulo}, id: ${it?.id}, color: ${it?.codigoColor}, cantidad: ${it?.existencia?.cantidad}" )
           try {
             def sql = new Sql( invDataSource )
             def row = sql.firstRow( "SELECT * FROM verify WHERE articulo=${it?.articulo} AND color=${it?.codigoColor}" )
@@ -99,7 +100,7 @@ class ListaPreciosServiceImpl implements ListaPreciosService {
             sql.close()
           } catch ( ex ) {
             log.error( "no se pudo obtener ubicacion", ex )
-          }
+          }*/
           resultados.add( it )
         }
       }

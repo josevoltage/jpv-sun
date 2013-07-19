@@ -28,9 +28,10 @@ class ValidatePriceListDialog {
       scrollPane {
         table() {
           tableModel( list: items ) {
-            closureColumn( header: 'Artículo', read: {it?.name} )
-            closureColumn( header: 'Color', read: {it?.color} )
-            closureColumn( header: 'Ubicaciones', read: {it?.location} )
+            closureColumn( header: 'SKU', read: {it?.id}, maxWidth: 60 )
+            closureColumn( header: 'Artículo', read: {it?.name}, maxWidth: 150 )
+            closureColumn( header: 'Descripcion', read: {it?.reference} )
+            closureColumn( header: 'Cant.', read: {it?.stock}, maxWidth: 50 )
           }
         }
       }
