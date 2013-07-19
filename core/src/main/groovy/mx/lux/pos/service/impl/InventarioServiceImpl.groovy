@@ -266,7 +266,7 @@ class InventarioServiceImpl implements InventarioService {
     }
 
     Boolean transaccionCargada( String clave ){
-        clave = clave.toUpperCase()
+        clave = clave.trim().toUpperCase()
         Boolean transCargada = false
         QTransInv tranInv = QTransInv.transInv
         TransInv transaccion = transInvRepository.findOne( tranInv.referencia.eq( clave.trim() ).and(tranInv.idTipoTrans.eq('ENTRADA_TIENDA')) )

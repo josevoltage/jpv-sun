@@ -403,12 +403,12 @@ class InvTrController {
       inboundDialog.activate()
       log.debug(inboundDialog.getTxtClave())
       if (inboundDialog.button) {
-          Boolean claveCargada = ServiceManager.inventoryService.transaccionCargada( inboundDialog.getTxtClave() )
+          Boolean claveNoCargada = ServiceManager.inventoryService.transaccionCargada( inboundDialog.getTxtClave() )
               pView.data.claveCodificada = inboundDialog.getTxtClave()
               Sucursal sucursal = ServiceManager.inventoryService.sucursalActual()
               log.debug("" + sucursal.id)
               document = ServiceManager.getInventoryService().obtieneArticuloEntrada(inboundDialog.getTxtClave(),sucursal.id, pView.data.viewMode.trType.idTipoTrans)
-               if ( document != null && !claveCargada ) {
+               if ( document != null && claveNoCargada ) {
                   dispatchPartMasterUpdate( document )
                   dispatchDocument( pView, document )
               } else {
