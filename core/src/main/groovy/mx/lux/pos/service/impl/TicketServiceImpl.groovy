@@ -726,14 +726,65 @@ class TicketServiceImpl implements TicketService {
   void imprimeUbicacionListaPrecios( ListaPrecios listaPrecios, List<Articulo> articulos ) {
     def idSucursal = parametroRepository.findOne( TipoParametro.ID_SUCURSAL.value )?.valor
     def sucursal = sucursalRepository.findOne( idSucursal?.toInteger() )
+    for(Articulo articulo : articulos){
+      Articulo tmp = articuloRepository.findOne( articulo.id )
+      if( tmp != null ){
+        articulo.cantExistencia = tmp.cantExistencia
+      }
+    }
+    def lstArticulos = [ ]
+    String descripcion1 = ''
+    String descripcion2 = ''
+    String descripcion3 = ''
+    String descripcion4 = ''
+    String descripcion5 = ''
+    for(Articulo art : articulos){
+      if( art.descripcion.length() > 22 ){
+        descripcion1 = art.descripcion.substring(0,22)
+        if( art.descripcion.length() > 44 ){
+          descripcion2 = art.descripcion.substring(22,44)
+        }
+        if( art.descripcion.length() > 66 ){
+          descripcion3 = art.descripcion.substring(44,66)
+        }
+        if( art.descripcion.length() > 88 && art.descripcion.length() > 100 ){
+          descripcion4 = art.descripcion.substring(88,100)
+        } else if( art.descripcion.length() > 88 ) {
+          descripcion4 = art.descripcion.substring(88)
+        }
+        if( art.descripcion.length() > 100 && art.descripcion.length() > 122 ){
+          descripcion5 = art.descripcion.substring(100,122)
+        } else if( art.descripcion.length() > 100 ) {
+          descripcion5 = art.descripcion.substring(100)
+        }
+      } else {
+        descripcion1 = art.descripcion
+      }
+      def tmpArticulo = [
+        id: art.id,
+        articulo: art.articulo,
+        descripcion1: descripcion1,
+        descripcion2: descripcion2,
+        descripcion3: descripcion3,
+        descripcion4: descripcion4,
+        descripcion5: descripcion5,
+        cantidad: art.cantExistencia
+      ]
+      lstArticulos.add( tmpArticulo )
+    }
     def items = [
         nombre_ticket: 'ticket-ubicacion-lista-precios',
         sucursal: sucursal,
         id_lista: listaPrecios?.id,
         fecha: new Date().format( 'dd-MM-yyyy' ),
-        articulos: articulos
+        articulos: articulos,
+        lstArticulos: lstArticulos
     ]
-    imprimeTicket( 'template/ticket-ubicacion-lista-precios.vm', items )
+    if ( Registry.isSunglass() ) {
+      imprimeTicket( 'template/ticket-ubicacion-lista-precios-si.vm', items )
+    } else {
+      imprimeTicket( 'template/ticket-ubicacion-lista-precios.vm', items )
+    }
   }
 
   @Override
