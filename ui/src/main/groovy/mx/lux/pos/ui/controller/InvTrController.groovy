@@ -408,7 +408,7 @@ class InvTrController {
               Sucursal sucursal = ServiceManager.inventoryService.sucursalActual()
               log.debug("" + sucursal.id)
               document = ServiceManager.getInventoryService().obtieneArticuloEntrada(inboundDialog.getTxtClave(),sucursal.id, pView.data.viewMode.trType.idTipoTrans)
-               if ( document != null && claveNoCargada ) {
+               if ( document != null && !claveNoCargada ) {
                   dispatchPartMasterUpdate( document )
                   dispatchDocument( pView, document )
               } else {

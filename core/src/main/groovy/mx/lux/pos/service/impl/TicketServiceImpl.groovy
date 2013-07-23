@@ -770,7 +770,9 @@ class TicketServiceImpl implements TicketService {
         descripcion5: descripcion5,
         cantidad: art.cantExistencia
       ]
-      lstArticulos.add( tmpArticulo )
+      if( art.cantExistencia > 0 ){
+          lstArticulos.add( tmpArticulo )
+      }
     }
     def items = [
         nombre_ticket: 'ticket-ubicacion-lista-precios',
