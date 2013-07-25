@@ -247,4 +247,15 @@ class ListaPreciosServiceImpl implements ListaPreciosService {
       it?.tipoPrecio?.matches( sucursal?.sears ? sears : lux )
     }
   }
+
+  Integer listasPreciosPendientes( ){
+      log.debug( "Obteniendo listas de precios pendientes" )
+      QListaPrecios lista = QListaPrecios.listaPrecios
+      List<ListaPrecios> lstListaPrecios = listaPreciosRepository.findAll( lista.tipoCarga.isEmpty().or(lista.tipoCarga.isNull()).
+              and(lista.fechaCarga.isNull()) )
+      log.debug( "Numero de listas pendientes: ${lstListaPrecios.size()}" )
+
+      return lstListaPrecios.size()
+  }
+
 }

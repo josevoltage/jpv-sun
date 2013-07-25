@@ -17,4 +17,6 @@ interface ListaPreciosService {
 
   ListaPrecios cargarListaPrecios( ListaPrecios listaPrecios, List<Articulo> articulos )
 
+  Integer listasPreciosPendientes( )
+
 }

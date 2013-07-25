@@ -22,6 +22,7 @@ class LogInPanel extends JPanel {
   private JPasswordField password
   private JLabel messages
   private JButton logInButton
+  private String priceListPending
   private Closure doAction
   private String version
 
@@ -29,6 +30,7 @@ class LogInPanel extends JPanel {
 
   LogInPanel( Closure doAction, String version ) {
     this.version = version
+    this.priceListPending = AccessController.listaPreciosPendientes()
     this.doAction = doAction ?: {}
     sb = new SwingBuilder()
     buildUI()
@@ -67,6 +69,8 @@ class LogInPanel extends JPanel {
       }
 
       logInButton = button( 'Acceder', actionPerformed: doLogIn, constraints: 'right,span,w 125!,h 40!' )
+
+      label( text: "Listas de Precios pendientes por cargar: ${this.priceListPending}" )
     }
   }
 

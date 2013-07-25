@@ -23,7 +23,7 @@ class ValidatePriceListDialog {
         show: true,
         layout: new MigLayout( 'wrap', '[fill]' )
     ) {
-      label( "Ubicación de Artículos" )
+      label( "Existencia de Artículos" )
 
       scrollPane {
         table() {
