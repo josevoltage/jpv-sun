@@ -35,6 +35,7 @@ class MainWindow extends JFrame implements KeyListener {
   static final String TEXT_LOAD_PART_CLASS_TITLE = "Importar Clasificación de Artículos"
 
   static String version
+  static Integer cantPriceListPending
 
   static MainWindow instance
   private Logger log = LoggerFactory.getLogger( this.getClass() )
@@ -98,7 +99,7 @@ class MainWindow extends JFrame implements KeyListener {
     instance = this
     this.addKeyListener( this )
     sb = new SwingBuilder()
-    buildUI()
+    //buildUI()
   }
 
   private void buildUI( ) {
@@ -457,14 +458,18 @@ class MainWindow extends JFrame implements KeyListener {
   }
 
   private void initialize( ) {
+    PriceListController.loadExpiredPriceList()
     sb.doOutside {
       IOController.getInstance().autoUpdateFxRates()
-      PriceListController.loadExpiredPriceList()
       DailyCloseController.openDay()
       DailyCloseController.RegistrarPromociones()
       IOController.getInstance().autoUpdateEmployeeFile()
       IOController.getInstance().startAsyncNotifyDispatcher()
     }
+  }
+
+  private void refresh( ){
+      buildUI()
   }
 
   void requestImportPartMaster( ) {
@@ -506,6 +511,7 @@ class MainWindow extends JFrame implements KeyListener {
             version = Session.getVersion()
             MainWindow window = new MainWindow()
             window.initialize()
+            window.refresh()
             window.show()
           }
         }

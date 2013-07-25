@@ -1,6 +1,7 @@
 package mx.lux.pos.ui.model
 
 import groovy.util.logging.Slf4j
+import mx.lux.pos.ui.controller.AccessController
 import org.springframework.core.io.ClassPathResource
 
 @Slf4j
@@ -72,6 +73,10 @@ class Session {
       version = 'SOI v1'
     }
     return version
+  }
+
+  static Integer listasPreciosPendientes(){
+      return AccessController.listaPreciosPendientes()
   }
 
 }
