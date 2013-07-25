@@ -412,7 +412,8 @@ class InvTrController {
                   dispatchPartMasterUpdate( document )
                   dispatchDocument( pView, document )
               } else {
-                  dispatchDocumentEmpty( pView, false )
+
+                   dispatchDocumentEmpty( pView, false )
               }
       }
     }

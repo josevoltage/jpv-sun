@@ -206,7 +206,7 @@ class ListaPreciosServiceImpl implements ListaPreciosService {
         log.debug( "registrando nuevo articulo: ${tmpArticulo.articulo}" )
         tmpArticulo.setIdSucursal(sucursal.id)
           articuloRepository.save( tmpArticulo )
-          articuloRepository.flush( tmpArticulo )
+          articuloRepository.flush()
       }
       def tipoPrecio = esLista ? 'L' : ( esOferta ? 'O' : tmpArticulo?.tipoPrecio )
       Precio tmpPrecio = precioRepository.findByArticuloAndLista( tmpArticulo?.articulo, tipoPrecio )
