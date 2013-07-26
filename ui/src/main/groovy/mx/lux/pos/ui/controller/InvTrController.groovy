@@ -341,7 +341,8 @@ class InvTrController {
     String seed = part[0]
     List<Articulo> partList = ItemController.findPartsByQuery( seed, false )
     if(seed.startsWith('00')){
-        seed = seed.substring(1)
+        //seed = seed.substring(1)
+      seed = seed.replaceFirst("^0*", "")
     }
     if ( ( partList.size() == 0 ) && ( seed.length() > 6 ) ) {
       partList = ItemController.findPartsByQuery( seed.substring( 0, 6 ), false )
