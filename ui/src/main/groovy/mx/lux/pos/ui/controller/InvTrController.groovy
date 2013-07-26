@@ -414,12 +414,14 @@ class InvTrController {
               document = ServiceManager.getInventoryService().obtieneArticuloEntrada(inboundDialog.getTxtClave(),sucursal.id, pView.data.viewMode.trType.idTipoTrans)
               Boolean articleExist = true
               String articles = ''
-              for(ShipmentLine line : document.lines ){
-                  if(line.partCode == null || line.partCode == ''){
-                      articleExist = false
-                      articles = articles + line.sku.toString() +", "
-                  }
-              }
+                if( document != null ){
+                    for(ShipmentLine line : document.lines ){
+                        if(line.partCode == null || line.partCode == ''){
+                            articleExist = false
+                            articles = articles + line.sku.toString() +", "
+                        }
+                    }
+                }
                if ( document != null && !claveNoCargada && articleExist ) {
                   dispatchPartMasterUpdate( document )
                   dispatchDocument( pView, document )
