@@ -3,6 +3,7 @@ package mx.lux.pos.ui.controller
 import mx.lux.pos.model.Articulo
 import mx.lux.pos.model.InvTrRequest
 import mx.lux.pos.model.Shipment
+import mx.lux.pos.model.ShipmentLine
 import mx.lux.pos.model.Sucursal
 import mx.lux.pos.model.TransInv
 import mx.lux.pos.service.ArticuloService
@@ -71,7 +72,7 @@ class InvTrController {
     pView.notifyDocument( pDocument )
   }
 
-  protected void dispatchDocumentEmpty( InvTrView pView, Boolean fileAlreadyProccessed ) {
+  protected void dispatchDocumentEmpty( InvTrView pView, Boolean fileAlreadyProccessed, String articleNotFound ) {
     log.debug( "[Controller] Dispatch document unavailable" )
     InvTrController controller = this
     SwingUtilities.invokeLater( new Runnable() {
@@ -79,6 +80,8 @@ class InvTrController {
         controller.dispatchViewModeQuery( pView )
         if( fileAlreadyProccessed ){
           pView.data.txtStatus = pView.panel.MSG_DOCUMENT_ALREADY_PROCCESED
+        } else if( articleNotFound != '' ){
+          pView.data.txtStatus = String.format( pView.panel.MSG_ARTICLE_NOT_FOUND, articleNotFound )
         } else {
           pView.data.txtStatus = pView.panel.MSG_NO_DOCUMENT_AVAILABLE
         }
@@ -309,7 +312,7 @@ class InvTrController {
       pView.data.inFile = new File( filename )
       log.debug ( String.format('Adjust File: %s', document.headerToString()) )
     } else {
-      dispatchDocumentEmpty( pView, false )
+      dispatchDocumentEmpty( pView, false, '' )
       log.debug ( 'No document' )
     }
 
@@ -388,10 +391,10 @@ class InvTrController {
           dispatchPartMasterUpdate( document )
           dispatchDocument( pView, document )
       } else {
-          dispatchDocumentEmpty( pView, true )
+          dispatchDocumentEmpty( pView, true, '' )
       }
     } else {
-      dispatchDocumentEmpty( pView, false )
+      dispatchDocumentEmpty( pView, false, '' )
     }
 
   }
@@ -409,12 +412,19 @@ class InvTrController {
               Sucursal sucursal = ServiceManager.inventoryService.sucursalActual()
               log.debug("" + sucursal.id)
               document = ServiceManager.getInventoryService().obtieneArticuloEntrada(inboundDialog.getTxtClave(),sucursal.id, pView.data.viewMode.trType.idTipoTrans)
-               if ( document != null && !claveNoCargada ) {
+              Boolean articleExist = true
+              String articles = ''
+              for(ShipmentLine line : document.lines ){
+                  if(line.partCode == null || line.partCode == ''){
+                      articleExist = false
+                      articles = articles + line.sku.toString() +", "
+                  }
+              }
+               if ( document != null && !claveNoCargada && articleExist ) {
                   dispatchPartMasterUpdate( document )
                   dispatchDocument( pView, document )
               } else {
-
-                   dispatchDocumentEmpty( pView, false )
+                   dispatchDocumentEmpty( pView, false, articles )
               }
       }
     }

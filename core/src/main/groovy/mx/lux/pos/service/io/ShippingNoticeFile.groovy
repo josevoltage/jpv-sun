@@ -54,17 +54,24 @@ class ShippingNoticeFile {
               String[] articulo = tokens.entry(i).trim().split(",")
               String idArt = articulo[0]
             Articulo part = ServiceFactory.partMaster.obtenerArticulo( new Integer(articulo[0]), false )
-            log.debug(part.articulo);
-              parsed = new ShipmentLine()
-              parsed.partCode = part.articulo
-              parsed.colorCode = part.codigoColor
-              parsed.qty = NumberFormat.getInstance().parse(articulo[1])
-              parsed.sku = part.id
-              parsed.barcode = part.idCb
-              parsed.colorDesc = part.descripcionColor
-              parsed.brand = part.marca
-              parsed.type = part.tipo
-              shipment.lines.add(parsed)
+              if( part != null ){
+                  log.debug(part.articulo);
+                  parsed = new ShipmentLine()
+                  parsed.partCode = part.articulo
+                  parsed.colorCode = part.codigoColor
+                  parsed.qty = NumberFormat.getInstance().parse(articulo[1])
+                  parsed.sku = part.id
+                  parsed.barcode = part.idCb
+                  parsed.colorDesc = part.descripcionColor
+                  parsed.brand = part.marca
+                  parsed.type = part.tipo
+                  shipment.lines.add(parsed)
+              } else {
+                  parsed = new ShipmentLine()
+                  parsed.sku = NumberFormat.getInstance().parse(articulo[0])
+                  shipment.lines.add(parsed)
+              }
+
           }
       }
      return shipment
