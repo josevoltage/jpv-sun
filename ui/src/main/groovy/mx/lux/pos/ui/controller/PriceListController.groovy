@@ -83,7 +83,9 @@ class PriceListController {
         def header = lines?.first() as String
         def priceList = initializePriceList( header, file.name )
         lines.tail().each {
-         def elements = it?.split( /\|/ )
+         String line = it.replace( "||", "| |")
+         line = line.replace( "| ||", "| | |")
+         def elements = line?.split( /\|/ )
             log.debug( "Tamaño de la cadena:: ${elements.size()}" )
           if ( elements?.size() >= 13 ) {
               log.debug( "leyendo linea ${it}" )
