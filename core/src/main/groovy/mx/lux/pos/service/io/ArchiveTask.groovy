@@ -13,6 +13,7 @@ class ArchiveTask {
   private static final String FILE_ARCHIVE_DEFAULT = 'soi.%s'
   private static final String FMT_DATE_TIME = 'yyyy-MM-dd-HH-mm'
   private static final String EXT_ZIP = '.zip'
+  private static final String SO_WINDOWS = 'Windows'
 
   private Logger logger = LoggerFactory.getLogger( this.getClass() )
   private String baseDir
@@ -31,10 +32,17 @@ class ArchiveTask {
   // Public methods
   void run( ) {
     if ( ( this.filePattern != null ) && ( this.baseDir != null ) ) {
+      String sSistemaOperativo = System.getProperty("os.name");
+      logger.debug(sSistemaOperativo);
       StringBuffer sb = new StringBuffer()
       sb.append( String.format( "%s ", Registry.archiveCommand ) );
-      sb.append( String.format( '"%s" ', this.getArchiveFile() ) );
-      sb.append( String.format( '"%s" ', this.baseDir + File.separator + this.filePattern ) )
+      if( sSistemaOperativo.trim().equalsIgnoreCase( SO_WINDOWS ) ){
+        sb.append( String.format( '"%s" ', this.getArchiveFile() ) );
+        sb.append( String.format( '"%s" ', this.baseDir + File.separator + this.filePattern ) )
+      } else {
+        sb.append( String.format( '%s ', this.getArchiveFile() ) );
+        sb.append( String.format( '%s ', this.baseDir + File.separator + this.filePattern ) )
+      }
       StringBuffer sb2 = new StringBuffer()
       for ( char c : sb.toString().toCharArray() ) {
         if ( ( c == '\\' ) || ( c == '/' ) ) {
