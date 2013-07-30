@@ -36,7 +36,7 @@ class ArchiveTask {
       logger.debug(sSistemaOperativo);
       StringBuffer sb = new StringBuffer()
       sb.append( String.format( "%s ", Registry.archiveCommand ) );
-      if( sSistemaOperativo.trim().equalsIgnoreCase( SO_WINDOWS ) ){
+      if( sSistemaOperativo.trim().startsWith( SO_WINDOWS ) ){
         sb.append( String.format( '"%s" ', this.getArchiveFile() ) );
         sb.append( String.format( '"%s" ', this.baseDir + File.separator + this.filePattern ) )
       } else {
