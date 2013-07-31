@@ -418,7 +418,7 @@ class InvTrController {
                     for(ShipmentLine line : document.lines ){
                         if(line.partCode == null || line.partCode == ''){
                             articleExist = false
-                            articles = articles+"<"+line.sku.toString()+">"+" "
+                            articles = articles+"["+line.sku.toString()+"]"+" "
                         }
                     }
                 }
