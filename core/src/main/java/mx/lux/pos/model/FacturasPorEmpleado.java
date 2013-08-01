@@ -136,9 +136,9 @@ public class FacturasPorEmpleado {
     public void AcumulaArticulos( boolean mostrarArticulos, DetalleNotaVenta ventas, Double iva, String descArticulo ) {
         Boolean esNotaCredito = false;
         for(Pago pago : ventas.getNotaVenta().getPagos()){
-            if( "NOT".equalsIgnoreCase(pago.getIdFPago()) ){
+            /*if( "NOT".equalsIgnoreCase(pago.getIdFPago()) ){
                 esNotaCredito = true;
-            }
+            }*/
         }
         if( !esNotaCredito ){
             for(int i = 0; i<ventas.getCantidadFac().intValue(); i++

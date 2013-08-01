@@ -74,9 +74,9 @@ public class VentasPorDia {
         montoDescuento = montoDescuento.add(notaVenta.getMontoDescuento());
         for( Pago pago : notaVenta.getPagos() ){
             montoConDescuento = montoConDescuento.add(pago.getMonto());
-            if( "NOT".equalsIgnoreCase(pago.getIdFPago()) ){
+            //if( "NOT".equalsIgnoreCase(pago.getIdFPago()) ){
                 contadorArt = 0;
-            }
+            //}
         }
         montoTotal = montoDescuento.add(montoConDescuento);
         empleado = notaVenta.getEmpleado().getNombreCompleto();
@@ -159,10 +159,10 @@ public class VentasPorDia {
         BigDecimal importeTotal = BigDecimal.ZERO;
         Double importeTotalSinIva = 0.00;
         for(Pago pago : notaVenta.getPagos()){
-            if( !"TR".equalsIgnoreCase(pago.getIdFPago()) ){
+            //if( !"TR".equalsIgnoreCase(pago.getIdFPago()) ){
                 importeTotal = importeTotal.add(pago.getMonto());
                 importeTotalSinIva = importeTotalSinIva+pago.getMonto().doubleValue();
-            }
+            //}
         }
         importeTotalSinIva = importeTotalSinIva/iva;
         factura = notaVenta.getFactura();
