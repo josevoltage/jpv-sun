@@ -23,7 +23,7 @@
 	<variable name="montoPagoSinIVA_2" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{montoPagoSinIVA}]]></variableExpression>
 	</variable>
-	<variable name="idFactura_1" class="java.math.BigDecimal" incrementType="Column" calculation="Count">
+	<variable name="idFactura_1" class="java.lang.Integer" incrementType="Column" calculation="Count">
 		<variableExpression><![CDATA[$F{idFactura}]]></variableExpression>
 		<initialValueExpression><![CDATA[1]]></initialValueExpression>
 	</variable>
@@ -31,7 +31,7 @@
 		<variableExpression><![CDATA[$V{montoPagoSinIVA_1}.divide( $P{contador}, 10, RoundingMode.HALF_EVEN )]]></variableExpression>
 		<initialValueExpression><![CDATA[$F{montoPagoSinIVA}]]></initialValueExpression>
 	</variable>
-	<variable name="contador" class="java.math.BigDecimal">
+	<variable name="contador" class="java.lang.Integer">
 		<variableExpression><![CDATA[1]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
@@ -42,7 +42,7 @@
 	<variable name="totalIva" class="java.math.BigDecimal">
 		<variableExpression><![CDATA[$V{montoPagoSinIVA_1}.divide( $F{iva}.add( new BigDecimal(1.00) ), 10, RoundingMode.HALF_DOWN )]]></variableExpression>
 	</variable>
-	<variable name="contador_1" class="java.math.BigDecimal" calculation="Sum">
+	<variable name="contador_1" class="java.lang.Integer" calculation="Sum">
 		<variableExpression><![CDATA[$F{contador}]]></variableExpression>
 	</variable>
 	<variable name="idFactura_2" class="java.lang.Integer" calculation="Count">
