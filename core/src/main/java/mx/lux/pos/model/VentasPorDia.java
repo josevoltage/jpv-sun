@@ -75,7 +75,7 @@ public class VentasPorDia {
         for( Pago pago : notaVenta.getPagos() ){
             montoConDescuento = montoConDescuento.add(pago.getMonto());
             //if( "NOT".equalsIgnoreCase(pago.getIdFPago()) ){
-                contadorArt = 0;
+                //contadorArt = 0;
             //}
         }
         montoTotal = montoDescuento.add(montoConDescuento);
