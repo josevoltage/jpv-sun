@@ -485,9 +485,9 @@ class TicketServiceImpl implements TicketService {
 
       if ( resumenesDiario.size() == 1 ) {
         ResumenDiario resumen = new ResumenDiario()
+        resumen.plan = '0'
         resumen = resumenesDiario.first()
         BigDecimal montoDolares = BigDecimal.ZERO
-        resumen.plan = '0'
         if( Registry.isCardPaymentInDollars(resumen.tipo) && resumen.plan.isNumber() ){
           montoDolares = montoDolares.add( NumberFormat.getInstance().parse( resumen.plan ) )
           if( montoDolares.compareTo(BigDecimal.ZERO) == 1 || montoDolares.compareTo(BigDecimal.ZERO) == -1 ){
@@ -663,6 +663,39 @@ class TicketServiceImpl implements TicketService {
         ventasEmpleado.add( ventaEmpleadoTmp )
       }
 
+      def ventasVales = []
+      def ventasValesUSD = []
+      BigDecimal montoTotalVales = BigDecimal.ZERO
+      BigDecimal montoUsdTotalVales = BigDecimal.ZERO
+      BigDecimal montoPesosUsdTotalVales = BigDecimal.ZERO
+      List<Pago> lstPagosVales = pagoRepository.findAll( pay.fecha.between(fechaStart,fechaEnd).and(pay.idFPago.eq('VMN')).
+            or(pay.idFPago.eq('VUS')).and(pay.notaVenta.factura.isNotEmpty()).and(pay.notaVenta.factura.isNotNull()) )
+      for(Pago pago : lstPagosVales){
+          BigDecimal montoDolares = BigDecimal.ZERO
+          if( pago?.idPlan != null && pago?.idPlan.isNumber() ){
+              Double dolares = 0.00
+              try{
+                montoDolares = new BigDecimal( NumberFormat.getInstance().parse(pago?.idPlan).doubleValue() )
+                dolares = NumberFormat.getInstance().parse(pago?.idPlan).doubleValue()
+              } catch (Exception e) {}
+              montoUsdTotalVales = montoUsdTotalVales.add(new BigDecimal(dolares))
+              montoPesosUsdTotalVales = montoPesosUsdTotalVales.add(pago?.monto)
+          }
+          def ventasValesTmp = [
+            factura: pago?.notaVenta?.factura,
+            referencia: pago?.clave,
+            importe: String.format('%10s', formatter.format(pago?.monto)),
+            dolares: montoDolares != '' ? String.format('%10s', formatter.format(montoDolares)) : ''
+          ]
+          if( 'VMN'.equalsIgnoreCase(pago.idFPago.trim())){
+            montoTotalVales = montoTotalVales.add(pago?.monto)
+            ventasVales.add( ventasValesTmp )
+          } else if( 'VUS'.equalsIgnoreCase(pago.idFPago.trim()) ){
+            ventasValesUSD.add( ventasValesTmp )
+          }
+
+      }
+
       def datos = [ nombre_ticket: 'ticket-resumen-diario',
           fecha_cierre: MyDateUtils.format( fechaCierre, 'yyyy-MM-dd' ),
           hora_cierre: cierreDiario.horaCierre != null ? MyDateUtils.format( new Date(), 'HH:mm:ss' ) : '',
@@ -690,6 +723,12 @@ class TicketServiceImpl implements TicketService {
           importe_dolares_recibido: dolaresPesos.compareTo(BigDecimal.ZERO) == 0 ? String.format('%10s', '-') : String.format('%10s', formatter.format( dolaresPesos.multiply( new BigDecimal( 1.00 ) ) ) ),
           importe_dolares_devoluciones: cierreDiario.dolaresDevoluciones.compareTo(BigDecimal.ZERO) == 0 ? String.format('%10s', '-') : formatter.format( cierreDiario.dolaresDevoluciones ),
           importe_dolares_pesos: cierreDiario.dolaresRecibidos.compareTo(BigDecimal.ZERO) == 0 ? String.format('%10s', '-') : String.format('%10s', formatter.format( cierreDiario.dolaresRecibidos ) ),
+          ventas_vales: ventasVales,
+          ventas_vales_usd: ventasValesUSD,
+          monto_vales_pesos: montoTotalVales.compareTo(BigDecimal.ZERO) == 0 ? String.format('%10s', '-') : String.format('%10s', formatter.format( montoTotalVales ) ),
+          monto_vales_usd: montoUsdTotalVales.compareTo(BigDecimal.ZERO) == 0 ? String.format('%10s', '-') : String.format('%10s', formatter.format( montoUsdTotalVales ) ),
+          monto_en_pesos_usd: montoPesosUsdTotalVales.compareTo(BigDecimal.ZERO) == 0 ? String.format('%10s', '-') : String.format('%10s', formatter.format( montoPesosUsdTotalVales ) ),
+          exist_vales: lstPagosVales.size() > 0 ? 'exist' : '',
           iva_vigente: montoTotalIva.compareTo(BigDecimal.ZERO) == 0 ? String.format('%10s', '-') : String.format('%10s', formatter.format( montoTotalIva ) ),
           artSinExis: lstArticulos.size() > 0 ? lstArticulos : null,
           today: MyDateUtils.format( new Date(), 'dd-MM-yyyy' ),
