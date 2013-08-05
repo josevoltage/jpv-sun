@@ -270,7 +270,7 @@ public class ReportBusiness {
             }
         }
 
-        for( NotaVenta notaCredito : lstVentas ){
+        /*for( NotaVenta notaCredito : lstVentas ){
             for(Pago pago : notaCredito.getPagos()){
                 if(pago.getIdFPago().equalsIgnoreCase("NOT") || pago.getIdFPago().equalsIgnoreCase("TR")){
                     String idEmpleado = notaCredito.getIdEmpleado();
@@ -282,7 +282,7 @@ public class ReportBusiness {
                     devoluciones.AcumulaNotasCredito( notaCredito.getFactura(), pago.getMonto(), ivaTasa, pago.getFecha(), isNotaCredito );
                 }
             }
-        }
+        }*/
 
         return lstIngresos;
     }
@@ -547,7 +547,7 @@ public class ReportBusiness {
         });
         String idFactura = " ";
         Boolean isNotaCredito = false;
-        for( DetalleNotaVenta notaCredito : lstArticulo ) {
+        /*for( DetalleNotaVenta notaCredito : lstArticulo ) {
             if( (!idFactura.equalsIgnoreCase(notaCredito.getIdFactura())) || (idFactura.equalsIgnoreCase(notaCredito.getIdFactura()) && isNotaCredito) ){
                     for( Pago pago : notaCredito.getNotaVenta().getPagos() ){
                         if( pago.getIdFormaPago().equalsIgnoreCase("NOT") ){
@@ -570,7 +570,7 @@ public class ReportBusiness {
                 }
             }
             idFactura = notaCredito.getIdFactura();
-        }
+        }*/
 
         return lstArticulos;
     }
@@ -681,7 +681,7 @@ public class ReportBusiness {
 
         Boolean isNotaCredito = false;
         String idFactura = " ";
-        for( DetalleNotaVenta notaVenta : lstVentas ){
+        /*for( DetalleNotaVenta notaVenta : lstVentas ){
             if( StringUtils.trimToEmpty(marca).length() > 0 ){
                 for( Pago pago : notaVenta.getNotaVenta().getPagos() ){
                     if( pago.getIdFPago().equalsIgnoreCase("NOT") ){
@@ -722,7 +722,7 @@ public class ReportBusiness {
                 }
             }
 
-        }
+        }*/
 
         for(IngresoPorVendedor ingreso : lstIngresos){
             Collections.sort( ingreso.getPagos(), new Comparator<IngresoPorFactura>() {
@@ -1550,7 +1550,7 @@ public class ReportBusiness {
             }
         }
 
-        for( NotaVenta nota : lstNotasVentas ){
+        /*for( NotaVenta nota : lstNotasVentas ){
             if( !TAG_CANCELADO.equalsIgnoreCase(nota.getsFactura()) ){
                 for( Pago pago : nota.getPagos()){
                     if( "NOT".equalsIgnoreCase(pago.getIdFPago()) ){
@@ -1562,7 +1562,7 @@ public class ReportBusiness {
                     }
                 }
             }
-        }
+        }*/
 
         if( lstVentasDia.size() > 0 ){
             lstVentasDia.get(0).setMontoTotal( lstVentasDia.get(0).getMontoTotal().subtract(notasCredito) );

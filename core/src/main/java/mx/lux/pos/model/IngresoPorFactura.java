@@ -168,9 +168,9 @@ public class IngresoPorFactura {
         tipo = descripcion;
         Boolean esNotaCrecdito = false;
         for( Pago pago : notaVenta.getNotaVenta().getPagos() ){
-            if( "NOT".equalsIgnoreCase(pago.getIdFPago() ) ){
+            /*if( "NOT".equalsIgnoreCase(pago.getIdFPago() ) ){
                 esNotaCrecdito = true;
-            }
+            }*/
         }
         if( !esNotaCrecdito ){
             for(int i = 0; i < notaVenta.getCantidadFac().intValue(); i++){

@@ -890,7 +890,8 @@ public class ReportServiceImpl implements ReportService {
 
         List<VentasPorDia> lstVentas = reportBusiness.obtenerVentasPorPeriodo( fechaInicio, fechaFin );
         List<VentasPorDia> lstVentasCanc = reportBusiness.obtenerVentasCanceladasPorPeriodo( fechaInicio, fechaFin );
-        List<VentasPorDia> lstNotasCredito = reportBusiness.obtenerNotasDeCreditoEnVentasPorPeriodo( fechaInicio, fechaFin );
+        //List<VentasPorDia> lstNotasCredito = reportBusiness.obtenerNotasDeCreditoEnVentasPorPeriodo( fechaInicio, fechaFin );
+        List<VentasPorDia> lstNotasCredito = new ArrayList<VentasPorDia>();
 
         Integer totalFacturas = 0;
         BigDecimal totalVentas = BigDecimal.ZERO;
@@ -915,13 +916,13 @@ public class ReportServiceImpl implements ReportService {
             totalVentasCancSinIva = totalVentasCancSinIva.add( new BigDecimal( cancelaciones.getMontoSinIva() ) );
         }
 
-        for( VentasPorDia notaCredito : lstNotasCredito ){
+        /*for( VentasPorDia notaCredito : lstNotasCredito ){
             totalNotasCredito = totalNotasCredito.add( notaCredito.getMontoTotal() );
             totalNotasCreditoSinIva = totalNotasCreditoSinIva.add( new BigDecimal( notaCredito.getMontoSinIva() ) );
             if( notaCredito.getEsNotaCredito() ){
                 totalFacturas = totalFacturas-1;
             }
-        }
+        }*/
         total = totalVentas.subtract(totalVentasCanc.abs().add(totalNotasCredito.abs()));
         totalSinIva = totalVentasSinIva.subtract(totalVentasCancSinIva.abs().add(totalNotasCreditoSinIva.abs()));
         BigDecimal promedioVentas = total.divide( new BigDecimal(totalFacturas), 10, BigDecimal.ROUND_CEILING );
@@ -1278,7 +1279,8 @@ public class ReportServiceImpl implements ReportService {
         List<VentasPorDia> lstVentas = reportBusiness.obtenerVentasDelDiaActual( fechaInicio, fechaFin, artPrecioMayorCero );
         List<VentasPorDia> lstCancelaciones = reportBusiness.obtenerCancelacionesDelDiaActual( fechaInicio, fechaFin, artPrecioMayorCero );
         List<VentasPorDia> lstVentasGen = reportBusiness.obtenerVentasDelDiaActualPorGenerico( fechaInicio, fechaFin, artPrecioMayorCero );
-        List<VentasPorDia> lstNotasCredito = reportBusiness.obtenerNotasDeCreditoEnVentasDelDiaActual( fechaInicio, fechaFin, artPrecioMayorCero );
+        //List<VentasPorDia> lstNotasCredito = reportBusiness.obtenerNotasDeCreditoEnVentasDelDiaActual( fechaInicio, fechaFin, artPrecioMayorCero );
+        List<VentasPorDia> lstNotasCredito = new ArrayList<VentasPorDia>();
         Integer totalArticulos = 0;
         Integer totalFacturas = 0;
         BigDecimal totalMonto = BigDecimal.ZERO;
