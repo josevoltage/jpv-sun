@@ -63,6 +63,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private JTextArea comments
   private JTextField itemSearch
   private List<IPromotionAvailable> promotionList
+  private List<IPromotionAvailable> promotionSelectedList
   private List<String> lstPromotioSelected
   private DefaultTableModel itemsModel
   private DefaultTableModel paymentsModel
@@ -86,6 +87,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     order = new Order()
     customer = CustomerController.findDefaultCustomer()
     promotionList = new ArrayList<PromotionAvailable>()
+    promotionSelectedList = new ArrayList<PromotionAvailable>()
     lstPromotioSelected = new ArrayList<String>()
     this.promotionDriver.init( this )
     buildUI()
@@ -400,6 +402,13 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     if ( SwingUtilities.isLeftMouseButton( ev ) ) {
       if ( ev.clickCount == 2 ) {
         new ItemDialog( ev.component, order, ev.source.selectedElement ).show()
+        if( this.promotionSelectedList.size() > 0 ){
+            List<IPromotionAvailable> lstPromo = new ArrayList<IPromotionAvailable>()
+            lstPromo.addAll( promotionSelectedList )
+            for(IPromotionAvailable promotion : lstPromo){
+                onTogglePromotion( promotion, false )
+            }
+        }
         updateOrder( order?.id )
       }
     }
@@ -605,7 +614,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   protected void onTogglePromotion( IPromotionAvailable pPromotion, Boolean pNewValue ) {
     if ( pNewValue ) {
       this.promotionDriver.requestApplyPromotion( pPromotion )
+      this.promotionSelectedList.add( pPromotion )
     } else {
+      this.promotionSelectedList.remove( pPromotion )
       this.promotionDriver.requestCancelPromotion( pPromotion )
     }
   }
