@@ -1174,7 +1174,7 @@ public class ReportBusiness {
 
         BooleanBuilder builderformaPago = new BooleanBuilder();
         if ( !formaPago.equals( null ) && !formaPago.isEmpty() && formaPago.length() > 0 ) {
-            builderformaPago.and( pago.idFormaPago.equalsIgnoreCase( formaPago ) );
+            builderformaPago.and( pago.idFPago.equalsIgnoreCase( formaPago ) );
         } else {
             builderformaPago.and( pago.idFactura.isNotNull() );
         }
