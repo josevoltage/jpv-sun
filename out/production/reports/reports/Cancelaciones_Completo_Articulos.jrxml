@@ -11,7 +11,7 @@
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField>
-				<reportElement uuid="f759e36d-e1e0-432c-abfc-beeec15c5edc" x="0" y="0" width="296" height="12"/>
+				<reportElement uuid="f759e36d-e1e0-432c-abfc-beeec15c5edc" x="0" y="0" width="173" height="12"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>

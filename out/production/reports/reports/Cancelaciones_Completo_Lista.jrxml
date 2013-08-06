@@ -59,13 +59,13 @@
 				<textFieldExpression><![CDATA[$F{idFactura}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement uuid="a22175a0-3140-4f94-98bd-afbc462aa02a" x="288" y="0" width="133" height="14"/>
+				<reportElement uuid="a22175a0-3140-4f94-98bd-afbc462aa02a" x="288" y="0" width="173" height="14"/>
 				<subreportParameter name="SUBREPORT_DIR"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{lstDetalles})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["reports/Cancelaciones_Completo_Articulos.jasper"]]></subreportExpression>
 			</subreport>
 			<textField>
-				<reportElement uuid="0c734b04-172a-4d3c-b122-922f22d3c18c" x="421" y="0" width="198" height="12"/>
+				<reportElement uuid="0c734b04-172a-4d3c-b122-922f22d3c18c" x="461" y="0" width="198" height="12"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>

@@ -104,6 +104,9 @@ class TicketServiceImpl implements TicketService {
   private PagoRepository pagoRepository
 
   @Resource
+  private PromocionRepository promocionRepository
+
+  @Resource
   private PagoExternoRepository pagoExternoRepository
 
   @Resource
@@ -254,6 +257,16 @@ class TicketServiceImpl implements TicketService {
       String textoVentaNeta = ( "${textFormatter.format( ventaNeta.intValue() )} PESOS "
           + "${ventaNeta.remainder( 1 ).unscaledValue()}/100 M.N." )
       AddressAdapter companyAddress = Registry.companyAddress
+
+      List<String> promociones = new ArrayList<>()
+      List<OrdenPromDet> lstPromociones = ordenPromDetRepository.findByIdFactura( notaVenta.id )
+      for(OrdenPromDet promo : lstPromociones){
+          Promocion promocion = promocionRepository.findOne( promo.idPromocion )
+          if(promocion != null){
+            String data = '['+promocion.idPromocion.toString()+']'+', '+promocion.descripcion
+            promociones.add( data )
+          }
+      }
       def items = [
           nombre_ticket: 'ticket-venta',
           nota_venta: notaVenta,
@@ -272,7 +285,9 @@ class TicketServiceImpl implements TicketService {
           hora: new Date().format( TIME_FORMAT ),
           texto_venta_neta: textoVentaNeta.toUpperCase(),
           fecha_entrega: notaVenta?.fechaPrometida ? DateFormatUtils.format( notaVenta.fechaPrometida, dateTextFormat, locale ) : '',
-          comentarios: lstComentario
+          comentarios: lstComentario,
+          promociones: promociones,
+          existPromo: promociones.size() > 0 ? 'existe' : ''
       ] as Map<String, Object>
       imprimeTicket( 'template/ticket-venta-si.vm', items )
       if ( Registry.isReceiptDuplicate() && pNewOrder ) {
