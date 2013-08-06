@@ -294,7 +294,7 @@ public class ReportBusiness {
         List<Modificacion> lstModificaciones = (List<Modificacion>) modificacionRepository.findAll( mod.fecha.between(fechaInicio, fechaFin),
                 mod.idEmpleado.asc(), mod.fecha.asc() );
         for ( Modificacion modificacion : lstModificaciones ) {
-            String IdEmpleado = modificacion.getIdEmpleado();
+            String IdEmpleado = modificacion.getNotaVenta().getIdEmpleado();
             FacturasPorEmpleado factura = FindOrCreate( lstFacturas, IdEmpleado );
             factura.AcumulaCancelaciones( modificacion );
         }

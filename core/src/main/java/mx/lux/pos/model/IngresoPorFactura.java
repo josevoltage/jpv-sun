@@ -14,6 +14,7 @@ public class IngresoPorFactura {
     private String marca;
     private String tipo;
     private String color;
+    private String empleado;
     private String descripcion;
     private BigDecimal montoPago;
     private BigDecimal montoPagoIVA;
@@ -136,6 +137,7 @@ public class IngresoPorFactura {
     public void AcumulaFacturas( Modificacion modificacion ) {
 
         fechaPago = modificacion.getNotaVenta().getFechaHoraFactura();
+        empleado = modificacion.getEmpleado().getNombreCompleto();
         fechaCancelacion = modificacion.getFecha();
         modId = modificacion.getId();
         idFactura = modificacion.getNotaVenta().getFactura();
@@ -443,5 +445,13 @@ public class IngresoPorFactura {
 
     public void setNoFacturas(Integer noFacturas) {
         this.noFacturas = noFacturas;
+    }
+
+    public String getEmpleado() {
+        return empleado;
+    }
+
+    public void setEmpleado(String empleado) {
+        this.empleado = empleado;
     }
 }
