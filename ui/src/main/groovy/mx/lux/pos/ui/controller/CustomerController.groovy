@@ -5,6 +5,7 @@ import mx.lux.pos.model.Cliente
 import mx.lux.pos.model.ClientePais
 import mx.lux.pos.model.Estado
 import mx.lux.pos.model.Paises
+import mx.lux.pos.model.Rep
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -210,6 +211,15 @@ class CustomerController {
             lstPaises.add( pais.pais )
         }
         return lstPaises
+    }
+
+    static List<String> states( ) {
+        List<String> lstEstados = new ArrayList<>()
+        List<Rep> estados = paisesService.obtenerEstados()
+        for(Rep estado : estados){
+            lstEstados.add( estado.nombre )
+        }
+        return lstEstados
     }
 
     static void saveOrderCountries( String pais ){

@@ -20,12 +20,23 @@ class PaisesServiceImpl implements PaisesService {
   @Resource
   private PaisesRepository paisesRepository
 
+  @Resource
+  private RepRepository repRepository
+
 
   @Override
   List<Paises> obtenerPaises( ) {
     log.debug( "obteniendo paises" )
       QPaises paises = QPaises.paises
       return paisesRepository.findAll( paises.pais.isNotEmpty(), paises.orden.desc() )
+  }
+
+
+  @Override
+  List<Paises> obtenerEstados( ) {
+      log.debug( "obteniendo estados" )
+      QRep republica = QRep.rep
+      return repRepository.findAll( republica.nombre.isNotEmpty(), republica.nombre.asc() )
   }
 
   @Override

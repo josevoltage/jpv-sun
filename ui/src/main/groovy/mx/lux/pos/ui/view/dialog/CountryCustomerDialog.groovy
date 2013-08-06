@@ -5,23 +5,30 @@ import mx.lux.pos.ui.controller.CustomerController
 import mx.lux.pos.ui.resources.UI_Standards
 import net.miginfocom.swing.MigLayout
 import java.awt.BorderLayout
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
 
 import javax.swing.*
 import java.awt.Component
 
-class CountryCustomerDialog extends JDialog {
+class CountryCustomerDialog extends JDialog implements ActionListener{
 
   private def sb = new SwingBuilder()
 
   private String selectedCountry
+  private String selectedState
   private JComboBox cbPaises
+  private JComboBox cbEstado
   private List<String> lstPaises = new ArrayList<String>()
+  private List<String> lstEstados = new ArrayList<String>()
   private JLabel lblWarning
+  private JLabel lblStates
   public boolean button = false
   private static final String MSJ_SELECCIONE_PAIS = 'Es necesario seleccionar un pa\u00eds'
 
     CountryCustomerDialog( Component parent ) {
         lstPaises = CustomerController.countries()
+        lstEstados = CustomerController.states()
         buildUI( parent )
   }
 
@@ -42,6 +49,9 @@ class CountryCustomerDialog extends JDialog {
           label( text: " ", constraints: "span 2" )
           label( text: "Pa\u00eds:" )
           cbPaises = comboBox( items: lstPaises, editable: true )
+          cbPaises.addActionListener(this)
+          lblStates = label( text: "Estado:", constraints: 'hidemode 3' )
+          cbEstado = comboBox( items: lstEstados, constraints: 'hidemode 3', editable: false )
           lblWarning = label( text: MSJ_SELECCIONE_PAIS, constraints: "span 2, hidemode 3", visible: false, foreground: UI_Standards.WARNING_FOREGROUND, )
         }
 
@@ -82,7 +92,8 @@ class CountryCustomerDialog extends JDialog {
   }
 
   protected void onButtonOk( ) {
-    selectedCountry = cbPaises.selectedItem.toString().trim()
+    selectedState = cbEstado.visible == true ? ','+cbEstado.selectedItem.toString().trim() : ''
+    selectedCountry = cbPaises.selectedItem.toString().trim()+selectedState
       if( selectedCountry.length() > 0 ){
           button = true
           dispose()
@@ -90,4 +101,16 @@ class CountryCustomerDialog extends JDialog {
           lblWarning.visible = true
       }
   }
+
+    @Override
+    void actionPerformed(ActionEvent e) {
+        if( cbPaises.selectedItem.toString().trim().equalsIgnoreCase('MEXICO') ){
+            cbEstado.visible = true
+            lblStates.visible = true
+        } else {
+            cbEstado.visible = false
+            lblStates.visible = false
+            cbEstado.selectedItem = ''
+        }
+    }
 }
