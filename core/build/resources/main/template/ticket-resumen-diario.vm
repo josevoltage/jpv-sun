@@ -49,8 +49,7 @@ ${COLUMNA_1}Neto${COLUMNA_5}${importe_efectivo_neto}
 #RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_0}${vale.factura}${COLUMNA_1}  ${vale.referencia}${COLUMNA_3}${vale.importe}
 #end
 #end
-#if( $exist_vales != '' )#RESET_TEXTO()#FUENTE_B()#DO()Total: ${COLUMNA_3}${monto_vales_pesos}#end
-
+#if( $exist_vales != '' )#RESET_TEXTO()#FUENTE_B()#DO()Total: ${COLUMNA_3}${monto_vales_pesos}#end${LF}
 #if( $ventas_vales_usd )
 #NEGRITA()#DOBLE_ALTURA()#DOBLE_ANCHURA()#FUENTE_B()#DO()VALES USD${LF}
 #RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_0}Factura${COLUMNA_1}  No. Vale${COLUMNA_3}   Importe${COLUMNA_5}   Dolares
