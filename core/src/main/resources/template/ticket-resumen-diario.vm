@@ -41,8 +41,8 @@ ${COLUMNA_1}Ingresos netos#ALINEAR_DERECHA()${COLUMNA_5}${importe_ingresos_netos
 ${COLUMNA_1}Pagos externos${COLUMNA_5}${importe_efectivo_externos}
 ${COLUMNA_1}Devoluciones${COLUMNA_5}${importe_efectivo_devoluciones}
 ${COLUMNA_1}Neto${COLUMNA_5}${importe_efectivo_neto}
+#if( $exist_vales != '' )
 
-#if( $ventas_vales )
 #NEGRITA()#DOBLE_ALTURA()#DOBLE_ANCHURA()#FUENTE_B()#DO()VALES MN${LF}
 #RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_0}Factura${COLUMNA_1}  No. Vale${COLUMNA_3}   Importe
 #foreach( $vale in $ventas_vales )
@@ -50,7 +50,7 @@ ${COLUMNA_1}Neto${COLUMNA_5}${importe_efectivo_neto}
 #end
 #end
 #if( $exist_vales != '' )#RESET_TEXTO()#FUENTE_B()#DO()Total: ${COLUMNA_3}${monto_vales_pesos}#end${LF}
-#if( $ventas_vales_usd )
+#if( $exist_vales != '' )
 #NEGRITA()#DOBLE_ALTURA()#DOBLE_ANCHURA()#FUENTE_B()#DO()VALES USD${LF}
 #RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_0}Factura${COLUMNA_1}  No. Vale${COLUMNA_3}   Importe${COLUMNA_5}   Dolares
 #foreach( $vale in $ventas_vales_usd )
@@ -58,7 +58,6 @@ ${COLUMNA_1}Neto${COLUMNA_5}${importe_efectivo_neto}
 #end
 #end
 #if( $exist_vales != '' )#RESET_TEXTO()#FUENTE_B()#DO()Total: ${COLUMNA_3}${monto_en_pesos_usd}${COLUMNA_5}${monto_vales_usd}#end${LF}
-
 #if( $artSinExis )
 #NEGRITA()#DOBLE_ALTURA()#DOBLE_ANCHURA()#FUENTE_B()#DO()EXISTENCIAS AL ${today}${LF}
 #RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_0}SKU${COLUMNA_1}Articulo${COLUMNA_5}    Precio${COLUMNA_7}  Exist.

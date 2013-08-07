@@ -669,7 +669,7 @@ class TicketServiceImpl implements TicketService {
 
       def ventasEmpleado = []
       List<Pago> lstVentasEmpleado = pagoRepository.findAll( pay.fecha.between(fechaStart,fechaEnd).and(pay.idFPago.eq('CRE')).
-          and(pay.notaVenta.factura.isNotEmpty()).and(pay.notaVenta.factura.isNotNull()))
+          and(pay.notaVenta.factura.isNotEmpty()).and(pay.notaVenta.factura.isNotNull())) as List<Pago>
       for(Pago pago: lstVentasEmpleado){
         String monto = formatter.format( pago.monto )
         def ventaEmpleadoTmp = [
@@ -685,8 +685,8 @@ class TicketServiceImpl implements TicketService {
       BigDecimal montoTotalVales = BigDecimal.ZERO
       BigDecimal montoUsdTotalVales = BigDecimal.ZERO
       BigDecimal montoPesosUsdTotalVales = BigDecimal.ZERO
-      List<Pago> lstPagosVales = pagoRepository.findAll( pay.fecha.between(fechaStart,fechaEnd).and(pay.idFPago.eq('VMN')).
-            or(pay.idFPago.eq('VUS')).and(pay.notaVenta.factura.isNotEmpty()).and(pay.notaVenta.factura.isNotNull()) )
+      List<Pago> lstPagosVales = pagoRepository.findAll( pay.fecha.between(fechaStart,fechaEnd).and((pay.idFPago.eq('VMN')).
+            or(pay.idFPago.eq('VUS'))).and(pay.notaVenta.factura.isNotEmpty()).and(pay.notaVenta.factura.isNotNull()) ) as List<Pago>
       for(Pago pago : lstPagosVales){
           BigDecimal montoDolares = BigDecimal.ZERO
           if( pago?.idPlan != null && pago?.idPlan.isNumber() ){
