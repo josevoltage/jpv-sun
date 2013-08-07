@@ -541,12 +541,14 @@ class TicketServiceImpl implements TicketService {
               current.importe = current.importe.add( resumen.importe )
               current.plan = '0'
             if( Registry.isCardPaymentInDollars(resumen.tipo) && resumen.plan.isNumber() ){
+                try{
                 montoDolares = montoDolares.add( NumberFormat.getInstance().parse( resumen.plan ) )
+                } catch (Exception e){}
                 if( montoDolares.compareTo(BigDecimal.ZERO) == 1 || montoDolares.compareTo(BigDecimal.ZERO) == -1 ){
                   current.plan = formatter.format( montoDolares.doubleValue() )
-                } else {
+                } /*else {
                   current.plan = '0'
-                }
+                }*/
               }
           }
           current.formaPago = new FormaPago()
