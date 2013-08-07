@@ -500,8 +500,8 @@ class TicketServiceImpl implements TicketService {
 
       if ( resumenesDiario.size() == 1 ) {
         ResumenDiario resumen = new ResumenDiario()
-        resumen.plan = '0'
         resumen = resumenesDiario.first()
+        resumen.plan = '0'
         BigDecimal montoDolares = BigDecimal.ZERO
         if( Registry.isCardPaymentInDollars(resumen.tipo) && resumen.plan.isNumber() ){
           montoDolares = montoDolares.add( NumberFormat.getInstance().parse( resumen.plan ) )
