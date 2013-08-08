@@ -1187,7 +1187,7 @@ public class ReportBusiness {
         }
 
         List<Pago> lstPago = ( List<Pago> ) pagoRepository.findAll( pago.fecha.between( fechaInicio, fechaFin ).
-                and( builderformaPago ).and( builderFactura ) );
+                and( builderformaPago ).and( builderFactura ), pago.notaVenta.factura.asc() );
         QBancoEmisor banco = QBancoEmisor.bancoEmisor;
         for ( Pago pagos : lstPago ) {
             String descPago = tipoPagoRepository.findOne( pagos.getIdFPago() ).getDescripcion();

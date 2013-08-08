@@ -27,6 +27,7 @@ public class TipoDescuento {
 
     public TipoDescuento(String idFactura) {
         factura = idFactura;
+        importe = BigDecimal.ZERO;
     }
 
     public void AcumulaDescuento(Descuento descuentos) {
@@ -38,7 +39,7 @@ public class TipoDescuento {
 
     public void AcumulaPago(Pago pagos, BancoEmisor banco, Boolean esPagoDolares) {
         fecha = pagos.getFecha();
-        importe = pagos.getMonto();
+        importe = importe.add(pagos.getMonto());
         claveP = pagos.geteTipoPago().getF1().equalsIgnoreCase(DOLARES_RECIBIDOS) ? "" : pagos.getClave();
         refClave = pagos.getReferenciaClave();
         idBancoEmi = pagos.getIdBancoEmisor();
