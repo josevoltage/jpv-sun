@@ -38,7 +38,7 @@ public class DescuentosPorTipo {
 
     public void AcumulaTipoPagos(Pago pago, BancoEmisor banco, String descPago, Boolean esPagoDolares) {
         descTipoPago = descPago;
-        TipoDescuento descu = FindOrCreate(descuentos, pago.getNotaVenta().getFactura());
+        TipoDescuento descu = Create(descuentos, pago.getNotaVenta().getFactura());
         descu.AcumulaPago(pago, banco, esPagoDolares);
         if (esPagoDolares) {
             if (StringUtils.trimToEmpty(pago.getIdPlan()).length() > 0) {
@@ -92,6 +92,22 @@ public class DescuentosPorTipo {
             found = new TipoDescuento(idFactura);
             lstDescuentos.add(found);
         }
+        return found;
+    }
+
+    protected TipoDescuento Create(List<TipoDescuento> lstDescuentos, String idFactura) {
+        TipoDescuento found = null;
+
+        /*for (TipoDescuento desc : lstDescuentos) {
+            if (desc.getFactura().equalsIgnoreCase(idFactura)) {
+                found = desc;
+                break;
+            }
+        }*/
+        //if (found == null) {
+            found = new TipoDescuento(idFactura);
+            lstDescuentos.add(found);
+        //}
         return found;
     }
 
