@@ -41,45 +41,35 @@
 				<textFieldExpression><![CDATA[$F{fechaPago}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="c4794767-af72-445d-9d65-bef3256e45ac" x="62" y="0" width="51" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[($F{montoPago}.compareTo( BigDecimal.ZERO ) > 0 || $F{montoPago}.compareTo( BigDecimal.ZERO ) < 0)]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="c4794767-af72-445d-9d65-bef3256e45ac" x="62" y="0" width="51" height="14" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{contador}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="c5dc636b-3101-4671-ab30-fb4dca80f69b" isPrintRepeatedValues="false" x="131" y="0" width="41" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[($F{montoPago}.compareTo( BigDecimal.ZERO ) > 0 || $F{montoPago}.compareTo( BigDecimal.ZERO ) < 0)]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="c5dc636b-3101-4671-ab30-fb4dca80f69b" isPrintRepeatedValues="false" x="131" y="0" width="41" height="14" isRemoveLineWhenBlank="true"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{marca}]]></textFieldExpression>
 			</textField>
 			<textField pattern="$#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="5f391f36-4ebd-412c-801d-6d37c92658d7" isPrintRepeatedValues="false" x="355" y="0" width="60" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[($F{montoPago}.compareTo( BigDecimal.ZERO ) > 0 || $F{montoPago}.compareTo( BigDecimal.ZERO ) < 0)]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="5f391f36-4ebd-412c-801d-6d37c92658d7" isPrintRepeatedValues="false" x="355" y="0" width="60" height="14" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{montoPagoIVA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="$#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="b8e1e75a-c331-4343-a27c-3f8dd1cf5192" isPrintRepeatedValues="false" x="415" y="0" width="60" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[($F{montoPago}.compareTo( BigDecimal.ZERO ) > 0 || $F{montoPago}.compareTo( BigDecimal.ZERO ) < 0)]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="b8e1e75a-c331-4343-a27c-3f8dd1cf5192" isPrintRepeatedValues="false" x="415" y="0" width="60" height="14" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{montoPago}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement uuid="76280c86-d027-43e5-bcb6-91d61b8304fd" x="172" y="0" width="183" height="14" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$F{mostrarArticulos} == false && $F{contador} > 0]]></printWhenExpression>
-				</reportElement>
+				<reportElement uuid="76280c86-d027-43e5-bcb6-91d61b8304fd" x="172" y="0" width="183" height="14" isRemoveLineWhenBlank="true"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{lstIdsArticulos})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["reports/Ventas_Por_Vendedor_Por_Marca_Articulos.jasper"]]></subreportExpression>
 			</subreport>
