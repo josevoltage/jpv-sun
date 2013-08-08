@@ -174,11 +174,11 @@ public class IngresoPorFactura {
                 esNotaCrecdito = true;
             }*/
         }
-        if( !esNotaCrecdito ){
+        //if( !esNotaCrecdito ){
             for(int i = 0; i < notaVenta.getCantidadFac().intValue(); i++){
                 lstIdsArticulos.add( idArticulo );
             }
-        }
+        //}
         contador = contador.add(new BigDecimal(notaVenta.getCantidadFac()));
         this.mostrarArticulos = mostrarArticulos;
     }
@@ -191,7 +191,7 @@ public class IngresoPorFactura {
         montoPagoIVA = new BigDecimal( montoPago.doubleValue()/( 1+iva ) );
         acumulaPagoIva = acumulaPagoIva.add( montoPagoIVA );
         tipo = descripcion;
-        //lstIdsArticulos.add( idArticulo );
+        lstIdsArticulos.add( idArticulo );
         contador = contador.subtract( new BigDecimal(detalles.getCantidadFac()) );
     }
 
