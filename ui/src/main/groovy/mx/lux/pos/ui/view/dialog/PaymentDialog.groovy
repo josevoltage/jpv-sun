@@ -236,7 +236,7 @@ class PaymentDialog extends JDialog implements KeyListener{
         }
         if( paymentType?.id.trim().startsWith( 'TC' ) || paymentType?.id.trim().startsWith( 'TD' ) ){
             terminals.clear()
-            terminal.removeAll()
+            terminal.removeAllItems()
             terminals = PaymentController.findActiveTerminals( paymentType?.id )
             for(Terminal term : terminals){
               terminal.addItem( term.description )
