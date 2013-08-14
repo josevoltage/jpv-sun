@@ -33,7 +33,7 @@ class EditPaymentDialog extends JDialog {
     this.tmpPayment = payment ?: new Payment()
     planId = payment.planId
     sb = new SwingBuilder()
-    terminals = PaymentController.findTerminals()
+    terminals = PaymentController.findActiveTerminals( payment.paymentTypeId )
     plans = [ ]
     buildUI()
     terminalChanged( payment )
