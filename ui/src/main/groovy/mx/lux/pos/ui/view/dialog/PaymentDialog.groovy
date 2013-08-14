@@ -306,6 +306,9 @@ class PaymentDialog extends JDialog implements KeyListener{
           } else {
               plan.selectedItem = planId
           }
+          if( tmpPayment?.paymentTypeId.trim().startsWith( 'TDM' ) ){
+              plan.selectedIndex = -1
+          }
       }
     } else {
       tmpPayment.terminalId = null

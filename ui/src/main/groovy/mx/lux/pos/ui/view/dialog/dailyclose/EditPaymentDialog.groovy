@@ -28,6 +28,7 @@ class EditPaymentDialog extends JDialog {
   private List<Terminal> terminals
   private List<Plan> plans
   private String planId
+  private final String TAG_TARJETA_DEBITO_MN = 'TDM'
 
   EditPaymentDialog( final Payment payment ) {
     this.tmpPayment = payment ?: new Payment()
@@ -80,7 +81,7 @@ class EditPaymentDialog extends JDialog {
         tmp?.description?.equalsIgnoreCase( ev.item as String )
       }
       tmpPayment.terminalId = terminalTmp?.id
-      if ( !Registry.isCardPaymentInDollars( tmpPayment.paymentTypeId ) ) {
+      if ( !Registry.isCardPaymentInDollars( tmpPayment.paymentTypeId ) && !TAG_TARJETA_DEBITO_MN.equalsIgnoreCase(tmpPayment?.paymentTypeId?.trim()) ) {
           plans = PaymentController.findPlansByTerminal( terminalTmp?.id )
           plans?.each { Plan tmp ->
               plan.addItem( tmp?.description )
