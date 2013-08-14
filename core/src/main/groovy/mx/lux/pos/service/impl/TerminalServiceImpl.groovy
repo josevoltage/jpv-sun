@@ -1,5 +1,6 @@
 package mx.lux.pos.service.impl
 
+import mx.lux.pos.model.QTerminal
 import mx.lux.pos.model.Terminal
 import mx.lux.pos.repository.TerminalRepository
 import mx.lux.pos.service.TerminalService
@@ -23,5 +24,12 @@ class TerminalServiceImpl implements TerminalService {
   List<Terminal> listarTerminales( ) {
     log.info( "listando terminales" )
     return terminalRepository.findByDescripcionNotNullOrderByDescripcionAsc() ?: [ ]
+  }
+
+  @Override
+  List<Terminal> listarTerminalesActivas( String idTipoPago ) {
+      log.info( "listando terminales Activas para el tipo de tarjeta" )
+      QTerminal terminal = QTerminal.terminal
+      return terminalRepository.findAll( terminal.afiliacion.contains( idTipoPago.trim() ) ) ?: [ ]
   }
 }

@@ -128,7 +128,7 @@ class PaymentDialog extends JDialog implements KeyListener{
 
       terminalLabel = label( visible: false, constraints: 'hidemode 3' )
       terminal = comboBox( visible: false,
-          items: terminals*.description,
+          //items: terminals*.description,
           enabled: fieldsEnabled,
           //inputVerifier: new IsSelectedVerifier(),
           itemStateChanged: terminalChanged,
@@ -234,6 +234,14 @@ class PaymentDialog extends JDialog implements KeyListener{
           }
           pack()
         }
+        if( paymentType?.id.trim().startsWith( 'TC' ) || paymentType?.id.trim().startsWith( 'TD' ) ){
+            terminals.clear()
+            terminal.removeAll()
+            terminals = PaymentController.findActiveTerminals( paymentType?.id )
+            for(Terminal term : terminals){
+              terminal.addItem( term.description )
+            }
+        }
       } else {
         tmpPayment.paymentTypeId = null
         hideNonDefault()
@@ -293,7 +301,7 @@ class PaymentDialog extends JDialog implements KeyListener{
           plan.selectedIndex = -1
       } else {
           String planId = PaymentController.findDefaultPlanCreditCard()
-          if( tmpPayment.terminalId.trim().equalsIgnoreCase(ID_TERM_AMERICANEXP.toString().trim()) ){
+          if( ID_TERM_AMERICANEXP.toString().trim().equalsIgnoreCase(tmpPayment?.terminalId?.trim()) ){
               plan.selectedItem = PLAN_TERM_AMERICANEXP
           } else {
               plan.selectedItem = planId

@@ -113,4 +113,12 @@ class PaymentController {
       return pagoService.obtenerPlanNormalTarjetaCredito()
   }
 
+  static List<Terminal> findActiveTerminals( String idTipoPago ) {
+      log.info( "obteniendo terminales Activas para la terminal" )
+      List<CoreTerminal> results = terminalService.listarTerminalesActivas( idTipoPago )
+      results?.collect { CoreTerminal terminal ->
+          Terminal.toTerminal( terminal )
+      }
+  }
+
 }
