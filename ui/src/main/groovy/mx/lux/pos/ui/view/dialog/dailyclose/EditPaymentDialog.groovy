@@ -10,6 +10,7 @@ import mx.lux.pos.ui.model.Terminal
 import net.miginfocom.swing.MigLayout
 
 import javax.swing.JLabel
+import javax.swing.JTextField
 import java.awt.event.ActionEvent
 import java.awt.event.ItemEvent
 import java.text.NumberFormat
@@ -24,6 +25,8 @@ class EditPaymentDialog extends JDialog {
   private Payment tmpPayment
   private JComboBox terminal
   private JComboBox plan
+  private JTextField planUSD
+  private JLabel lblMontoUSD
   private JLabel lblPlan
   private List<Terminal> terminals
   private List<Plan> plans
@@ -59,6 +62,8 @@ class EditPaymentDialog extends JDialog {
         terminal = comboBox( items: terminals*.description, itemStateChanged: terminalChanged )
         lblPlan = label( 'Plan', constraints: 'hidemode 3' )
         plan = comboBox( items: plans*.description, itemStateChanged: planChanged, constraints: 'hidemode 3' )
+        lblMontoUSD = label( 'Monto Dolares', constraints: 'hidemode 3', visible: false )
+        planUSD = textField( constraints: 'hidemode 3', visible: false )
       }
 
       panel( layout: new MigLayout( 'fill', '[right]' ) ) {
@@ -71,8 +76,16 @@ class EditPaymentDialog extends JDialog {
   private void doBindings( ) {
     sb.build {
       bean( terminal, selectedItem: bind( source: tmpPayment, sourceProperty: 'terminal', mutual: true ) )
-      bean( plan, selectedItem: bind( source: tmpPayment, sourceProperty: 'plan', mutual: true ) )
+      if( !Registry.isCardPaymentInDollars( tmpPayment.paymentTypeId ) ){
+        bean( plan, selectedItem: bind( source: tmpPayment, sourceProperty: 'plan', mutual: true ) )
+      } else if( Registry.isCardPaymentInDollars( tmpPayment.paymentTypeId ) ){
+        bean( planUSD, text: bind {tmpPayment.planId} )
+      }
     }
+  }
+
+  private def currencyConverter = {
+      NumberFormat.getCurrencyInstance( Locale.US ).format( it ?: 0 )
   }
 
   private def terminalChanged = { ItemEvent ev ->
@@ -88,6 +101,10 @@ class EditPaymentDialog extends JDialog {
           }
           plan.selectedIndex = -1
       } else {
+          if( Registry.isCardPaymentInDollars( tmpPayment.paymentTypeId ) ){
+            planUSD.visible = true
+            lblMontoUSD.visible = true
+          }
           lblPlan.visible = false
           plan.visible = false
           tmpPayment.planId = planId
@@ -103,11 +120,21 @@ class EditPaymentDialog extends JDialog {
         tmp?.description?.equalsIgnoreCase( payment.terminal )
       }
       tmpPayment.terminalId = terminalTmp?.id
-      plans = PaymentController.findPlansByTerminal( terminalTmp?.id )
-      plans?.each { Plan tmp ->
-        plan.addItem( tmp?.description )
+      if ( !Registry.isCardPaymentInDollars( tmpPayment.paymentTypeId ) && !TAG_TARJETA_DEBITO_MN.equalsIgnoreCase(tmpPayment?.paymentTypeId?.trim()) ) {
+          plans = PaymentController.findPlansByTerminal( terminalTmp?.id )
+          plans?.each { Plan tmp ->
+              plan.addItem( tmp?.description )
+          }
+          plan.selectedIndex = -1
+      } else {
+          if( Registry.isCardPaymentInDollars( tmpPayment.paymentTypeId ) ){
+              planUSD.visible = true
+              lblMontoUSD.visible = true
+          }
+          lblPlan.visible = false
+          plan.visible = false
+          tmpPayment.planId = planId
       }
-      plan.selectedIndex = -1
   }
 
   private def planChanged = { ItemEvent ev ->
@@ -124,8 +151,16 @@ class EditPaymentDialog extends JDialog {
   private def doSave = { ActionEvent ev ->
     JButton source = ev.source as JButton
     source.enabled = false
-    Payment payment = DailyCloseController.updatePayment( tmpPayment )
-    Boolean terminalUpdate = DailyCloseController.updateTerminal( tmpPayment.date )
+    Payment payment = new Payment()
+    Boolean terminalUpdate = false
+    if( Registry.isCardPaymentInDollars( tmpPayment.paymentTypeId ) && planUSD.text.isNumber() ){
+      tmpPayment.planId = planUSD.text
+      payment = DailyCloseController.updatePayment( tmpPayment )
+      terminalUpdate = DailyCloseController.updateTerminal( tmpPayment.date )
+    } else if( !Registry.isCardPaymentInDollars( tmpPayment.paymentTypeId ) ){
+      payment = DailyCloseController.updatePayment( tmpPayment )
+      terminalUpdate = DailyCloseController.updateTerminal( tmpPayment.date )
+    }
     if ( payment?.id && terminalUpdate ) {
       //sb.optionPane().showMessageDialog( null, 'Se ha aztualizado correctamente el Terminal y/o Plan del Pago', 'Ok', JOptionPane.INFORMATION_MESSAGE )
       dispose()
