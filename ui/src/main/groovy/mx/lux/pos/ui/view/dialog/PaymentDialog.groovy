@@ -242,6 +242,9 @@ class PaymentDialog extends JDialog implements KeyListener{
               terminal.addItem( term.description )
             }
         }
+        if( terminal.visible == true ){
+          terminal.selectedIndex = -1
+        }
       } else {
         tmpPayment.paymentTypeId = null
         hideNonDefault()
