@@ -513,7 +513,9 @@ class TicketServiceImpl implements TicketService {
         }
         resumen.formaPago = new FormaPago()
         resumen.formaPago.descripcion = String.format('%10s', formatter.format( resumen.importe ) )
-        resumenTerminales.add( resumen )
+        if( resumen.importe.compareTo(BigDecimal.ZERO) > 0 ){
+          resumenTerminales.add( resumen )
+        }
       } else {
         Collections.sort( resumenesDiario )
         ResumenDiario current = null
@@ -553,6 +555,9 @@ class TicketServiceImpl implements TicketService {
           }
           current.formaPago = new FormaPago()
           current.formaPago.descripcion = String.format('%10s', formatter.format( current.importe ) )
+          if( current.importe.compareTo(BigDecimal.ZERO) == 0 ){
+            resumenTerminales.remove( current )
+          }
         }
       }
 
