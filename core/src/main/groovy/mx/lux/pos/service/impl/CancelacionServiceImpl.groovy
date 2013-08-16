@@ -408,4 +408,12 @@ class CancelacionServiceImpl implements CancelacionService {
         return mod
     }
 
+
+    @Override
+    CausaCancelacion causaCancelacion( Integer id ) {
+        log.info("cancelacion con id: ${id}")
+        CausaCancelacion causa = causaCancelacionRepository.findOne( id )
+        log.debug("obtiene causa: ${causa?.descripcion}")
+        return causa != null ? causa : null
+    }
 }

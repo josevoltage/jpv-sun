@@ -28,4 +28,5 @@ interface CancelacionService {
 
   Modificacion registrarCambiodeEmpleado(Modificacion modificacion, String idEmpleadoAnterior, String idEmpleadoFinal)
 
+  CausaCancelacion causaCancelacion( Integer id )
 }

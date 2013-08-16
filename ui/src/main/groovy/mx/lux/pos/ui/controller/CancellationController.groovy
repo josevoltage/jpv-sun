@@ -205,4 +205,11 @@ class CancellationController {
       Order.toOrder( tmp )
     }
   }
+
+
+  static String findCancellationReasonById( Integer id ) {
+      log.info( 'obteniendo lista de causas de cancelacion' )
+      CausaCancelacion result = cancelacionService.causaCancelacion( id )
+      return result.descripcion
+  }
 }

@@ -18,6 +18,7 @@ import net.miginfocom.swing.MigLayout
 
 import java.awt.Font
 import java.awt.event.ActionEvent
+import java.text.DateFormat
 import java.text.NumberFormat
 import javax.swing.*
 import org.apache.commons.lang.StringUtils
@@ -218,9 +219,31 @@ class ShowOrderPanel extends JPanel {
           .createDialog( this, "No se puede cancelar" )
           .show()
       } else {
-        new CancellationDialog( this, order.id ).show()
-        CancellationController.refreshOrder( order )
-        doBindings()
+          String fechaVenta = order.date.format( 'dd/MM/yyyy' )
+          String hoy = new Date().format( 'dd/MM/yyyy' )
+          if( hoy.equalsIgnoreCase(fechaVenta) ){
+            String causa = CancellationController.findCancellationReasonById( 16 )
+            CancellationController.cancelOrder( order.id, causa, '' )
+            CancellationController.printCancellationPlan( order.id )
+
+            Map<Integer, String> creditRefunds = [ : ]
+            order.payments.each { Payment pmt ->
+                creditRefunds.put( pmt?.id, 'ORIGINAL' )
+            }
+            if ( CancellationController.refundPaymentsCreditFromOrder( order.id, creditRefunds ) ) {
+                CancellationController.printOrderCancellation( order.id )
+            } else {
+                sb.optionPane(
+                        message: 'Ocurrio un error al registrar devoluciones',
+                        messageType: JOptionPane.ERROR_MESSAGE
+                ).createDialog( this, 'No se registran devoluciones' )
+                        .show()
+            }
+          } else {
+            new CancellationDialog( this, order.id ).show()
+            CancellationController.refreshOrder( order )
+            doBindings()
+          }
       }
     } else {
         sb.optionPane( message: MSJ_FECHA_INCORRECTA, messageType: JOptionPane.ERROR_MESSAGE, )
