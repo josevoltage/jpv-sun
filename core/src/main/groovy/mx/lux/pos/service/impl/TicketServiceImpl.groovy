@@ -334,9 +334,22 @@ class TicketServiceImpl implements TicketService {
             String rdPlan = StringUtils.trimToEmpty(rd.plan).toUpperCase()
             String plan
             if( tipo.length() > 0 && Registry.isCardPaymentInDollars(tipo)){
+              Date fechaStart = DateUtils.truncate( rd.fechaCierre, Calendar.DAY_OF_MONTH )
+              Date fechaEnd = new Date( DateUtils.ceiling( rd.fechaCierre, Calendar.DAY_OF_MONTH ).getTime() - 1 )
+              BigDecimal dolaresCan = BigDecimal.ZERO
+              QPago pay = QPago.pago
+              List<Pago> termCancel = pagoRepository.findAll( pay.fecha.between(fechaStart,fechaEnd).and(pay.idFPago.equalsIgnoreCase(rd.tipo)).
+                      and(pay.idTerminal.equalsIgnoreCase(rd.terminal.id.trim())).and(pay.notaVenta.sFactura.equalsIgnoreCase('T')) )
+              for(Pago pago : termCancel){
+                try{
+                  BigDecimal monto = new BigDecimal(NumberFormat.getInstance().parse( pago.idPlan ).doubleValue())
+                  dolaresCan = dolaresCan.add( monto )
+                } catch( NumberFormatException e ){}
+              }
               plan = String.format( '%s %s', rdPlan, FX_TAG )
               tituloPlan = TITLE_USD_TAG
               totalDolares = totalDolares.add( NumberFormat.getInstance().parse(rd.plan) )
+              totalDolares = totalDolares.subtract( dolaresCan )
             } else {
               plan = rdPlan
               tituloPlan = TITLE_MN_TAG
