@@ -239,6 +239,8 @@ class ShowOrderPanel extends JPanel {
                 ).createDialog( this, 'No se registran devoluciones' )
                         .show()
             }
+            CancellationController.refreshOrder( order )
+            doBindings()
           } else {
             new CancellationDialog( this, order.id ).show()
             CancellationController.refreshOrder( order )
