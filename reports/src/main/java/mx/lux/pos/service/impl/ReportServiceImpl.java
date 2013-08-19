@@ -632,7 +632,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
-    public String obtenerReporteVentasMarca( Date fechaInicio, Date fechaFin, String marca, boolean noMostrarArticulos, boolean gogle, boolean oftalmico, boolean todo ) {
+    public String obtenerReporteVentasMarca( Date fechaInicio, Date fechaFin, String marca, boolean noMostrarArticulos, boolean ordenarMarca, boolean ordenarImporte ) {
         log.info( "obtenerReporteVentasMarca()" );
 
         File report = new File( System.getProperty( "java.io.tmpdir" ), "Ventas-Por-Marca.html" );
@@ -643,7 +643,7 @@ public class ReportServiceImpl implements ReportService {
 
         fechaInicio = DateUtils.truncate( fechaInicio, Calendar.DAY_OF_MONTH );
         fechaFin = new Date( DateUtils.ceiling( fechaFin, Calendar.DAY_OF_MONTH ).getTime() - 1 );
-        List<FacturasPorEmpleado> lstVentas = reportBusiness.obtenerVentasMarca( fechaInicio, fechaFin, marca.toUpperCase().trim(), noMostrarArticulos, gogle, oftalmico, todo );
+        List<FacturasPorEmpleado> lstVentas = reportBusiness.obtenerVentasMarca( fechaInicio, fechaFin, marca.toUpperCase().trim(), noMostrarArticulos, ordenarMarca, ordenarImporte );
         Integer totalArticulos = 0;
         BigDecimal totalMonto = BigDecimal.ZERO;
         for ( FacturasPorEmpleado factura : lstVentas ) {

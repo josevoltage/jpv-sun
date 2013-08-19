@@ -29,10 +29,10 @@ class TwoDatesSelectionFilterBrandArticleDialog extends JDialog {
   private JRadioButton cbArticulo
   private JRadioButton cbFactura
   private ButtonGroup reportTipo
-  private ButtonGroup lentTipo
+  private ButtonGroup orden
   private JRadioButton cbGogle
-  private JRadioButton cbOftalmico
-  private JRadioButton todo
+  private JRadioButton importe
+  private JRadioButton marca
   private Date selectedDateStart
   private Date selectedDateEnd
   private String selectedArticle
@@ -68,10 +68,11 @@ class TwoDatesSelectionFilterBrandArticleDialog extends JDialog {
           txtLine = textField( document: new UpperCaseDocument() )
           cbArticulos = checkBox( text: "Resumido", selected: true, visible: resumido )
           panel( constraints: "span", layout: new MigLayout( "wrap 3", "30[][grow,fill]30", "" ) ) {
-            lentTipo = buttonGroup()
-            /*todo = radioButton( text: "Todos", buttonGroup: lentTipo, selected: true )
-            cbGogle = radioButton( text: "Solar", buttonGroup: lentTipo )
-            cbOftalmico = radioButton( text: "Oftalmico", buttonGroup: lentTipo )*/
+          orden = buttonGroup()
+            label( text: 'Ordenar por:' )
+            marca = radioButton( text: "Marca", buttonGroup: orden, selected: true )
+            importe = radioButton( text: "Importe", buttonGroup: orden )
+            //cbOftalmico = radioButton( text: "Oftalmico", buttonGroup: lentTipo )
           }
         }
 
@@ -120,16 +121,16 @@ class TwoDatesSelectionFilterBrandArticleDialog extends JDialog {
     return selectedArticle
   }
 
-  boolean getCbGogle( ) {
-    return cbGogle.selected
+  boolean getmarca( ) {
+    return marca.selected
   }
 
   boolean getCbArticulos( ) {
     return cbArticulos.selected
   }
 
-  boolean getCbTodo( ) {
-    return todo.selected
+  boolean getImporte( ) {
+    return importe.selected
   }
 
   boolean getCbOftalmico( ) {

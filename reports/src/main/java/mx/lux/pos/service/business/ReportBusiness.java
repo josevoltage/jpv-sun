@@ -447,7 +447,7 @@ public class ReportBusiness {
         return found;
     }
 
-    public List<FacturasPorEmpleado> obtenerVentasMarca( Date fechaInicio, Date fechaFin, String marca, boolean noMostrarArticulos, boolean gogle, boolean oftalmico, boolean todo ) {
+    public List<FacturasPorEmpleado> obtenerVentasMarca( Date fechaInicio, Date fechaFin, String marca, boolean noMostrarArticulos, boolean ordenarMarca, boolean ordenarImporte ) {
 
         QDetalleNotaVenta venta = QDetalleNotaVenta.detalleNotaVenta;
         log.info( "Verifica que se halla seleccionado un articulo especifico" );
@@ -459,7 +459,7 @@ public class ReportBusiness {
             builderArt.and( venta.precioUnitFinal.isNotNull() );
         }
 
-        BooleanBuilder builderGogle = new BooleanBuilder();
+        /*BooleanBuilder builderGogle = new BooleanBuilder();
         if ( gogle ) {
             builderGogle.and( venta.articulo.idGenTipo.eq( "G" ) );
         } else {
@@ -478,7 +478,7 @@ public class ReportBusiness {
             builder.and( venta.precioUnitFinal.isNotNull() );
         } else {
             builder.and( venta.precioUnitFinal.isNotNull() );
-        }
+        }*/
 
         Parametro ivaVigenteParam = parametroRepository.findOne( TipoParametro.IVA_VIGENTE.getValue() );
         Impuesto iva = impuestoRepository.findOne( ivaVigenteParam.getValor() );
@@ -486,7 +486,7 @@ public class ReportBusiness {
         List<FacturasPorEmpleado> lstArticulos = new ArrayList<FacturasPorEmpleado>();
         List<DetalleNotaVenta> lstArticulo = ( List<DetalleNotaVenta> ) detalleNotaVentaRepository.findAll( venta.notaVenta.fechaHoraFactura.between( fechaInicio, fechaFin ).
                 and( venta.notaVenta.factura.isNotNull() ).and( venta.notaVenta.factura.isNotEmpty() ).and(venta.precioUnitLista.ne(BigDecimal.ZERO)).
-                and(venta.notaVenta.sFactura.ne(TAG_CANCELADO)).and( builder ).and( builderOft ).and( builderGogle ).and( builderArt ), venta.articulo.marca.asc() );
+                and(venta.notaVenta.sFactura.ne(TAG_CANCELADO)).and( builderArt ), venta.articulo.marca.asc() );
 
         QModificacion modificacion = QModificacion.modificacion;
         List<Modificacion> lstCancelaciones = ( List<Modificacion> ) modificacionRepository.findAll( modificacion.fecha.between(fechaInicio,fechaFin).
@@ -539,12 +539,22 @@ public class ReportBusiness {
             }
         }
 
-        Collections.sort( lstArticulo, new Comparator<DetalleNotaVenta>() {
-            @Override
-            public int compare(DetalleNotaVenta o1, DetalleNotaVenta o2) {
-                return o1.getIdFactura().compareTo(o2.getIdFactura());
-            }
-        });
+
+        if( ordenarMarca ){
+            Collections.sort( lstArticulos, new Comparator<FacturasPorEmpleado>() {
+                @Override
+                public int compare(FacturasPorEmpleado o1, FacturasPorEmpleado o2) {
+                    return o1.getMarca().compareTo(o2.getMarca());
+                }
+            });
+        } else if( ordenarImporte ){
+            Collections.sort( lstArticulos, new Comparator<FacturasPorEmpleado>() {
+                @Override
+                public int compare(FacturasPorEmpleado o1, FacturasPorEmpleado o2) {
+                    return o2.getImporte().compareTo(o1.getImporte());
+                }
+            });
+        }
         String idFactura = " ";
         Boolean isNotaCredito = false;
         /*for( DetalleNotaVenta notaCredito : lstArticulo ) {

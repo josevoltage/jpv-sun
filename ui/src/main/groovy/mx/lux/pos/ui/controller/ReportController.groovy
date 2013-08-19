@@ -208,12 +208,11 @@ class ReportController {
     Date reportForDateStart = twoDatesSelectionFilterBrandArticleDialog.getSelectedDateStart()
     Date reportForDateEnd = twoDatesSelectionFilterBrandArticleDialog.getSelectedDateEnd()
     boolean articulos = twoDatesSelectionFilterBrandArticleDialog.getCbArticulos()
-    boolean solar = false//twoDatesSelectionFilterBrandDialog.getCbGogle()
-    boolean oftalmico = false//twoDatesSelectionFilterBrandDialog.getCbOftalmico()
-    boolean todo = true//twoDatesSelectionFilterBrandDialog.getCbTodo()
+    boolean orderByBrand = twoDatesSelectionFilterBrandArticleDialog.marca
+    boolean orderByAmount = twoDatesSelectionFilterBrandArticleDialog.importe
     if ( reportForDateStart != null && reportForDateEnd != null && twoDatesSelectionFilterBrandArticleDialog.button ) {
       log.debug( "Imprime el reporte de Ventas por Marca" )
-      reportService.obtenerReporteVentasMarca( reportForDateStart, reportForDateEnd, articuloDesc, articulos, solar, oftalmico, todo )
+      reportService.obtenerReporteVentasMarca( reportForDateStart, reportForDateEnd, articuloDesc, articulos, orderByBrand, orderByAmount )
     } else {
       log.debug( "Cancelar_continuar" )
     }
