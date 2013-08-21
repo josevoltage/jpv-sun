@@ -282,7 +282,7 @@ class TicketServiceImpl implements TicketService {
           empleado: empleado,
           sucursal: notaVenta.sucursal,
           fecha: DateFormatUtils.format( notaVenta.fechaHoraFactura, dateTextFormat, locale ),
-          hora: new Date().format( TIME_FORMAT ),
+          hora: notaVenta.horaEntrega.format( TIME_FORMAT ),
           texto_venta_neta: textoVentaNeta.toUpperCase(),
           fecha_entrega: notaVenta?.fechaPrometida ? DateFormatUtils.format( notaVenta.fechaPrometida, dateTextFormat, locale ) : '',
           comentarios: lstComentario,
