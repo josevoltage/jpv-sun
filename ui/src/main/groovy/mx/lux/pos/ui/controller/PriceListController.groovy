@@ -84,7 +84,7 @@ class PriceListController {
         def priceList = initializePriceList( header, file.name )
         lines.tail().each {
          String line = it.replace( "||", "| |")
-         line = line.replace( "| ||", "| | |")
+         line = line.replace( "||", "| |")
          def elements = line?.split( /\|/ )
             log.debug( "Tamaño de la cadena:: ${elements.size()}" )
           if ( elements?.size() >= 13 ) {
