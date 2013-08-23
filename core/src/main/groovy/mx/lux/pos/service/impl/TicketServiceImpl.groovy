@@ -49,6 +49,11 @@ class TicketServiceImpl implements TicketService {
   private static final String TAG_TRANSFER = 'TR'
   private static final String TAG_DEPOSITO_MN = 'EFECTIVO'
   private static final String TAG_DEPOSITO_US = 'DOLARES'
+  private static final String TAG_TRANSACCION_VENTA = 'VENTA'
+  private static final String TAG_TRANSACCION_ENTRADA = 'ENTRADA'
+  private static final String TAG_TRANSACCION_SALIDA = 'SALIDA'
+  private static final String TAG_TRANSACCION_ENTRADA_TIENDA = 'ENTRADA_TIENDA'
+  private static final String TAG_TRANSACCION_SALIDA_TIENDA = 'SALIDA_TIENDA'
 
   private static final BigDecimal CERO_BIGDECIMAL = 0.005
 
@@ -1646,5 +1651,84 @@ class TicketServiceImpl implements TicketService {
     }
   }
 
+  void imprimeTransaccionesInventario( Date fechaTransacciones ){
+    log.debug( "imprimeTransaccionesInventario" )
+
+    if( fechaTransacciones != null ){
+    DateFormat df = new SimpleDateFormat( "dd/MM/yyyy HH:mm" )
+    Sucursal site = ServiceFactory.sites.obtenSucursalActual()
+    Date fechaStart = DateUtils.truncate( fechaTransacciones, Calendar.DAY_OF_MONTH )
+    Date fechaEnd = new Date( DateUtils.ceiling( fechaTransacciones, Calendar.DAY_OF_MONTH ).getTime() - 1 )
+    List <TransaccionesDiarias> lstEntradas = new ArrayList<>()
+    List <TransaccionesDiarias> lstSalidas = new ArrayList<>()
+    List <TransaccionesDiarias> lstVentas = new ArrayList<>()
+    Integer entradas = 0
+    Integer salidas = 0
+    Integer ventas = 0
+    QTransInvDetalle detalle = QTransInvDetalle.transInvDetalle
+    List <TransInvDetalle> lstDetalles = transInvDetalleRepository.findAll( detalle.transInv.fecha.eq(fechaTransacciones),
+                                                                            detalle.sku.asc() )
+    for(TransInvDetalle transaccion : lstDetalles ){
+      Articulo articulo = articuloRepository.findOne( transaccion.sku )
+      if( articulo.idGenerico.trim().equalsIgnoreCase('A') ){
+        if(transaccion.idTipoTrans.trim().equalsIgnoreCase(TAG_TRANSACCION_ENTRADA) ||
+                transaccion.idTipoTrans.trim().equalsIgnoreCase(TAG_TRANSACCION_ENTRADA_TIENDA) ){
+            TransaccionesDiarias transacciones = findOrCreate( lstEntradas, articulo.marca )
+            transacciones.AcumulaTransacciones( transaccion )
+        }
+        if(transaccion.idTipoTrans.trim().equalsIgnoreCase(TAG_TRANSACCION_SALIDA) ||
+                transaccion.idTipoTrans.trim().equalsIgnoreCase(TAG_TRANSACCION_SALIDA_TIENDA) ){
+            TransaccionesDiarias transacciones = findOrCreate( lstSalidas, articulo.marca )
+            transacciones.AcumulaTransacciones( transaccion )
+        }
+        if(transaccion.idTipoTrans.trim().equalsIgnoreCase(TAG_TRANSACCION_VENTA) ){
+            TransaccionesDiarias transacciones = findOrCreate( lstVentas, articulo.marca )
+            transacciones.AcumulaTransacciones( transaccion )
+        }
+      }
+    }
+    for(TransaccionesDiarias entrada : lstEntradas){
+      entradas = entradas+entrada.cantidad
+    }
+    for(TransaccionesDiarias salida : lstSalidas){
+        salidas = salidas+salida.cantidad
+    }
+    for(TransaccionesDiarias venta : lstVentas){
+       ventas = ventas+venta.cantidad
+    }
+
+    def tkTransacciones = [
+        effDate: df.format( new Date() ),
+        thisSite: TransInvAdapter.instance.getText( site ),
+        entradas: lstEntradas,
+        cantEntradas: entradas,
+        existEntradas: lstEntradas.size() > 0 ? true : false,
+        salidas: lstSalidas,
+        cantSalidas: salidas,
+        existSalidas: lstSalidas.size() > 0 ? true : false,
+        ventas: lstVentas,
+        cantVentas: ventas,
+        existVentas: lstVentas.size() > 0 ? true : false,
+    ]
+      this.imprimeTicket( 'template/ticket-transacciones.vm', tkTransacciones )
+    } else {
+      log.debug( String.format( 'Fecha (%d) not found.', fechaTransacciones ) )
+    }
+  }
+
+  private TransaccionesDiarias findOrCreate( List<TransaccionesDiarias> lstTransacciones, String marca ) {
+      TransaccionesDiarias found = null
+      for ( TransaccionesDiarias transaccion : lstTransacciones ) {
+          if ( transaccion.marca.equals( marca ) ) {
+              found = transaccion
+              break
+          }
+      }
+      if ( found == null ) {
+          found = new TransaccionesDiarias( marca )
+          lstTransacciones.add( found )
+      }
+      return found
+  }
 
 }

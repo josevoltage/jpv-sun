@@ -1,6 +1,7 @@
 package mx.lux.pos.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +19,10 @@ public class FacturasPorEmpleado {
     private String tipo;
     private String idGenerico;
     private Integer cantidad;
+    private Integer facturas;
     private BigDecimal importe;
     private BigDecimal importeSinIva;
+    private BigDecimal promedio;
     private Integer idArticulo;
     private List<String> lstArticulos;
     private Boolean noMostrarArticulos;
@@ -32,9 +35,11 @@ public class FacturasPorEmpleado {
         facturasVendedor = new ArrayList<IngresoPorFactura>();
         cantidad = 0;
         importe = BigDecimal.ZERO;
+        promedio = BigDecimal.ZERO;
         importeSinIva = BigDecimal.ZERO;
         lstArticulos = new ArrayList<String>();
         noMostrarArticulos = false;
+        facturas = 0;
     }
 
     public void AcumulaVentas() {
@@ -146,6 +151,7 @@ public class FacturasPorEmpleado {
                 lstArticulos.add( descArticulo );
             }
         }
+        facturas = facturas + 1;
         cantidad = cantidad + ventas.getCantidadFac().intValue();
         articulo = ventas.getArticulo().getArticulo();
         marca = ventas.getArticulo().getMarca();
@@ -155,6 +161,7 @@ public class FacturasPorEmpleado {
         importeSinIva = new BigDecimal(importe.doubleValue()/( 1+iva ) );
         idArticulo = ventas.getArticulo().getId();
         this.noMostrarArticulos = mostrarArticulos;
+        promedio = importe.divide(new BigDecimal(cantidad), 10, RoundingMode.CEILING );
     }
 
     public void AcumulaCancelaciones( DetalleNotaVenta ventas, Double iva ){
@@ -273,5 +280,21 @@ public class FacturasPorEmpleado {
 
     public void setIdGenerico(String idGenerico) {
         this.idGenerico = idGenerico;
+    }
+
+    public Integer getFacturas() {
+        return facturas;
+    }
+
+    public void setFacturas(Integer facturas) {
+        this.facturas = facturas;
+    }
+
+    public BigDecimal getPromedio() {
+        return promedio;
+    }
+
+    public void setPromedio(BigDecimal promedio) {
+        this.promedio = promedio;
     }
 }

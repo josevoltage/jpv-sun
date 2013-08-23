@@ -447,7 +447,8 @@ public class ReportBusiness {
         return found;
     }
 
-    public List<FacturasPorEmpleado> obtenerVentasMarca( Date fechaInicio, Date fechaFin, String marca, boolean noMostrarArticulos, boolean ordenarMarca, boolean ordenarImporte ) {
+    public List<FacturasPorEmpleado> obtenerVentasMarca( Date fechaInicio, Date fechaFin, String marca, boolean noMostrarArticulos,
+                                                         boolean ordenarMarca, boolean ordenarImporte, boolean artTodos, boolean artAccesorios, boolean artArmazones ) {
 
         QDetalleNotaVenta venta = QDetalleNotaVenta.detalleNotaVenta;
         log.info( "Verifica que se halla seleccionado un articulo especifico" );
@@ -459,26 +460,26 @@ public class ReportBusiness {
             builderArt.and( venta.precioUnitFinal.isNotNull() );
         }
 
-        /*BooleanBuilder builderGogle = new BooleanBuilder();
-        if ( gogle ) {
-            builderGogle.and( venta.articulo.idGenTipo.eq( "G" ) );
+        BooleanBuilder builderAccesorios = new BooleanBuilder();
+        if ( artAccesorios ) {
+            builderAccesorios.and( venta.articulo.idGenerico.eq( "E" ) );
         } else {
-            builderGogle.and( venta.precioUnitFinal.isNotNull() );
+            builderAccesorios.and( venta.precioUnitFinal.isNotNull() );
         }
 
-        BooleanBuilder builderOft = new BooleanBuilder();
-        if ( oftalmico ) {
-            builderOft.and( venta.articulo.idGenTipo.eq( "O" ) );
+        BooleanBuilder builderArmazones = new BooleanBuilder();
+        if ( artArmazones ) {
+            builderArmazones.and( venta.articulo.idGenerico.eq( "A" ) );
         } else {
-            builderOft.and( venta.precioUnitFinal.isNotNull() );
+            builderArmazones.and( venta.precioUnitFinal.isNotNull() );
         }
 
-        BooleanBuilder builder = new BooleanBuilder();
-        if ( todo ) {
-            builder.and( venta.precioUnitFinal.isNotNull() );
+        BooleanBuilder builderTodo = new BooleanBuilder();
+        if ( artTodos ) {
+            builderTodo.and( venta.precioUnitFinal.isNotNull() );
         } else {
-            builder.and( venta.precioUnitFinal.isNotNull() );
-        }*/
+            builderTodo.and( venta.precioUnitFinal.isNotNull() );
+        }
 
         Parametro ivaVigenteParam = parametroRepository.findOne( TipoParametro.IVA_VIGENTE.getValue() );
         Impuesto iva = impuestoRepository.findOne( ivaVigenteParam.getValor() );
@@ -486,7 +487,8 @@ public class ReportBusiness {
         List<FacturasPorEmpleado> lstArticulos = new ArrayList<FacturasPorEmpleado>();
         List<DetalleNotaVenta> lstArticulo = ( List<DetalleNotaVenta> ) detalleNotaVentaRepository.findAll( venta.notaVenta.fechaHoraFactura.between( fechaInicio, fechaFin ).
                 and( venta.notaVenta.factura.isNotNull() ).and( venta.notaVenta.factura.isNotEmpty() ).and(venta.precioUnitLista.ne(BigDecimal.ZERO)).
-                and(venta.notaVenta.sFactura.ne(TAG_CANCELADO)).and( builderArt ), venta.articulo.marca.asc() );
+                and(venta.notaVenta.sFactura.ne(TAG_CANCELADO)).and( builderArt ).and(builderAccesorios).
+                and(builderArmazones).and(builderTodo), venta.articulo.marca.asc() );
 
         QModificacion modificacion = QModificacion.modificacion;
         List<Modificacion> lstCancelaciones = ( List<Modificacion> ) modificacionRepository.findAll( modificacion.fecha.between(fechaInicio,fechaFin).

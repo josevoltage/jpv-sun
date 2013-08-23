@@ -26,11 +26,11 @@ class TwoDatesSelectionFilterBrandArticleDialog extends JDialog {
   private JTextField txtDateEnd
   private JTextField txtLine
   private JCheckBox cbArticulos
-  private JRadioButton cbArticulo
-  private JRadioButton cbFactura
+  private JRadioButton cbArmazon
+  private JRadioButton cbAccesorio
+  private JRadioButton cbTodo
   private ButtonGroup reportTipo
   private ButtonGroup orden
-  private JRadioButton cbGogle
   private JRadioButton importe
   private JRadioButton marca
   private Date selectedDateStart
@@ -52,7 +52,7 @@ class TwoDatesSelectionFilterBrandArticleDialog extends JDialog {
         resizable: true,
         pack: true,
         modal: true,
-        preferredSize: [ 450, 300 ],
+        preferredSize: [ 450, 350 ],
         location: [ 200, 250 ],
     ) {
       panel() {
@@ -66,13 +66,17 @@ class TwoDatesSelectionFilterBrandArticleDialog extends JDialog {
           txtDateEnd = textField()
           label( text: "Linea:" )
           txtLine = textField( document: new UpperCaseDocument() )
-          cbArticulos = checkBox( text: "Resumido", selected: true, visible: resumido )
-          panel( constraints: "span", layout: new MigLayout( "wrap 3", "30[][grow,fill]30", "" ) ) {
+          panel( constraints: 'span 2', layout: new MigLayout( "wrap 4", "[fill]20[fill][fill][fill]", "" ) ) {
+          reportTipo = buttonGroup()
+            cbArticulos = checkBox( text: "Resumido", selected: true, visible: resumido )
+            cbTodo = radioButton( text: "Todo", buttonGroup: reportTipo, selected: true )
+            cbArmazon = radioButton( text: "Armazones", buttonGroup: reportTipo )
+            cbAccesorio = radioButton( text: "Accesorios", buttonGroup: reportTipo )
           orden = buttonGroup()
             label( text: 'Ordenar por:' )
             marca = radioButton( text: "Marca", buttonGroup: orden, selected: true )
             importe = radioButton( text: "Importe", buttonGroup: orden )
-            //cbOftalmico = radioButton( text: "Oftalmico", buttonGroup: lentTipo )
+            label( text:' ')
           }
         }
 
@@ -123,6 +127,18 @@ class TwoDatesSelectionFilterBrandArticleDialog extends JDialog {
 
   boolean getmarca( ) {
     return marca.selected
+  }
+
+  boolean getTodo( ) {
+    return cbTodo.selected
+  }
+
+  boolean getAccesorios( ) {
+    return cbAccesorio.selected
+  }
+
+  boolean getArmazon( ) {
+    return cbArmazon.selected
   }
 
   boolean getCbArticulos( ) {

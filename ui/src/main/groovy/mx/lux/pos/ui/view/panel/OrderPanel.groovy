@@ -46,6 +46,8 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private static final String TXT_VENTA_NEGATIVA_TITULO = 'Error al agregar artículo'
   private static final String TXT_FECHA_INCORRECTA_TITULO = 'Error al crear orden'
   private static final String TXT_ARTICULO_PROMOCIONAL_TITULO = 'Articulo Promocional'
+  static final String MSG_NO_STOCK = 'Articulo sin existencia ¿Desea continuar?'
+  static final String TXT_NO_STOCK = 'Articulo sin existencia'
   private static final String MSJ_QUITAR_PAGOS = 'Elimine los pagos antes de cerrar la sesion.'
   private static final String TXT_QUITAR_PAGOS = 'Error al cerrar sesion.'
   private static final String MSJ_CAMBIAR_VENDEDOR = 'Esta seguro que desea salir de esta sesion.'
@@ -365,14 +367,31 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         }
         if ( results?.any() ) {
           if ( results.size() == 1 ) {
-            Item item = results.first()
-            validarVentaNegativa( item )
+              if( results?.first().stock <= 0 ){
+                Integer question =JOptionPane.showConfirmDialog( new JDialog(), MSG_NO_STOCK, TXT_NO_STOCK,
+                        JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
+                if( question == 0){
+                    Item item = results.first()
+                    validarVentaNegativa( item )
+                }
+              } else {
+                Item item = results.first()
+                validarVentaNegativa( item )
+              }
           } else {
             SuggestedItemsDialog dialog = new SuggestedItemsDialog( itemSearch, input, results )
             dialog.show()
             Item item = dialog.item
             if ( item?.id ) {
-              validarVentaNegativa( item )
+              if( item?.stock <= 0 ){
+                Integer question =JOptionPane.showConfirmDialog( new JDialog(), MSG_NO_STOCK, TXT_NO_STOCK,
+                        JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
+                if( question == 0){
+                    validarVentaNegativa( item )
+                }
+              } else {
+                validarVentaNegativa( item )
+              }
             }
           }
           updateOrder( order?.id )

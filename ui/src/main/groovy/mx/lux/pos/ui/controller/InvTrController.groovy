@@ -9,6 +9,7 @@ import mx.lux.pos.model.TransInv
 import mx.lux.pos.service.ArticuloService
 import mx.lux.pos.service.InventarioService
 import mx.lux.pos.service.SucursalService
+import mx.lux.pos.ui.MainWindow
 import mx.lux.pos.ui.model.InvTrViewMode
 import mx.lux.pos.ui.model.Session
 import mx.lux.pos.ui.model.SessionItem
@@ -26,6 +27,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import javax.annotation.Resource
+import javax.swing.JDialog
 import javax.swing.JFileChooser
 import javax.swing.JOptionPane
 import javax.swing.JTextField
@@ -344,15 +346,23 @@ class InvTrController {
     String seed = part[0]
     List<Articulo> partList = ItemController.findPartsByQuery( seed, false )
     if(seed.startsWith('00')){
-        //seed = seed.substring(1)
       seed = seed.replaceFirst("^0*", "")
     }
     if ( ( partList.size() == 0 ) && ( seed.length() > 6 ) ) {
       partList = ItemController.findPartsByQuery( seed.substring( 0, 6 ), false )
     }
     if ( partList?.any() ) {
-      if ( partList.size() == 1 ) {
-        dispatchPartsSelected( pView, partList )
+      if ( partList.size() == 1 )  {
+        if( partList.first().cantExistencia <= 0 && pView.data.viewMode.trType.tipoMov.trim().equalsIgnoreCase('S') ){
+          Integer question =JOptionPane.showConfirmDialog( new JDialog(), pView.panel.MSG_NO_STOCK, pView.panel.TXT_NO_STOCK,
+                  JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
+          if( question == 0){
+            dispatchPartsSelected( pView, partList )
+          }
+        } else {
+          dispatchPartsSelected( pView, partList )
+        }
+
       } else {
         if ( dlgPartSelection == null ) {
           dlgPartSelection = new PartSelectionDialog( pView.panel )
@@ -365,8 +375,16 @@ class InvTrController {
         dlgPartSelection.activate()
         List<Articulo> selection = dlgPartSelection.getSelection()
         if ( selection != null ) {
-          log.debug( String.format( "[Controller] %d Selected, (%d) %s", selection.size(), selection[ 0 ].id, selection[ 0 ].descripcion ) )
-          dispatchPartsSelected( pView, selection )
+          if( selection.cantExistencia <= 0 && pView.data.viewMode.trType.tipoMov.trim().equalsIgnoreCase('S') ){
+              Integer question =JOptionPane.showConfirmDialog( new JDialog(), pView.panel.MSG_NO_STOCK, pView.panel.TXT_NO_STOCK,
+                      JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
+              if( question == 0){
+                  dispatchPartsSelected( pView, selection )
+              }
+          } else {
+            log.debug( String.format( "[Controller] %d Selected, (%d) %s", selection.size(), selection[ 0 ].id, selection[ 0 ].descripcion ) )
+            dispatchPartsSelected( pView, selection )
+          }
         }
       }
     } else {
@@ -501,6 +519,11 @@ class InvTrController {
   void requestViewModeChange( InvTrView pView ) {
     log.debug( String.format( "[Controller] View Mode change: <%s>", pView.panel.comboViewMode.selection ) )
     fireChangeViewMode( pView, pView.panel.comboViewMode.selection )
+  }
+
+  void requestPrintTransactions( Date fechaTicket ){
+    log.debug( "requestPrintTransactions" )
+    ServiceManager.ticketService.imprimeTransaccionesInventario( fechaTicket )
   }
 
 }

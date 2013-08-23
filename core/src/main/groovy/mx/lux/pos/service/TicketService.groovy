@@ -36,4 +36,6 @@ interface TicketService {
 
   void imprimeCotizacion( Integer pQuoteNbr )
 
+  void imprimeTransaccionesInventario( Date fechaTransacciones )
+
 }

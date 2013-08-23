@@ -11,6 +11,7 @@ import mx.lux.pos.ui.view.action.ExitAction
 import mx.lux.pos.ui.view.dialog.ChangePasswordDialog
 import mx.lux.pos.ui.view.dialog.ChangeSellerDialog
 import mx.lux.pos.ui.view.dialog.PartClassDialog
+import mx.lux.pos.ui.view.dialog.TransactionsDateSelectionDialog
 import net.miginfocom.swing.MigLayout
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -92,6 +93,7 @@ class MainWindow extends JFrame implements KeyListener {
   private JMenuItem salesByPeriodMenuItem
   private JMenuItem changePasswordMenuItem
   private JMenuItem changeSellerMenuItem
+  private JMenuItem ticketInventoryTransactionsMenuItem
   private PromotionService promotionService
 
 
@@ -183,6 +185,7 @@ class MainWindow extends JFrame implements KeyListener {
                 generateInventoryFile.visible = userLoggedIn
                 loadPartsMenuItem.visible = userLoggedIn
                 loadPartClassMenuItem.visible = userLoggedIn
+                ticketInventoryTransactionsMenuItem.visible = userLoggedIn
               }
           ) {
             inventoryTransactionMenuItem = menuItem( text: 'Transacciones',
@@ -198,6 +201,11 @@ class MainWindow extends JFrame implements KeyListener {
             )
             inventoryOhQueryMenuItem = menuItem( text: "Ticket Existencias", visible: true,
                 actionPerformed: { InvQryController.instance.requestInvOhTicket() }
+            )
+            ticketInventoryTransactionsMenuItem = menuItem( text: "Ticket Transacciones de Inventario", visible: true,
+                actionPerformed: { TransactionsDateSelectionDialog dialog = new TransactionsDateSelectionDialog()
+                                    dialog.show()
+                }
             )
             loadPartsMenuItem = menuItem( text: TEXT_LOAD_PARTS_TITLE,
                 visible: true,

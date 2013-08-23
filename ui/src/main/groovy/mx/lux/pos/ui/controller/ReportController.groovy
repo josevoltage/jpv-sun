@@ -210,9 +210,15 @@ class ReportController {
     boolean articulos = twoDatesSelectionFilterBrandArticleDialog.getCbArticulos()
     boolean orderByBrand = twoDatesSelectionFilterBrandArticleDialog.marca
     boolean orderByAmount = twoDatesSelectionFilterBrandArticleDialog.importe
+
+    boolean artTodos = twoDatesSelectionFilterBrandArticleDialog.todo
+    boolean artAccesorios = twoDatesSelectionFilterBrandArticleDialog.accesorios
+    boolean artArmazones = twoDatesSelectionFilterBrandArticleDialog.armazon
+
     if ( reportForDateStart != null && reportForDateEnd != null && twoDatesSelectionFilterBrandArticleDialog.button ) {
       log.debug( "Imprime el reporte de Ventas por Marca" )
-      reportService.obtenerReporteVentasMarca( reportForDateStart, reportForDateEnd, articuloDesc, articulos, orderByBrand, orderByAmount )
+      reportService.obtenerReporteVentasMarca( reportForDateStart, reportForDateEnd, articuloDesc, articulos,
+              orderByBrand, orderByAmount, artTodos, artAccesorios, artArmazones )
     } else {
       log.debug( "Cancelar_continuar" )
     }
@@ -227,9 +233,9 @@ class ReportController {
     String articuloDesc = twoDatesSelectionFilterBrandDialog.getselectedArticle()
     Date reportForDateStart = twoDatesSelectionFilterBrandDialog.getSelectedDateStart()
     Date reportForDateEnd = twoDatesSelectionFilterBrandDialog.getSelectedDateEnd()
-    boolean solar = false//twoDatesSelectionFilterBrandArticleDialog.getCbGogle()
-    boolean oftalmico = false//twoDatesSelectionFilterBrandArticleDialog.getCbOftalmico()
-    boolean todo = true//twoDatesSelectionFilterBrandArticleDialog.getCbTodo()
+    boolean solar = false
+    boolean oftalmico = false
+    boolean todo = true
     if ( reportForDateStart != null && reportForDateEnd != null && twoDatesSelectionFilterBrandDialog.button ) {
       log.debug( "Imprime el reporte de Ventas por Vendedor por Marca" )
       reportService.obtenerReporteVentasVendedorporMarca( reportForDateStart, reportForDateEnd, articuloDesc, false, solar, oftalmico, todo )

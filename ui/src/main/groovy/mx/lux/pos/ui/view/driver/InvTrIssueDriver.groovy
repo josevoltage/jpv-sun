@@ -1,5 +1,6 @@
 package mx.lux.pos.ui.view.driver
 
+import mx.lux.pos.model.Sucursal
 import mx.lux.pos.ui.controller.InvTrController
 import mx.lux.pos.ui.model.InvTrSku
 import mx.lux.pos.ui.model.adapter.InvTrAdapter
@@ -149,9 +150,10 @@ class InvTrIssueDriver extends InvTrDriver {
     pView.panel.browserSku.fireTableDataChanged( )
     pView.panel.txtType.setText( String.format( '%d', quantity ) )
       if(quantity > 0){
-          pView.panel.comboSiteTo.setSelection( pView.panel.comboSiteTo.selection )
-      } else {
-          pView.panel.comboSiteTo.setItems(InvTrController.instance.listaAlmacenes())
+        pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
+      } else if( quantity == 0){
+        pView.panel.comboSiteTo.setItems(InvTrController.instance.listaAlmacenes())
+        pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
       }
   }
 
@@ -164,6 +166,7 @@ class InvTrIssueDriver extends InvTrDriver {
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE )
       if ( selection.equals( JOptionPane.OK_OPTION ) ) {
         pView.data.skuList.remove( line )
+        pView.data.postSiteTo = pView.panel.comboSiteTo.getSelection()
         pView.fireRefreshUI( )
       }
     }
