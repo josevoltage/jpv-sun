@@ -13,6 +13,8 @@
 	<field name="tipo" class="java.lang.String"/>
 	<field name="lstArticulos" class="java.util.List"/>
 	<field name="noMostrarArticulos" class="java.lang.Boolean"/>
+	<field name="facturas" class="java.lang.String"/>
+	<field name="promedio" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -26,7 +28,7 @@
 				<text><![CDATA[Marca]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="32c39b14-03ab-438c-aa5c-52d1221bd2c6" x="271" y="0" width="88" height="14"/>
+				<reportElement uuid="32c39b14-03ab-438c-aa5c-52d1221bd2c6" x="425" y="0" width="88" height="14"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="9" isBold="true"/>
 				</textElement>
@@ -40,20 +42,34 @@
 				<text><![CDATA[Cantidad]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e3af0fde-5683-43b9-bcb1-7c82189a5c05" x="359" y="0" width="84" height="14"/>
+				<reportElement uuid="e3af0fde-5683-43b9-bcb1-7c82189a5c05" x="513" y="0" width="84" height="14"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Importe Total]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="af1bbb94-e4e7-49d2-ab10-eafaa38b3b6a" x="88" y="0" width="183" height="14" isRemoveLineWhenBlank="true">
+				<reportElement uuid="af1bbb94-e4e7-49d2-ab10-eafaa38b3b6a" x="177" y="0" width="183" height="14" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[$F{noMostrarArticulos} == false]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font fontName="DejaVu Sans" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Articulos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="142913d2-6330-4e7a-b1ed-e4a58e2ab479" x="88" y="0" width="89" height="14"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Facturas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ff027895-a9e3-4062-9892-85a6b3911c2b" x="360" y="0" width="65" height="14"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Promedio]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -74,26 +90,40 @@
 				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
 			</textField>
 			<textField pattern="$#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="2036bcdd-940a-49ae-878f-9a3e6d99c42f" x="271" y="0" width="88" height="13"/>
+				<reportElement uuid="2036bcdd-940a-49ae-878f-9a3e6d99c42f" x="425" y="0" width="88" height="13"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{importeSinIva}]]></textFieldExpression>
 			</textField>
 			<textField pattern="$#,#00.00" isBlankWhenNull="true">
-				<reportElement uuid="04b526b1-5b1f-42f4-a3f4-cc92bdd0e99a" x="359" y="0" width="84" height="13"/>
+				<reportElement uuid="04b526b1-5b1f-42f4-a3f4-cc92bdd0e99a" x="513" y="0" width="84" height="13"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{importe}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement uuid="9c374840-2132-499c-b3e8-17e10be6e57c" x="88" y="0" width="183" height="13" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true">
+				<reportElement uuid="9c374840-2132-499c-b3e8-17e10be6e57c" x="177" y="0" width="183" height="13" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true">
 					<printWhenExpression><![CDATA[$F{noMostrarArticulos} == false && $F{cantidad} > 0]]></printWhenExpression>
 				</reportElement>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{lstArticulos})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["reports/Ventas_Por_Vendedor_Por_Marca_Articulos.jasper"]]></subreportExpression>
 			</subreport>
+			<textField>
+				<reportElement uuid="03d71b9d-e753-4360-a1f9-24cd30018218" x="88" y="0" width="89" height="13"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{facturas}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="f3c3fa6b-52b4-4902-80ca-c832804c42da" x="360" y="0" width="65" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{promedio}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>

@@ -13,6 +13,8 @@
 	<field name="tipo" class="java.lang.String"/>
 	<field name="lstArticulos" class="java.util.List"/>
 	<field name="noMostrarArticulos" class="java.lang.Boolean"/>
+	<field name="facturas" class="java.lang.String"/>
+	<field name="promedio" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -26,7 +28,7 @@
 				<text><![CDATA[Marca]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="32c39b14-03ab-438c-aa5c-52d1221bd2c6" x="88" y="0" width="88" height="14"/>
+				<reportElement uuid="32c39b14-03ab-438c-aa5c-52d1221bd2c6" x="242" y="0" width="88" height="14"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="9" isBold="true"/>
 				</textElement>
@@ -40,11 +42,25 @@
 				<text><![CDATA[Cantidad]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e3af0fde-5683-43b9-bcb1-7c82189a5c05" x="176" y="0" width="84" height="14"/>
+				<reportElement uuid="e3af0fde-5683-43b9-bcb1-7c82189a5c05" x="330" y="0" width="84" height="14"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Importe Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="eefedf45-ec57-4922-9b0c-2de56a5e201c" x="88" y="0" width="87" height="14"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Facturas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d4db2721-68c7-4910-9041-adc161a3bbdb" x="175" y="0" width="67" height="14"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Promedio]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -65,18 +81,32 @@
 				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
 			</textField>
 			<textField pattern="$#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="2036bcdd-940a-49ae-878f-9a3e6d99c42f" x="88" y="0" width="88" height="13"/>
+				<reportElement uuid="2036bcdd-940a-49ae-878f-9a3e6d99c42f" x="242" y="0" width="88" height="13"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{importeSinIva}]]></textFieldExpression>
 			</textField>
 			<textField pattern="$#,#00.00" isBlankWhenNull="true">
-				<reportElement uuid="04b526b1-5b1f-42f4-a3f4-cc92bdd0e99a" x="176" y="0" width="84" height="13"/>
+				<reportElement uuid="04b526b1-5b1f-42f4-a3f4-cc92bdd0e99a" x="330" y="0" width="84" height="13"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{importe}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d6357c80-e73a-4fd6-9fc1-cc18e8b65ee9" x="88" y="0" width="87" height="13"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{facturas}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="9a62287e-6b91-4f59-b78e-a9c3d8d757cf" x="175" y="0" width="67" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Sans" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{promedio}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
