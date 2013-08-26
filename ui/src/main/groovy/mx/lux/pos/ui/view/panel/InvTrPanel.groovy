@@ -87,7 +87,9 @@ class InvTrPanel extends JPanel {
   JTable tBrowser
   JPanel selector
   TableModel browserSku
+  Boolean stock = true
   Sucursal site = new Sucursal()
+  Boolean newTransaction = true
 
   InvTrPanel( InvTrView pView ) {
     view = pView

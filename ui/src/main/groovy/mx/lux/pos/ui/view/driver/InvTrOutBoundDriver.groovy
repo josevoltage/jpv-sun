@@ -148,9 +148,9 @@ class InvTrOutBoundDriver extends InvTrDriver {
         pView.panel.txtUser.setText( pView.adapter.getText( pView.data.currentUser ) )
         pView.panel.browserSku.fireTableDataChanged( )
         pView.panel.txtType.setText( String.format( '%d', quantity ) )
-        if(quantity > 0){
+        if(quantity > 0 && pView.panel.newTransaction){
             pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
-        } else {
+        } else if ( quantity == 0 && pView.panel.newTransaction ){
             pView.panel.comboSiteTo.setItems(InvTrController.instance.listaSoloSucursales())
             pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
         }
@@ -166,6 +166,7 @@ class InvTrOutBoundDriver extends InvTrDriver {
             if ( selection.equals( JOptionPane.OK_OPTION ) ) {
                 pView.data.skuList.remove( line )
                 pView.data.postSiteTo = pView.panel.comboSiteTo.getSelection()
+                pView.panel.newTransaction = false
                 pView.fireRefreshUI( )
             }
         }

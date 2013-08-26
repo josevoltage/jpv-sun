@@ -207,7 +207,13 @@ class InvTrView implements NavigationBarListener {
     }
     if ( valid ) {
       controller.requestPart( this )
-      driver.refreshUI( this )
+      if(this.data.postTrType.tipoMov.trim().equals('S') ){
+        if( this.panel.stock ){
+          driver.refreshUI( this )
+        }
+      } else {
+        driver.refreshUI( this )
+      }
     }
   }
 

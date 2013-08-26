@@ -50,10 +50,10 @@ class TicketServiceImpl implements TicketService {
   private static final String TAG_DEPOSITO_MN = 'EFECTIVO'
   private static final String TAG_DEPOSITO_US = 'DOLARES'
   private static final String TAG_TRANSACCION_VENTA = 'VENTA'
-  private static final String TAG_TRANSACCION_ENTRADA = 'ENTRADA'
-  private static final String TAG_TRANSACCION_SALIDA = 'SALIDA'
-  private static final String TAG_TRANSACCION_ENTRADA_TIENDA = 'ENTRADA_TIENDA'
-  private static final String TAG_TRANSACCION_SALIDA_TIENDA = 'SALIDA_TIENDA'
+  private static final String TAG_TRANSACCION_ENTRADA = 'E'
+  private static final String TAG_TRANSACCION_SALIDA = 'S'
+  //private static final String TAG_TRANSACCION_ENTRADA_TIENDA = 'ENTRADA_TIENDA'
+  //private static final String TAG_TRANSACCION_SALIDA_TIENDA = 'SALIDA_TIENDA'
 
   private static final BigDecimal CERO_BIGDECIMAL = 0.005
 
@@ -1671,17 +1671,17 @@ class TicketServiceImpl implements TicketService {
     for(TransInvDetalle transaccion : lstDetalles ){
       Articulo articulo = articuloRepository.findOne( transaccion.sku )
       if( articulo.idGenerico.trim().equalsIgnoreCase('A') ){
-        if(transaccion.idTipoTrans.trim().equalsIgnoreCase(TAG_TRANSACCION_ENTRADA) ||
-                transaccion.idTipoTrans.trim().equalsIgnoreCase(TAG_TRANSACCION_ENTRADA_TIENDA) ){
+        if(transaccion.tipoMov.trim().equalsIgnoreCase(TAG_TRANSACCION_ENTRADA) ){
             TransaccionesDiarias transacciones = findOrCreate( lstEntradas, articulo.marca )
             transacciones.AcumulaTransacciones( transaccion )
         }
-        if(transaccion.idTipoTrans.trim().equalsIgnoreCase(TAG_TRANSACCION_SALIDA) ||
-                transaccion.idTipoTrans.trim().equalsIgnoreCase(TAG_TRANSACCION_SALIDA_TIENDA) ){
+        if(transaccion.tipoMov.trim().equalsIgnoreCase(TAG_TRANSACCION_SALIDA) &&
+                !transaccion.idTipoTrans.trim().equalsIgnoreCase(TAG_TRANSACCION_VENTA) ){
             TransaccionesDiarias transacciones = findOrCreate( lstSalidas, articulo.marca )
             transacciones.AcumulaTransacciones( transaccion )
         }
-        if(transaccion.idTipoTrans.trim().equalsIgnoreCase(TAG_TRANSACCION_VENTA) ){
+        if(transaccion.tipoMov.trim().equalsIgnoreCase(TAG_TRANSACCION_SALIDA) &&
+                transaccion.idTipoTrans.trim().equalsIgnoreCase(TAG_TRANSACCION_VENTA) ){
             TransaccionesDiarias transacciones = findOrCreate( lstVentas, articulo.marca )
             transacciones.AcumulaTransacciones( transaccion )
         }

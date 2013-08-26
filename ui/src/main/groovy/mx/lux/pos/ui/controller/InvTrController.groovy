@@ -358,6 +358,8 @@ class InvTrController {
                   JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
           if( question == 0){
             dispatchPartsSelected( pView, partList )
+          } else {
+            pView.panel.stock = false
           }
         } else {
           dispatchPartsSelected( pView, partList )
@@ -375,11 +377,13 @@ class InvTrController {
         dlgPartSelection.activate()
         List<Articulo> selection = dlgPartSelection.getSelection()
         if ( selection != null ) {
-          if( selection.cantExistencia <= 0 && pView.data.viewMode.trType.tipoMov.trim().equalsIgnoreCase('S') ){
+          if( selection.first().cantExistencia <= 0 && pView.data.viewMode.trType.tipoMov.trim().equalsIgnoreCase('S') ){
               Integer question =JOptionPane.showConfirmDialog( new JDialog(), pView.panel.MSG_NO_STOCK, pView.panel.TXT_NO_STOCK,
                       JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
               if( question == 0){
                   dispatchPartsSelected( pView, selection )
+              } else {
+                pView.panel.stock = false
               }
           } else {
             log.debug( String.format( "[Controller] %d Selected, (%d) %s", selection.size(), selection[ 0 ].id, selection[ 0 ].descripcion ) )
