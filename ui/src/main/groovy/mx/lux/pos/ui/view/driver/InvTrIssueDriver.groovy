@@ -149,12 +149,12 @@ class InvTrIssueDriver extends InvTrDriver {
     pView.panel.txtUser.setText( pView.adapter.getText( pView.data.currentUser ) )
     pView.panel.browserSku.fireTableDataChanged( )
     pView.panel.txtType.setText( String.format( '%d', quantity ) )
-      if(quantity > 0){
-        pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
-      } else if( quantity == 0){
-        pView.panel.comboSiteTo.setItems(InvTrController.instance.listaAlmacenes())
-        pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
-      }
+    if(quantity > 0){
+      pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
+    } else if( quantity == 0){
+      pView.panel.comboSiteTo.setItems(InvTrController.instance.listaAlmacenes())
+      pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
+    }
   }
 
   void onSkuDoubleClicked( InvTrView pView ) {

@@ -1655,7 +1655,7 @@ class TicketServiceImpl implements TicketService {
     log.debug( "imprimeTransaccionesInventario" )
 
     if( fechaTransacciones != null ){
-    DateFormat df = new SimpleDateFormat( "dd/MM/yyyy HH:mm" )
+    DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
     Sucursal site = ServiceFactory.sites.obtenSucursalActual()
     Date fechaStart = DateUtils.truncate( fechaTransacciones, Calendar.DAY_OF_MONTH )
     Date fechaEnd = new Date( DateUtils.ceiling( fechaTransacciones, Calendar.DAY_OF_MONTH ).getTime() - 1 )
@@ -1698,7 +1698,7 @@ class TicketServiceImpl implements TicketService {
     }
 
     def tkTransacciones = [
-        effDate: df.format( new Date() ),
+        effDate: df.format( fechaTransacciones ),
         thisSite: TransInvAdapter.instance.getText( site ),
         entradas: lstEntradas,
         cantEntradas: entradas,
