@@ -432,6 +432,13 @@ class TicketServiceImpl implements TicketService {
       if(totalDolares.compareTo(BigDecimal.ZERO) < 0 || totalDolares.compareTo(BigDecimal.ZERO) > 0 ){
         dolaresValidos = true
       }
+
+      Collections.sort( subtotales, new Comparator() {
+          @Override
+          int compare(Object o1, Object o2) {
+              return 0
+          }
+      } )
       CurrencyFormatter formatter = new CurrencyFormatter()
       def datos = [ nombre_ticket: 'ticket-cierre-terminal',
           fechaCierre: CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ),

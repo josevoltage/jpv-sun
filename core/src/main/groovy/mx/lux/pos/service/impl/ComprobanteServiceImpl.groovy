@@ -21,6 +21,8 @@ import mx.lux.pos.service.business.Registry
 class ComprobanteServiceImpl implements ComprobanteService {
 
   private static final String DATE_TIME_FORMAT = 'dd-MM-yyyy HH:mm:ss'
+  private static final String TAG_GENERICO_A = 'A'
+  private static final String TAG_GENERICO_E = 'E'
 
   @Resource
   private ComprobanteRepository comprobanteRepository
@@ -283,10 +285,10 @@ class ComprobanteServiceImpl implements ComprobanteService {
               BigDecimal importe = precioUnitario.multiply( cantidad )
               DetalleComprobante detalle = new DetalleComprobante(
                   idArticulo: articulo.id,
-                  articulo: articulo.articulo.replace('Ñ','N'),
+                  //articulo: articulo.articulo.replace('Ñ','N'),
                   color: articulo.codigoColor,
                   idGenerico: articulo.idGenerico,
-                  descripcion: articulo.descripcion.replace('Ñ','N'),
+                  descripcion: articulo.idGenerico.trim().equalsIgnoreCase(TAG_GENERICO_A) ? 'Anteojo Solar' : 'Accesorio',
                   cantidad: cantidad,
                   precioUnitario: precioUnitario,
                   importe: importe
