@@ -223,6 +223,10 @@ class Registry {
     return asString( TipoParametro.GENERICO_PRECIO_VARIABLE )
   }
 
+  static String getMaximumDollars( ) {
+      return asString( TipoParametro.MONTO_MAXIMO_DOLARES )
+  }
+
   static Boolean isReceiptDuplicate( ) {
     return isTrue( TipoParametro.IMPRIME_DUPLICADO )
   }

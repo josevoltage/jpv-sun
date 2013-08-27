@@ -58,6 +58,7 @@ class PaymentDialog extends JDialog implements KeyListener{
   private static final String TAG_PAGO_MN_PESOS = 'MN EFECTIVO';
   private static final String TAG_PAGO_NOTA_CREDITO = 'NOTA DE CREDITO TIENDA';
   private static final String TAG_ID_PAGO_NOTA_CREDITO = 'NOT';
+  private static final String TAG_EFECTIVO_DOLARES = 'EFD';
 
   private static final String DOLARES = 'USD Recibidos'
 
@@ -362,12 +363,23 @@ class PaymentDialog extends JDialog implements KeyListener{
                 BigDecimal dolaresRec = new BigDecimal(NumberFormat.getInstance().parse(dollarsReceived.text))
                 BigDecimal dolaresCalc = pesosRec.divide(tipoCambio, 10, RoundingMode.HALF_EVEN)
                 Double diferencia = dolaresCalc.subtract(dolaresRec).doubleValue()
+                BigDecimal montoMaximo = OrderController.maximumDollars()
                 if( (diferencia < 1.0) && (diferencia > -1.0) ){
+                  if( tmpPayment?.paymentTypeId.equalsIgnoreCase(TAG_EFECTIVO_DOLARES) ){
+                    if( dolaresRec.compareTo(montoMaximo) <= 0 ){
+                      messages.text = null
+                      valid &= true
+                    } else {
+                      messages.text = "- No se puede recibir mas de ${montoMaximo} USD"
+                      valid &= false
+                    }
+                  } else {
                     messages.text = null
                     valid &= true
+                  }
                 } else {
-                    messages.text = "- Cantidad de dolares incorrecta"
-                    valid &= false
+                  messages.text = "- Cantidad de dolares incorrecta"
+                  valid &= false
                 }
           } else {
             valid &= false

@@ -21,6 +21,7 @@ import java.text.DateFormat
 import java.text.NumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import mx.lux.pos.service.business.Registry
 
 @Slf4j
 @Component
@@ -532,6 +533,16 @@ class OrderController {
           empleado = 'No existe ticket'
       }
       return empleado
+  }
+
+
+  static BigDecimal maximumDollars( ){
+    log.debug( 'maximumDollars( )' )
+    BigDecimal montoLimite = BigDecimal.ZERO
+    try{
+      montoLimite = NumberFormat.getInstance().parse( Registry.maximumDollars.trim() )
+    } catch( Exception e ){}
+    return montoLimite
   }
 
 }

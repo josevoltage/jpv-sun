@@ -218,7 +218,7 @@ class InvTrReturnDialog extends JDialog {
     Boolean valid = false
     Boolean centroCostos = StringUtils.trimToEmpty(txtCentroCostos.text) != ''
     Boolean ticket = StringUtils.trimToEmpty(txtTicket.text) != ''
-    Boolean empleado = StringUtils.trimToEmpty(txtEmployee.text) != ''
+    Boolean empleado = StringUtils.trimToEmpty(txtEmployee.text) != '' && txtEmployee.text.isNumber()
     if( ticket && empleado && centroCostos && controller.validateCentroCostos(txtCentroCostos.text) ){
         valid = true
     }
