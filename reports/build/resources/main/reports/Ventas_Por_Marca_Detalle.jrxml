@@ -15,6 +15,7 @@
 	<field name="noMostrarArticulos" class="java.lang.Boolean"/>
 	<field name="facturas" class="java.lang.String"/>
 	<field name="promedio" class="java.math.BigDecimal"/>
+	<field name="esCancelacion" class="java.lang.Boolean"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -107,6 +108,9 @@
 				<reportElement uuid="9c374840-2132-499c-b3e8-17e10be6e57c" x="177" y="0" width="183" height="13" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true">
 					<printWhenExpression><![CDATA[$F{noMostrarArticulos} == false && $F{cantidad} > 0]]></printWhenExpression>
 				</reportElement>
+				<subreportParameter name="esCancelacion">
+					<subreportParameterExpression><![CDATA[$F{esCancelacion}]]></subreportParameterExpression>
+				</subreportParameter>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{lstArticulos})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["reports/Ventas_Por_Vendedor_Por_Marca_Articulos.jasper"]]></subreportExpression>
 			</subreport>

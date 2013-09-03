@@ -10,7 +10,18 @@
 	<detail>
 		<band height="14" splitType="Stretch">
 			<textField>
-				<reportElement uuid="bb6176b2-b697-4f42-be66-86fa00c6cc33" x="0" y="0" width="183" height="14" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="bb6176b2-b697-4f42-be66-86fa00c6cc33" x="0" y="0" width="183" height="14" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true">
+					<printWhenExpression><![CDATA[!$F{_THIS}.endsWith( "CANCELADO" )]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="DejaVu Sans" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{_THIS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bb6176b2-b697-4f42-be66-86fa00c6cc33" x="0" y="0" width="183" height="14" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" forecolor="#F50E0E">
+					<printWhenExpression><![CDATA[$F{_THIS}.endsWith( "CANCELADO" )]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left">
 					<font fontName="DejaVu Sans" size="9"/>
 				</textElement>
