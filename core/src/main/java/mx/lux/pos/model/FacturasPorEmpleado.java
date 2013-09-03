@@ -26,6 +26,7 @@ public class FacturasPorEmpleado {
     private Integer idArticulo;
     private List<String> lstArticulos;
     private Boolean noMostrarArticulos;
+    private Boolean esCancelacion;
 
     public FacturasPorEmpleado( String idempleado ) {
         this.idEmpleado = idempleado;
@@ -40,6 +41,7 @@ public class FacturasPorEmpleado {
         lstArticulos = new ArrayList<String>();
         noMostrarArticulos = false;
         facturas = 0;
+        esCancelacion = false;
     }
 
     public void AcumulaVentas() {
@@ -49,7 +51,7 @@ public class FacturasPorEmpleado {
     public void AcumulaCancelaciones( Modificacion modificacion ) {
         cancelaciones = cancelaciones + 1;
         IngresoPorFactura factura = FindOrCreate( facturasVendedor, modificacion.getNotaVenta().getFactura() );
-        factura.AcumulaFacturas( modificacion );
+        factura.AcumulaFacturas(modificacion);
     }
 
     public void AcumulaMarcas( String brand, Articulo articulo ) {
@@ -181,8 +183,9 @@ public class FacturasPorEmpleado {
         importeSinIva = new BigDecimal(importe.doubleValue()/( 1+iva ) );
         cantidad = cantidad - ventas.getCantidadFac().intValue();
         idArticulo = ventas.getArticulo().getId();
-        //lstArticulos.add( descArticulo );
+        lstArticulos.add( descArticulo+" CANCELADO" );
         this.noMostrarArticulos = noMostrarArticulos;
+        esCancelacion = true;
     }
 
     public void AcumulaMontoNotasCredito( DetalleNotaVenta ventas, BigDecimal monto, Double iva ) {
@@ -296,5 +299,13 @@ public class FacturasPorEmpleado {
 
     public void setPromedio(BigDecimal promedio) {
         this.promedio = promedio;
+    }
+
+    public Boolean getEsCancelacion() {
+        return esCancelacion;
+    }
+
+    public void setEsCancelacion(Boolean esCancelacion) {
+        this.esCancelacion = esCancelacion;
     }
 }
