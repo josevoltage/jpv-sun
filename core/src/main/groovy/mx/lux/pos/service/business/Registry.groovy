@@ -337,6 +337,14 @@ class Registry {
     return asString( TipoParametro.URL_ACUSE_VENTA_DIA )
   }
 
+  static String getURLSendInventory( ) {
+      return asString( TipoParametro.URL_ENVIA_INVENTARIO_FISICO )
+  }
+
+  static String getURLReceivedDifferences( ) {
+      return asString( TipoParametro.URL_RECIBE_DIFERENCIAS )
+  }
+
   static String getURLAdjustSalesNotification( ) {
     return asString( TipoParametro.URL_ACUSE_AJUSTE_VENTA )
   }

@@ -2,6 +2,7 @@ package mx.lux.pos.service
 
 import mx.lux.pos.model.Articulo
 import mx.lux.pos.model.ArticuloSombra
+import mx.lux.pos.model.Diferencia
 import mx.lux.pos.model.Generico
 
 interface ArticuloService {
@@ -41,4 +42,10 @@ interface ArticuloService {
   Boolean useShortItemDescription( )
 
   Boolean generarArchivoInventario( )
+
+  Boolean enviarInventario( )
+
+  Boolean recibeDiferencias( )
+
+  List<Diferencia> obtenerDiferencias(  )
 }

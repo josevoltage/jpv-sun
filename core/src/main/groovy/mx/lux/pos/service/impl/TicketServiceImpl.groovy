@@ -70,6 +70,9 @@ class TicketServiceImpl implements TicketService {
   private NotaVentaRepository notaVentaRepository
 
   @Resource
+  private DiferenciaRepository diferenciaRepository
+
+  @Resource
   private OrdenPromDetRepository ordenPromDetRepository
 
   @Resource
@@ -1737,5 +1740,27 @@ class TicketServiceImpl implements TicketService {
       }
       return found
   }
+
+
+
+  void imprimeDiferencias(  ){
+    log.debug('imprimeDiferencias(  )')
+    DateFormat df = new SimpleDateFormat( "dd-MM-yyyy" )
+    Sucursal site = sucursalRepository.findOne( Registry.currentSite )
+    String sucursal = site.nombre+' ['+site.id+']'
+    List<Diferencia> lstDiferencias = diferenciaRepository.findAll()
+    if(lstDiferencias.size() > 0){
+        def datos = [
+            nombre_ticket: "ticket-diferencias",
+            thisSite: sucursal,
+            date: df.format( new Date() ),
+            diferencias: lstDiferencias
+        ]
+        imprimeTicket( 'template/ticket-diferencias.vm', datos )
+    } else {
+        log.debug( String.format( 'No existen registros de diferencias' ) )
+    }
+  }
+
 
 }

@@ -4,6 +4,7 @@ import com.mysema.query.BooleanBuilder
 import com.mysema.query.types.Predicate
 import groovy.util.logging.Slf4j
 import mx.lux.pos.repository.ArticuloRepository
+import mx.lux.pos.repository.DiferenciaRepository
 import mx.lux.pos.repository.PrecioRepository
 import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.ArticuloService
@@ -14,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional
 import javax.annotation.Resource
 
 import mx.lux.pos.model.*
+
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.regex.Pattern
 import mx.lux.pos.util.CustomDateUtils
 import org.springframework.ui.velocity.VelocityEngineUtils
@@ -30,6 +34,9 @@ class ArticuloServiceImpl implements ArticuloService {
 
   @Resource
   private PrecioRepository precioRepository
+
+  @Resource
+  private DiferenciaRepository diferenciaRepository
 
   @Resource
   private VelocityEngine velocityEngine
@@ -283,4 +290,74 @@ class ArticuloServiceImpl implements ArticuloService {
   }
 
 
+
+  Boolean enviarInventario( ){
+    log.debug("enviarInventario( )")
+    DateFormat df = new SimpleDateFormat( "dd-MM-yyyy" )
+    Integer idSuc = Registry.currentSite
+    String urlEnviaInv = Registry.URLSendInventory
+    QArticulo articulo = QArticulo.articulo1
+    List<Articulo> lstArticulos = articuloRepository.findAll( articulo.cantExistencia.ne( 0 ).and(articulo.cantExistencia.isNotNull()), articulo.id.asc() )
+    String valor = idSuc.toString().trim()+"|"+df.format(new Date())+"|"
+    for(Articulo article : lstArticulos){
+      valor = valor+article.id.toString().trim()+'>'+article.cantExistencia.toString().trim()+'|'
+    }
+    urlEnviaInv += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', valor ), 'UTF-8' ) )
+    String response = ''
+    try{
+        response = urlEnviaInv.toURL().text
+        response = response?.find( /<XX>\s*(.*)\s*<\/XX>/ ) {m, r -> return r}
+    } catch ( Exception e ){
+        println e
+    }
+    log.debug(response)
+    return response != ''
+
+  }
+
+
+
+  Boolean recibeDiferencias( ){
+
+    Integer idSuc = Registry.currentSite
+    String urlRecibeDif = Registry.URLReceivedDifferences
+    String response = ''
+    try{
+      urlRecibeDif += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', idSuc.toString().trim() ), 'UTF-8' ) )
+      log.debug(urlRecibeDif)
+      response = urlRecibeDif.toURL().text
+      response = response?.find( /<XX>\s*(.*)\s*<\/XX>/ ) {m, r -> return r}
+      log.debug( "resultado solicitud: ${response}" )
+    } catch ( Exception e ){
+        println e
+    }
+    String[] cadena = response != null ? response.split(/\|/) : ''
+    if(cadena.length >= 3){
+      for(int i = 2;i < cadena.length;i++){
+        String articulo = cadena[i]
+        String[] descArticulo = articulo.split('>')
+        Integer idArticulo = NumberFormat.getInstance().parse(descArticulo[0])
+        Integer cantFisi = NumberFormat.getInstance().parse(descArticulo[1])
+        Integer cantSoi = NumberFormat.getInstance().parse(descArticulo[2])
+        Integer dif = NumberFormat.getInstance().parse(descArticulo[3])
+        diferenciaRepository.deleteAll()
+        diferenciaRepository.flush()
+        Diferencia diferencia = new Diferencia()
+        diferencia.id = idArticulo
+        diferencia.cantidadFisico = cantFisi
+        diferencia.cantidadSoi = cantSoi
+        diferencia.diferencias = dif
+        diferenciaRepository.save( diferencia )
+        diferenciaRepository.flush()
+      }
+    }
+
+    return cadena.length > 0
+  }
+
+
+  @Override
+  List<Diferencia> obtenerDiferencias(  ) {
+      return diferenciaRepository.findAll()
+  }
 }
