@@ -44,7 +44,7 @@ class DifferencesDialog extends JDialog {
         borderLayout()
         label( " ",
                constraints: BorderLayout.PAGE_START)
-        label( minimumSize: [10, 3] as Dimension)
+        label( text: "Total de diferencias: ${suggestions.size()}", minimumSize: [10, 3] as Dimension)
       }
       scrollPane( constraints: BorderLayout.CENTER ) {
         tableItems = table( selectionMode: ListSelectionModel.SINGLE_SELECTION ) {

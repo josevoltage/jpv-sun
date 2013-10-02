@@ -299,20 +299,9 @@ class ArticuloServiceImpl implements ArticuloService {
     //String urlEnviaInv = Registry.URLSendInventory
     QArticulo articulo = QArticulo.articulo1
     List<Articulo> lstArticulos = articuloRepository.findAll( articulo.cantExistencia.ne( 0 ).and(articulo.cantExistencia.isNotNull()), articulo.id.asc() )
-    //String valor = idSuc.toString().trim()+"|"+df.format(new Date())+"|"
     String response = ''
     Integer noVecesEnviar = 0
     Integer cantArticulosEnviar = 0
-    /*if(lstArticulos.size()%3 == 0){
-      noVecesEnviar = 3
-      cantArticulosEnviar = lstArticulos.size()/3
-    } else if(lstArticulos.size()%4 == 0){
-        noVecesEnviar = 4
-        cantArticulosEnviar = lstArticulos.size()/4
-    } else if(lstArticulos.size()%5 == 0){
-        noVecesEnviar = 5
-        cantArticulosEnviar = lstArticulos.size()/5
-    }*/
     Integer num = lstArticulos.size()
     Integer sum = 0
     List<Integer> lstMultiplos = new ArrayList<>()
@@ -330,7 +319,6 @@ class ArticuloServiceImpl implements ArticuloService {
       String valor = idSuc.toString().trim()+"|"+df.format(new Date())+"|"+i.toString()+'|'
       for(int j = 0; j < cantArticulosEnviar; j++){
         if(contador < num){
-          //println contador
           valor = valor+lstArticulos.get(contador).id.toString().trim()+'>'+lstArticulos.get(contador).cantExistencia.toString().trim()+'|'
         }
         contador++
@@ -338,7 +326,6 @@ class ArticuloServiceImpl implements ArticuloService {
       urlEnviaInv += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', valor ), 'UTF-8' ) )
       try{
           if(i <= noVecesEnviar){
-          println i
           response = urlEnviaInv.toURL().text
           response = response?.find( /<XX>\s*(.*)\s*<\/XX>/ ) {m, r -> return r}
           }
@@ -346,19 +333,8 @@ class ArticuloServiceImpl implements ArticuloService {
           println e
       }
     }
-    /*for(Articulo article : lstArticulos){
-      valor = valor+article.id.toString().trim()+'>'+article.cantExistencia.toString().trim()+'|'
-    }*/
-    /*urlEnviaInv += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', valor ), 'UTF-8' ) )
-    String response = ''
-    try{
-        response = urlEnviaInv.toURL().text
-        response = response?.find( /<XX>\s*(.*)\s*<\/XX>/ ) {m, r -> return r}
-    } catch ( Exception e ){
-        println e
-    }*/
     log.debug(response)
-    return response != ''
+    return response != null ? response.contains('FOLIO:') : false
 
   }
 
