@@ -43,6 +43,7 @@ class ArticuloServiceImpl implements ArticuloService {
 
   private static final Integer CANT_CARACTEREZ_SKU = 6
   private static final Integer CANT_CARACTEREZ_COD_BAR = 15
+  private static final Integer CANT_ARTICULOS_ENVIAR = 500
 
   private Articulo establecerPrecio( Articulo articulo ) {
     // log.debug( "estableciendo precio para el articulo id: ${articulo?.id} articulo: ${articulo?.articulo}" )
@@ -295,21 +296,67 @@ class ArticuloServiceImpl implements ArticuloService {
     log.debug("enviarInventario( )")
     DateFormat df = new SimpleDateFormat( "dd-MM-yyyy" )
     Integer idSuc = Registry.currentSite
-    String urlEnviaInv = Registry.URLSendInventory
+    //String urlEnviaInv = Registry.URLSendInventory
     QArticulo articulo = QArticulo.articulo1
     List<Articulo> lstArticulos = articuloRepository.findAll( articulo.cantExistencia.ne( 0 ).and(articulo.cantExistencia.isNotNull()), articulo.id.asc() )
-    String valor = idSuc.toString().trim()+"|"+df.format(new Date())+"|"
-    for(Articulo article : lstArticulos){
-      valor = valor+article.id.toString().trim()+'>'+article.cantExistencia.toString().trim()+'|'
+    //String valor = idSuc.toString().trim()+"|"+df.format(new Date())+"|"
+    String response = ''
+    Integer noVecesEnviar = 0
+    Integer cantArticulosEnviar = 0
+    /*if(lstArticulos.size()%3 == 0){
+      noVecesEnviar = 3
+      cantArticulosEnviar = lstArticulos.size()/3
+    } else if(lstArticulos.size()%4 == 0){
+        noVecesEnviar = 4
+        cantArticulosEnviar = lstArticulos.size()/4
+    } else if(lstArticulos.size()%5 == 0){
+        noVecesEnviar = 5
+        cantArticulosEnviar = lstArticulos.size()/5
+    }*/
+    Integer num = lstArticulos.size()
+    Integer sum = 0
+    List<Integer> lstMultiplos = new ArrayList<>()
+    for(int a=1; a <= num; a++){
+        if(num%a == 0){
+            lstMultiplos.add(a)
+            sum = sum + a;
+        }
     }
-    urlEnviaInv += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', valor ), 'UTF-8' ) )
+    noVecesEnviar = lstMultiplos.get(lstMultiplos.size()-2)
+    cantArticulosEnviar = num/noVecesEnviar
+    Integer contador = 0
+    for(int i = 0; i <= noVecesEnviar; i++){
+      String urlEnviaInv = Registry.URLSendInventory
+      String valor = idSuc.toString().trim()+"|"+df.format(new Date())+"|"+i.toString()+'|'
+      for(int j = 0; j < cantArticulosEnviar; j++){
+        if(contador < num){
+          //println contador
+          valor = valor+lstArticulos.get(contador).id.toString().trim()+'>'+lstArticulos.get(contador).cantExistencia.toString().trim()+'|'
+        }
+        contador++
+      }
+      urlEnviaInv += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', valor ), 'UTF-8' ) )
+      try{
+          if(i <= noVecesEnviar){
+          println i
+          response = urlEnviaInv.toURL().text
+          response = response?.find( /<XX>\s*(.*)\s*<\/XX>/ ) {m, r -> return r}
+          }
+      } catch ( Exception e ){
+          println e
+      }
+    }
+    /*for(Articulo article : lstArticulos){
+      valor = valor+article.id.toString().trim()+'>'+article.cantExistencia.toString().trim()+'|'
+    }*/
+    /*urlEnviaInv += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', valor ), 'UTF-8' ) )
     String response = ''
     try{
         response = urlEnviaInv.toURL().text
         response = response?.find( /<XX>\s*(.*)\s*<\/XX>/ ) {m, r -> return r}
     } catch ( Exception e ){
         println e
-    }
+    }*/
     log.debug(response)
     return response != ''
 
@@ -332,16 +379,16 @@ class ArticuloServiceImpl implements ArticuloService {
         println e
     }
     String[] cadena = response != null ? response.split(/\|/) : ''
-    if(cadena.length >= 3){
-      for(int i = 2;i < cadena.length;i++){
+    if(cadena.length >= 1){
+      diferenciaRepository.deleteAll()
+      diferenciaRepository.flush()
+      for(int i = 0;i < cadena.length;i++){
         String articulo = cadena[i]
         String[] descArticulo = articulo.split('>')
         Integer idArticulo = NumberFormat.getInstance().parse(descArticulo[0])
         Integer cantFisi = NumberFormat.getInstance().parse(descArticulo[1])
         Integer cantSoi = NumberFormat.getInstance().parse(descArticulo[2])
         Integer dif = NumberFormat.getInstance().parse(descArticulo[3])
-        diferenciaRepository.deleteAll()
-        diferenciaRepository.flush()
         Diferencia diferencia = new Diferencia()
         diferencia.id = idArticulo
         diferencia.cantidadFisico = cantFisi
