@@ -18,6 +18,7 @@ enum TipoParametro {
   DESCRIPCION_CORTA( 'descripcion_corta', 'si' ),
   DESPLIEGA_USD( 'despliega_dolares', 'no' ),
   EMP_ELECTRONICO( 'emp_electronico', '' ),
+  ESPERA_CIERRE( 'espera_cierre', '60' ),
   FORMATO_ARCHIVO( 'formato_archivo_salida', '//' ),
   FECHA_ACTUAL( 'fecha_actual', '' ),
   GRUPO_COMPANIA( 'grupo_compania', 'lux' ),
