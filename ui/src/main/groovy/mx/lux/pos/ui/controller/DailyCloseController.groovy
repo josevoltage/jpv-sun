@@ -247,7 +247,6 @@ class DailyCloseController {
     } catch ( Exception e ){
       println( e )
     }
-    println 1000L.dump()
     newTime = time*1000L
     return newTime
   }

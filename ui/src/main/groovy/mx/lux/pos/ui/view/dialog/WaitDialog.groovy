@@ -27,8 +27,6 @@ class WaitDialog extends JDialog {
 
     WaitDialog( ) {
     buildUI()
-    sleep( DailyCloseController.timeWait() )
-    close()
   }
 
   // UI Layout Definition
@@ -38,13 +36,13 @@ class WaitDialog extends JDialog {
         resizable: true,
         pack: true,
         modal: true,
-        preferredSize: [ 260, 120 ],
+        preferredSize: [ 280, 100 ],
         location: [ 200, 250 ],
     ) {
       panel() {
         borderLayout()
         panel( constraints: BorderLayout.CENTER, layout: new MigLayout( "wrap 2", "20[][grow,fill]40", "20[]10[]" ) ) {
-          label( text: "Cerrando Dia" )
+          label( text: "Cerrando Dia, Espere un momento." )
         }
       }
 
