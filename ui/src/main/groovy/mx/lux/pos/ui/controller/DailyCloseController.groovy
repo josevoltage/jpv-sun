@@ -238,15 +238,18 @@ class DailyCloseController {
   }
 
 
-  static Integer timeWait(  ) {
+  static Long timeWait(  ) {
     String seconds = Registry.timeToWait
-    Integer time = 0
+    Long time = 0L
+    Long newTime = 0L
     try{
-      time = NumberFormat.getInstance().parse( seconds ).intValue()/1000
+      time = NumberFormat.getInstance().parse( seconds.trim() ).toLong()
     } catch ( Exception e ){
       println( e )
     }
-    return  time
+    println 1000L.dump()
+    newTime = time*1000L
+    return newTime
   }
 
 

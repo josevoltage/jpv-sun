@@ -33,6 +33,7 @@ class DailyCloseDepositsDialog extends JDialog {
   private JLabel grossIncome
   private JLabel returns
   private JLabel netIncome
+  private JLabel lblClosingDay
   private JTextArea observations
   private DefaultTableModel depositsModel
   private List<Deposit> deposits
@@ -131,6 +132,9 @@ class DailyCloseDepositsDialog extends JDialog {
       panel( layout: new MigLayout( 'wrap', '[fill,grow]' ) ) {
         button( 'Cerrar d\u00eda', enabled: dailyClose.isOpen(), constraints: 'skip', actionPerformed: doCloseDay )
       }
+      panel( layout: new MigLayout( 'wrap', '[fill]' ) ) {
+        lblClosingDay = label( text: 'Cerrando Dia, No cierre la ventana.', visible: false, foreground: UI_Standards.WARNING_FOREGROUND, constraints: 'hidemode 3' )
+      }
     }
   }
 
@@ -191,22 +195,21 @@ class DailyCloseDepositsDialog extends JDialog {
   private def doCloseDay = { ActionEvent ev ->
     JButton source = ev.source as JButton
     source.enabled = false
+    lblClosingDay.visible = true
     Boolean succesClose = false
-    //while (succesClose){
-      sb.doOutside {
-          succesClose = DailyCloseController.closeDailyClose( closeDate, observations.text )
-      }
-      WaitDialog dialog = new WaitDialog()
-      dialog.show()
-      sleep( DailyCloseController.timeWait() )
-      dialog.dispose()
 
+    sb.doOutside {
+        succesClose = DailyCloseController.closeDailyClose( closeDate, observations.text )
+    }
+    Long time = DailyCloseController.timeWait()
+    sleep( time )
+    lblClosingDay.visible = false
+    source.enabled = true
     if ( succesClose ) {
       //sb.optionPane().showMessageDialog( null, 'Se ha cerrado correctamente', 'Ok', JOptionPane.INFORMATION_MESSAGE )
     } else {
       sb.optionPane().showMessageDialog( null, 'Error al cerrar', 'Error', JOptionPane.ERROR_MESSAGE )
     }
-    source.enabled = true
   }
 
   private def generateFiles = { ActionEvent ev ->

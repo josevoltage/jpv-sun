@@ -27,6 +27,8 @@ class WaitDialog extends JDialog {
 
     WaitDialog( ) {
     buildUI()
+    sleep( DailyCloseController.timeWait() )
+    close()
   }
 
   // UI Layout Definition
@@ -51,6 +53,6 @@ class WaitDialog extends JDialog {
 
   // UI Response
   protected void close( ) {
-    dispose()
+    this.visible = false
   }
 }
