@@ -22,17 +22,21 @@ class WaitDialog extends JDialog {
   private JTextField txtDateEnd
   private Date selectedDateStart
   private Date selectedDateEnd
+  private String titulo
+  private String contenido
 
   public boolean button = false
 
-    WaitDialog( ) {
+    WaitDialog( String titulo, String contenido ) {
+    this.titulo = titulo
+    this.contenido = contenido
     buildUI()
   }
 
   // UI Layout Definition
   void buildUI( ) {
     sb.dialog( this,
-        title: "Cierre",
+        title: titulo,
         resizable: true,
         pack: true,
         modal: true,
@@ -42,7 +46,7 @@ class WaitDialog extends JDialog {
       panel() {
         borderLayout()
         panel( constraints: BorderLayout.CENTER, layout: new MigLayout( "wrap 2", "20[][grow,fill]40", "20[]10[]" ) ) {
-          label( text: "Cerrando Dia, Espere un momento." )
+          label( text: contenido )
         }
       }
 

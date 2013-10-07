@@ -12,6 +12,7 @@ import mx.lux.pos.ui.view.dialog.ChangePasswordDialog
 import mx.lux.pos.ui.view.dialog.ChangeSellerDialog
 import mx.lux.pos.ui.view.dialog.PartClassDialog
 import mx.lux.pos.ui.view.dialog.TransactionsDateSelectionDialog
+import mx.lux.pos.ui.view.dialog.WaitDialog
 import net.miginfocom.swing.MigLayout
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -529,7 +530,11 @@ class MainWindow extends JFrame implements KeyListener {
   }
 
   void sendInventoryFile( ){
+      //WaitDialog dialog = new WaitDialog( "Envio inventario.", "Espere un momento." )
+      //sb.doOutside {
       ItemController.sendInventoryFile()
+      //dialog.dispose()
+      //}
   }
 
   void receivedDifferencesFile( ){

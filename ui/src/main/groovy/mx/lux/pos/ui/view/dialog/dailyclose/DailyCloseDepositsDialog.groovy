@@ -197,7 +197,7 @@ class DailyCloseDepositsDialog extends JDialog {
     source.enabled = false
     //lblClosingDay.visible = true
     Boolean succesClose = false
-    WaitDialog dialog = new WaitDialog()
+    WaitDialog dialog = new WaitDialog( "Cierre", "Cerrando dia. Espere un momento." )
     sb.doOutside {
       succesClose = DailyCloseController.closeDailyClose( closeDate, observations.text )
       Long time = DailyCloseController.timeWait()
