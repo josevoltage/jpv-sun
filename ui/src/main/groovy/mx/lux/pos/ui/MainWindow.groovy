@@ -97,6 +97,7 @@ class MainWindow extends JFrame implements KeyListener {
   private JMenuItem ticketInventoryTransactionsMenuItem
   private JMenuItem sendInventoryMenuItem
   private JMenuItem receivedDiferencesMenuItem
+  private JMenuItem generatedInventoryFileMenuItem
   private JMenu sendReceivedInventoryMenu
   private PromotionService promotionService
 
@@ -235,9 +236,6 @@ class MainWindow extends JFrame implements KeyListener {
             sendReceivedInventoryMenu = menu(
                     visible: false,
                     text: 'Inventario Fisico'
-                    /*menuSelected: {
-                        sendInventoryMenuItem.visible = true
-                    }*/
             ){
                 sendInventoryMenuItem = menuItem( text: 'Enviar Inventario',
                         actionPerformed: {
@@ -247,6 +245,11 @@ class MainWindow extends JFrame implements KeyListener {
                 receivedDiferencesMenuItem = menuItem( text: 'Recibir Diferencias',
                         actionPerformed: {
                             receivedDifferencesFile()
+                        }
+                )
+                generatedInventoryFileMenuItem = menuItem( text: 'Genera Archivo de Inventario',
+                        actionPerformed: {
+                            generatesPhysicalInventoryFile()
                         }
                 )
             }
@@ -539,6 +542,10 @@ class MainWindow extends JFrame implements KeyListener {
 
   void receivedDifferencesFile( ){
       ItemController.receivedDifferencesFile(  )
+  }
+
+  void generatesPhysicalInventoryFile( ){
+      ItemController.generatePhysicalInventoryFile()
   }
 
   JPanel getMainPanel( ) {

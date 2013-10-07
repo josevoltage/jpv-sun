@@ -257,7 +257,7 @@ class ArticuloServiceImpl implements ArticuloService {
 
 
   Boolean generarArchivoInventario( ){
-    log.debug( "generarArchivoInventario( )" )
+    log.debug( "generarArchivoInventarioFisico( )" )
 
     Parametro ubicacion = Registry.find( TipoParametro.RUTA_POR_ENVIAR )
     Parametro sucursal = Registry.find( TipoParametro.ID_SUCURSAL )
@@ -383,4 +383,38 @@ class ArticuloServiceImpl implements ArticuloService {
   List<Diferencia> obtenerDiferencias(  ) {
       return diferenciaRepository.findAll()
   }
+
+
+    Boolean generarArchivoInventarioFisico( ){
+        log.debug( "generarArchivoInventarioFisico( )" )
+        Parametro ubicacion = Registry.find( TipoParametro.RUTA_POR_ENVIAR )
+        Parametro sucursal = Registry.find( TipoParametro.ID_SUCURSAL )
+        String nombreFichero = "${ String.format("%02d", NumberFormat.getInstance().parse(sucursal.valor)) }.${ CustomDateUtils.format( new Date(), 'dd-MM-yyyy' ) }.${ CustomDateUtils.format( new Date(), 'HHmm' ) }.invf"
+        log.info( "Generando archivo ${ nombreFichero }" )
+        QArticulo articulo = QArticulo.articulo1
+        List<Articulo> lstArticulos = articuloRepository.findAll( articulo.cantExistencia.ne( 0 ).and(articulo.cantExistencia.isNotNull()), articulo.id.asc() )
+        def datos = [
+                articulos:lstArticulos
+        ]
+        Boolean generado = true
+        try{
+            String fichero = "${ ubicacion.valor }/${ nombreFichero }"
+            log.debug( "Generando Fichero: ${ fichero }" )
+            log.debug( "Plantilla: fichero-inv.vm" )
+            File file = new File( fichero )
+            if ( file.exists() ) { file.delete() } // Borramos el fichero si ya existe para crearlo de nuevo
+            log.debug( 'Creando Writer' )
+            FileWriter writer = new FileWriter( file )
+            datos.writer = writer
+            log.debug( 'Merge template' )
+            VelocityEngineUtils.mergeTemplate( velocityEngine, "template/fichero-inv.vm", "ASCII", datos, writer )
+            log.debug( 'Writer close' )
+            writer.close()
+
+        }catch(Exception e){
+            log.error( "Error al generar archivo de inventario", e )
+            generado = false
+        }
+        return generado
+    }
 }

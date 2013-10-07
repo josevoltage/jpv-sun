@@ -177,4 +177,15 @@ class ItemController {
   static void printDifferences( ){
     ticketService.imprimeDiferencias()
   }
+
+
+  static void generatePhysicalInventoryFile( ){
+      log.debug( "generatePhysicalInventoryFile( )" )
+      Boolean archGenerado = articuloService.generarArchivoInventarioFisico()
+      if( archGenerado ){
+          JOptionPane.showMessageDialog( new JDialog(), String.format(MSJ_ARCHIVO_GENERADO, Registry.archivePath), TXT_ARCHIVO_GENERADO, JOptionPane.INFORMATION_MESSAGE )
+      } else {
+          JOptionPane.showMessageDialog( new JDialog(), MSJ_ARCHIVO_NO_GENERADO, TXT_ARCHIVO_GENERADO, JOptionPane.INFORMATION_MESSAGE )
+      }
+  }
 }

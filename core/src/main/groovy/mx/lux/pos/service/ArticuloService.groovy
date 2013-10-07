@@ -48,4 +48,6 @@ interface ArticuloService {
   Boolean recibeDiferencias( )
 
   List<Diferencia> obtenerDiferencias(  )
+
+  Boolean generarArchivoInventarioFisico( )
 }
