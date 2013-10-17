@@ -80,7 +80,10 @@ class ItemController {
     if ( StringUtils.isNotBlank( query ) ) {
       if ( query.integer ) {
         log.debug( "busqueda por id exacto ${query}" )
-        items.add( articuloService.obtenerArticulo( query.toInteger(), incluyePrecio ) )
+        Articulo articulo = articuloService.obtenerArticulo( query.toInteger(), incluyePrecio )
+        if( articulo != null ){
+          items.add( articulo )
+        }
       } else {
         def anyMatch = '*'
         def colorMatch = ','
