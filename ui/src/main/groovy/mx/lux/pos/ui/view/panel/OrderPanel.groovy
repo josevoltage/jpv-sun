@@ -359,11 +359,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     if ( StringUtils.isNotBlank( input ) ) {
       sb.doOutside {
         List<Item> results = ItemController.findItemsByQuery( input )
-        if( input.startsWith('00') ){
-          input = input.substring(1)
-        }
         if ( ( results.size() == 0 ) && ( input.length() > 6 ) ) {
-          results = ItemController.findItemsByQuery( input.substring( 0, 6 ) )
+          input = input.substring( 0, 6 )
+          results = ItemController.findItemsByQuery( input )
         }
         if ( results?.any() ) {
           if ( results.size() == 1 ) {
