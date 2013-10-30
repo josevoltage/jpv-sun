@@ -2,6 +2,7 @@ package mx.lux.pos.ui.view.dialog
 
 import groovy.swing.SwingBuilder
 import mx.lux.pos.ui.controller.CustomerController
+import mx.lux.pos.ui.model.UpperCaseDocument
 import mx.lux.pos.ui.resources.UI_Standards
 import net.miginfocom.swing.MigLayout
 import java.awt.BorderLayout
@@ -50,12 +51,12 @@ class CountryCustomerDialog extends JDialog implements ActionListener{
           label( text: "Seleccione el pa\u00eds de origen del cliente", constraints: "span 2" )
           label( text: " ", constraints: "span 2" )
           label( text: "Pa\u00eds:" )
-          cbPaises = comboBox( items: lstPaises, editable: true )
+          cbPaises = comboBox( items: lstPaises, editable: false )
           cbPaises.addActionListener(this)
           lblStates = label( text: "Estado:", constraints: 'hidemode 3' )
           cbEstado = comboBox( items: lstEstados, constraints: 'hidemode 3', editable: false )
           label()
-          txtPais = textField( constraints: 'hidemode 3', visible: false )
+          txtPais = textField( constraints: 'hidemode 3', visible: false, document: new UpperCaseDocument() )
           lblWarning = label( constraints: "span 2, hidemode 3", visible: false, foreground: UI_Standards.WARNING_FOREGROUND, )
         }
 
@@ -103,8 +104,17 @@ class CountryCustomerDialog extends JDialog implements ActionListener{
           button = true
           dispose()
         } else if(cbEstado.visible == false){
-          button = true
-          dispose()
+          if(txtPais.visible == true && !txtPais.text.trim() != ''){
+            selectedCountry = txtPais.text.trim()
+            button = true
+            dispose()
+          } else if(txtPais.visible == true && txtPais.text.trim() != ''){
+            lblWarning.text = 'Es necesario seleccionar un pais'
+            lblWarning.visible = true
+          } else {
+            button = true
+            dispose()
+          }
         } else {
             lblWarning.text = 'Es necesario seleccionar un pais y estado'
             lblWarning.visible = true
@@ -122,10 +132,10 @@ class CountryCustomerDialog extends JDialog implements ActionListener{
           lblStates.visible = true
           lblWarning.visible = false
         } else if( cbPaises.selectedItem.toString().trim().equalsIgnoreCase(TAG_OTROS) ){
+          txtPais.setVisible( true )
           cbEstado.visible = false
           lblStates.visible = false
           cbEstado.selectedItem = ''
-          txtPais.visible = true
           lblWarning.visible = false
         }else {
           cbEstado.visible = false
