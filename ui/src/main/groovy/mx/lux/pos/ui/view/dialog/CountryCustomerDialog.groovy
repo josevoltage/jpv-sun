@@ -19,12 +19,14 @@ class CountryCustomerDialog extends JDialog implements ActionListener{
   private String selectedState
   private JComboBox cbPaises
   private JComboBox cbEstado
+  private JTextField txtPais
   private List<String> lstPaises = new ArrayList<String>()
   private List<String> lstEstados = new ArrayList<String>()
   private JLabel lblWarning
   private JLabel lblStates
   public boolean button = false
-  private static final String MSJ_SELECCIONE_PAIS = 'Es necesario seleccionar un pa\u00eds'
+  private static final String TAG_MEXICO = 'MEXICO'
+  private static final String TAG_OTROS = 'OTROS'
 
     CountryCustomerDialog( Component parent ) {
         lstPaises = CustomerController.countries()
@@ -52,7 +54,9 @@ class CountryCustomerDialog extends JDialog implements ActionListener{
           cbPaises.addActionListener(this)
           lblStates = label( text: "Estado:", constraints: 'hidemode 3' )
           cbEstado = comboBox( items: lstEstados, constraints: 'hidemode 3', editable: false )
-          lblWarning = label( text: MSJ_SELECCIONE_PAIS, constraints: "span 2, hidemode 3", visible: false, foreground: UI_Standards.WARNING_FOREGROUND, )
+          label()
+          txtPais = textField( constraints: 'hidemode 3', visible: false )
+          lblWarning = label( constraints: "span 2, hidemode 3", visible: false, foreground: UI_Standards.WARNING_FOREGROUND, )
         }
 
         panel( constraints: BorderLayout.PAGE_END ) {
@@ -92,25 +96,42 @@ class CountryCustomerDialog extends JDialog implements ActionListener{
   }
 
   protected void onButtonOk( ) {
-    selectedState = cbEstado.visible == true ? ','+cbEstado.selectedItem.toString().trim() : ''
+    selectedState = (cbEstado.visible == true && !cbEstado.selectedItem.toString().trim().isEmpty()) ? ','+cbEstado.selectedItem.toString().trim() : ''
     selectedCountry = cbPaises.selectedItem.toString().trim()+selectedState
       if( selectedCountry.length() > 0 ){
+        if(cbEstado.visible == true && selectedState != null && selectedState.trim() != ''){
           button = true
           dispose()
+        } else if(cbEstado.visible == false){
+          button = true
+          dispose()
+        } else {
+            lblWarning.text = 'Es necesario seleccionar un pais y estado'
+            lblWarning.visible = true
+        }
       } else {
+          lblWarning.text = 'Es necesario seleccionar un pais'
           lblWarning.visible = true
       }
   }
 
     @Override
-    void actionPerformed(ActionEvent e) {
-        if( cbPaises.selectedItem.toString().trim().equalsIgnoreCase('MEXICO') ){
-            cbEstado.visible = true
-            lblStates.visible = true
-        } else {
-            cbEstado.visible = false
-            lblStates.visible = false
-            cbEstado.selectedItem = ''
+   void actionPerformed(ActionEvent e) {
+        if( cbPaises.selectedItem.toString().trim().equalsIgnoreCase(TAG_MEXICO) ){
+          cbEstado.visible = true
+          lblStates.visible = true
+          lblWarning.visible = false
+        } else if( cbPaises.selectedItem.toString().trim().equalsIgnoreCase(TAG_OTROS) ){
+          cbEstado.visible = false
+          lblStates.visible = false
+          cbEstado.selectedItem = ''
+          txtPais.visible = true
+          lblWarning.visible = false
+        }else {
+          cbEstado.visible = false
+          lblStates.visible = false
+          cbEstado.selectedItem = ''
+          lblWarning.visible = false
         }
     }
 }

@@ -573,7 +573,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
 
     private void saveOrder (){
         Order newOrder = OrderController.placeOrder( order )
-        CustomerController.saveOrderCountries( order.country )
+        //CustomerController.saveOrderCountries( order.country )
         this.promotionDriver.requestPromotionSave()
         if ( StringUtils.isNotBlank( newOrder?.id ) ) {
             OrderController.printOrder( newOrder.id )

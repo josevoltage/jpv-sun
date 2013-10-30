@@ -44,6 +44,9 @@ class CustomerController {
         this.paisesService = paisesService
     }
 
+    static private final String TAG_OTROS_PAISES = 'OTROS'
+
+
     static List<String> findAllStates() {
         log.debug("obteniendo lista de nombres de los estados")
         def results = estadoService.listaEstados()
@@ -210,12 +213,14 @@ class CustomerController {
         for(Paises pais : paises){
             lstPaises.add( pais.pais )
         }
+        lstPaises.add(TAG_OTROS_PAISES)
         return lstPaises
     }
 
     static List<String> states( ) {
         List<String> lstEstados = new ArrayList<>()
         List<Rep> estados = paisesService.obtenerEstados()
+        lstEstados.add('')
         for(Rep estado : estados){
             lstEstados.add( estado.nombre )
         }
