@@ -116,7 +116,7 @@ class CountryCustomerDialog extends JDialog implements ActionListener{
             dispose()
           }
         } else {
-            lblWarning.text = 'Es necesario seleccionar un pais y estado'
+            lblWarning.text = 'Es necesario seleccionar un estado'
             lblWarning.visible = true
         }
       } else {

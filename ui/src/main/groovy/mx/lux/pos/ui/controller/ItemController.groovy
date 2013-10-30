@@ -191,4 +191,21 @@ class ItemController {
           JOptionPane.showMessageDialog( new JDialog(), MSJ_ARCHIVO_NO_GENERADO, TXT_ARCHIVO_GENERADO, JOptionPane.INFORMATION_MESSAGE )
       }
   }
+
+
+
+  static Boolean isInventoried( Integer idArticulo ){
+    log.debug( "isInventoried( )" )
+    Boolean esInventariable = true
+    Articulo articulo = articuloService.obtenerArticulo( idArticulo )
+    if(articulo != null){
+      if(!articulo.generico.inventariable){
+        esInventariable = false
+      }
+    }
+    return esInventariable
+  }
+
+
+
 }

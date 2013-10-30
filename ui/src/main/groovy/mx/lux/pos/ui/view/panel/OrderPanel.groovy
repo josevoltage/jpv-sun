@@ -365,7 +365,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         }
         if ( results?.any() ) {
           if ( results.size() == 1 ) {
-              if( results?.first().stock <= 0 ){
+              if( results?.first().stock <= 0 && ItemController.isInventoried(results?.first().id) ){
                 Integer question =JOptionPane.showConfirmDialog( new JDialog(), MSG_NO_STOCK, TXT_NO_STOCK,
                         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
                 if( question == 0){
@@ -381,7 +381,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             dialog.show()
             Item item = dialog.item
             if ( item?.id ) {
-              if( item?.stock <= 0 ){
+              if( item?.stock <= 0 && ItemController.isInventoried(results?.first().id) ){
                 Integer question =JOptionPane.showConfirmDialog( new JDialog(), MSG_NO_STOCK, TXT_NO_STOCK,
                         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
                 if( question == 0){
