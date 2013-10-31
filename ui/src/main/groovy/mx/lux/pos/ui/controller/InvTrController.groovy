@@ -351,7 +351,8 @@ class InvTrController {
     }
     if ( partList?.any() ) {
       if ( partList.size() == 1 )  {
-        if( partList.first().cantExistencia <= 0 && pView.data.viewMode.trType.tipoMov.trim().equalsIgnoreCase('S') ){
+        if( partList.first().cantExistencia <= 0 && pView.data.viewMode.trType.tipoMov.trim().equalsIgnoreCase('S') &&
+        ItemController.isInventoried(partList.first().id)){
           Integer question =JOptionPane.showConfirmDialog( new JDialog(), pView.panel.MSG_NO_STOCK, pView.panel.TXT_NO_STOCK,
                   JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
           if( question == 0){
@@ -375,7 +376,8 @@ class InvTrController {
         dlgPartSelection.activate()
         List<Articulo> selection = dlgPartSelection.getSelection()
         if ( selection != null ) {
-          if( selection.first().cantExistencia <= 0 && pView.data.viewMode.trType.tipoMov.trim().equalsIgnoreCase('S') ){
+          if( selection.first().cantExistencia <= 0 && pView.data.viewMode.trType.tipoMov.trim().equalsIgnoreCase('S') &&
+                  ItemController.isInventoried(partList.first().id)){
               Integer question =JOptionPane.showConfirmDialog( new JDialog(), pView.panel.MSG_NO_STOCK, pView.panel.TXT_NO_STOCK,
                       JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
               if( question == 0){
