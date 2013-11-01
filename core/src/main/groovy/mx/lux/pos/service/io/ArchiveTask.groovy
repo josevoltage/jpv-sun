@@ -29,19 +29,31 @@ class ArchiveTask {
     return Registry.archivePath + File.separator + filename + EXT_ZIP
   }
 
+
+  protected String getArchiveFileDropbox( ) {
+      String filename = this.archiveFile
+      if ( filename == null ) {
+          filename = String.format( FILE_ARCHIVE_DEFAULT, CustomDateUtils.format( new Date(), FMT_DATE_TIME ) )
+      }
+      return Registry.archivePathDropbox + File.separator + filename + EXT_ZIP
+  }
   // Public methods
   void run( ) {
     if ( ( this.filePattern != null ) && ( this.baseDir != null ) ) {
       String sSistemaOperativo = System.getProperty("os.name");
       logger.debug(sSistemaOperativo);
       StringBuffer sb = new StringBuffer()
+      StringBuffer sbDrop = new StringBuffer()
       sb.append( String.format( "%s ", Registry.archiveCommand ) );
+      sbDrop.append( String.format( "%s ", Registry.archiveCommand ) );
       if( sSistemaOperativo.trim().startsWith( SO_WINDOWS ) ){
         sb.append( String.format( '"%s" ', this.getArchiveFile() ) );
         sb.append( String.format( '"%s" ', this.baseDir + File.separator + this.filePattern ) )
       } else {
         sb.append( String.format( '%s ', this.getArchiveFile() ) );
         sb.append( String.format( '%s ', this.baseDir + File.separator + this.filePattern ) )
+        sbDrop.append( String.format( '%s ', this.getArchiveFileDropbox() ) );
+        sbDrop.append( String.format( '%s ', this.baseDir + File.separator + this.filePattern ) )
       }
       StringBuffer sb2 = new StringBuffer()
       for ( char c : sb.toString().toCharArray() ) {
@@ -51,8 +63,19 @@ class ArchiveTask {
           sb2.append( c )
         }
       }
+
+      StringBuffer sb3 = new StringBuffer()
+      for ( char c : sbDrop.toString().toCharArray() ) {
+          if ( ( c == '\\' ) || ( c == '/' ) ) {
+              sb3.append( File.separator )
+          } else {
+              sb3.append( c )
+          }
+      }
       String cmd = sb2.toString()
+      String cmd1 = sb3.toString()
       logger.debug( String.format( "ZIP Command: <%s>", cmd ) )
+      logger.debug( String.format( "ZIP Command: <%s>", cmd1 ) )
 
       File f = new File( this.getArchiveFile() )
       if ( f.exists() ) {
@@ -60,6 +83,7 @@ class ArchiveTask {
       }
 
       try {
+        cmd1.execute()
         cmd.execute()
       } catch ( Exception e ) {
         logger.error( e.getMessage(), e )

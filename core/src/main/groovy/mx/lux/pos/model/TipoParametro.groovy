@@ -49,6 +49,7 @@ enum TipoParametro {
   RUTA_REMISION( 'ruta_remision', 'C:/Documents and Settings/mensajero/remision' ),
   RUTA_LISTA_PRECIOS( 'ruta_lista_precios', 'C:/Documents and Settings/mensajero/lp' ),
   RUTA_POR_ENVIAR( 'ruta_por_enviar', 'C:/Documents and Settings/mensajero/por_enviar' ),
+  RUTA_POR_ENVIAR_DROPBOX( 'ruta_por_enviar_dropbox', '/home/drop/Dropbox/MAE' ),
   RUTA_POR_RECIBIR( 'ruta_por_recibir', 'C:/Documents and Settings/mensajero/por_recibir' ),
   RUTA_RECIBIDOS( 'ruta_recibidos', 'C:/Documents and Settings/mensajero/recibidos' ),
   RUTA_CATALOGOS( 'ruta_catalogos', 'C:/Documents and Settings/mensajero/catalogos' ),

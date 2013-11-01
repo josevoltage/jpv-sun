@@ -270,6 +270,9 @@ class Registry {
     return asString( TipoParametro.RUTA_POR_ENVIAR )
   }
 
+  static String getArchivePathDropbox( ) {
+      return asString( TipoParametro.RUTA_POR_ENVIAR_DROPBOX )
+  }
   static String getTimeToWait( ) {
       return asString( TipoParametro.ESPERA_CIERRE )
   }
