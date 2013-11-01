@@ -49,6 +49,8 @@ class ArchiveTask {
       if( sSistemaOperativo.trim().startsWith( SO_WINDOWS ) ){
         sb.append( String.format( '"%s" ', this.getArchiveFile() ) );
         sb.append( String.format( '"%s" ', this.baseDir + File.separator + this.filePattern ) )
+        sbDrop.append( String.format( '"%s" ', this.getArchiveFile() ) );
+        sbDrop.append( String.format( '"%s" ', this.baseDir + File.separator + this.filePattern ) )
       } else {
         sb.append( String.format( '%s ', this.getArchiveFile() ) );
         sb.append( String.format( '%s ', this.baseDir + File.separator + this.filePattern ) )
