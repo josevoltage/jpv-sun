@@ -35,7 +35,7 @@ class ArchiveTask {
       if ( filename == null ) {
           filename = String.format( FILE_ARCHIVE_DEFAULT, CustomDateUtils.format( new Date(), FMT_DATE_TIME ) )
       }
-      return Registry.archivePathDropbox + File.separator + filename + EXT_ZIP
+      return Registry.archivePathDropbox + Registry.currentSite + File.separator + filename + EXT_ZIP
   }
   // Public methods
   void run( ) {

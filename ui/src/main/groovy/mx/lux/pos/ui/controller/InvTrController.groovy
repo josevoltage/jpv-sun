@@ -463,7 +463,7 @@ class InvTrController {
         if ( pView.data.inFile != null ) {
           try {
             File moved = new File( SettingsController.instance.processedPath, pView.data.inFile.name )
-            if (InvTrViewMode.OUTBOUND.equals( viewMode )) {
+            if (InvTrViewMode.OUTBOUND.equals( pView.data.viewMode ) || InvTrViewMode.FILE_ADJUST.equals( pView.data.viewMode )) {
                 pView.data.inFile.delete();
             }
             else {
