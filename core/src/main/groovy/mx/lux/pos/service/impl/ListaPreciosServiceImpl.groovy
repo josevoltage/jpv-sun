@@ -67,10 +67,10 @@ class ListaPreciosServiceImpl implements ListaPreciosService {
     if ( StringUtils.isNotBlank( listaPrecios?.id ) && StringUtils.isNotBlank( listaPrecios?.filename ) ) {
       listaPrecios = listaPreciosRepository.save( listaPrecios )
       if ( listaPrecios?.id ) {
-        def urlTexto = generaUrlServicioWeb( TipoParametro.URL_RECIBE_LISTA_PRECIOS, listaPrecios.id, null )
+        /*def urlTexto = generaUrlServicioWeb( TipoParametro.URL_RECIBE_LISTA_PRECIOS, listaPrecios.id, null )
         log.debug( "invocando ${urlTexto}" )
         def resp = urlTexto?.toURL()?.text
-        log.debug( "respuesta: ${resp}" )
+        log.debug( "respuesta: ${resp}" )*/
       }
       return listaPrecios
     }
@@ -121,10 +121,10 @@ class ListaPreciosServiceImpl implements ListaPreciosService {
         listaPrecios = listaPreciosRepository.save( listaPrecios )
         procesaCargaArticulos( articulos )
         if ( listaPrecios?.id ) {
-          def urlTexto = generaUrlServicioWeb( TipoParametro.URL_CARGA_LISTA_PRECIOS, listaPrecios.id, listaPrecios.tipoCarga )
+          /*def urlTexto = generaUrlServicioWeb( TipoParametro.URL_CARGA_LISTA_PRECIOS, listaPrecios.id, listaPrecios.tipoCarga )
           log.debug( "invocando ${urlTexto}" )
           def resp = urlTexto?.toURL()?.text
-          log.debug( "respuesta: ${resp}" )
+          log.debug( "respuesta: ${resp}" )*/
         }
         return listaPrecios
       } else {
