@@ -508,6 +508,7 @@ class MainWindow extends JFrame implements KeyListener {
   private void initialize( ) {
     PriceListController.loadExpiredPriceList()
     sb.doOutside {
+      IOController.getInstance().loadAdjustFile()
       IOController.getInstance().autoUpdateFxRates()
       DailyCloseController.openDay()
       DailyCloseController.RegistrarPromociones()

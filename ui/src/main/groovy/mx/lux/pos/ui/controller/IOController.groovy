@@ -3,6 +3,7 @@ package mx.lux.pos.ui.controller
 import mx.lux.pos.model.Empleado
 import mx.lux.pos.model.Parametro
 import mx.lux.pos.model.Sucursal
+import mx.lux.pos.service.business.Registry
 import mx.lux.pos.ui.model.Session
 import mx.lux.pos.ui.model.SessionItem
 import mx.lux.pos.ui.model.User
@@ -115,6 +116,19 @@ class IOController {
             }
         }
         return isManager
+    }
+
+
+    void loadAdjustFile( ){
+      log.debug( "loadAdjustFile( )" )
+      String receivePath = Registry.inputFilePath
+      File folder = new File( receivePath )
+        if ( folder?.canRead() ){
+          folder.eachFileMatch( ~/.+_.+\.reg/ ) { File file ->
+              log.debug( "Archivo ajuste: ${file.absolutePath}" )
+              ServiceManager.inventoryService.leerArchivoAjuste( file )
+          }
+        }
     }
 }
 

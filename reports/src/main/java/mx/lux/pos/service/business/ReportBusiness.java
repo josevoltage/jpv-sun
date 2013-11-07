@@ -18,9 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.Collator;
-import java.text.NumberFormat;
-import java.text.ParseException;
+import java.text.*;
 import java.util.*;
 import java.util.List;
 
@@ -1421,11 +1419,25 @@ public class ReportBusiness {
 
 
     public List<KardexPorArticulo> obtenerKardex( Integer sku, Date fechaInicio, Date fechaFin ){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         QTransInv transInv = QTransInv.transInv;
         QTransInvDetalle transInvDet = QTransInvDetalle.transInvDetalle;
         List<TransInvDetalle> lstMovimientos = new ArrayList<TransInvDetalle>();
-        List<TransInv> lstTransInvDate = ( List<TransInv> ) transInvRepository.findAll( transInv.fecha.between( fechaInicio, new Date() ), transInv.fechaMod.desc() );
+        List<TransInv> lstTransInvDate = new ArrayList<TransInv>();
+        Date fechaInicial = new Date();
+        try{
+          fechaInicial = df.parse("2012-12-01");
+        } catch (ParseException e ){
+          System.out.println( e );
+        }
+
+        List<TransInv> lstTransTotal = ( List<TransInv> ) transInvRepository.findAll( transInv.fecha.between( fechaInicial, new Date() ), transInv.fechaMod.desc() );
         List<KardexPorArticulo> lstKardezSku = new ArrayList<KardexPorArticulo>();
+        for(TransInv trans : lstTransTotal){
+          if( trans.getFecha().compareTo(fechaInicio) > 0 && trans.getFecha().compareTo(fechaFin) < 0){
+            lstTransInvDate.add( trans );
+          }
+        }
         for( TransInv movimiento : lstTransInvDate ){
             TransInvDetalle transInvSku = ( TransInvDetalle ) transInvDetalleRepository.findOne( transInvDet.idTipoTrans.eq(movimiento.getIdTipoTrans()).
                     and( transInvDet.folio.eq( movimiento.getFolio() )).and( transInvDet.sku.eq( sku ) ) );
@@ -1455,19 +1467,19 @@ public class ReportBusiness {
             Empleado empleado = empleadoRepository.findById( movimiento.getTransInv().getIdEmpleado() );
             kardexArticulo.setEmpleado( empleado.getNombreCompleto() );
             if( movimiento.getTipoMov().equalsIgnoreCase( "S" )){
-                if( lstMovimientos.get(0).equals(movimiento)){
+                /*if( lstMovimientos.get(0).equals(movimiento)){
                     saldoFin = exisActual;
-                } else {
+                } else {*/
                     saldoFin = saldoInicio;
-                }
+                //}
                 saldoInicio = saldoFin+movimiento.getCantidad();
                 kardexArticulo.setSalida( movimiento.getCantidad() );
             } else if( movimiento.getTipoMov().equalsIgnoreCase( "E" ) ){
-                if( lstMovimientos.get(0).equals(movimiento)){
+                /*if( lstMovimientos.get(0).equals(movimiento)){
                     saldoFin = exisActual;
-                } else {
+                } else {*/
                     saldoFin = saldoInicio;
-                }
+                //}
                 saldoInicio = saldoFin-movimiento.getCantidad();
                 kardexArticulo.setEntrada( movimiento.getCantidad() );
             }
