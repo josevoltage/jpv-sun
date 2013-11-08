@@ -137,6 +137,19 @@ class PromotionPart {
     return genre.equals( ALL_ITEMS )
   }
 
+  Boolean listGenres( Articulo pPart ) {
+    Boolean valid = false
+    String[] listGenres = genre.split( ',' )
+    if( listGenres.length > 1 ){
+      for(int i=0;i<listGenres.length;i++){
+        if(pPart.idGenerico.equalsIgnoreCase(listGenres[i].trim())){
+          valid = true
+        }
+      }
+    }
+    return valid
+  }
+
   Boolean allType( ) {
     return type.equals( ALL_ITEMS )
   }
@@ -154,7 +167,7 @@ class PromotionPart {
   }
 
   Boolean appliesToPart( Articulo pPart ) {
-    Boolean applies = allGenre() || genre.equalsIgnoreCase( pPart.idGenerico )
+    Boolean applies = allGenre() || genre.equalsIgnoreCase( pPart.idGenerico )  || listGenres( pPart )
     if ( applies )
       applies = allPart() || partList.contains( pPart.articulo.toUpperCase() )
     if ( applies )
