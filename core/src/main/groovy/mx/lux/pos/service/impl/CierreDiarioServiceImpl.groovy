@@ -194,6 +194,21 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
         generarFicheroInv( )
       }
       InventorySearch.generateInFile( fechaCierre, fechaCierre )
+      Calendar cal = Calendar.getInstance()
+      cal.set(Calendar.DAY_OF_MONTH,Calendar.getInstance().getActualMinimum(Calendar.DAY_OF_MONTH));
+      String firstDay = CustomDateUtils.format( cal.getTime(), 'dd-MM-yyyy' )
+      String dayClose = CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' )
+
+      if( firstDay.equalsIgnoreCase(dayClose) ){
+        cal.add(Calendar.MONTH, -1)
+        Date dateStart = cal.getTime()
+        cal = Calendar.getInstance()
+        cal.set(Calendar.DAY_OF_MONTH,Calendar.getInstance().getActualMinimum(Calendar.DAY_OF_MONTH));
+        cal.add( Calendar.DAY_OF_MONTH, -1)
+        Date dateFinish = cal.getTime()
+        InventorySearch.generateInFile2( dateStart, dateFinish )
+      }
+
       archivarCierre( fechaCierre )
     } catch ( Exception e ) {
       log.error( e.getMessage(), e )
@@ -1401,4 +1416,17 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       List<CierreDiario> lstDias = cierreDiarioRepository.findAll( cierre.estado.equalsIgnoreCase('c'), cierre.fecha.asc() )
       return lstDias
   }
+
+  @Override
+  @Transactional
+  void cambiarEstatuCerrado( Date fecha ){
+    log.debug( "cambiarEstatuCerrado( )" )
+    CierreDiario cierre = cierreDiarioRepository.findOne( fecha )
+    if(cierre != null && cierre.estado.trim().equalsIgnoreCase('a')){
+      cierre.estado = 'c'
+      cierreDiarioRepository.saveAndFlush( cierre )
+    }
+  }
+
+
 }

@@ -4,6 +4,7 @@ import mx.lux.pos.repository.TipoTransInvRepository
 import mx.lux.pos.repository.TransInvDetalleRepository
 import mx.lux.pos.repository.TransInvRepository
 import mx.lux.pos.service.ArticuloService
+import mx.lux.pos.service.CierreDiarioService
 import mx.lux.pos.service.io.ZInFile
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateUtils
@@ -18,14 +19,16 @@ class InventorySearch {
   private static TransInvDetalleRepository trInvDetail
   private static TipoTransInvRepository trTypeCatalog
   private static ArticuloService partMaster
+  private static CierreDiarioService cierreDiarioService
 
   @Autowired InventorySearch( TransInvRepository pTrMstr, TransInvDetalleRepository pTrDet, ArticuloService pParts,
-                              TipoTransInvRepository pTypeCatalog
+                              TipoTransInvRepository pTypeCatalog, CierreDiarioService pCierreDiarioService
   ) {
     trInvMaster = pTrMstr
     trInvDetail = pTrDet
     partMaster = pParts
     trTypeCatalog = pTypeCatalog
+    cierreDiarioService = pCierreDiarioService
   }
 
   static List<Integer> buildSkuList( List<Articulo> pPartList ) {
@@ -104,6 +107,28 @@ class InventorySearch {
     Date dtFrom = DateUtils.truncate( pDateFrom, Calendar.DATE )
     Date dtTo = DateUtils.truncate( pDateTo, Calendar.DATE )
     List<TransInv> selected = trInvMaster.findByFechaBetween( dtFrom, dtTo )
+
+    List<CierreDiario> lstOpenDays = cierreDiarioService.buscarConEstadoAbierto()
+    for(CierreDiario cierre : lstOpenDays){
+      cierreDiarioService.cargarDatosCierreDiario( cierre.fecha )
+      cierreDiarioService.cambiarEstatuCerrado( cierre.fecha )
+      Date fechaInicio = DateUtils.truncate( cierre.fecha, Calendar.DAY_OF_MONTH );
+      Date fechaFin = new Date( DateUtils.ceiling( cierre.fecha, Calendar.DAY_OF_MONTH ).getTime() - 1 );
+      List<TransInv> lstTransacciones = trInvMaster.findByFechaBetween( fechaInicio, fechaFin )
+      if(lstTransacciones.size() > 0){
+        selected.addAll( lstTransacciones )
+      }
+    }
+
+    loadDetails( selected )
+    return selected
+  }
+
+
+  static List<TransInv> listarTransaccionesPorMes( Date pDateFrom, Date pDateTo ) {
+    Date dtFrom = DateUtils.truncate( pDateFrom, Calendar.DATE )
+    Date dtTo = DateUtils.truncate( pDateTo, Calendar.DATE )
+    List<TransInv> selected = trInvMaster.findByFechaBetween( dtFrom, dtTo )
     loadDetails( selected )
     return selected
   }
@@ -149,10 +174,16 @@ class InventorySearch {
     }
 
     static void generateInFile( Date pDateFrom, Date pDateTo ) {
-    ZInFile file = new ZInFile( DateUtils.truncate( pDateFrom, Calendar.DATE ) )
+    ZInFile file = new ZInFile( DateUtils.truncate( pDateFrom, Calendar.DATE ), false )
     file.setInvTrList( listarTransaccionesPorFecha( pDateFrom, pDateTo ) )
     file.write()
   }
+
+    static void generateInFile2( Date pDateFrom, Date pDateTo ) {
+        ZInFile file = new ZInFile( DateUtils.truncate( pDateFrom, Calendar.DATE ), true )
+        file.setInvTrList( listarTransaccionesPorFecha( pDateFrom, pDateTo ) )
+        file.writeMonth()
+    }
 
   static TipoTransInv findTrType( String pTipoTransInv ) {
     return trTypeCatalog.findOne( pTipoTransInv )

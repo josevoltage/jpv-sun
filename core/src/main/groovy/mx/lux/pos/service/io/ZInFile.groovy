@@ -21,6 +21,7 @@ class ZInFile {
   private static final String DELIMITER_2 = "!"
   private static final String FMT_TR_DATE = "dd/MM/yyyy"
   private static final String FILENAME = "2.%d.%s.IN"
+  private static final String FILENAME2 = "2.%d.%s.IN2"
 
   private Logger logger = LoggerFactory.getLogger( this.getClass() )
   private String filename
@@ -28,10 +29,15 @@ class ZInFile {
   private List<TransInv> trInvList
   private Integer nTrans
 
-  ZInFile( Date pDate ) {
+  ZInFile( Date pDate, Boolean invMonth ) {
     this.fileDate = pDate
-    filename = String.format( FILENAME, Registry.getCurrentSite(), CustomDateUtils.format( pDate, "dd-MM-yyyy" ) )
+    if(invMonth){
+      filename = String.format( FILENAME2, Registry.getCurrentSite(), CustomDateUtils.format( pDate, "dd-MM-yyyy" ) )
+    } else {
+      filename = String.format( FILENAME, Registry.getCurrentSite(), CustomDateUtils.format( pDate, "dd-MM-yyyy" ) )
+    }
   }
+
 
   // Private Methods
   protected String formatTrans( TransInv pTrMstr, TransInvDetalle pTrDet ) {
@@ -109,4 +115,29 @@ class ZInFile {
       }
     }
   }
+
+    void writeMonth( ) {
+        if ( this.trInvList.size() > 0 ) {
+            File file = new File( Registry.getDailyClosePath() + File.separator + filename )
+            if ( file.exists() ) {
+                file.delete()
+            }
+            PrintStream str = null
+            try {
+                str = new PrintStream( file )
+                str.println( this.formatHeader() )
+                for ( TransInv tr : this.trInvList ) {
+                    for ( TransInvDetalle det : tr.trDet ) {
+                        str.println( this.formatTrans( tr, det ) )
+                    }
+                }
+            } catch ( Exception e ) {
+                this.logger.error( e.getMessage(), e )
+            } finally {
+                if ( str != null ) {
+                    str.close()
+                }
+            }
+        }
+    }
 }
