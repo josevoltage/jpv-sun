@@ -174,15 +174,15 @@ class InventorySearch {
     }
 
     static void generateInFile( Date pDateFrom, Date pDateTo ) {
-    ZInFile file = new ZInFile( DateUtils.truncate( pDateFrom, Calendar.DATE ), false )
-    file.setInvTrList( listarTransaccionesPorFecha( pDateFrom, pDateTo ) )
-    file.write()
+      ZInFile file = new ZInFile( DateUtils.truncate( pDateFrom, Calendar.DATE ), false )
+      file.setInvTrList( listarTransaccionesPorFecha( pDateFrom, pDateTo ) )
+      file.write()
   }
 
-    static void generateInFile2( Date pDateFrom, Date pDateTo ) {
-        ZInFile file = new ZInFile( DateUtils.truncate( pDateFrom, Calendar.DATE ), true )
-        file.setInvTrList( listarTransaccionesPorFecha( pDateFrom, pDateTo ) )
-        file.writeMonth()
+    static void generateInFile2( Date pDateFrom, Date pDateTo, Date dateFile ) {
+      ZInFile file = new ZInFile( DateUtils.truncate( dateFile, Calendar.DATE ), true )
+      file.setInvTrList( listarTransaccionesPorFecha( pDateFrom, pDateTo ) )
+      file.writeMonth()
     }
 
   static TipoTransInv findTrType( String pTipoTransInv ) {

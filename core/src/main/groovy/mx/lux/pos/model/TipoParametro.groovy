@@ -21,6 +21,7 @@ enum TipoParametro {
   ESPERA_CIERRE( 'espera_cierre', '60' ),
   FORMATO_ARCHIVO( 'formato_archivo_salida', '//' ),
   FECHA_ACTUAL( 'fecha_actual', '' ),
+  GENERA_ARCHIVO_TRANSACCIONES_MENSUALES( 'genera_archivo_mensual', 'si' ),
   GRUPO_COMPANIA( 'grupo_compania', 'lux' ),
   GENERICO_PRECIO_VARIABLE( 'generico_precio_variable', 'S' ),
   ID_CLIENTE_GENERICO( 'cli_gen', '1' ),

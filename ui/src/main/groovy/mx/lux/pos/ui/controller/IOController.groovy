@@ -1,12 +1,22 @@
 package mx.lux.pos.ui.controller
 
+import mx.lux.pos.model.Articulo
 import mx.lux.pos.model.Empleado
+import mx.lux.pos.model.InvAdjustLine
+import mx.lux.pos.model.InvAdjustSheet
+import mx.lux.pos.model.InvTrRequest
 import mx.lux.pos.model.Parametro
 import mx.lux.pos.model.Sucursal
+import mx.lux.pos.service.ArticuloService
 import mx.lux.pos.service.business.Registry
+import mx.lux.pos.ui.model.Branch
+import mx.lux.pos.ui.model.InvTr
+import mx.lux.pos.ui.model.InvTrViewMode
 import mx.lux.pos.ui.model.Session
 import mx.lux.pos.ui.model.SessionItem
 import mx.lux.pos.ui.model.User
+import mx.lux.pos.ui.model.adapter.InvTrFilter
+import mx.lux.pos.ui.model.adapter.RequestAdapter
 import mx.lux.pos.ui.resources.ServiceManager
 import mx.lux.pos.ui.view.dialog.ImportPartMasterDialog
 import org.slf4j.LoggerFactory
@@ -16,6 +26,9 @@ import mx.lux.pos.ui.model.file.FileFilteredList
 import mx.lux.pos.ui.model.file.FileFiltered
 import mx.lux.pos.ui.view.dialog.ImportClasificationArticleDialog
 import mx.lux.pos.ui.model.file.DateFileFiltered
+
+import javax.swing.JOptionPane
+import javax.swing.SwingUtilities
 import java.text.SimpleDateFormat
 import org.apache.commons.lang.StringUtils
 
@@ -24,6 +37,8 @@ class IOController {
 
     private Logger log = LoggerFactory.getLogger(this.getClass())
     private static IOController instance
+
+    private static InvTr data = new InvTr()
 
     private IOController() { }
 
@@ -126,9 +141,56 @@ class IOController {
         if ( folder?.canRead() ){
           folder.eachFileMatch( ~/.+_.+\.reg/ ) { File file ->
               log.debug( "Archivo ajuste: ${file.absolutePath}" )
-              ServiceManager.inventoryService.leerArchivoAjuste( file )
+              InvAdjustSheet document = ServiceManager.inventoryService.leerArchivoAjuste( file.absolutePath )
+              if ( document != null ) {
+                  data = new InvTr()
+                  dispatchDocument( document )
+                  data.inFile = new File( file.absolutePath )
+                  data.postTrType = ServiceManager.inventoryService.obtenerTipoTransaccionAjuste()
+                  InvTrRequest request = RequestAdapter.getRequest( data )
+                  log.debug ( String.format('Adjust File: %s', document.headerToString()) )
+                  if ( request != null ) {
+                      request.remarks = request.remarks.replaceAll("[^a-zA-Z0-9]+"," ");
+                      Integer trNbr = ServiceManager.getInventoryService().solicitarTransaccion( request )
+                      if ( trNbr != null ) {
+                          if ( data.inFile != null ) {
+                              try {
+                                  File moved = new File( SettingsController.instance.processedPath, data.inFile.name )
+                                  if (InvTrViewMode.FILE_ADJUST.equals( data.viewMode )) {
+                                      data.inFile.delete();
+                                  }
+                                  else {
+                                      data.inFile.renameTo( moved )
+                                  }
+                              } catch (Exception e) {
+                                  this.log.debug( e.getMessage() )
+                              }
+                          }
+                          InvTrViewMode viewMode = data.viewMode
+                      }
+                  } else {
+                      log.debug( "[Controller] Request not available" )
+                  }
+              }
           }
         }
     }
+
+    void dispatchDocument( InvAdjustSheet pDocument ){
+        data.receiptDocument = null
+        data.adjustDocument = pDocument
+        if ( pDocument.site == Registry.currentSite ) {
+            ArticuloService partMaster = ServiceManager.partService
+            data.postReference = org.apache.commons.lang3.StringUtils.trimToEmpty(data.adjustDocument.ref )
+            data.postRemarks = org.apache.commons.lang3.StringUtils.trimToEmpty( data.adjustDocument.trReason )
+            for ( InvAdjustLine ln in data.adjustDocument.lines ) {
+                Articulo part = partMaster.obtenerArticulo( ln.sku, false )
+                if ( part != null ) {
+                    data.addPart( part, ln.qty )
+                }
+            }
+        }
+    }
+
 }
 

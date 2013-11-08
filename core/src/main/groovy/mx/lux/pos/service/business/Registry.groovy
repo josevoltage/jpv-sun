@@ -186,6 +186,10 @@ class Registry {
     return isTrue( TipoParametro.DESPLIEGA_USD )
   }
 
+  static Boolean generateMonthTransactions( ) {
+      return isTrue( TipoParametro.GENERA_ARCHIVO_TRANSACCIONES_MENSUALES )
+  }
+
   static Boolean isSunglass( ) {
     String companyGroup = asString( TipoParametro.GRUPO_COMPANIA ).toUpperCase()
     return companyGroup.startsWith( "S" )

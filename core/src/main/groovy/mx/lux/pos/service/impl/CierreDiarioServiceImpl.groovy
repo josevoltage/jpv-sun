@@ -206,7 +206,20 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
         cal.set(Calendar.DAY_OF_MONTH,Calendar.getInstance().getActualMinimum(Calendar.DAY_OF_MONTH));
         cal.add( Calendar.DAY_OF_MONTH, -1)
         Date dateFinish = cal.getTime()
-        InventorySearch.generateInFile2( dateStart, dateFinish )
+        InventorySearch.generateInFile2( dateStart, dateFinish, fechaCierre )
+      }
+
+      if( Registry.generateMonthTransactions() ){
+        cal = Calendar.getInstance()
+        cal.set(Calendar.DAY_OF_MONTH,Calendar.getInstance().getActualMinimum(Calendar.DAY_OF_MONTH));
+        Date dateStart = cal.getTime()
+        Date current = new Date()
+        InventorySearch.generateInFile2( dateStart, current, fechaCierre )
+        Parametro p = parametroRepository.findOne( TipoParametro.GENERA_ARCHIVO_TRANSACCIONES_MENSUALES.value )
+        if( p != null ){
+          p.setValor( 'no' )
+          parametroRepository.saveAndFlush( p )
+        }
       }
 
       archivarCierre( fechaCierre )
@@ -1424,6 +1437,9 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
     CierreDiario cierre = cierreDiarioRepository.findOne( fecha )
     if(cierre != null && cierre.estado.trim().equalsIgnoreCase('a')){
       cierre.estado = 'c'
+      cierre.fechaCierre = new Date()
+      cierre.horaCierre = new Date()
+      cierre.observaciones = 'CIERRE AUTOMATICO'
       cierreDiarioRepository.saveAndFlush( cierre )
     }
   }
