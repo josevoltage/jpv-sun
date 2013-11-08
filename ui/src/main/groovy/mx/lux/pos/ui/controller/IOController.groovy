@@ -147,6 +147,7 @@ class IOController {
                   dispatchDocument( document )
                   data.inFile = new File( file.absolutePath )
                   data.postTrType = ServiceManager.inventoryService.obtenerTipoTransaccionAjuste()
+                  data.viewMode = InvTrViewMode.FILE_ADJUST
                   InvTrRequest request = RequestAdapter.getRequest( data )
                   log.debug ( String.format('Adjust File: %s', document.headerToString()) )
                   if ( request != null ) {
@@ -155,15 +156,13 @@ class IOController {
                       if ( trNbr != null ) {
                           if ( data.inFile != null ) {
                               try {
-                                  File moved = new File( SettingsController.instance.processedPath, data.inFile.name )
+                                  println data.viewMode
                                   if (InvTrViewMode.FILE_ADJUST.equals( data.viewMode )) {
+                                      println data.inFile.absolutePath
                                       data.inFile.delete();
                                   }
-                                  else {
-                                      data.inFile.renameTo( moved )
-                                  }
                               } catch (Exception e) {
-                                  this.log.debug( e.getMessage() )
+                                  println e.getMessage()
                               }
                           }
                           InvTrViewMode viewMode = data.viewMode
