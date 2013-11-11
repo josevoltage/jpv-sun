@@ -209,7 +209,6 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
           }
         }
       }
-      InventorySearch.generateInFile( fechaCierre, fechaCierre )
       Calendar cal = Calendar.getInstance()
       cal.set(Calendar.DAY_OF_MONTH,Calendar.getInstance().getActualMinimum(Calendar.DAY_OF_MONTH));
       String firstDay = CustomDateUtils.format( cal.getTime(), 'dd-MM-yyyy' )
@@ -237,7 +236,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
           parametroRepository.saveAndFlush( p )
         }
       }
-
+      InventorySearch.generateInFile( fechaCierre, fechaCierre )
       archivarCierre( fechaCierre )
     } catch ( Exception e ) {
       log.error( e.getMessage(), e )

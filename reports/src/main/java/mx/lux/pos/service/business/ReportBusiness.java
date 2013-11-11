@@ -1434,9 +1434,9 @@ public class ReportBusiness {
         List<TransInv> lstTransTotal = ( List<TransInv> ) transInvRepository.findAll( transInv.fecha.between( fechaInicial, new Date() ), transInv.fechaMod.desc() );
         List<KardexPorArticulo> lstKardezSku = new ArrayList<KardexPorArticulo>();
         for(TransInv trans : lstTransTotal){
-          if( trans.getFecha().compareTo(fechaInicio) > 0 && trans.getFecha().compareTo(fechaFin) < 0){
+          //if( trans.getFecha().compareTo(fechaInicio) > 0 && trans.getFecha().compareTo(fechaFin) < 0){
             lstTransInvDate.add( trans );
-          }
+          //}
         }
         for( TransInv movimiento : lstTransInvDate ){
             TransInvDetalle transInvSku = ( TransInvDetalle ) transInvDetalleRepository.findOne( transInvDet.idTipoTrans.eq(movimiento.getIdTipoTrans()).
