@@ -119,7 +119,6 @@ class InventorySearch {
         selected.addAll( lstTransacciones )
       }
     }
-
     loadDetails( selected )
     return selected
   }

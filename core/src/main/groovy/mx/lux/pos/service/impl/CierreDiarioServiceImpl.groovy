@@ -193,6 +193,22 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       if( dateClose.compareTo( today ) == 0 ){
         generarFicheroInv( )
       }
+
+      if(Registry.generateMonthTransactions()){
+        List<CierreDiario> lstDiasAbiertos = buscarConEstadoAbierto()
+        Calendar cal = Calendar.getInstance()
+        cal.set(Calendar.DAY_OF_MONTH,Calendar.getInstance().getActualMinimum(Calendar.NOVEMBER));
+        for(CierreDiario dia : lstDiasAbiertos){
+          if(dia.fecha.before(cal.getTime())){
+            dia.setEstado( 'c' )
+            dia.setFechaCierre( new Date() )
+            dia.setHoraCierre( new Date() )
+            dia.setObservaciones( 'CIERRE AUTOMATICO' )
+            cierreDiarioRepository.saveAndFlush( dia )
+            cierreDiarioRepository.flush()
+          }
+        }
+      }
       InventorySearch.generateInFile( fechaCierre, fechaCierre )
       Calendar cal = Calendar.getInstance()
       cal.set(Calendar.DAY_OF_MONTH,Calendar.getInstance().getActualMinimum(Calendar.DAY_OF_MONTH));

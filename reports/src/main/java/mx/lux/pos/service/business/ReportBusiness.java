@@ -1467,19 +1467,19 @@ public class ReportBusiness {
             Empleado empleado = empleadoRepository.findById( movimiento.getTransInv().getIdEmpleado() );
             kardexArticulo.setEmpleado( empleado.getNombreCompleto() );
             if( movimiento.getTipoMov().equalsIgnoreCase( "S" )){
-                /*if( lstMovimientos.get(0).equals(movimiento)){
+                if( lstMovimientos.get(0).equals(movimiento)){
                     saldoFin = exisActual;
-                } else {*/
+                } else {
                     saldoFin = saldoInicio;
-                //}
+                }
                 saldoInicio = saldoFin+movimiento.getCantidad();
                 kardexArticulo.setSalida( movimiento.getCantidad() );
             } else if( movimiento.getTipoMov().equalsIgnoreCase( "E" ) ){
-                /*if( lstMovimientos.get(0).equals(movimiento)){
+                if( lstMovimientos.get(0).equals(movimiento)){
                     saldoFin = exisActual;
-                } else {*/
+                } else {
                     saldoFin = saldoInicio;
-                //}
+                }
                 saldoInicio = saldoFin-movimiento.getCantidad();
                 kardexArticulo.setEntrada( movimiento.getCantidad() );
             }
