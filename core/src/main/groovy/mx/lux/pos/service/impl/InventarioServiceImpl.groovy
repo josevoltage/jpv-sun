@@ -276,4 +276,16 @@ class InventarioServiceImpl implements InventarioService {
         return transCargada
     }
 
+
+    void generaArchivoAcuseAjuste( String folio ){
+      String fichero = "${Registry.archivePath}/${Registry.currentSite}_${folio}.reg"
+      log.debug( "Generando Fichero: ${ fichero }" )
+      File file = new File( fichero )
+      log.debug( 'Creando Writer' )
+      PrintStream strOut = new PrintStream( file )
+      StringBuffer sb = new StringBuffer()
+      sb.append("${Registry.currentSite}|${folio}")
+      strOut.println sb.toString()
+      strOut.close()
+    }
 }

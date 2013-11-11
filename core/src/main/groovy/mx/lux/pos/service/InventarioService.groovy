@@ -80,4 +80,7 @@ interface InventarioService {
   List<Sucursal> listarSoloSucursales( )
 
   Boolean transaccionCargada( String clave )
+
+  void generaArchivoAcuseAjuste( String folio )
+
 }

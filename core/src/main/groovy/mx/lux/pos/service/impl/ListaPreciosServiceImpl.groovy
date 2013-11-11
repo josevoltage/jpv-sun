@@ -3,9 +3,11 @@ package mx.lux.pos.service.impl
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
 import mx.lux.pos.service.ListaPreciosService
+import mx.lux.pos.service.business.Registry
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.ui.velocity.VelocityEngineUtils
 
 import javax.annotation.Resource
 import javax.sql.DataSource
@@ -67,6 +69,16 @@ class ListaPreciosServiceImpl implements ListaPreciosService {
     if ( StringUtils.isNotBlank( listaPrecios?.id ) && StringUtils.isNotBlank( listaPrecios?.filename ) ) {
       listaPrecios = listaPreciosRepository.save( listaPrecios )
       if ( listaPrecios?.id ) {
+        String fichero = "${Registry.archivePath}/${Registry.currentSite}.${listaPrecios.id}.${new Date().format("yyyy-MM-dd")}.recibelp "
+        log.debug( "Generando Fichero: ${ fichero }" )
+        File file = new File( fichero )
+        if ( file.exists() ) { file.delete() }
+        log.debug( 'Creando Writer' )
+        PrintStream strOut = new PrintStream( file )
+        StringBuffer sb = new StringBuffer()
+        sb.append("${String.format("%04d",Registry.currentSite)}|${listaPrecios.id}|${new Date().format("ddMMyyyy")}|")
+        strOut.println sb.toString()
+        strOut.close()
         /*def urlTexto = generaUrlServicioWeb( TipoParametro.URL_RECIBE_LISTA_PRECIOS, listaPrecios.id, null )
         log.debug( "invocando ${urlTexto}" )
         def resp = urlTexto?.toURL()?.text
@@ -121,6 +133,16 @@ class ListaPreciosServiceImpl implements ListaPreciosService {
         listaPrecios = listaPreciosRepository.save( listaPrecios )
         procesaCargaArticulos( articulos )
         if ( listaPrecios?.id ) {
+            String fichero = "${Registry.archivePath}/${Registry.currentSite}.${listaPrecios.id}.${new Date().format("yyyy-MM-dd")}.cargalp"
+            log.debug( "Generando Fichero: ${ fichero }" )
+            File file = new File( fichero )
+            if ( file.exists() ) { file.delete() }
+            log.debug( 'Creando Writer' )
+            PrintStream strOut = new PrintStream( file )
+            StringBuffer sb = new StringBuffer()
+            sb.append("${String.format("%04d",Registry.currentSite)}|${listaPrecios.id}|${new Date().format("ddMMyyyy")}|${listaPrecios.tipoCarga.startsWith('A') ? 'A' : 'M'}|")
+            strOut.println sb.toString()
+            strOut.close()
           /*def urlTexto = generaUrlServicioWeb( TipoParametro.URL_CARGA_LISTA_PRECIOS, listaPrecios.id, listaPrecios.tipoCarga )
           log.debug( "invocando ${urlTexto}" )
           def resp = urlTexto?.toURL()?.text

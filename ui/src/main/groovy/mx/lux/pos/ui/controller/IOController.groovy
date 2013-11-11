@@ -156,6 +156,10 @@ class IOController {
                       if ( trNbr != null ) {
                           if ( data.inFile != null ) {
                               try {
+                                  String fileTmp = file.absolutePath.split( "/" ).last()
+                                  String fileName = fileTmp.split( "_" ).last()
+                                  String[] folio = fileName.split( /\./ )
+                                  ServiceManager.getInventoryService().generaArchivoAcuseAjuste( folio[0] )
                                   println data.viewMode
                                   if (InvTrViewMode.FILE_ADJUST.equals( data.viewMode )) {
                                       println data.inFile.absolutePath
