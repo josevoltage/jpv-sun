@@ -1247,8 +1247,11 @@ public class ReportServiceImpl implements ReportService {
         }
 
         if ( lstKardex.size() > 0 ) {
-            exisInicial = lstKardex.get( 0 ).getSaldoInicio();
-            exisActual = lstKardex.get( lstKardex.size() - 1 ).getSaldoFinal();
+          exisInicial = lstKardex.get( 0 ).getSaldoInicio();
+          exisActual = lstKardex.get( lstKardex.size() - 1 ).getSaldoFinal();
+        } else {
+          exisInicial = articulo.getCantExistencia();
+          exisActual = articulo.getCantExistencia();
         }
 
         Map<String, Object> parametros = new HashMap<String, Object>();
