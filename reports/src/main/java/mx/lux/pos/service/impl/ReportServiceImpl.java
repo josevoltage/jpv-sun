@@ -1247,7 +1247,7 @@ public class ReportServiceImpl implements ReportService {
         }
 
         if ( lstKardex.size() > 0 ) {
-          exisInicial = lstKardexTmp.get( 0 ).getSaldoInicio();
+          exisInicial = lstKardex.get( 0 ).getSaldoInicio();
           exisActual = articulo.getCantExistencia();
         } else {
           exisInicial = articulo.getCantExistencia();
