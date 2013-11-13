@@ -1442,6 +1442,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   @Override
   @Transactional
   void closeDaysBeforeNov( ){
+    if(Registry.generateMonthTransactions()){
       List<CierreDiario> lstDiasAbiertos = buscarConEstadoAbierto()
       Calendar cal = Calendar.getInstance()
       cal.set(Calendar.DAY_OF_MONTH,Calendar.getInstance().getActualMinimum(Calendar.NOVEMBER));
@@ -1455,11 +1456,13 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
               cierreDiarioRepository.flush()
           }
       }
+    }
   }
 
   @Override
   @Transactional
   void generaIN2( Date fechaCierre ){
+    if(Registry.generateMonthTransactions()){
       Calendar cal = Calendar.getInstance()
       cal.set(Calendar.DAY_OF_MONTH,Calendar.getInstance().getActualMinimum(Calendar.DAY_OF_MONTH));
       Date dateStart = cal.getTime()
@@ -1470,5 +1473,6 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
           p.setValor( 'no' )
           parametroRepository.saveAndFlush( p )
       }
+    }
   }
 }
