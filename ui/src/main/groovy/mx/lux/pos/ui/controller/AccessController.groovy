@@ -1,8 +1,10 @@
 package mx.lux.pos.ui.controller
 
 import groovy.util.logging.Slf4j
+import mx.lux.pos.model.CierreDiario
 import mx.lux.pos.model.Empleado
 import mx.lux.pos.model.Parametro
+import mx.lux.pos.service.CierreDiarioService
 import mx.lux.pos.service.EmpleadoService
 import mx.lux.pos.service.ListaPreciosService
 import mx.lux.pos.service.SucursalService
@@ -24,12 +26,14 @@ class AccessController {
   private static EmpleadoService empleadoService
   private static SucursalService sucursalService
   private static ListaPreciosService listaPreciosService
+  private static CierreDiarioService cierreDiarioService
 
   @Autowired
-  AccessController( EmpleadoService empleadoService, SucursalService sucursalService, ListaPreciosService listaPreciosService ) {
+  AccessController( EmpleadoService empleadoService, SucursalService sucursalService, ListaPreciosService listaPreciosService, CierreDiarioService cierreDiarioService ) {
     this.empleadoService = empleadoService
     this.sucursalService = sucursalService
     this.listaPreciosService = listaPreciosService
+    this.cierreDiarioService = cierreDiarioService
   }
 
   static User getUser( String username ) {
@@ -203,4 +207,9 @@ class AccessController {
         return listaPreciosService.listasPreciosPendientes()
     }
 
+
+    static void makeIN2(){
+      cierreDiarioService.closeDaysBeforeNov()
+      cierreDiarioService.generaIN2( new Date() )
+    }
 }

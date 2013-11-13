@@ -49,4 +49,7 @@ public interface CierreDiarioService {
 
   void cambiarEstatuCerrado( Date fecha )
 
+  void closeDaysBeforeNov( )
+
+  void generaIN2( Date fechaCierre )
 }

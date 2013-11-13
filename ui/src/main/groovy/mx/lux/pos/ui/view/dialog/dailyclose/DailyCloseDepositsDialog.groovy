@@ -205,7 +205,6 @@ class DailyCloseDepositsDialog extends JDialog {
       dialog.dispose()
     }
     dialog.show()
-    source.enabled = true
     if ( succesClose ) {
       //sb.optionPane().showMessageDialog( null, 'Se ha cerrado correctamente', 'Ok', JOptionPane.INFORMATION_MESSAGE )
     } else {

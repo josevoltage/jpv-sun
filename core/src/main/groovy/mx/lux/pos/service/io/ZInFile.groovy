@@ -140,4 +140,30 @@ class ZInFile {
             }
         }
     }
+
+
+    void writeMonthUnique( ) {
+        if ( this.trInvList.size() > 0 ) {
+            File file = new File( Registry.getArchivePath() + File.separator + filename )
+            if ( file.exists() ) {
+                file.delete()
+            }
+            PrintStream str = null
+            try {
+                str = new PrintStream( file )
+                str.println( this.formatHeader() )
+                for ( TransInv tr : this.trInvList ) {
+                    for ( TransInvDetalle det : tr.trDet ) {
+                        str.println( this.formatTrans( tr, det ) )
+                    }
+                }
+            } catch ( Exception e ) {
+                this.logger.error( e.getMessage(), e )
+            } finally {
+                if ( str != null ) {
+                    str.close()
+                }
+            }
+        }
+    }
 }

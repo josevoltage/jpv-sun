@@ -185,6 +185,12 @@ class InventorySearch {
       file.writeMonth()
     }
 
+    static void generateInFile2Unique( Date pDateFrom, Date pDateTo, Date dateFile ) {
+        ZInFile file = new ZInFile( DateUtils.truncate( dateFile, Calendar.DATE ), true )
+        file.setInvTrList( listarTransaccionesPorFecha2( pDateFrom, pDateTo, dateFile ) )
+        file.writeMonthUnique()
+    }
+
   static TipoTransInv findTrType( String pTipoTransInv ) {
     return trTypeCatalog.findOne( pTipoTransInv )
   }
