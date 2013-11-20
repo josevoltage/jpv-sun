@@ -1,9 +1,10 @@
 package mx.lux.pos.service.business
 
+import mx.lux.pos.model.AdaptadorArticulo
 import mx.lux.pos.model.Articulo
 import mx.lux.pos.model.ArticuloSunglass
+
 import mx.lux.pos.model.Generico
-import mx.lux.pos.model.Sucursal
 import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.impl.ServiceFactory
 import mx.lux.pos.service.io.PartFileSunglass
@@ -110,39 +111,27 @@ class ArticuloSunglassImportTask {
     this.getErrorFile().println( String.format( "[%,d] %s", this.nRead, pSunglassPart.toString() ) )
   }
 
-  protected void updateArticulo( Articulo pPart, ArticuloSunglass pSunglass ) {
-    if ( pSunglass.partNbr != null )
-      pPart.articulo = pSunglass.partNbr
-    if ( pSunglass.colorCode != null )
-      pPart.codigoColor = pSunglass.colorCode
-    if ( pSunglass.description != null )
-      pPart.descripcion = pSunglass.description
-    if ( pSunglass.colorDesc != null )
-      pPart.descripcionColor = pSunglass.colorDesc
-
-    if ( pSunglass.genre != null )
-      pPart.idGenerico = pSunglass.genre
-    if ( pSunglass.revDate != null )
-      pPart.fechaMod = pSunglass.revDate
-    if ( pSunglass.revUserid != null )
-      pPart.idMod = pSunglass.revUserid
-    if ( pSunglass.price != null )
-      pPart.precio = BigDecimal.valueOf( pSunglass.price )
-    if ( pSunglass.redPrice != null )
-      pPart.precioO = BigDecimal.valueOf( pSunglass.redPrice )
-
-    if ( pSunglass.supplier != null ) {
-      pPart.proveedor = pSunglass.supplier
+  protected void updateArticulo( Articulo pPart, AdaptadorArticulo pSunglass ) {
+    if ( pSunglass.articulo != null ){
+      pPart.articulo = pSunglass.articulo
     }
-
-    if ( pSunglass.type != null ) {
-      pPart.tipo = pSunglass.type
+    if( pSunglass.descripcion != null ){
+      pPart.descripcion = pSunglass.descripcion
     }
-    if ( pSunglass.subtype != null ) {
-      pPart.subtipo = pSunglass.subtype
+    if( pSunglass.precio != null ){
+      pPart.precio = pSunglass.precio
     }
-    if ( pSunglass.brand != null ) {
-      pPart.marca = pSunglass.brand
+    if( pSunglass.generico != null){
+      pPart.idGenerico = pSunglass.generico
+    }
+    if( pSunglass.tipo != null ){
+      pPart.tipo = pSunglass.tipo
+    }
+    if( pSunglass.subtipo != null ){
+      pPart.subtipo = pSunglass.subtipo
+    }
+    if( pSunglass.marca != null ){
+      pPart.marca = pSunglass.marca
     }
 
     ServiceFactory.partMaster.registrarArticulo( pPart )
@@ -168,14 +157,14 @@ class ArticuloSunglassImportTask {
     this.nUpdated = 0
     this.nRead = 0
     if ( this.getFile() != null ) {
-      ArticuloSunglass partSunglass = this.getFile().read()
+      AdaptadorArticulo partSunglass = this.getFile().readNew()
       while ( partSunglass != null ) {
         this.nRead++
-        if ( isValid( partSunglass ) ) {
+        //if ( isValid( partSunglass ) ) {
           Articulo part = findOrCreate( partSunglass.sku )
           updateArticulo( part, partSunglass )
           nUpdated++
-        }
+        //}
         partSunglass = this.file.read()
       }
       this.getFile().close()
@@ -202,4 +191,30 @@ class ArticuloSunglassImportTask {
     }
   }
 
+
+    void runNew( File file ) {
+        this.debug( String.format( "[STARTED] Import Articulo Sunglass (%s)", this.filename ) )
+        this.nError = 0
+        this.nUpdated = 0
+        this.nRead = 0
+        if ( file.exists() ) {
+          file.eachLine { String line ->
+            AdaptadorArticulo partSunglass = this.getFile().readNew( line )
+            this.nRead++
+            Articulo part = findOrCreate( partSunglass.sku )
+            updateArticulo( part, partSunglass )
+            nUpdated++
+            //this.getFile().close()
+          }
+        }
+        if ( this.nUpdated > 0 ) {
+            RepositoryFactory.partMaster.flush( )
+        }
+        if ( this.errorFile != null ) {
+            this.getErrorFile().close()
+        }
+        this.debug( String.format( "[FINISHED] Import Articulo Sunglass  Updated:%,d/%,d  Error:%,d",
+                this.nUpdated, this.nRead, this.nError
+        ) )
+    }
 }

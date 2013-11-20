@@ -69,7 +69,7 @@ class IOServiceImpl implements IOService {
     ArticuloSunglassImportTask task = new ArticuloSunglassImportTask()
     try {
       task.filename = pFile.absolutePath
-      task.run()
+      task.runNew( pFile )
       if ( pFile.exists() ) {
         pFile.renameTo( new File( Registry.processedFilesPath, pFile.name ) )
       }

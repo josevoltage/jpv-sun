@@ -1,11 +1,14 @@
 package mx.lux.pos.service.io
 
+import mx.lux.pos.model.AdaptadorArticulo
 import mx.lux.pos.model.ArticuloSunglassAdapter
 import mx.lux.pos.model.ArticuloSunglassDescriptor
+
 import mx.lux.pos.util.StringList
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
 
+import java.text.NumberFormat
 import java.text.ParseException
 
 class PartFileSunglass {
@@ -171,4 +174,31 @@ class PartFileSunglass {
     sb.append( String.format( "\n    Current Part:%s", this.currentShadow.toString() ) )
     return sb.toString()
   }
+
+
+  AdaptadorArticulo readNew( String line ) {
+     AdaptadorArticulo data = new AdaptadorArticulo()
+      //this.currentLine = this.reader.readLine()
+      //while ( ( this.currentLine != null ) ) {
+        //this.nLinesRead++
+      println line
+      String[] dataTmp = line.split(/\|/)
+      if(dataTmp[1].length() > 20){
+        println dataTmp[0]
+      }
+        if( dataTmp.length >= 8 ){
+          data.setSku(NumberFormat.getInstance().parse(dataTmp[0].toString()).intValue() )
+          data.setArticulo( dataTmp[1] )
+          data.setDescripcion( dataTmp[2] )
+          data.setPrecio( NumberFormat.getInstance().parse(dataTmp[3].toString()).doubleValue() )
+          data.setGenerico( dataTmp[4] )
+          data.setTipo( dataTmp[5] )
+          data.setSubtipo( dataTmp[6] )
+          data.setMarca( dataTmp[7] )
+        }
+      //}
+      return data
+  }
+
+
 }

@@ -265,7 +265,7 @@ class StringList {
   void reset( String pList, String pDelimiter ) {
     this.reset()
     StrTokenizer tokenizer = new StrTokenizer()
-    tokenizer.setDelimiterString( pDelimiter.trim() )
+    tokenizer.setDelimiterString( pDelimiter?.trim() )
     tokenizer.setQuoteChar( QUOTE )
     tokenizer.setIgnoreEmptyTokens( false )
     tokenizer.reset( pList )
