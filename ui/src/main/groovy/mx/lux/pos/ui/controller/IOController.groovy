@@ -64,8 +64,9 @@ class IOController {
     }
 
 
-    void dispatchImportPartMaster(File pFile) {
-        ServiceManager.ioServices.loadPartFile(pFile)
+    String dispatchImportPartMaster(File pFile) {
+      String errorSku = ServiceManager.ioServices.loadPartFile(pFile)
+      return errorSku
     }
 
     void autoUpdateEmployeeFile() {

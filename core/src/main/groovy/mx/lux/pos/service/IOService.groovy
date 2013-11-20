@@ -9,7 +9,7 @@ public interface IOService {
 
   void loadPartFile( )
 
-  void loadPartFile( File pFile )
+  String loadPartFile( File pFile )
 
   String getPartClassFilename( )
 

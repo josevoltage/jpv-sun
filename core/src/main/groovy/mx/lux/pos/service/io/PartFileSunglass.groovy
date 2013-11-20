@@ -181,16 +181,20 @@ class PartFileSunglass {
       //this.currentLine = this.reader.readLine()
       //while ( ( this.currentLine != null ) ) {
         //this.nLinesRead++
-      println line
       String[] dataTmp = line.split(/\|/)
       if(dataTmp[1].length() > 20){
-        println dataTmp[0]
+        println "Articulo con mas de 20 caracteres ${dataTmp[0]}"
       }
         if( dataTmp.length >= 8 ){
           data.setSku(NumberFormat.getInstance().parse(dataTmp[0].toString()).intValue() )
           data.setArticulo( dataTmp[1] )
           data.setDescripcion( dataTmp[2] )
-          data.setPrecio( NumberFormat.getInstance().parse(dataTmp[3].toString()).doubleValue() )
+          try{
+            data.setPrecio( NumberFormat.getInstance().parse(dataTmp[3].toString()).doubleValue() )
+          } catch (ParseException e ){
+            println "error de precio en articulo ${dataTmp[0]}"
+            data.setArticulo( "error" )
+          }
           data.setGenerico( dataTmp[4] )
           data.setTipo( dataTmp[5] )
           data.setSubtipo( dataTmp[6] )

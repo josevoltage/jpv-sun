@@ -199,7 +199,7 @@ class DailyCloseDepositsDialog extends JDialog {
     Boolean succesClose = false
     WaitDialog dialog = new WaitDialog( "Cierre", "Cerrando dia. Espere un momento." )
     sb.doOutside {
-      succesClose = DailyCloseController.closeDailyClose( closeDate, observations.text )
+      succesClose = DailyCloseController.closeDailyClose( closeDate, observations.text, true )
       Long time = DailyCloseController.timeWait()
       sleep( time )
       dialog.dispose()
@@ -216,7 +216,7 @@ class DailyCloseDepositsDialog extends JDialog {
     JButton source = ev.source as JButton
     source.enabled = false
     //DailyCloseController.regenerarArchivosZ( closeDate )
-    if ( DailyCloseController.closeDailyClose( closeDate, observations.text ) ) {
+    if ( DailyCloseController.closeDailyClose( closeDate, observations.text, false ) ) {
       sb.optionPane().showMessageDialog( null, 'Se ha cerrado correctamente', 'Ok', JOptionPane.INFORMATION_MESSAGE )
     } else {
       sb.optionPane().showMessageDialog( null, 'Error al cerrar', 'Error', JOptionPane.ERROR_MESSAGE )

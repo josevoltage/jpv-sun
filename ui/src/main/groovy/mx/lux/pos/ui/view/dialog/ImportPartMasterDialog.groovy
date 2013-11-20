@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory
 import javax.swing.BorderFactory
 import javax.swing.JButton
 import javax.swing.JDialog
+import javax.swing.JOptionPane
 import javax.swing.JTextArea
 import java.awt.*
 import mx.lux.pos.ui.controller.IOController
@@ -97,10 +98,14 @@ class ImportPartMasterDialog extends JDialog {
 
   // UI Management
   protected void startImport( ) {
-    while( !this.filesToLoad.isEmpty() ) {
+    while( !this.txtFiles.text.isEmpty() ) {
       File f = this.filesToLoad.pop()
-      IOController.getInstance().dispatchImportPartMaster(f)
+      String errors = IOController.getInstance().dispatchImportPartMaster(f)
       sb.edt( { this.txtFiles.setText( this.filesToLoad.toString() ) } )
+      if( errors.length() > 0 ){
+        JOptionPane.showMessageDialog( new JDialog(), "No se cargaron los siguientes articulos: ${errors}", "Error al cargar",
+                JOptionPane.INFORMATION_MESSAGE )
+      }
     }
     this.visible = false
   }

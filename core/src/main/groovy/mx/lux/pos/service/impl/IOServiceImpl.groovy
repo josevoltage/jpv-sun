@@ -65,17 +65,19 @@ class IOServiceImpl implements IOService {
     }
   }
 
-  void loadPartFile( File pFile ) {
+  String loadPartFile( File pFile ) {
+    String skus = ''
     ArticuloSunglassImportTask task = new ArticuloSunglassImportTask()
     try {
       task.filename = pFile.absolutePath
-      task.runNew( pFile )
+      skus = task.runNew( pFile )
       if ( pFile.exists() ) {
         pFile.renameTo( new File( Registry.processedFilesPath, pFile.name ) )
       }
     } catch ( Exception e ) {
       this.logger.error( String.format( "Error loading %s", pFile.getAbsolutePath() ), e )
     }
+    return skus
   }
 
   String getPartClassFilename( ) {

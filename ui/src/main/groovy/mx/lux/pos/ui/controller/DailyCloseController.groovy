@@ -133,7 +133,7 @@ class DailyCloseController {
     ticketService.imprimeResumenDiario( closeDate, employee )
   }
 
-  static boolean closeDailyClose( Date closeDate, String observations ) {
+  static boolean closeDailyClose( Date closeDate, String observations, Boolean cierre ) {
     try {
       Map<Integer, String> creditRefunds = [ : ]
       List<Pago> payments = new ArrayList<Pago>()
@@ -152,7 +152,7 @@ class DailyCloseController {
           payments = new ArrayList<Pago>()
       }
       cierreDiarioService.cargarDatosCierreDiario( closeDate )
-      cierreDiarioService.cerrarCierreDiario( closeDate, observations )
+      cierreDiarioService.cerrarCierreDiario( closeDate, observations, cierre )
 	  User user = Session.get( SessionItem.USER ) as User
 	  Empleado employee = empleadoService.obtenerEmpleado( user.username )
 	  ticketService.imprimeResumenDiario( closeDate, employee )

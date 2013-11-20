@@ -112,6 +112,7 @@ class ArticuloSunglassImportTask {
   }
 
   protected void updateArticulo( Articulo pPart, AdaptadorArticulo pSunglass ) {
+    if( !pSunglass.articulo.equalsIgnoreCase('error') ){
     if ( pSunglass.articulo != null ){
       pPart.articulo = pSunglass.articulo
     }
@@ -135,6 +136,7 @@ class ArticuloSunglassImportTask {
     }
 
     ServiceFactory.partMaster.registrarArticulo( pPart )
+    }
   }
 
   // Public Methods
@@ -192,7 +194,8 @@ class ArticuloSunglassImportTask {
   }
 
 
-    void runNew( File file ) {
+    String runNew( File file ) {
+        String skuNoCargado = ''
         this.debug( String.format( "[STARTED] Import Articulo Sunglass (%s)", this.filename ) )
         this.nError = 0
         this.nUpdated = 0
@@ -201,12 +204,17 @@ class ArticuloSunglassImportTask {
           file.eachLine { String line ->
             AdaptadorArticulo partSunglass = this.getFile().readNew( line )
             this.nRead++
-            Articulo part = findOrCreate( partSunglass.sku )
-            updateArticulo( part, partSunglass )
-            nUpdated++
+            if(partSunglass.articulo.equalsIgnoreCase('error') || partSunglass.articulo.length() > 20){
+              skuNoCargado = skuNoCargado+','+partSunglass.sku.toString().trim()
+            } else {
+              Articulo part = findOrCreate( partSunglass.sku )
+              updateArticulo( part, partSunglass )
+              nUpdated++
+            }
             //this.getFile().close()
           }
         }
+        skuNoCargado = skuNoCargado.replaceFirst( ",","" )
         if ( this.nUpdated > 0 ) {
             RepositoryFactory.partMaster.flush( )
         }
@@ -216,5 +224,6 @@ class ArticuloSunglassImportTask {
         this.debug( String.format( "[FINISHED] Import Articulo Sunglass  Updated:%,d/%,d  Error:%,d",
                 this.nUpdated, this.nRead, this.nError
         ) )
+        return skuNoCargado
     }
 }

@@ -104,11 +104,11 @@ class InventorySearch {
     return selected
   }
 
-  static List<TransInv> listarTransaccionesPorFecha( Date pDateFrom, Date pDateTo ) {
+  static List<TransInv> listarTransaccionesPorFecha( Date pDateFrom, Date pDateTo, Boolean pCierre ) {
     Date dtFrom = DateUtils.truncate( pDateFrom, Calendar.DATE )
     Date dtTo = DateUtils.truncate( pDateTo, Calendar.DATE )
     List<TransInv> selected = trInvMaster.findByFechaBetween( dtFrom, dtTo )
-
+    if( pCierre ){
     List<CierreDiario> lstOpenDays = cierreDiarioService.buscarConEstadoAbierto()
     for(CierreDiario cierre : lstOpenDays){
       cierreDiarioService.cargarDatosCierreDiario( cierre.fecha )
@@ -119,6 +119,7 @@ class InventorySearch {
       if(lstTransacciones.size() > 0){
         selected.addAll( lstTransacciones )
       }
+    }
     }
     loadDetails( selected )
     return selected
@@ -173,9 +174,9 @@ class InventorySearch {
         return tipoEntrada
     }
 
-    static void generateInFile( Date pDateFrom, Date pDateTo ) {
+    static void generateInFile( Date pDateFrom, Date pDateTo, Boolean cierre ) {
       ZInFile file = new ZInFile( DateUtils.truncate( pDateFrom, Calendar.DATE ), false )
-      file.setInvTrList( listarTransaccionesPorFecha( pDateFrom, pDateTo ) )
+      file.setInvTrList( listarTransaccionesPorFecha( pDateFrom, pDateTo, cierre ) )
       file.write()
   }
 

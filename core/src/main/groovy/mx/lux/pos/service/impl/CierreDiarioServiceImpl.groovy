@@ -158,7 +158,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
 
   @Override
   @Transactional
-  void cerrarCierreDiario( Date fechaCierre, String observaciones ) {
+  void cerrarCierreDiario( Date fechaCierre, String observaciones, Boolean cierre ) {
     log.info( "Cerrando el Dia ${fechaCierre?.format( 'dd/MM/yyyy' )}" )
     Assert.notNull( fechaCierre, "Fecha de Cierre no puede ser NULL" )
 
@@ -202,7 +202,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       String firstDay = CustomDateUtils.format( cal.getTime(), 'dd-MM-yyyy' )
       String dayClose = CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' )
 
-      if( firstDay.equalsIgnoreCase(dayClose) ){
+      if( firstDay.equalsIgnoreCase(dayClose) && cierre ){
         cal.add(Calendar.MONTH, -1)
         Date dateStart = cal.getTime()
         cal = Calendar.getInstance()
@@ -215,7 +215,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       /*if( Registry.generateMonthTransactions() ){
         generaIN2( fechaCierre )
       }*/
-      InventorySearch.generateInFile( fechaCierre, fechaCierre )
+      InventorySearch.generateInFile( fechaCierre, fechaCierre, cierre )
       archivarCierre( fechaCierre )
     } catch ( Exception e ) {
       log.error( e.getMessage(), e )
