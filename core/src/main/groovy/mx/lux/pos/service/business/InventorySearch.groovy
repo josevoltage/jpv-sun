@@ -112,12 +112,16 @@ class InventorySearch {
     List<CierreDiario> lstOpenDays = cierreDiarioService.buscarConEstadoAbierto()
     for(CierreDiario cierre : lstOpenDays){
       cierreDiarioService.cargarDatosCierreDiario( cierre.fecha )
+      CierreDiario closeDay = cierreDiarioService.buscarPorFecha( cierre.fecha )
+
+      if( closeDay.ventaNeta.compareTo(BigDecimal.ZERO) <= 0 && !cierre.fecha.format('dd/MM/yyyy').equalsIgnoreCase(new Date().format('dd/MM/yyyy')) ){
       cierreDiarioService.cambiarEstatuCerrado( cierre.fecha )
       Date fechaInicio = DateUtils.truncate( cierre.fecha, Calendar.DAY_OF_MONTH );
       Date fechaFin = new Date( DateUtils.ceiling( cierre.fecha, Calendar.DAY_OF_MONTH ).getTime() - 1 );
       List<TransInv> lstTransacciones = trInvMaster.findByFechaBetween( fechaInicio, fechaFin )
       if(lstTransacciones.size() > 0){
         selected.addAll( lstTransacciones )
+      }
       }
     }
     }
