@@ -178,9 +178,7 @@ class PartFileSunglass {
 
   AdaptadorArticulo readNew( String line ) {
      AdaptadorArticulo data = new AdaptadorArticulo()
-      //this.currentLine = this.reader.readLine()
-      //while ( ( this.currentLine != null ) ) {
-        //this.nLinesRead++
+      if( line.length() > 0 ){
       String[] dataTmp = line.split(/\|/)
       if(dataTmp[1].length() > 20){
         println "Articulo con mas de 20 caracteres ${dataTmp[0]}"
@@ -200,7 +198,7 @@ class PartFileSunglass {
           data.setSubtipo( dataTmp[6] )
           data.setMarca( dataTmp[7] )
         }
-      //}
+      }
       return data
   }
 

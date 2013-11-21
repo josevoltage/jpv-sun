@@ -204,12 +204,14 @@ class ArticuloSunglassImportTask {
           file.eachLine { String line ->
             AdaptadorArticulo partSunglass = this.getFile().readNew( line )
             this.nRead++
-            if(partSunglass.articulo.equalsIgnoreCase('error') || partSunglass.articulo.length() > 20){
-              skuNoCargado = skuNoCargado+','+partSunglass.sku.toString().trim()
-            } else {
-              Articulo part = findOrCreate( partSunglass.sku )
-              updateArticulo( part, partSunglass )
-              nUpdated++
+            if( partSunglass.articulo != null ){
+              if( 'error'.equalsIgnoreCase(partSunglass.articulo) || partSunglass.articulo.length() > 20){
+                skuNoCargado = skuNoCargado+','+partSunglass.sku.toString().trim()
+              } else {
+                Articulo part = findOrCreate( partSunglass.sku )
+                updateArticulo( part, partSunglass )
+                nUpdated++
+              }
             }
             //this.getFile().close()
           }
