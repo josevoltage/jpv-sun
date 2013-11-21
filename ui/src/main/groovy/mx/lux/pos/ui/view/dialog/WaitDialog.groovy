@@ -42,6 +42,7 @@ class WaitDialog extends JDialog {
         modal: true,
         preferredSize: [ 280, 100 ],
         location: [ 200, 250 ],
+        undecorated: true,
     ) {
       panel() {
         borderLayout()
