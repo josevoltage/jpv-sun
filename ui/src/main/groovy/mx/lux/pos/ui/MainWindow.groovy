@@ -460,6 +460,7 @@ class MainWindow extends JFrame implements KeyListener {
                       InvTrController controller = InvTrController.instance
                       controller.generateIN2( forDateStart, forDateEnd )
                     }
+                    dialog = null
                   }
             )
             newSalesDayMenuItem = menuItem( text: 'Registrar Efectivo Caja',
