@@ -9,6 +9,7 @@ import mx.lux.pos.model.TransInv
 import mx.lux.pos.service.ArticuloService
 import mx.lux.pos.service.InventarioService
 import mx.lux.pos.service.SucursalService
+import mx.lux.pos.service.business.InventorySearch
 import mx.lux.pos.ui.MainWindow
 import mx.lux.pos.ui.model.InvTrViewMode
 import mx.lux.pos.ui.model.Session
@@ -43,6 +44,10 @@ class InvTrController {
   private PartSelectionDialog dlgPartSelection
   private InvTrSelectorDialog dlgSelector
   private JFileChooser dlgFile
+
+  private static final String MSJ_ARCHIVO_GENERADO = 'El archivo IN2 fue generado correctamente en %s'
+  private static final String TXT_ARCHIVO_GENERADO = 'Archivo IN2'
+  private static final String MSJ_ARCHIVO_NO_GENERADO = 'No se genero correctamente el archivo de inventario'
 
  // private static SucursalService sucursalService
 
@@ -529,6 +534,20 @@ class InvTrController {
     log.debug( "requestPrintTransactions" )
     ServiceManager.ticketService.imprimeTransaccionesInventario( fechaTicket )
   }
+
+
+  void generateIN2( Date dateStart, Date dateFinish ){
+    Calendar cal=Calendar.getInstance();
+    cal.setTime( dateStart )
+    cal.set(Calendar.DAY_OF_MONTH,Calendar.getInstance().getActualMinimum(Calendar.DAY_OF_MONTH));
+    Boolean generado = InventorySearch.generaIN2( dateStart, dateFinish, cal.getTime() )
+    if( generado ){
+      JOptionPane.showMessageDialog( new JDialog(), String.format(MSJ_ARCHIVO_GENERADO, Registry.dailyClosePath), TXT_ARCHIVO_GENERADO, JOptionPane.INFORMATION_MESSAGE )
+    } else {
+      JOptionPane.showMessageDialog( new JDialog(), MSJ_ARCHIVO_NO_GENERADO, TXT_ARCHIVO_GENERADO, JOptionPane.INFORMATION_MESSAGE )
+    }
+  }
+
 
 }
 

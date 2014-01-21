@@ -228,4 +228,29 @@ class InventorySearch {
         loadDetails( selected )
         return selected
     }
+
+
+
+
+    static List<TransInv> buscaDatosIN2( Date pDateFrom, Date pDateTo, Date fechaCierre ) {
+        Date dtFrom = DateUtils.truncate( pDateFrom, Calendar.DATE )
+        Date dtTo = DateUtils.truncate( pDateTo, Calendar.DATE )
+        List<TransInv> selected = trInvMaster.findByFechaBetween( dtFrom, dtTo )
+        loadDetails( selected )
+        return selected
+    }
+
+
+    static Boolean generaIN2( Date pDateFrom, Date pDateTo, Date dateFile ) {
+        Boolean generado = true
+        try{
+          ZInFile file = new ZInFile( DateUtils.truncate( dateFile, Calendar.DATE ), true )
+          file.setInvTrList( buscaDatosIN2( pDateFrom, pDateTo, dateFile ) )
+          file.writeMonth()
+        } catch ( Exception ex ){
+          generado = false
+          println( ex )
+        }
+      return generado
+    }
 }

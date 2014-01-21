@@ -12,6 +12,7 @@ import mx.lux.pos.ui.view.dialog.ChangePasswordDialog
 import mx.lux.pos.ui.view.dialog.ChangeSellerDialog
 import mx.lux.pos.ui.view.dialog.PartClassDialog
 import mx.lux.pos.ui.view.dialog.TransactionsDateSelectionDialog
+import mx.lux.pos.ui.view.dialog.TwoDatesSelectionDialog
 import mx.lux.pos.ui.view.dialog.WaitDialog
 import net.miginfocom.swing.MigLayout
 import org.slf4j.Logger
@@ -94,6 +95,7 @@ class MainWindow extends JFrame implements KeyListener {
   private JMenuItem salesByPeriodMenuItem
   private JMenuItem changePasswordMenuItem
   private JMenuItem changeSellerMenuItem
+  private JMenuItem generateIn2MenuItem
   private JMenuItem ticketInventoryTransactionsMenuItem
   private JMenuItem sendInventoryMenuItem
   private JMenuItem receivedDiferencesMenuItem
@@ -430,6 +432,7 @@ class MainWindow extends JFrame implements KeyListener {
                 newSalesDayMenuItem.visible = userLoggedIn
                 changePasswordMenuItem.visible = userLoggedIn
                 changeSellerMenuItem.visible = userLoggedIn
+                generateIn2MenuItem.visible = userLoggedIn
               }
           ) {
             changePasswordMenuItem = menuItem( text: 'Cambio de Password',
@@ -444,6 +447,20 @@ class MainWindow extends JFrame implements KeyListener {
                         ChangeSellerDialog dialog = new ChangeSellerDialog()
                         dialog.show()
                     }
+            )
+            generateIn2MenuItem = menuItem( text: 'Genera IN2',
+                  actionPerformed: {
+                    TwoDatesSelectionDialog dialog = new TwoDatesSelectionDialog()
+                    dialog.setTitle( 'Genera IN2' )
+                    dialog.activate()
+                    Date forDateStart = dialog.getSelectedDateStart()
+                    Date forDateEnd = dialog.getSelectedDateEnd()
+                    if ( forDateStart != null && forDateEnd != null && dialog.button ) {
+                      log.debug( "Genera IN2" )
+                      InvTrController controller = InvTrController.instance
+                      controller.generateIN2( forDateStart, forDateEnd )
+                    }
+                  }
             )
             newSalesDayMenuItem = menuItem( text: 'Registrar Efectivo Caja',
                 visible: true,
