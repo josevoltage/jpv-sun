@@ -268,19 +268,11 @@ public class ReportBusiness {
             }
         }
 
-        /*for( NotaVenta notaCredito : lstVentas ){
-            for(Pago pago : notaCredito.getPagos()){
-                if(pago.getIdFPago().equalsIgnoreCase("NOT") || pago.getIdFPago().equalsIgnoreCase("TR")){
-                    String idEmpleado = notaCredito.getIdEmpleado();
-                    Boolean isNotaCredito = false;
-                    if( pago.getIdFPago().equalsIgnoreCase("NOT") ){
-                        isNotaCredito = true;
-                    }
-                    IngresoPorVendedor devoluciones = FindorCreate( lstIngresos, idEmpleado );
-                    devoluciones.AcumulaNotasCredito( notaCredito.getFactura(), pago.getMonto(), ivaTasa, pago.getFecha(), isNotaCredito );
-                }
+        for(IngresoPorVendedor in : lstIngresos){
+            if( in.getContador().doubleValue() == 0.00 ){
+                in.setContador( new BigDecimal(1.00) );
             }
-        }*/
+        }
 
         return lstIngresos;
     }
