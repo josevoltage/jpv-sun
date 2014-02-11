@@ -8,6 +8,7 @@ import mx.lux.pos.ui.model.SessionItem
 import mx.lux.pos.ui.model.User
 import mx.lux.pos.ui.resources.ServiceManager
 import mx.lux.pos.ui.view.action.ExitAction
+import mx.lux.pos.ui.view.dialog.CaptureIncidentsDialog
 import mx.lux.pos.ui.view.dialog.ChangePasswordDialog
 import mx.lux.pos.ui.view.dialog.ChangeSellerDialog
 import mx.lux.pos.ui.view.dialog.PartClassDialog
@@ -100,6 +101,7 @@ class MainWindow extends JFrame implements KeyListener {
   private JMenuItem sendInventoryMenuItem
   private JMenuItem receivedDiferencesMenuItem
   private JMenuItem generatedInventoryFileMenuItem
+  private JMenuItem captureIncidentsMenuItem
   private JMenu sendReceivedInventoryMenu
   private PromotionService promotionService
 
@@ -433,6 +435,7 @@ class MainWindow extends JFrame implements KeyListener {
                 changePasswordMenuItem.visible = userLoggedIn
                 changeSellerMenuItem.visible = userLoggedIn
                 generateIn2MenuItem.visible = userLoggedIn
+                captureIncidentsMenuItem.visible = userLoggedIn
               }
           ) {
             changePasswordMenuItem = menuItem( text: 'Cambio de Password',
@@ -447,6 +450,12 @@ class MainWindow extends JFrame implements KeyListener {
                         ChangeSellerDialog dialog = new ChangeSellerDialog()
                         dialog.show()
                     }
+            )
+            captureIncidentsMenuItem = menuItem( text: 'Captura de Incidencias',
+                  actionPerformed: {
+                      CaptureIncidentsDialog dialog = new CaptureIncidentsDialog()
+                      dialog.show()
+                  }
             )
             generateIn2MenuItem = menuItem( text: 'Genera IN2',
                   actionPerformed: {
@@ -521,6 +530,7 @@ class MainWindow extends JFrame implements KeyListener {
     versionLabel.text = version
     infoBar.visible = true
     changeSellerMenuItem.enabled = IOController.getInstance().isManagerLogged( )
+    captureIncidentsMenuItem.enabled = IOController.getInstance().isManagerLogged( )
   }
 
   private void initialize( ) {

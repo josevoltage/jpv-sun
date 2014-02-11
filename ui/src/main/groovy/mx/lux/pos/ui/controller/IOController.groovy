@@ -1,7 +1,9 @@
 package mx.lux.pos.ui.controller
 
 import mx.lux.pos.model.Articulo
+import mx.lux.pos.model.CriterioDet
 import mx.lux.pos.model.Empleado
+import mx.lux.pos.model.Incidencia
 import mx.lux.pos.model.InvAdjustLine
 import mx.lux.pos.model.InvAdjustSheet
 import mx.lux.pos.model.InvTrRequest
@@ -37,6 +39,8 @@ class IOController {
 
     private Logger log = LoggerFactory.getLogger(this.getClass())
     private static IOController instance
+
+    private static final String TAG_ID_EMPRESA = '7'
 
     private static InvTr data = new InvTr()
 
@@ -195,6 +199,40 @@ class IOController {
             }
         }
     }
+
+
+    String getNameEmployee( String idEmployee ){
+      String nombreEmpleado = ''
+      Empleado empleado = ServiceManager.employeeService.obtenerEmpleado( idEmployee )
+      if( empleado != null ){
+        nombreEmpleado = empleado.nombreCompleto
+      }
+      return nombreEmpleado
+    }
+
+
+
+    List<CriterioDet> findListCriterios(){
+        return ServiceManager.employeeService.obtenerCriterios()
+    }
+
+
+    void saveIncidence( Incidencia incidencia ){
+      String idGerente = ServiceManager.employeeService.gerente()
+      Empleado gerente = ServiceManager.employeeService.obtenerEmpleado( StringUtils.trimToEmpty(idGerente) )
+      incidencia.setIdEmpleado( gerente.id )
+      incidencia.setNombre( gerente.nombreCompleto )
+      incidencia.setIdEmpresa( TAG_ID_EMPRESA )
+      incidencia.setFecha( new Date( ) )
+      incidencia = ServiceManager.employeeService.saveIncidencia( incidencia )
+      ServiceManager.employeeService.creaArchivoIncidencia( incidencia )
+    }
+
+
+    void creaArchivoIncidencia( Incidencia incidencia ){
+
+    }
+
 
 }
 

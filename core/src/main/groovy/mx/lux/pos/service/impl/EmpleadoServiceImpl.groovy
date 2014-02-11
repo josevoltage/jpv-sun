@@ -1,12 +1,17 @@
 package mx.lux.pos.service.impl
 
 import groovy.util.logging.Slf4j
+import mx.lux.pos.model.CriterioDet
 import mx.lux.pos.model.Empleado
+import mx.lux.pos.model.Incidencia
 import mx.lux.pos.model.Parametro
 import mx.lux.pos.model.TipoParametro
+import mx.lux.pos.repository.CriterioDetRepository
 import mx.lux.pos.repository.EmpleadoRepository
+import mx.lux.pos.repository.IncidenciaRepository
 import mx.lux.pos.repository.ParametroRepository
 import mx.lux.pos.service.EmpleadoService
+import mx.lux.pos.service.business.Registry
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -25,6 +30,12 @@ class EmpleadoServiceImpl implements EmpleadoService {
 
   @Resource
   private ParametroRepository parametroRepository
+
+  @Resource
+  private CriterioDetRepository criterioDetRepository
+
+  @Resource
+  private IncidenciaRepository incidenciaRepository
 
   @Override
   Empleado obtenerEmpleado( String id ) {
@@ -76,4 +87,33 @@ class EmpleadoServiceImpl implements EmpleadoService {
         }
         return sesionPrimera
     }
+
+
+    @Override
+    List<CriterioDet> obtenerCriterios(){
+        return criterioDetRepository.findAll()
+    }
+
+    @Override
+    @Transactional
+    Incidencia saveIncidencia( Incidencia incidencia ){
+      return  incidenciaRepository.saveAndFlush( incidencia )
+    }
+
+
+    void creaArchivoIncidencia( Incidencia incidencia ){
+        String fichero = "${Registry.archivePath}/${incidencia.folioSoi}_${Registry.currentSite}.inc"
+        log.debug( "Generando Fichero: ${ fichero }" )
+        File file = new File( fichero )
+        if ( file.exists() ) { file.delete() }
+        log.debug( 'Creando Writer' )
+        PrintStream strOut = new PrintStream( file )
+        StringBuffer sb = new StringBuffer()
+        sb.append("${incidencia.idEmpresa.trim()}|${incidencia.idEmpleado}|${incidencia.nombre}|${incidencia.fecha}|\n")
+        sb.append("${incidencia.idEmpresaCap.trim()}|${incidencia.idEmpleadoCap}|${incidencia.nombreCap}|${incidencia.idGrupo}|${incidencia.idCriterio}|${incidencia.valor}|${incidencia.observacion}|${incidencia.descripcion}|")
+        strOut.println sb.toString()
+        strOut.close()
+    }
+
+
 }
