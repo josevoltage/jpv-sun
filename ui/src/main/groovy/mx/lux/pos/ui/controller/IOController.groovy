@@ -220,9 +220,9 @@ class IOController {
     Incidencia saveIncidence( Incidencia incidencia ){
       String idGerente = ServiceManager.employeeService.gerente()
       Empleado gerente = ServiceManager.employeeService.obtenerEmpleado( StringUtils.trimToEmpty(idGerente) )
-      incidencia.setIdEmpleado( gerente.id )
-      incidencia.setNombre( gerente.nombreCompleto )
-      incidencia.setIdEmpresa( TAG_ID_EMPRESA )
+      incidencia.setIdEmpleadoCap( gerente.id )
+      incidencia.setNombreCap( gerente.nombreCompleto )
+      incidencia.setIdEmpresaCap( TAG_ID_EMPRESA )
       incidencia.setFecha( new Date( ) )
       incidencia = ServiceManager.employeeService.saveIncidencia( incidencia )
       ServiceManager.employeeService.creaArchivoIncidencia( incidencia )

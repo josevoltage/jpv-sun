@@ -32,13 +32,14 @@ class CaptureIncidentsDialog extends JDialog implements FocusListener {
   private JTextField txtEmployee
   private JLabel lblEmployee
   private JComboBox cbIdCriterion
-  private JTextField txtValue
+  private JComboBox cbValue
   private JTextArea txtObs
 
   private CriterioDet criterioDet
   private List<CriterioDet> lstCriterios = new ArrayList<>()
 
   public boolean button = false
+  public String[] valores = ['0','10','20']
 
     CaptureIncidentsDialog( ) {
     lstCriterios.addAll( IOController.instance.findListCriterios() )
@@ -67,7 +68,7 @@ class CaptureIncidentsDialog extends JDialog implements FocusListener {
           label( text: "Id Criterio" )
           cbIdCriterion = comboBox( items: lstCriterios*.descripcion, constraints: "span 2", itemStateChanged: typeChanged )
           label( text: "Peso Negativo" )
-          txtValue = textField( constraints: "span 2" )
+          cbValue = comboBox( items: valores, constraints: "span 2" )
           label(  )
           scrollPane( border: titledBorder( title: 'Observaciones' ), constraints: "span 2" ) {
             txtObs = textArea( document: new UpperCaseDocument(), preferredSize: [ 100,100 ] )
@@ -124,12 +125,12 @@ class CaptureIncidentsDialog extends JDialog implements FocusListener {
       }
     }
     Incidencia incidencia = new Incidencia()
-    incidencia.setIdEmpresaCap( StringUtils.trimToEmpty(txtIdCompany.text) )
-    incidencia.setNombreCap( StringUtils.trimToEmpty(lblEmployee.text) )
-    incidencia.setIdEmpleadoCap( StringUtils.trimToEmpty(txtEmployee.text) )
+    incidencia.setIdEmpresa( StringUtils.trimToEmpty(txtIdCompany.text) )
+    incidencia.setNombre( StringUtils.trimToEmpty(lblEmployee.text) )
+    incidencia.setIdEmpleado( StringUtils.trimToEmpty(txtEmployee.text) )
     incidencia.setIdCriterio( StringUtils.trimToEmpty( criterioDet.idCriterio ) )
     incidencia.setIdGrupo( StringUtils.trimToEmpty( criterioDet.idGrupo.toString() ) )
-    incidencia.setValor( StringUtils.trimToEmpty( txtValue.text ) )
+    incidencia.setValor( StringUtils.trimToEmpty( cbValue.selectedItem.toString() ) )
     incidencia.setObservacion( StringUtils.trimToEmpty( txtObs.text ) )
     incidencia.setDescripcion( StringUtils.trimToEmpty( criterioDet.getDescripcion() ) )
     incidencia = IOController.instance.saveIncidence( incidencia )

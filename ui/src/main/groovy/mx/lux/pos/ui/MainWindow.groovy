@@ -8,6 +8,7 @@ import mx.lux.pos.ui.model.SessionItem
 import mx.lux.pos.ui.model.User
 import mx.lux.pos.ui.resources.ServiceManager
 import mx.lux.pos.ui.view.action.ExitAction
+import mx.lux.pos.ui.view.dialog.AuthorizationDialog
 import mx.lux.pos.ui.view.dialog.CaptureIncidentsDialog
 import mx.lux.pos.ui.view.dialog.ChangePasswordDialog
 import mx.lux.pos.ui.view.dialog.ChangeSellerDialog
@@ -453,8 +454,14 @@ class MainWindow extends JFrame implements KeyListener {
             )
             captureIncidentsMenuItem = menuItem( text: 'Captura de Incidencias',
                   actionPerformed: {
-                      CaptureIncidentsDialog dialog = new CaptureIncidentsDialog()
-                      dialog.show()
+                      boolean authorized = false
+                      AuthorizationDialog authDialog = new AuthorizationDialog( this, "Operaci\u00f3n requiere autorizaci\u00f3n", true )
+                      authDialog.show()
+                      authorized = authDialog.authorized
+                      if( authorized ){
+                        CaptureIncidentsDialog dialog = new CaptureIncidentsDialog()
+                        dialog.show()
+                      }
                   }
             )
             generateIn2MenuItem = menuItem( text: 'Genera IN2',
@@ -530,7 +537,7 @@ class MainWindow extends JFrame implements KeyListener {
     versionLabel.text = version
     infoBar.visible = true
     changeSellerMenuItem.enabled = IOController.getInstance().isManagerLogged( )
-    captureIncidentsMenuItem.enabled = IOController.getInstance().isManagerLogged( )
+    //captureIncidentsMenuItem.enabled = IOController.getInstance().isManagerLogged( )
   }
 
   private void initialize( ) {

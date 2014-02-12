@@ -128,11 +128,12 @@ class EmpleadoServiceImpl implements EmpleadoService {
               "&id_empleado_cap="+inc.idEmpleadoCap+"&nombre_cap="+inc.nombreCap+"&Nombre="+inc.nombre+"&Valor="+
               inc.valor+"&Observacion="+inc.observacion+"&Descripcion="+inc.descripcion+"&Folio_soi="+inc.folioSoi+
               "&id_suc="+sucursal
-      url += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', valor ), 'UTF-8' ) )
+      url += String.format( '?%s', valor )
       log.debug( "url generada: ${url}" )
       try{
         response = url.toURL().text
-        response = response?.find( /<XX>\s*(.*)\s*<\/XX>/ ) {m, r -> return r}
+        response = response?.find( /<XX>\s*(.*)\s*<\/XX>/ ) {
+            m, r -> return r}
       } catch ( Exception e ){
         println e
       }
@@ -143,6 +144,7 @@ class EmpleadoServiceImpl implements EmpleadoService {
           folio = NumberFormat.getInstance().parse( response ).intValue()
         } catch ( NumberFormatException ex ){ println ex }
         inc.setFolio( folio )
+        incidenciaRepository.saveAndFlush( inc )
       } else {
         log.debug( "folio: ${response} no es valido" )
       }
