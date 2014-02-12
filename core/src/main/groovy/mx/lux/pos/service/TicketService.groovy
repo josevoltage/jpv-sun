@@ -39,4 +39,6 @@ interface TicketService {
   void imprimeTransaccionesInventario( Date fechaTransacciones )
 
   void imprimeDiferencias(  )
+
+  void imprimeIncidencias( Incidencia incidencia )
 }

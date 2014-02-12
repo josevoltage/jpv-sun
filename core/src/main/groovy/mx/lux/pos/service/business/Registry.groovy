@@ -348,6 +348,10 @@ class Registry {
     return asString( TipoParametro.URL_ACUSE_VENTA_DIA )
   }
 
+  static String getURLIncidence( ) {
+    return asString( TipoParametro.URL_INCIDENCIA )
+  }
+
   static String getURLSendInventory( ) {
       return asString( TipoParametro.URL_ENVIA_INVENTARIO_FISICO )
   }

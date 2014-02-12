@@ -1763,4 +1763,28 @@ class TicketServiceImpl implements TicketService {
   }
 
 
+
+  void imprimeIncidencias( Incidencia incidencia ){
+    log.debug( "imprimeDiferencias( )" )
+      DateFormat df = new SimpleDateFormat( "dd-MM-yyyy" )
+      Sucursal site = sucursalRepository.findOne( Registry.currentSite )
+      String sucursal = site.nombre+' ['+site.id+']'
+      String empleadoCapturo = '['+incidencia.idEmpleadoCap+']' +incidencia.nombreCap
+      String empleado = '['+incidencia.idEmpleado+']' +incidencia.nombre
+      if(incidencia != null){
+          def datos = [
+                  nombre_ticket: "ticket-incidencias",
+                  thisSite: sucursal,
+                  empleado_capturo: empleadoCapturo,
+                  empleado: empleado,
+                  date: df.format( incidencia.fecha ),
+                  incidencia: incidencia
+          ]
+          imprimeTicket( 'template/ticket-incidencias.vm', datos )
+      } else {
+          log.debug( String.format( 'No existe registro de incidencias' ) )
+      }
+  }
+
+
 }

@@ -217,7 +217,7 @@ class IOController {
     }
 
 
-    void saveIncidence( Incidencia incidencia ){
+    Incidencia saveIncidence( Incidencia incidencia ){
       String idGerente = ServiceManager.employeeService.gerente()
       Empleado gerente = ServiceManager.employeeService.obtenerEmpleado( StringUtils.trimToEmpty(idGerente) )
       incidencia.setIdEmpleado( gerente.id )
@@ -226,12 +226,22 @@ class IOController {
       incidencia.setFecha( new Date( ) )
       incidencia = ServiceManager.employeeService.saveIncidencia( incidencia )
       ServiceManager.employeeService.creaArchivoIncidencia( incidencia )
+      return incidencia
     }
 
 
-    void creaArchivoIncidencia( Incidencia incidencia ){
-
+    void printIncidencia( Incidencia incidencia ){
+      log.debug( "pintIncidencia( Incidencia incidencia )" )
+      ServiceManager.ticketService.imprimeIncidencias( incidencia )
     }
+
+
+    void sendWebIncidencia( Incidencia incidencia ){
+        log.debug( "sendWebIncidencia( Incidencia incidencia )" )
+        ServiceManager.employeeService.enviaIncidencia( incidencia )
+    }
+
+
 
 
 }

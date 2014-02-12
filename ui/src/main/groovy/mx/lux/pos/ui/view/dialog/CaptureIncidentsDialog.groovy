@@ -66,7 +66,7 @@ class CaptureIncidentsDialog extends JDialog implements FocusListener {
           lblEmployee = label( text: " " )
           label( text: "Id Criterio" )
           cbIdCriterion = comboBox( items: lstCriterios*.descripcion, constraints: "span 2", itemStateChanged: typeChanged )
-          label( text: "Valor" )
+          label( text: "Peso Negativo" )
           txtValue = textField( constraints: "span 2" )
           label(  )
           scrollPane( border: titledBorder( title: 'Observaciones' ), constraints: "span 2" ) {
@@ -132,8 +132,11 @@ class CaptureIncidentsDialog extends JDialog implements FocusListener {
     incidencia.setValor( StringUtils.trimToEmpty( txtValue.text ) )
     incidencia.setObservacion( StringUtils.trimToEmpty( txtObs.text ) )
     incidencia.setDescripcion( StringUtils.trimToEmpty( criterioDet.getDescripcion() ) )
-    IOController.instance.saveIncidence( incidencia )
-    println "onButtonOk( )"
+    incidencia = IOController.instance.saveIncidence( incidencia )
+    IOController.instance.printIncidencia( incidencia )
+    sb.doOutside {
+      IOController.instance.sendWebIncidencia( incidencia )
+    }
     dispose()
   }
 

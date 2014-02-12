@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
 import java.text.DateFormat
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 
 @Slf4j
@@ -109,11 +110,44 @@ class EmpleadoServiceImpl implements EmpleadoService {
         log.debug( 'Creando Writer' )
         PrintStream strOut = new PrintStream( file )
         StringBuffer sb = new StringBuffer()
-        sb.append("${incidencia.idEmpresa.trim()}|${incidencia.idEmpleado}|${incidencia.nombre}|${incidencia.fecha}|\n")
+        sb.append("${incidencia.idEmpresa.trim()}|${incidencia.idEmpleado}|${incidencia.nombre}|${incidencia.fecha}|")
         sb.append("${incidencia.idEmpresaCap.trim()}|${incidencia.idEmpleadoCap}|${incidencia.nombreCap}|${incidencia.idGrupo}|${incidencia.idCriterio}|${incidencia.valor}|${incidencia.observacion}|${incidencia.descripcion}|")
         strOut.println sb.toString()
         strOut.close()
     }
+
+
+    void enviaIncidencia( Incidencia inc ){
+      log.debug( "enviaIncidencia( Incidencia incidencia )" )
+      DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
+      String response = ''
+      String sucursal = Registry.currentSite
+      String url = Registry.getURLIncidence()
+      String valor = "id_empresa="+inc.idEmpresa.trim()+"&id_empleado="+inc.idEmpleado+"&id_grupo="+inc.idGrupo+
+              "&id_criterio="+inc.idCriterio+"&fecha="+df.format(inc.fecha)+"&id_empresa_cap="+inc.idEmpresaCap+
+              "&id_empleado_cap="+inc.idEmpleadoCap+"&nombre_cap="+inc.nombreCap+"&Nombre="+inc.nombre+"&Valor="+
+              inc.valor+"&Observacion="+inc.observacion+"&Descripcion="+inc.descripcion+"&Folio_soi="+inc.folioSoi+
+              "&id_suc="+sucursal
+      url += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', valor ), 'UTF-8' ) )
+      log.debug( "url generada: ${url}" )
+      try{
+        response = url.toURL().text
+        response = response?.find( /<XX>\s*(.*)\s*<\/XX>/ ) {m, r -> return r}
+      } catch ( Exception e ){
+        println e
+      }
+      log.debug( "respuesta: ${response}" )
+      if( StringUtils.trimToEmpty(response) != '' && response.isNumber() ){
+        Integer folio = 0
+        try{
+          folio = NumberFormat.getInstance().parse( response ).intValue()
+        } catch ( NumberFormatException ex ){ println ex }
+        inc.setFolio( folio )
+      } else {
+        log.debug( "folio: ${response} no es valido" )
+      }
+    }
+
 
 
 }

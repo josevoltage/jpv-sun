@@ -19,4 +19,6 @@ interface EmpleadoService {
   Incidencia saveIncidencia( Incidencia incidencia )
 
   void creaArchivoIncidencia( Incidencia incidencia )
+
+  void enviaIncidencia( Incidencia incidencia )
 }
