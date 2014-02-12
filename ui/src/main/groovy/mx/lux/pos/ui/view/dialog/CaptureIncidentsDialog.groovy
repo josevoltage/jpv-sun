@@ -33,7 +33,7 @@ class CaptureIncidentsDialog extends JDialog implements FocusListener {
   private JLabel lblEmployee
   private JComboBox cbIdCriterion
   private JTextField txtValue
-  private JTextField txtObs
+  private JTextArea txtObs
 
   private CriterioDet criterioDet
   private List<CriterioDet> lstCriterios = new ArrayList<>()
@@ -59,7 +59,7 @@ class CaptureIncidentsDialog extends JDialog implements FocusListener {
         borderLayout()
         panel( constraints: BorderLayout.CENTER, layout: new MigLayout( "wrap 3", "20[][fill][grow,fill]40", "20[]10[]" ) ) {
           label( text: "Id Empresa" )
-          txtIdCompany = textField( text: '7', constraints: "span 2" )
+          txtIdCompany = textField( text: '7', constraints: "span 2", editable: false )
           label( text: "Id Empleado" )
           txtEmployee = textField( preferredSize: [ 50,20 ] )
           txtEmployee.addFocusListener( this )
@@ -68,8 +68,10 @@ class CaptureIncidentsDialog extends JDialog implements FocusListener {
           cbIdCriterion = comboBox( items: lstCriterios*.descripcion, constraints: "span 2", itemStateChanged: typeChanged )
           label( text: "Valor" )
           txtValue = textField( constraints: "span 2" )
-          label( text: "Observaciones" )
-          txtObs = textField( constraints: "span 2", document: new UpperCaseDocument() )
+          label(  )
+          scrollPane( border: titledBorder( title: 'Observaciones' ), constraints: "span 2" ) {
+            txtObs = textArea( document: new UpperCaseDocument(), preferredSize: [ 100,100 ] )
+          }
         }
         panel( constraints: BorderLayout.PAGE_END ) {
           borderLayout()
