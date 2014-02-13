@@ -13,6 +13,9 @@ import mx.lux.pos.repository.ParametroRepository
 import mx.lux.pos.service.EmpleadoService
 import mx.lux.pos.service.business.Registry
 import org.apache.commons.lang3.StringUtils
+import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -111,7 +114,9 @@ class EmpleadoServiceImpl implements EmpleadoService {
         PrintStream strOut = new PrintStream( file )
         StringBuffer sb = new StringBuffer()
         sb.append("${incidencia.idEmpresa.trim()}|${incidencia.idEmpleado}|${incidencia.nombre}|${incidencia.fecha}|")
-        sb.append("${incidencia.idEmpresaCap.trim()}|${incidencia.idEmpleadoCap}|${incidencia.nombreCap}|${incidencia.idGrupo}|${incidencia.idCriterio}|${incidencia.valor}|${incidencia.observacion}|${incidencia.descripcion}|")
+        sb.append("${incidencia.idEmpresaCap.trim()}|${incidencia.idEmpleadoCap}|${incidencia.nombreCap}|${incidencia.idGrupo}|")
+        sb.append("${incidencia.idCriterio}|${incidencia.valor}|${incidencia.observacion}|${incidencia.descripcion}|${incidencia.folioSoi}|")
+        sb = sb.replaceAll("[\n\r]","")
         strOut.println sb.toString()
         strOut.close()
     }
@@ -121,14 +126,16 @@ class EmpleadoServiceImpl implements EmpleadoService {
       log.debug( "enviaIncidencia( Incidencia incidencia )" )
       DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
       String response = ''
+      String inputLine = '';
       String sucursal = Registry.currentSite
       String url = Registry.getURLIncidence()
-      String valor = "id_empresa="+inc.idEmpresa.trim()+"&id_empleado="+inc.idEmpleado+"&id_grupo="+inc.idGrupo+
-              "&id_criterio="+inc.idCriterio+"&fecha="+df.format(inc.fecha)+"&id_empresa_cap="+inc.idEmpresaCap+
-              "&id_empleado_cap="+inc.idEmpleadoCap+"&nombre_cap="+inc.nombreCap+"&Nombre="+inc.nombre+"&Valor="+
-              inc.valor+"&Observacion="+inc.observacion+"&Descripcion="+inc.descripcion+"&Folio_soi="+inc.folioSoi+
-              "&id_suc="+sucursal
+      String valor = "id_empresa="+inc.idEmpresa.trim()+"&id_empleado="+inc.idEmpleado.trim()+"&id_grupo="+inc.idGrupo.trim()+
+              "&id_criterio="+inc.idCriterio.trim()+"&fecha="+df.format(inc.fecha).trim()+"&id_empresa_cap="+inc.idEmpresaCap.trim()+
+              "&id_empleado_cap="+inc.idEmpleadoCap.trim()+"&nombre_cap="+inc.nombreCap.trim()+"&Nombre="+inc.nombre.trim()+"&Valor="+
+              inc.valor.trim()+"&Observacion="+inc.observacion.trim()+"&Descripcion="+inc.descripcion.trim()+"&Folio_soi="+inc.folioSoi.toString().trim()+
+              "&id_suc="+sucursal.trim()
       url += String.format( '?%s', valor )
+      url = url.replaceAll("[\n\r]","")
       log.debug( "url generada: ${url}" )
       try{
         response = url.toURL().text

@@ -58,7 +58,7 @@ class CaptureIncidentsDialog extends JDialog implements FocusListener {
     ) {
       panel() {
         borderLayout()
-        panel( constraints: BorderLayout.CENTER, layout: new MigLayout( "wrap 3", "20[][fill][grow,fill]40", "20[]10[]" ) ) {
+        panel( constraints: BorderLayout.CENTER, layout: new MigLayout( "wrap 3", "20[][fill][grow,fill]40", "20[fill]10[fill]" ) ) {
           label( text: "Id Empresa" )
           txtIdCompany = textField( text: '7', constraints: "span 2", editable: false )
           label( text: "Id Empleado" )
@@ -71,7 +71,7 @@ class CaptureIncidentsDialog extends JDialog implements FocusListener {
           cbValue = comboBox( items: valores, constraints: "span 2" )
           label(  )
           scrollPane( border: titledBorder( title: 'Observaciones' ), constraints: "span 2" ) {
-            txtObs = textArea( document: new UpperCaseDocument(), preferredSize: [ 100,100 ] )
+            txtObs = textArea( document: new UpperCaseDocument(), autoscrolls: true, preferredSize: [ 100,100 ] )
           }
         }
         panel( constraints: BorderLayout.PAGE_END ) {
