@@ -116,8 +116,7 @@ class EmpleadoServiceImpl implements EmpleadoService {
         sb.append("${incidencia.idEmpresa.trim()}|${incidencia.idEmpleado}|${incidencia.nombre}|${incidencia.fecha}|")
         sb.append("${incidencia.idEmpresaCap.trim()}|${incidencia.idEmpleadoCap}|${incidencia.nombreCap}|${incidencia.idGrupo}|")
         sb.append("${incidencia.idCriterio}|${incidencia.valor}|${incidencia.observacion}|${incidencia.descripcion}|${incidencia.folioSoi}|")
-        sb = sb.replaceAll("[\n\r]","")
-        strOut.println sb.toString()
+        strOut.println sb.replaceAll("[\n\r]","").toString()
         strOut.close()
     }
 
