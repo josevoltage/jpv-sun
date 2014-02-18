@@ -291,7 +291,7 @@ class TicketServiceImpl implements TicketService {
               }
             }
           } else {
-            msjPromo = msj.mensaje
+            msjPromo.add(msj.mensaje)
           }
       }
 
