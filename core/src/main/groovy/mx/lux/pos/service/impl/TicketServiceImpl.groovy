@@ -76,6 +76,9 @@ class TicketServiceImpl implements TicketService {
   private OrdenPromDetRepository ordenPromDetRepository
 
   @Resource
+  private MensajeTicketRepository mensajeTicketRepository
+
+  @Resource
   private NotaVentaService notaVentaService
 
   @Resource
@@ -200,6 +203,8 @@ class TicketServiceImpl implements TicketService {
     if ( StringUtils.isNotBlank( notaVenta?.id ) ) {
       NumberFormat formatter = NumberFormat.getCurrencyInstance( Locale.US )
       List<String> lstComentario = new ArrayList<String>()
+      String marcasFactura = ''
+      String articulosFactura = ''
       String dateTextFormat = "dd 'de' MMMM 'de' yyyy"
       Locale locale = new Locale( 'es' )
       def detalles = [ ]
@@ -226,6 +231,8 @@ class TicketServiceImpl implements TicketService {
         }
 
         totalArticulos = totalArticulos.add( tmp.cantidadFac )
+        marcasFactura = marcasFactura+","+StringUtils.trimToEmpty(tmp.articulo.marca)
+        articulosFactura = articulosFactura+","+StringUtils.trimToEmpty(tmp.articulo.id.toString())
         def detalle = [
             cantidad: tmp?.cantidadFac?.toInteger() ?: '',
             codigo: "${tmp?.articulo?.articulo ?: ''} ${tmp?.articulo?.codigoColor ?: ''}",
@@ -268,6 +275,27 @@ class TicketServiceImpl implements TicketService {
 
       List<String> promociones = new ArrayList<>()
       List<OrdenPromDet> lstPromociones = ordenPromDetRepository.findByIdFactura( notaVenta.id )
+      String msjPromo = ''
+      if( lstPromociones.size() > 0 ){
+        QMensajeTicket mensaje = QMensajeTicket.mensajeTicket
+        List<MensajeTicket> lstMensajesTickets = mensajeTicketRepository.findAll( mensaje.fechaFinal.after( new Date() ) )
+        /*Boolean msjPorMarca = false
+        Boolean msjPorArticulo = false*/
+        for(MensajeTicket msj : lstMensajesTickets){
+          if(StringUtils.trimToEmpty(msj.idLinea) != '' && marcasFactura.contains(StringUtils.trimToEmpty(msj.idLinea))){
+            //msjPorMarca = true
+            msjPromo = msj.mensaje
+          } else if(StringUtils.trimToEmpty(msj.listaArticulo) != ''){
+            String[] articulos = msj.listaArticulo.split(',')
+            for(String art : articulos){
+              if(msj.listaArticulo.contains(art)){
+                //msjPorArticulo = true
+                msjPromo = msj.mensaje
+              }
+            }
+          }
+        }
+      }
       for(OrdenPromDet promo : lstPromociones){
           Promocion promocion = promocionRepository.findOne( promo.idPromocion )
           if(promocion != null){
@@ -295,7 +323,8 @@ class TicketServiceImpl implements TicketService {
           fecha_entrega: notaVenta?.fechaPrometida ? DateFormatUtils.format( notaVenta.fechaPrometida, dateTextFormat, locale ) : '',
           comentarios: lstComentario,
           promociones: promociones,
-          existPromo: promociones.size() > 0 ? 'existe' : ''
+          existPromo: promociones.size() > 0 ? 'existe' : '',
+          mensajePromo: msjPromo
       ] as Map<String, Object>
       imprimeTicket( 'template/ticket-venta-si.vm', items )
       if ( Registry.isReceiptDuplicate() && pNewOrder ) {
