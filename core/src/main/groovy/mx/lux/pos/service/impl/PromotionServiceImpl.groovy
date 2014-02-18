@@ -4,9 +4,11 @@ import mx.lux.pos.model.GrupoArticuloDet
 import mx.lux.pos.model.Parametro
 import mx.lux.pos.model.PromotionAvailable
 import mx.lux.pos.model.PromotionModel
+import mx.lux.pos.model.MensajeTicket
 import mx.lux.pos.model.QPromocion
 import mx.lux.pos.model.TipoParametro
 import mx.lux.pos.repository.GrupoArticuloDetRepository
+import mx.lux.pos.repository.MensajeTicketRepository
 import mx.lux.pos.repository.ParametroRepository
 import mx.lux.pos.repository.PromocionRepository
 import mx.lux.pos.repository.SucursalRepository
@@ -22,6 +24,9 @@ import javax.annotation.Resource
 
 import mx.lux.pos.service.business.*
 import mx.lux.pos.model.PromotionDiscount
+
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
 
 @Service( 'promotionService' )
 @Transactional( readOnly = true )
@@ -39,6 +44,9 @@ class PromotionServiceImpl implements PromotionService {
 
   @Resource
   private SucursalRepository sucursalRepository
+
+  @Resource
+  private MensajeTicketRepository mensajeTicketRepository
 
   @Resource
   private GrupoArticuloDetRepository grupoArticuloDetRepository
@@ -162,4 +170,40 @@ class PromotionServiceImpl implements PromotionService {
       return lstArticulos
   }
 
+
+  @Transactional
+  @Override
+  void cargaArchivoMensajeTicket( ){
+    log.debug( "cargaArchivoMensajeTicket( )" )
+    File folder = new File( Registry.inputFilePath )
+    //File newFolder = new File( Registry.processedFilesPath )
+    if( folder?.exists() ){
+      folder.eachFileMatch( ~/.+_.+_.+_.+\.MSG/ ) { File file ->
+        log.debug( "leyendo archivo: ${file.name}" )
+        for(String line : file.readLines() ){
+          line = line.replace( "||", "| |")
+          line = line.replace( "||", "| |")
+          String[] elementos = line.split( /\|/ )
+          if( elementos.size() >= 7 ){
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy")
+            MensajeTicket mensaje = new MensajeTicket()
+            Integer folio = 0
+            try{
+              folio = NumberFormat.getInstance().parse(elementos[0])
+            } catch (NumberFormatException e){ println e }
+            mensaje.setFolio( folio )
+            mensaje.setDescripcion( elementos[1] )
+            mensaje.setFechaInicio( formatter.parse(elementos[2]) )
+            mensaje.setFechaFinal( formatter.parse(elementos[3]) )
+            mensaje.setIdLinea( elementos[4] )
+            mensaje.setListaArticulo( elementos[5] )
+            mensaje.setMensaje( elementos[6] )
+            mensajeTicketRepository.saveAndFlush( mensaje )
+          }
+        }
+        def newFile = new File( Registry.processedFilesPath, file.name )
+        def moved = file.renameTo( newFile )
+      }
+    }
+  }
 }

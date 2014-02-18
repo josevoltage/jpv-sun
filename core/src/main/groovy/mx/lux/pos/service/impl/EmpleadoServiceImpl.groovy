@@ -106,6 +106,7 @@ class EmpleadoServiceImpl implements EmpleadoService {
 
 
     void creaArchivoIncidencia( Incidencia incidencia ){
+        SimpleDateFormat df = new SimpleDateFormat('dd-MM-yyyy HH:mm')
         String fichero = "${Registry.archivePath}/${incidencia.folioSoi}_${Registry.currentSite}.inc"
         log.debug( "Generando Fichero: ${ fichero }" )
         File file = new File( fichero )
@@ -113,7 +114,7 @@ class EmpleadoServiceImpl implements EmpleadoService {
         log.debug( 'Creando Writer' )
         PrintStream strOut = new PrintStream( file )
         StringBuffer sb = new StringBuffer()
-        sb.append("${incidencia.idEmpresa.trim()}|${incidencia.idEmpleado}|${incidencia.nombre}|${incidencia.fecha}|")
+        sb.append("${incidencia.idEmpresa.trim()}|${incidencia.idEmpleado}|${incidencia.nombre}|${df.format(incidencia.fecha)}|")
         sb.append("${incidencia.idEmpresaCap.trim()}|${incidencia.idEmpleadoCap}|${incidencia.nombreCap}|${incidencia.idGrupo}|")
         sb.append("${incidencia.idCriterio}|${incidencia.valor}|${incidencia.observacion}|${incidencia.descripcion}|${incidencia.folioSoi}|")
         strOut.println sb.replaceAll("[\n\r]","").toString()

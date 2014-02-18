@@ -275,27 +275,26 @@ class TicketServiceImpl implements TicketService {
 
       List<String> promociones = new ArrayList<>()
       List<OrdenPromDet> lstPromociones = ordenPromDetRepository.findByIdFactura( notaVenta.id )
-      String msjPromo = ''
-      if( lstPromociones.size() > 0 ){
-        QMensajeTicket mensaje = QMensajeTicket.mensajeTicket
+      List<String> msjPromo = new ArrayList<>()
+      QMensajeTicket mensaje = QMensajeTicket.mensajeTicket
         List<MensajeTicket> lstMensajesTickets = mensajeTicketRepository.findAll( mensaje.fechaFinal.after( new Date() ) )
-        /*Boolean msjPorMarca = false
-        Boolean msjPorArticulo = false*/
         for(MensajeTicket msj : lstMensajesTickets){
-          if(StringUtils.trimToEmpty(msj.idLinea) != '' && marcasFactura.contains(StringUtils.trimToEmpty(msj.idLinea))){
-            //msjPorMarca = true
-            msjPromo = msj.mensaje
-          } else if(StringUtils.trimToEmpty(msj.listaArticulo) != ''){
-            String[] articulos = msj.listaArticulo.split(',')
-            for(String art : articulos){
-              if(msj.listaArticulo.contains(art)){
-                //msjPorArticulo = true
-                msjPromo = msj.mensaje
+          if(StringUtils.trimToEmpty(msj.idLinea) != '' || !StringUtils.trimToEmpty(msj.idLinea).equalsIgnoreCase('*')){
+            if( marcasFactura.contains(StringUtils.trimToEmpty(msj.idLinea)) ){
+              msjPromo.add(msj.mensaje)
+            } else {
+                String[] articulos = msj.listaArticulo.split(',')
+                for(String art : articulos){
+                  if(msj.listaArticulo.contains(art)){
+                  msjPromo.add(msj.mensaje)
+                }
               }
             }
+          } else {
+            msjPromo = msj.mensaje
           }
-        }
       }
+
       for(OrdenPromDet promo : lstPromociones){
           Promocion promocion = promocionRepository.findOne( promo.idPromocion )
           if(promocion != null){
@@ -324,7 +323,7 @@ class TicketServiceImpl implements TicketService {
           comentarios: lstComentario,
           promociones: promociones,
           existPromo: promociones.size() > 0 ? 'existe' : '',
-          mensajePromo: msjPromo
+          mensajesPromo: msjPromo
       ] as Map<String, Object>
       imprimeTicket( 'template/ticket-venta-si.vm', items )
       if ( Registry.isReceiptDuplicate() && pNewOrder ) {

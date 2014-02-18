@@ -37,4 +37,6 @@ interface PromotionService {
 
   String articulosGupoPromocion( Integer idGrupo )
 
+  void cargaArchivoMensajeTicket( )
+
 }

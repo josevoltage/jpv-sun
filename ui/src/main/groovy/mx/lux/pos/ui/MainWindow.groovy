@@ -545,6 +545,7 @@ class MainWindow extends JFrame implements KeyListener {
     sb.doOutside {
       DailyCloseController.openDay()
       IOController.getInstance().loadAdjustFile()
+      IOController.getInstance().loadMessageTicketFile()
       IOController.getInstance().autoUpdateFxRates()
       DailyCloseController.RegistrarPromociones()
       IOController.getInstance().autoUpdateEmployeeFile()

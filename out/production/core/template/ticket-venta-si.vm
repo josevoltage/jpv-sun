@@ -40,7 +40,6 @@ ${COLUMNAS}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $comentario in $comentarios )${comentario}${LF}#end${CR}
 #if( $existPromo != '' )#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)                      PROMOCIONES:
 #foreach( $promocion in $promociones )          ${promocion}${LF}#end${CR}
-#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} 0 0 0 0)${mensajePromo}
 #end
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} 0 0 0 0)Pago hecho en una sola exhibicion
 #LINEA_SEPARACION_SIMPLE()
@@ -63,5 +62,10 @@ ${LF}
 #SET_STYLE(${FUENTE_B} 0 0 0 ${SUBRAYADO})${compania.webAddress}${LF}
 #end
 #SET_STYLE(${FUENTE_A} ${NEGRITA} ${DOBLE_ALTURA} ${DOBLE_ANCHURA} 0)#altnull(${sucursal.centroCostos})-#altnull(${nota_venta.factura})${LF}
+
+#foreach( $mensaje in $mensajesPromo )
+#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)${mensaje}
+#LINEA_SEPARACION_SIMPLE()
+#end${CR}
 #AVANZAR_LINEAS(4)
 #CORTE()

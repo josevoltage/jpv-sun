@@ -218,7 +218,14 @@ class IOController {
 
 
     Incidencia saveIncidence( Incidencia incidencia ){
-      String idGerente = ServiceManager.employeeService.gerente()
+      String manager = ServiceManager.employeeService.gerente()
+      String idGerente = ''
+      if( manager.contains(',') ){
+        String[] ger = manager.split(',')
+        idGerente = ger[0]
+      } else {
+        idGerente = manager
+      }
       Empleado gerente = ServiceManager.employeeService.obtenerEmpleado( StringUtils.trimToEmpty(idGerente) )
       incidencia.setIdEmpleadoCap( gerente.id )
       incidencia.setNombreCap( gerente.nombreCompleto )
@@ -243,6 +250,11 @@ class IOController {
 
 
 
+
+    void loadMessageTicketFile( ){
+      log.debug( "loadMessageTicketFile( )" )
+      ServiceManager.promotionService.cargaArchivoMensajeTicket()
+    }
 
 }
 
