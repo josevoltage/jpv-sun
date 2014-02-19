@@ -283,10 +283,12 @@ class TicketServiceImpl implements TicketService {
             if( marcasFactura.contains(StringUtils.trimToEmpty(msj.idLinea)) ){
               msjPromo.add(msj.mensaje)
             } else {
+              if( StringUtils.trimToEmpty(msj.listaArticulo) != '' ){
                 String[] articulos = msj.listaArticulo.split(',')
                 for(String art : articulos){
                   if(msj.listaArticulo.contains(art)){
-                  msjPromo.add(msj.mensaje)
+                    msjPromo.add(msj.mensaje)
+                  }
                 }
               }
             }
