@@ -277,23 +277,55 @@ class TicketServiceImpl implements TicketService {
       List<OrdenPromDet> lstPromociones = ordenPromDetRepository.findByIdFactura( notaVenta.id )
       List<String> msjPromo = new ArrayList<>()
       QMensajeTicket mensaje = QMensajeTicket.mensajeTicket
-        List<MensajeTicket> lstMensajesTickets = mensajeTicketRepository.findAll( mensaje.fechaFinal.after( new Date() ) )
-        for(MensajeTicket msj : lstMensajesTickets){
-          if(StringUtils.trimToEmpty(msj.idLinea) != '' || !StringUtils.trimToEmpty(msj.idLinea).equalsIgnoreCase('*')){
-            if( marcasFactura.contains(StringUtils.trimToEmpty(msj.idLinea)) ){
-              msjPromo.add(msj.mensaje)
-            } else {
+      List<MensajeTicket> lstMensajesTickets = (List<MensajeTicket>)mensajeTicketRepository.findAll( mensaje.fechaFinal.after( new Date() ) )
+      for(MensajeTicket msj : lstMensajesTickets){
+          Boolean alreadyAdd = false
+          Boolean hasBrand = false
+          Boolean hasArticle = false
+          if( (!StringUtils.trimToEmpty(msj.idLinea).equalsIgnoreCase('') && !StringUtils.trimToEmpty(msj.idLinea).equalsIgnoreCase('*'))||
+                  (!StringUtils.trimToEmpty(msj.listaArticulo).equalsIgnoreCase('') && !StringUtils.trimToEmpty(msj.listaArticulo).equalsIgnoreCase('*')) ){
+              if( StringUtils.trimToEmpty(msj.idLinea) != '' ){
+                hasBrand = true
+              }
               if( StringUtils.trimToEmpty(msj.listaArticulo) != '' ){
-                String[] articulos = msj.listaArticulo.split(',')
+                hasArticle = true
+              }
+              if( hasBrand ){
+                Boolean validBrand = false
+                  String[] marcas = marcasFactura.split(',')
+                  for(String marca : marcas){
+                      if(StringUtils.trimToEmpty(marca) != '' && msj.idLinea.contains(marca)){
+                        validBrand = true
+                      }
+                  }
+                if( validBrand ){
+                  if( hasArticle ){
+                    String[] articulos = articulosFactura.split(',')
+                    for(String art : articulos){
+                      if(!alreadyAdd && StringUtils.trimToEmpty(art) != '' && msj.listaArticulo.contains(art)){
+                        alreadyAdd = true
+                        msjPromo.add(msj.mensaje)
+                      }
+                    }
+                  } else {
+                    if(!alreadyAdd){
+                      alreadyAdd = true
+                      msjPromo.add(msj.mensaje)
+                    }
+                  }
+                }
+              } else if( hasArticle ){
+                String[] articulos = articulosFactura.split(',')
                 for(String art : articulos){
-                  if(msj.listaArticulo.contains(art)){
+                  if(!alreadyAdd && StringUtils.trimToEmpty(art) != '' && msj.listaArticulo.contains(art)){
+                    alreadyAdd = true
                     msjPromo.add(msj.mensaje)
                   }
                 }
               }
-            }
-          } else {
-            msjPromo.add(msj.mensaje)
+          } else if( (StringUtils.trimToEmpty(msj.idLinea).equalsIgnoreCase('') && StringUtils.trimToEmpty(msj.idLinea).equalsIgnoreCase('*'))||
+                  (StringUtils.trimToEmpty(msj.listaArticulo).equalsIgnoreCase('') && StringUtils.trimToEmpty(msj.listaArticulo).equalsIgnoreCase('*')) ){
+
           }
       }
 
