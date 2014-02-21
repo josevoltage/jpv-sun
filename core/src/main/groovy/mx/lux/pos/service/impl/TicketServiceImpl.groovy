@@ -323,9 +323,9 @@ class TicketServiceImpl implements TicketService {
                   }
                 }
               }
-          } else if( (StringUtils.trimToEmpty(msj.idLinea).equalsIgnoreCase('') && StringUtils.trimToEmpty(msj.idLinea).equalsIgnoreCase('*'))||
-                  (StringUtils.trimToEmpty(msj.listaArticulo).equalsIgnoreCase('') && StringUtils.trimToEmpty(msj.listaArticulo).equalsIgnoreCase('*')) ){
-
+          } else if( (StringUtils.trimToEmpty(msj.idLinea).equalsIgnoreCase('') || StringUtils.trimToEmpty(msj.idLinea).equalsIgnoreCase('*'))&&
+                  (StringUtils.trimToEmpty(msj.listaArticulo).equalsIgnoreCase('') || StringUtils.trimToEmpty(msj.listaArticulo).equalsIgnoreCase('*')) ){
+            msjPromo.add(msj.mensaje)
           }
       }
 
