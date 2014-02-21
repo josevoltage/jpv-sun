@@ -185,7 +185,7 @@ class PromotionServiceImpl implements PromotionService {
           line = line.replace( "||", "| |")
           String[] elementos = line.split( /\|/ )
           if( elementos.size() >= 7 ){
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy")
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy")
             MensajeTicket mensaje = new MensajeTicket()
             Integer folio = 0
             try{
