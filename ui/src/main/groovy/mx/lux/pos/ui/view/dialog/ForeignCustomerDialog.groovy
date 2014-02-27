@@ -196,7 +196,7 @@ class ForeignCustomerDialog extends JDialog {
     }
     if ( isValidInput() ) {
         if( country.selectedItem != null ){
-            CustomerController.saveCountries( country.selectedItem.toString().trim().toUpperCase() )
+            //CustomerController.saveCountries( country.selectedItem.toString().trim().toUpperCase() )
         }
       Customer tmpCustomer = CustomerController.addCustomer( customer, edit )
       if ( tmpCustomer?.id ) {
