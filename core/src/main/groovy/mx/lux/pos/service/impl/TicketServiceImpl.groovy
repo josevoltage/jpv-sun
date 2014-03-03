@@ -676,7 +676,15 @@ class TicketServiceImpl implements TicketService {
       pagosExternos.each { pagoExterno -> totalPagosExternos = totalPagosExternos + pagoExterno.monto }
 
       Parametro parametroGerente = parametroRepository.findOne( TipoParametro.ID_GERENTE.value )
-      Empleado gerente = empleadoRepository.findById( parametroGerente.valor )
+      Empleado gerente = new Empleado()
+      if( parametroGerente.valor.contains(',') ){
+        String[] ids = parametroGerente.valor.split(',')
+        if( ids.length > 0 ){
+          gerente = empleadoRepository.findById( StringUtils.trimToEmpty(ids[0]) )
+        }
+      } else {
+        gerente = empleadoRepository.findById( parametroGerente.valor )
+      }
 
       List<EntregadoExterno> entregadosExternos = entregadoExternoRepository.findByFechaGreaterThanAndFechaLessThan( fechaInicio, fechaFin )
       log.debug( "Entregados externos ${ entregadosExternos.size() }" )
