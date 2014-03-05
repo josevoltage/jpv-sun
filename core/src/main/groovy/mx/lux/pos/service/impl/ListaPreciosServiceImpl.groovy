@@ -211,6 +211,7 @@ class ListaPreciosServiceImpl implements ListaPreciosService {
           if ( esOferta || esEspecial ) {
               articulo.setPrecioO( tmpArticulo.precio )
           }
+          articulo.setArticulo( StringUtils.trimToEmpty( tmpArticulo.articulo ) )
           articulo.setOperacion( tmpArticulo.operacion )
           articulo.setIdGenerico( tmpArticulo.idGenerico )
           articulo.setIdGenTipo( tmpArticulo.idGenTipo )
