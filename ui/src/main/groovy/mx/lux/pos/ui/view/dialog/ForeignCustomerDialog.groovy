@@ -137,7 +137,7 @@ class ForeignCustomerDialog extends JDialog {
         country = comboBox( selectedItem: "${domestic ? 'MEXICO' : lstPaises.get(0)}",
             items: lstPaises,
             visible: !domestic,
-            constraints: 'hidemode 3', editable: !domestic
+            constraints: 'hidemode 3', enabled: !domestic //editable: !domestic
         )
       }
 
