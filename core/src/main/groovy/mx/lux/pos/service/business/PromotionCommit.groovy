@@ -124,11 +124,19 @@ class PromotionCommit {
         promociones.delete( promocion.idPromocion )
         promociones.flush()
       } else {*/
+        Boolean updatePromo = false
+        Promocion oldPromotion = promociones.findOne( p.idPromocion )
+        if( oldPromotion != null ){
+            updatePromo = true
+        }
         Promocion promocion = new Promocion()
         promocion.idPromocion = p.idPromocion
       //}
       p.assignInto( promocion )
-      promociones.save( promocion )
+      Promocion promo = promociones.save( promocion )
+      if( promo?.idPromocion != null ){
+          makeFilePromotion( promo, updatePromo )
+      }
     }
     promociones.flush()
   }
@@ -185,5 +193,21 @@ class PromotionCommit {
       }
     }
   }
+
+
+
+  static void makeFilePromotion( Promocion promocion, Boolean updatePromo ){
+      String fichero = "${Registry.archivePath}/${Registry.currentSite}.${promocion.idPromocion}.${new Date().format("yyyy-MM-dd")}.cargapr"
+      log.debug( "Generando Fichero: ${ fichero }" )
+      File file = new File( fichero )
+      if ( file.exists() ) { file.delete() }
+      log.debug( 'Creando archivo de carga de promocion' )
+      PrintStream strOut = new PrintStream( file )
+      StringBuffer sb = new StringBuffer()
+      sb.append("${String.format("%04d",Registry.currentSite)}|${promocion.idPromocion}|${new Date().format("dd-MM-yyyy")}|${updatePromo ? 'E' : 'A'}|")
+      strOut.println sb.toString()
+      strOut.close()
+  }
+
 
 }
