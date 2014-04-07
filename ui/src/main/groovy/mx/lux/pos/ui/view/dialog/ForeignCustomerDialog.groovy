@@ -174,11 +174,23 @@ class ForeignCustomerDialog extends JDialog {
   }
 
   private boolean isValidInput( ) {
-    if ( StringUtils.isNotBlank( firstName.text ) ) {
+    Boolean varField = false
+    if( domestic ){
+      if( stateField.selectedItem != null &&
+              StringUtils.trimToEmpty( stateField.selectedItem.toString() ).length() > 0 ){
+        varField = true
+      }
+    } else {
+      if( country.selectedItem != null &&
+              StringUtils.trimToEmpty( country.selectedItem.toString() ).length() > 0 ){
+        varField = true
+      }
+    }
+    if ( StringUtils.isNotBlank( firstName.text ) && StringUtils.isNotBlank( city.text ) && varField ) {
       return true
     } else {
       sb.optionPane(
-          message: 'Se debe registrar el nombre y pa\u00eds',
+          message: "Se debe registrar el nombre, ciudad y ${domestic ? 'estado' : 'pa\u00eds'}",
           messageType: JOptionPane.ERROR_MESSAGE
       ).createDialog( this, 'No se puede registrar la venta' )
           .show()
