@@ -30,6 +30,9 @@ class ClienteServiceImpl implements ClienteService {
   private ConvenioRepository convenioRepository
 
   @Resource
+  private RepRepository repRepository
+
+  @Resource
   private ParametroRepository parametroRepository
 
   @Resource
@@ -146,4 +149,22 @@ class ClienteServiceImpl implements ClienteService {
       log.debug( "listando convenios" )
       convenioRepository.findByInicialesIcIlikeByEstatusConvenioEqual( convenio, "V" )
   }*/
+
+
+  @Override
+  String obtenerEstadoCliente( Integer id ){
+    String estado = ''
+    Cliente cliente = clienteRepository.findOne( id )
+    if(cliente != null){
+      Rep estadoRep = repRepository.findOne( StringUtils.trimToEmpty(cliente.idEstado) )
+      if( estadoRep != null ){
+        estado = StringUtils.trimToEmpty(estadoRep.nombre)
+      }
+    }
+    return estado
+  }
+
+
+
+
 }

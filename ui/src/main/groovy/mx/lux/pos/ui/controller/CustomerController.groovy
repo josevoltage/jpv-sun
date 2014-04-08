@@ -234,4 +234,12 @@ class CustomerController {
     static void saveCountries( String pais ){
         paisesService.guardarPais( pais )
     }
+
+
+    static String stateCustomer( Order order ) {
+        String estadoCliente = clienteService.obtenerEstadoCliente( order.customer.id )
+        return estadoCliente
+    }
+
+
 }

@@ -539,7 +539,8 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           if ( isValidOrder() ) {
             if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.WALKIN.value) ||
                     operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.DOMESTIC.value) ){
-                order.country = 'MEXICO'
+                String estadoCliente = CustomerController.stateCustomer( order )
+                order.country = "MEXICO,${estadoCliente }"
                 saveOrder()
             } else if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.FOREIGN.value) ){
                 String paisCliente = CustomerController.countryCustomer( order )

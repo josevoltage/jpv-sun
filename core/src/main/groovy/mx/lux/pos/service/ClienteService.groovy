@@ -22,6 +22,8 @@ interface ClienteService {
 
   List<Dominio> listarDominiosClientes( )
 
+  String obtenerEstadoCliente( Integer id )
+
   //List<InstitucionIc> obtenerConvenios( String convenio )
 
 }
