@@ -217,11 +217,13 @@ class InvTrController {
 
   List<Sucursal> listaAlmacenes(){
       List<Sucursal> lstAlmacenes = ServiceManager.getInventoryService().listarAlmacenes()
+      lstAlmacenes.add( 0, null )
       return lstAlmacenes
   }
 
     List<Sucursal> listaSoloSucursales(){
         List<Sucursal> lstAlmacenes = ServiceManager.getInventoryService().listarSoloSucursales()
+        lstAlmacenes.add( 0, null )
         return lstAlmacenes
     }
 
