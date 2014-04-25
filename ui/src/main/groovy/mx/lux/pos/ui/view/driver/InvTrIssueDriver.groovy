@@ -29,8 +29,10 @@ class InvTrIssueDriver extends InvTrDriver {
   protected void renderFlaggedItems( InvTrView pView )  {
     if ( pView.data.flagOnSiteTo ) {
       pView.panel.comboSiteTo.renderAsFlagged( )
-      pView.panel.comboSiteTo.setText( pView.panel.TXT_SITE_TO_PROMPT )
+      //pView.panel.comboSiteTo.setText( pView.panel.TXT_SITE_TO_PROMPT )
+      pView.panel.comboSiteTo.text = pView.panel.TXT_SITE_TO_PROMPT//items.get(0).setNombre( pView.panel.TXT_SITE_TO_PROMPT )
     } else {
+      pView.panel.comboSiteTo.text = ""
       pView.panel.comboSiteTo.renderAsFlagged( false )
     }
 
@@ -53,7 +55,7 @@ class InvTrIssueDriver extends InvTrDriver {
   Boolean assign( InvTrView pView ) {
     Boolean validated = false
     // Validate
-    pView.data.flagOnSiteTo = ( pView.panel.comboSiteTo.selection == null )
+    pView.data.flagOnSiteTo = ( pView.panel.comboSiteTo.selection == null || pView.panel.comboSiteTo.selection.id == null )
     pView.data.flagOnPartSeed = ( pView.data.getSkuList( ).size( ) == 0 )
     pView.data.flagOnRemarks = ( ! isRemarksValid( pView ) )
     validated = ! ( pView.data.flagOnSiteTo || pView.data.flagOnPartSeed || pView.data.flagOnRemarks )
@@ -151,10 +153,17 @@ class InvTrIssueDriver extends InvTrDriver {
     pView.panel.txtType.setText( String.format( '%d', quantity ) )
     if(quantity > 0 && pView.panel.newTransaction ){
       pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
+      if( pView.data.postSiteTo == null ){
+        pView.panel.comboSiteTo.text = pView.panel.TXT_SITE_TO_PROMPT
+      }
     } else if( quantity == 0 && pView.panel.newTransaction){
       pView.panel.comboSiteTo.setItems(InvTrController.instance.listaAlmacenes())
       pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
+      if( pView.data.postSiteTo == null ){
+        pView.panel.comboSiteTo.text = pView.panel.TXT_SITE_TO_PROMPT
+      }
     }
+    //println pView.panel.comboSiteTo.text
   }
 
   void onSkuDoubleClicked( InvTrView pView ) {

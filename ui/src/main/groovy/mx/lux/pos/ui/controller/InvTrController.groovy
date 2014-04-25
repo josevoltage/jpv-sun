@@ -217,7 +217,7 @@ class InvTrController {
 
   List<Sucursal> listaAlmacenes(){
       List<Sucursal> lstAlmacenes = ServiceManager.getInventoryService().listarAlmacenes()
-      lstAlmacenes.add( 0, null )
+      lstAlmacenes.add( 0, new Sucursal() )
       return lstAlmacenes
   }
 
