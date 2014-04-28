@@ -29,8 +29,8 @@ class InvTrIssueDriver extends InvTrDriver {
   protected void renderFlaggedItems( InvTrView pView )  {
     if ( pView.data.flagOnSiteTo ) {
       pView.panel.comboSiteTo.renderAsFlagged( )
-      //pView.panel.comboSiteTo.setText( pView.panel.TXT_SITE_TO_PROMPT )
-      pView.panel.comboSiteTo.text = pView.panel.TXT_SITE_TO_PROMPT//items.get(0).setNombre( pView.panel.TXT_SITE_TO_PROMPT )
+      pView.panel.comboSiteTo.setText( pView.panel.TXT_SITE_TO_PROMPT )
+      //pView.panel.comboSiteTo.text = pView.panel.TXT_SITE_TO_PROMPT
     } else {
       pView.panel.comboSiteTo.text = ""
       pView.panel.comboSiteTo.renderAsFlagged( false )
@@ -153,17 +153,22 @@ class InvTrIssueDriver extends InvTrDriver {
     pView.panel.txtType.setText( String.format( '%d', quantity ) )
     if(quantity > 0 && pView.panel.newTransaction ){
       pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
-      if( pView.data.postSiteTo == null ){
+      if( pView.panel.comboSiteTo.selection == null ||  pView.panel.comboSiteTo.selection?.id == null ){
         pView.panel.comboSiteTo.text = pView.panel.TXT_SITE_TO_PROMPT
+        if( pView.panel.comboSiteTo.selection == null ){
+          Sucursal suc = new Sucursal()
+          suc.nombre = pView.panel.TXT_SITE_TO_PROMPT
+          pView.panel.comboSiteTo.setSelection( suc )
+        }
       }
     } else if( quantity == 0 && pView.panel.newTransaction){
       pView.panel.comboSiteTo.setItems(InvTrController.instance.listaAlmacenes())
       pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
-      if( pView.data.postSiteTo == null ){
+      if( pView.panel.comboSiteTo.selection == null || pView.panel.comboSiteTo.selection?.id == null){
         pView.panel.comboSiteTo.text = pView.panel.TXT_SITE_TO_PROMPT
       }
     }
-    //println pView.panel.comboSiteTo.text
+    println pView.panel.comboSiteTo.selection
   }
 
   void onSkuDoubleClicked( InvTrView pView ) {

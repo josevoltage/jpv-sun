@@ -1,5 +1,6 @@
 package mx.lux.pos.ui.view.driver
 
+import mx.lux.pos.model.Sucursal
 import mx.lux.pos.ui.controller.InvTrController
 import mx.lux.pos.ui.model.InvTrSku
 import mx.lux.pos.ui.model.adapter.InvTrAdapter
@@ -150,9 +151,20 @@ class InvTrOutBoundDriver extends InvTrDriver {
         pView.panel.txtType.setText( String.format( '%d', quantity ) )
         if(quantity > 0 && pView.panel.newTransaction){
             pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
+            if( pView.panel.comboSiteTo.selection == null ||  pView.panel.comboSiteTo.selection?.id == null ){
+                pView.panel.comboSiteTo.text = pView.panel.TXT_SITE_TO_PROMPT
+                if( pView.panel.comboSiteTo.selection == null ){
+                    Sucursal suc = new Sucursal()
+                    suc.nombre = pView.panel.TXT_SITE_TO_PROMPT
+                    pView.panel.comboSiteTo.setSelection( suc )
+                }
+            }
         } else if ( quantity == 0 && pView.panel.newTransaction ){
             pView.panel.comboSiteTo.setItems(InvTrController.instance.listaSoloSucursales())
             pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
+            if( pView.panel.comboSiteTo.selection == null || pView.panel.comboSiteTo.selection?.id == null){
+                pView.panel.comboSiteTo.text = pView.panel.TXT_SITE_TO_PROMPT
+            }
         }
     }
 
