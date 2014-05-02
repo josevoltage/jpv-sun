@@ -23,6 +23,10 @@ class ComprobanteServiceImpl implements ComprobanteService {
   private static final String DATE_TIME_FORMAT = 'dd-MM-yyyy HH:mm:ss'
   private static final String TAG_GENERICO_A = 'A'
   private static final String TAG_GENERICO_E = 'E'
+  private static final String TAG_TARJETA_CREDITO = 'TC'
+  private static final String TAG_TARJETA_DEBITO = 'TD'
+  private static final String TAG_EFECTIVO = 'EF'
+  private static final String TAG_TRANSFERENCIA = 'TR'
 
   @Resource
   private ComprobanteRepository comprobanteRepository
@@ -298,6 +302,36 @@ class ComprobanteServiceImpl implements ComprobanteService {
             }
           }
 
+
+          String metodoPago = pago?.eTipoPago?.descripcion
+          String referenciaPago = pago?.referenciaPago
+          if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_TARJETA_CREDITO) ){
+            metodoPago = TAG_TARJETA_CREDITO
+            referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
+          } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_TARJETA_DEBITO) ){
+            metodoPago = TAG_TARJETA_DEBITO
+            referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
+          } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_EFECTIVO) ){
+            metodoPago = TAG_EFECTIVO.substring(0)
+            referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
+          } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).equalsIgnoreCase(TAG_TRANSFERENCIA) ){
+            NotaVenta notaTrans = notaVentaRepository.findOne( StringUtils.trimToEmpty(pago?.referenciaPago))
+            if (notaTrans != null ){
+              List<Pago> lstPagos = new ArrayList<>(notaTrans.pagos)
+              Pago pagoTranf = lstPagos.first()
+                if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_TARJETA_CREDITO) ){
+                    metodoPago = TAG_TARJETA_CREDITO
+                    referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
+                } else if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_TARJETA_DEBITO) ){
+                    metodoPago = TAG_TARJETA_DEBITO
+                    referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
+                } else if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_EFECTIVO) ){
+                    metodoPago = TAG_EFECTIVO.substring(0)
+                    referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
+                }
+            }
+          }
+
           comprobante.factura = venta.factura
           comprobante.idCliente = venta.idCliente
           comprobante.importe = sprintf( '$%,3.2f', total ?: BigDecimal.ZERO )
@@ -305,7 +339,7 @@ class ComprobanteServiceImpl implements ComprobanteService {
           comprobante.impuestos = impuestos
           comprobante.estatus = 'N'
           comprobante.formaPago = 'UNA SOLA EXHIBICION'
-          comprobante.metodoPago = "${pago?.eTipoPago?.descripcion ?: ''} ${pago?.referenciaPago ?: ''}"
+          comprobante.metodoPago = "${metodoPago ?: ''}:${referenciaPago ?: ''}"
 
           log.debug( "genera comprobante ${comprobante.dump()}" )
 
