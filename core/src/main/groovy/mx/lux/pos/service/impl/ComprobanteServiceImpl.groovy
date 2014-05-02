@@ -27,6 +27,8 @@ class ComprobanteServiceImpl implements ComprobanteService {
   private static final String TAG_TARJETA_DEBITO = 'TD'
   private static final String TAG_EFECTIVO = 'EF'
   private static final String TAG_TRANSFERENCIA = 'TR'
+  private static final String TAG_CHEQUE = 'CH'
+  private static final String TAG_CUPON = 'CUPON'
 
   @Resource
   private ComprobanteRepository comprobanteRepository
@@ -303,34 +305,45 @@ class ComprobanteServiceImpl implements ComprobanteService {
           }
 
 
-          String metodoPago = pago?.eTipoPago?.descripcion
-          String referenciaPago = pago?.referenciaPago
-          if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_TARJETA_CREDITO) ){
-            metodoPago = TAG_TARJETA_CREDITO
-            referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
-          } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_TARJETA_DEBITO) ){
-            metodoPago = TAG_TARJETA_DEBITO
-            referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
-          } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_EFECTIVO) ){
-            metodoPago = TAG_EFECTIVO.substring(0)
-            referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
-          } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).equalsIgnoreCase(TAG_TRANSFERENCIA) ){
-            NotaVenta notaTrans = notaVentaRepository.findOne( StringUtils.trimToEmpty(pago?.referenciaPago))
-            if (notaTrans != null ){
-              List<Pago> lstPagos = new ArrayList<>(notaTrans.pagos)
-              Pago pagoTranf = lstPagos.first()
-                if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_TARJETA_CREDITO) ){
-                    metodoPago = TAG_TARJETA_CREDITO
-                    referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
-                } else if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_TARJETA_DEBITO) ){
-                    metodoPago = TAG_TARJETA_DEBITO
-                    referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
-                } else if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_EFECTIVO) ){
-                    metodoPago = TAG_EFECTIVO.substring(0)
-                    referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
+            String metodoPago = pago?.eTipoPago?.descripcion
+            String referenciaPago = pago?.referenciaPago
+            if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_TARJETA_CREDITO) ){
+                metodoPago = TAG_TARJETA_CREDITO
+                referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
+            } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_TARJETA_DEBITO) ){
+                metodoPago = TAG_TARJETA_DEBITO
+                referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
+            } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_EFECTIVO) ){
+                metodoPago = TAG_EFECTIVO.substring(0)
+                referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
+            } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_CHEQUE) ){
+                metodoPago = TAG_CHEQUE.substring(0)
+                referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
+            } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).equalsIgnoreCase(TAG_TRANSFERENCIA) ){
+                NotaVenta notaTrans = notaVentaRepository.findOne( StringUtils.trimToEmpty(pago?.referenciaPago))
+                if (notaTrans != null ){
+                    List<Pago> lstPayments = new ArrayList<>(notaTrans.pagos)
+                    Pago pagoTranf = new Pago()
+                    for(Pago pago1 : lstPayments){
+                      if( !pago1.eTipoPago.descripcion.contains(TAG_CUPON) ){
+                        pagoTranf = pago1
+                      }
+                    }
+                    if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_TARJETA_CREDITO) ){
+                        metodoPago = TAG_TARJETA_CREDITO
+                        referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
+                    } else if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_TARJETA_DEBITO) ){
+                        metodoPago = TAG_TARJETA_DEBITO
+                        referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
+                    } else if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_EFECTIVO) ){
+                        metodoPago = TAG_EFECTIVO.substring(0)
+                        referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
+                    } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_CHEQUE) ){
+                        metodoPago = TAG_CHEQUE.substring(0)
+                        referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
+                    }
                 }
             }
-          }
 
           comprobante.factura = venta.factura
           comprobante.idCliente = venta.idCliente
