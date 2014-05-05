@@ -44,7 +44,7 @@ class ForeignCustomerDialog extends JDialog {
   ForeignCustomerDialog( Component parent, final Customer customer, boolean editar ) {
     edit = editar
     this.customer = new Customer()
-    lstPaises = CustomerController.countries()
+    lstPaises = CustomerController.countriesWithoutMexico()
     sb = new SwingBuilder()
     domains = CustomerController.findAllCustomersDomains()
     tmpEmailContact = new Contact( type: ContactType.EMAIL )

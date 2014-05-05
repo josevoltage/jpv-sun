@@ -45,6 +45,7 @@ class CustomerController {
     }
 
     static private final String TAG_OTROS_PAISES = 'OTROS'
+    static private final String TAG_MEXICO = 'MEXICO'
 
 
     static List<String> findAllStates() {
@@ -212,6 +213,19 @@ class CustomerController {
         List<Paises> paises = paisesService.obtenerPaises()
         for(Paises pais : paises){
             lstPaises.add( pais.pais )
+        }
+        lstPaises.add(TAG_OTROS_PAISES)
+        return lstPaises
+    }
+
+
+    static List<String> countriesWithoutMexico( ) {
+        List<String> lstPaises = new ArrayList<>()
+        List<Paises> paises = paisesService.obtenerPaises()
+        for(Paises pais : paises){
+          if( !StringUtils.trimToEmpty(pais.pais).equalsIgnoreCase(TAG_MEXICO) ){
+            lstPaises.add( pais.pais )
+          }
         }
         lstPaises.add(TAG_OTROS_PAISES)
         return lstPaises
