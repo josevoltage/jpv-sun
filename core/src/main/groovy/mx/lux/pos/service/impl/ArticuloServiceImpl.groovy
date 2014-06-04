@@ -129,7 +129,14 @@ class ArticuloServiceImpl implements ArticuloService {
 
   @Override
   Boolean validarArticulo( Integer id ) {
-    return articuloRepository.exists( id )
+    Boolean valid = false;
+    Articulo articulo = articuloRepository.findOne( id )
+    if( articulo != null ){
+      if( articulo.generico != null ){
+        valid = true
+      }
+    }
+    return valid
   }
 
   @Override
