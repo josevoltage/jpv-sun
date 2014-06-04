@@ -47,6 +47,14 @@ ${COLUMNAS}
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)__________________________________________________
 #end${LF}
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} 0 0 0 0)Pago hecho en una sola exhibicion
+#if( ${formaPago} )
+#LINEA_SEPARACION_SIMPLE()${CR}
+#SET_STYLE(${FUENTE_B} 0 0 0 0)
+#SET_STYLE(${FUENTE_B} 0 0 0 0)La presente operacion que implica
+#SET_STYLE(${FUENTE_B} 0 0 0 0)la compra/venta de USD ha sido realizada
+#SET_STYLE(${FUENTE_B} 0 0 0 0)a nombre y por cuenta de CIbanco, S.A.${LF}
+#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)Aclaraciones: 01 800 2301 111
+#end
 #LINEA_SEPARACION_SIMPLE()
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)POLIZA DE GARANTIA
 #SET_STYLE(${FUENTE_B} 0 0 0 0)Garantia con SUNGLASS ISLAND de 60 dias.
