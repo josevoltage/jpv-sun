@@ -52,6 +52,7 @@ class TicketServiceImpl implements TicketService {
   private static final String TAG_TRANSACCION_VENTA = 'VENTA'
   private static final String TAG_TRANSACCION_ENTRADA = 'E'
   private static final String TAG_TRANSACCION_SALIDA = 'S'
+  private static final String TAG_FORMA_PAGO_USD = "EFD";
   //private static final String TAG_TRANSACCION_ENTRADA_TIENDA = 'ENTRADA_TIENDA'
   //private static final String TAG_TRANSACCION_SALIDA_TIENDA = 'SALIDA_TIENDA'
 
@@ -153,6 +154,7 @@ class TicketServiceImpl implements TicketService {
   @Resource
   private VelocityEngine velocityEngine
 
+
   private File generaTicket( String template, Map<String, Object> items ) {
     log.info( "generando archivo de ticket con plantilla: ${template}" )
     if ( StringUtils.isNotBlank( template ) && items?.any() ) {
@@ -242,6 +244,7 @@ class TicketServiceImpl implements TicketService {
         ]
         detalles.add( detalle )
       }
+      Boolean pagoUsd = false;
       def pagos = [ ]
       List<Pago> pagosLst = pagoRepository.findByIdFacturaOrderByFechaAsc( idNotaVenta )
       pagosLst?.each { Pago pmt ->
@@ -254,6 +257,9 @@ class TicketServiceImpl implements TicketService {
           tipoPago = pmt?.eTipoPago?.descripcion
         } else {
           tipoPago = "${pmt?.eTipoPago?.descripcion} ${ref.substring( pos )}"
+        }
+        if(pmt.idFPago.equalsIgnoreCase(TAG_FORMA_PAGO_USD)){
+            pagoUsd = true
         }
         def pago = [
             tipo_pago: tipoPago,
@@ -357,7 +363,8 @@ class TicketServiceImpl implements TicketService {
           comentarios: lstComentario,
           promociones: promociones,
           existPromo: promociones.size() > 0 ? 'existe' : '',
-          mensajesPromo: msjPromo
+          mensajesPromo: msjPromo,
+          formaPago: pagoUsd
       ] as Map<String, Object>
       imprimeTicket( 'template/ticket-venta-si.vm', items )
       if ( Registry.isReceiptDuplicate() && pNewOrder ) {
