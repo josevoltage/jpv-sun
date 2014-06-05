@@ -9,6 +9,7 @@ import mx.lux.pos.repository.PrecioRepository
 import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.ArticuloService
 import mx.lux.pos.service.business.Registry
+import org.apache.commons.lang.StringUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -129,14 +130,19 @@ class ArticuloServiceImpl implements ArticuloService {
 
   @Override
   Boolean validarArticulo( Integer id ) {
-    Boolean valid = false;
+    return articuloRepository.exists( id )
+  }
+
+  @Override
+  String validarGenericoArticulo( Integer id ) {
+    String genericoInvalido = ""
     Articulo articulo = articuloRepository.findOne( id )
     if( articulo != null ){
-      if( articulo.generico != null ){
-        valid = true
+      if( articulo.generico == null ){
+        genericoInvalido = StringUtils.trimToEmpty(articulo.idGenerico)
       }
     }
-    return valid
+    return genericoInvalido
   }
 
   @Override

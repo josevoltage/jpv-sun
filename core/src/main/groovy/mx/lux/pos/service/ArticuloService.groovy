@@ -23,6 +23,8 @@ interface ArticuloService {
 
   Boolean validarArticulo( Integer id )
 
+  String validarGenericoArticulo( Integer id )
+
   Boolean registrarArticulo( Articulo pArticulo )
 
   Boolean registrarListaArticulos( List<Articulo> pListaArticulo )

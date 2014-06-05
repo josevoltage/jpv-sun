@@ -28,6 +28,7 @@ class InvTrPanel extends JPanel {
   static final String MSG_CONFIRM_TO_PROCEED = "Confirme para pasar a: %s"
   static final String MSG_NO_RESULTS_FOUND = "No se encontraron resultados para: <%s>"
   static final String MSG_POST_FAILED = "La transacción NO fue registrada.\nNotifique a soporte técnico."
+  static final String MSG_GENERIC_INVALID = "La transacción NO fue registrada.\nNo existe el generico %s."
   static final String MSG_NO_DOCUMENT_AVAILABLE = "Remisión no disponible."
   static final String MSG_DOCUMENT_ALREADY_PROCCESED = "El archivo ya fue cargado."
   static final String MSG_ARTICLE_NOT_FOUND = "Articulo %s no existe."

@@ -83,4 +83,6 @@ interface InventarioService {
 
   void generaArchivoAcuseAjuste( String folio )
 
+  String genericoInvalidoTransEntrada()
+
 }

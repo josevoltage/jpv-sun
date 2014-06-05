@@ -466,7 +466,7 @@ class InvTrController {
     if ( request != null ) {
         request.remarks = request.remarks.replaceAll("[^a-zA-Z0-9]+"," ");
       Integer trNbr = ServiceManager.getInventoryService().solicitarTransaccion( request )
-      if ( trNbr != null ) {
+      if ( trNbr != null && trNbr > -1 ) {
         if ( pView.data.inFile != null ) {
           try {
             File moved = new File( SettingsController.instance.processedPath, pView.data.inFile.name )
@@ -514,8 +514,11 @@ class InvTrController {
           pView.data.txtStatus = pView.panel.MSG_TRANSACTION_POSTED
           pView.fireRefreshUI()
         }
+      } else if( trNbr == -1 ){
+          JOptionPane.showMessageDialog( pView.panel, String.format(pView.panel.MSG_GENERIC_INVALID, ServiceManager.getInventoryService().genericoInvalidoTransEntrada()),
+                  pView.panel.TXT_POST_TITLE, JOptionPane.ERROR_MESSAGE )
       } else {
-        JOptionPane.showMessageDialog( pView.panel, pView.panel.MSG_POST_FAILED, pView.panel.TXT_POST_TITLE, JOptionPane.ERROR_MESSAGE )
+          JOptionPane.showMessageDialog( pView.panel, pView.panel.MSG_POST_FAILED, pView.panel.TXT_POST_TITLE, JOptionPane.ERROR_MESSAGE )
       }
     } else {
       log.debug( "[Controller] Request not available" )

@@ -35,6 +35,7 @@ class PrepareInvTrBusiness {
   static PrepareInvTrBusiness instance
 
   private Logger log = LoggerFactory.getLogger( this.class )
+  public String genericoInvalido
 
   @Autowired
   PrepareInvTrBusiness( ArticuloService pArticuloService, InventarioService pInventarioService, SucursalService pSucursalService,
@@ -121,7 +122,7 @@ class PrepareInvTrBusiness {
 
   private verifyRequest( InvTrRequest pRequest ) {
     boolean valid = true
-
+    genericoInvalido = ""
     // SiteTo
     if ( valid && pRequest.siteTo )
       valid = sites.validarSucursal( pRequest.siteTo )
@@ -131,6 +132,8 @@ class PrepareInvTrBusiness {
       for ( part in pRequest.skuList ) {
         if ( valid )
           valid = parts.validarArticulo( part.sku )
+          genericoInvalido = StringUtils.trimToEmpty(parts.validarGenericoArticulo( part.sku ))
+          valid = genericoInvalido.length() > 0 ? false : true
       }
     }
 
