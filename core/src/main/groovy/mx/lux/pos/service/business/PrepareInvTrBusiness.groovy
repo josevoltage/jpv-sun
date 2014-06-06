@@ -23,6 +23,7 @@ import java.text.NumberFormat
 class PrepareInvTrBusiness {
   private static final String TR_TYPE_ISSUE_SALES = 'VENTA'
   private static final String TR_TYPE_RECEIPT_RETURN = 'DEVOLUCION'
+  private static final String TAG_GENERICO_NO_INVENTARIABLE = "NO INVENTARIABLE"
 
   private static ArticuloService parts
   private static InventarioService inventory
@@ -36,6 +37,7 @@ class PrepareInvTrBusiness {
 
   private Logger log = LoggerFactory.getLogger( this.class )
   public String genericoInvalido
+  public String genericoNoInventariable
 
   @Autowired
   PrepareInvTrBusiness( ArticuloService pArticuloService, InventarioService pInventarioService, SucursalService pSucursalService,
@@ -123,6 +125,7 @@ class PrepareInvTrBusiness {
   private verifyRequest( InvTrRequest pRequest ) {
     boolean valid = true
     genericoInvalido = ""
+    genericoNoInventariable = ""
     // SiteTo
     if ( valid && pRequest.siteTo )
       valid = sites.validarSucursal( pRequest.siteTo )
@@ -135,7 +138,9 @@ class PrepareInvTrBusiness {
           if(StringUtils.trimToEmpty(genericoInvalido).length() <= 0){
             genericoInvalido = StringUtils.trimToEmpty(parts.validarGenericoArticulo( part.sku ))
           }
-          if(StringUtils.trimToEmpty(genericoInvalido).length() > 0){
+          if( genericoInvalido.equalsIgnoreCase(TAG_GENERICO_NO_INVENTARIABLE)){
+
+          } else if(StringUtils.trimToEmpty(genericoInvalido).length() > 0){
             genericoInvalido = genericoInvalido+","+part.sku
           }
           valid = genericoInvalido.length() > 0 ? false : true

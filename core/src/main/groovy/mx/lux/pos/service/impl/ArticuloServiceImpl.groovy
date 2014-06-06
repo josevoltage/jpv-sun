@@ -45,6 +45,7 @@ class ArticuloServiceImpl implements ArticuloService {
   private static final Integer CANT_CARACTEREZ_SKU = 6
   private static final Integer CANT_CARACTEREZ_COD_BAR = 15
   private static final Integer CANT_ARTICULOS_ENVIAR = 500
+  private static final String TAG_GENERICO_NO_INVENTARIABLE = "NO INVENTARIABLE"
 
   private Articulo establecerPrecio( Articulo articulo ) {
     // log.debug( "estableciendo precio para el articulo id: ${articulo?.id} articulo: ${articulo?.articulo}" )
@@ -140,6 +141,8 @@ class ArticuloServiceImpl implements ArticuloService {
     if( articulo != null ){
       if( articulo.generico == null ){
         genericoInvalido = StringUtils.trimToEmpty(articulo.idGenerico)
+      } else if( !articulo.generico.inventariable ){
+        genericoInvalido = TAG_GENERICO_NO_INVENTARIABLE
       }
     }
     return genericoInvalido

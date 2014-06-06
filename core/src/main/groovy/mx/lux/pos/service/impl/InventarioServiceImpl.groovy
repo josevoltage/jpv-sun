@@ -33,6 +33,7 @@ class InventarioServiceImpl implements InventarioService {
   private static final String TR_TYPE_SALE = "VENTA"
   private static final String TR_TYPE_RETURN = "DEVOLUCION"
   public static  String TAG_GENERICO_INVALIDO = ""
+  private static final String TAG_GENERICO_NO_INVENTARIABLE = "NO INVENTARIABLE"
 
   private Logger log = LoggerFactory.getLogger( this.class )
 
@@ -107,7 +108,12 @@ class InventarioServiceImpl implements InventarioService {
     if ( tr != null ) {
       registrado = registrarTransaccion( tr )
     } else if( StringUtils.trimToEmpty(task.genericoInvalido).length() > 0 ){
-      registrado = -1
+      if(StringUtils.trimToEmpty(task.genericoInvalido).equalsIgnoreCase(TAG_GENERICO_NO_INVENTARIABLE)){
+        registrado = -2
+      } else {
+        registrado = -1
+      }
+
     }
     return registrado
   }

@@ -537,7 +537,7 @@ class InvTrController {
       } else if( trNbr == -1 ){
           JOptionPane.showMessageDialog( pView.panel, String.format(pView.panel.MSG_GENERIC_INVALID, ServiceManager.getInventoryService().genericoInvalidoTransEntrada()),
                   pView.panel.TXT_POST_TITLE, JOptionPane.ERROR_MESSAGE )
-      } else {
+      } else if( trNbr == -2 ){
           JOptionPane.showMessageDialog( pView.panel, pView.panel.MSG_POST_FAILED, pView.panel.TXT_POST_TITLE, JOptionPane.ERROR_MESSAGE )
       }
     } else {
