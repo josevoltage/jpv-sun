@@ -42,6 +42,7 @@ class PriceListController {
     File folder = new File( receivePath )
     File newFolder = new File( priceListPath )
     if ( folder?.canRead() && newFolder?.canWrite() ) {
+      List<File> lstFiles = new ArrayList<>();
       folder.eachFileMatch( ~/4_.+_.+\.LP/ ) { File file ->
         log.debug( "leyendo archivo: ${file.name}" )
         def header = file.readLines()?.first() as String
@@ -56,8 +57,23 @@ class PriceListController {
           def listaPrecios = listaPreciosService.registrarListaPrecios( toListaPrecios( priceList ) )
           if ( listaPrecios?.id ) {
             def newFile = new File( priceListPath, file.name )
-            def moved = file.renameTo( newFile )
-            log.debug( "renombrando archivo a: ${newFile?.path} - ${moved}" )
+              if(newFile.exists()) {
+                  newFile.delete()
+              }
+              try {
+              FileInputStream inFile = new FileInputStream(file);
+              FileOutputStream outFile = new FileOutputStream(newFile);
+              Integer c;
+              lstFiles.add(file)
+              while( (c = inFile.read() ) != -1)
+                outFile.write(c);
+                inFile.close();
+                outFile.close();
+            } catch(IOException e) {
+              System.out.println( e )
+            }
+            //def moved = file.renameTo( newFile )
+            //log.debug( "renombrando archivo a: ${newFile?.path} - ${moved}" )
           } else {
             log.debug( "no se cargo la lista de precios ${priceList.id}, archivo: ${file.name}" )
           }
@@ -65,6 +81,9 @@ class PriceListController {
       }catch( Exception e ){
          System.out.println( e )
         }
+      }
+      for(File files : lstFiles){
+        files.delete()
       }
     } else {
       log.warn( "no se procesan listas de precios pendientes de cargar, no existe ruta por recibir" )
@@ -168,8 +187,27 @@ class PriceListController {
         def file = new File( priceListPath, filename )
         log.debug( "archivo de carga: ${filename} en: ${priceListPath} - ${file?.exists()}" )
         def newFile = new File( receivedPath, filename )
-        def moved = file.renameTo( newFile )
-        log.debug( "renombrando archivo a: ${newFile.path} - ${moved}" )
+        List<File> lstFiles = new ArrayList<>();
+        if(newFile.exists()) {
+          newFile.delete()
+        }
+        try {
+          FileInputStream inFile = new FileInputStream(file);
+          FileOutputStream outFile = new FileOutputStream(newFile);
+          Integer c;
+          lstFiles.add(file)
+        while( (c = inFile.read() ) != -1)
+          outFile.write(c);
+          inFile.close();
+          outFile.close();
+        } catch(IOException e) {
+          System.out.println( e )
+        }
+        //def moved = file.renameTo( newFile )
+        //log.debug( "renombrando archivo a: ${newFile.path} - ${moved}" )
+        for(File files : lstFiles){
+          files.delete()
+        }
       }
       return priceList
     }

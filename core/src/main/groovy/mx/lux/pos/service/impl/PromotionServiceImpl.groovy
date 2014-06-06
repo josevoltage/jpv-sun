@@ -202,7 +202,25 @@ class PromotionServiceImpl implements PromotionService {
           }
         }
         def newFile = new File( Registry.processedFilesPath, file.name )
-        def moved = file.renameTo( newFile )
+        List<File> lstFiles = new ArrayList<>();
+        if(newFile.exists()) {
+          newFile.delete()
+        }
+        try {
+          FileInputStream inFile = new FileInputStream(file);
+          FileOutputStream outFile = new FileOutputStream(newFile);
+          Integer c;
+          lstFiles.add(file)
+        while( (c = inFile.read() ) != -1)
+          outFile.write(c);
+          inFile.close();
+          outFile.close();
+        } catch(IOException e) {
+          System.out.println( e )
+        }
+        for(File files : lstFiles){
+          files.delete()
+        }
       }
     }
   }

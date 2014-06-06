@@ -411,6 +411,7 @@ class InvTrController {
     if ( fileAction == JFileChooser.APPROVE_OPTION ) {
       log.debug( String.format( "[Controller] File chosen: %s", dlgFile.getSelectedFile().absolutePath ) )
       document = ServiceManager.getInventoryService().leerArchivoRemesa( dlgFile.getSelectedFile().absolutePath )
+      pView.data.inFile = new File( dlgFile.getSelectedFile().absolutePath )
     }
     if ( document != null ) {
       InventarioService service = ServiceManager.inventoryService
@@ -474,7 +475,26 @@ class InvTrController {
                 pView.data.inFile.delete();
             }
             else {
-                pView.data.inFile.renameTo( moved )
+              List<File> lstFiles = new ArrayList<>();
+              if(moved.exists()) {
+                moved.delete()
+              }
+              try {
+                FileInputStream inFile = new FileInputStream(pView.data.inFile);
+                FileOutputStream outFile = new FileOutputStream(moved);
+                Integer c;
+                lstFiles.add(pView.data.inFile)
+                while( (c = inFile.read() ) != -1)
+                outFile.write(c);
+                inFile.close();
+                outFile.close();
+              } catch(IOException e) {
+                System.out.println( e )
+              }
+              for(File files : lstFiles){
+                files.delete()
+              }
+                //pView.data.inFile.renameTo( moved )
             }
           } catch (Exception e) {
             this.log.debug( e.getMessage() )
