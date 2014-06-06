@@ -106,15 +106,35 @@ class PromotionImportTask {
     File source = new File( ubicacionSource )
     File destination = new File( ubicacionsDestination )
     if ( source.exists() && destination.exists() ) {
+      List<File> lstFiles = new ArrayList<>();
       source.eachFile() { file ->
         nameFile = new StringList( file.getName(), "_" )
         if ( file.getName().endsWith( "PR" ) ) {
           this.leerFicheroPR( file )
-          def newFile = new File( destination, file.name )
-          def moved = file.renameTo( newFile )
+          File newFile = new File( destination, file.name )
+          if(newFile.exists()) {
+            newFile.delete()
+          }
+          try {
+            FileInputStream inFile = new FileInputStream(file);
+            FileOutputStream outFile = new FileOutputStream(newFile);
+            Integer c;
+            lstFiles.add(file)
+            while( (c = inFile.read() ) != -1)
+              outFile.write(c);
+              inFile.close();
+              outFile.close();
+          } catch(IOException e) {
+            System.out.println( e )
+          }
+          //def moved = file.renameTo( newFile )
+        }
+        for(File files : lstFiles){
+          files.delete()
         }
       }
     }
     return new ArrayList<PromotionsAdapter>( prData.values() )
   }
+
 }
