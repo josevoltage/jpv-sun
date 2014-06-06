@@ -114,7 +114,18 @@ class InventarioServiceImpl implements InventarioService {
 
 
   String genericoInvalidoTransEntrada( ){
-      TAG_GENERICO_INVALIDO = PrepareInvTrBusiness.instance.genericoInvalido
+      String[] lstArticulos = PrepareInvTrBusiness.instance.genericoInvalido.split(",")
+      String articulos = ""
+      for(String articulo : lstArticulos){
+        if( articulo.isNumber() ){
+            articulos = articulos+", "+articulo
+        }
+      }
+      if(articulos.startsWith(",")){
+        articulos = articulos.replaceFirst(",","")
+      }
+      TAG_GENERICO_INVALIDO = String.format("%s para los articulos %s", lstArticulos[0], articulos)
+      return TAG_GENERICO_INVALIDO
   }
 
 

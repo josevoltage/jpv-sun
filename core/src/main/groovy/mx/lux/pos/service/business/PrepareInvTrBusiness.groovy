@@ -132,7 +132,12 @@ class PrepareInvTrBusiness {
       for ( part in pRequest.skuList ) {
         if ( valid )
           valid = parts.validarArticulo( part.sku )
-          genericoInvalido = StringUtils.trimToEmpty(parts.validarGenericoArticulo( part.sku ))
+          if(StringUtils.trimToEmpty(genericoInvalido).length() <= 0){
+            genericoInvalido = StringUtils.trimToEmpty(parts.validarGenericoArticulo( part.sku ))
+          }
+          if(StringUtils.trimToEmpty(genericoInvalido).length() > 0){
+            genericoInvalido = genericoInvalido+","+part.sku
+          }
           valid = genericoInvalido.length() > 0 ? false : true
       }
     }
