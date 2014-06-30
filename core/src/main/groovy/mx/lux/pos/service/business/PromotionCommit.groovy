@@ -154,7 +154,7 @@ class PromotionCommit {
         List<GrupoArticuloDet> partList = parts.findByIdGrupo( line.groupId )
         if ( partList.size() > 0 ) {
           try {
-            parts.delete( partList )
+            parts.deleteInBatch( partList )
             parts.flush()
           } catch ( Exception e ) {
             log.error( e.getMessage(), e )

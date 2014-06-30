@@ -18,7 +18,7 @@ class PromotionsAdapter {
         Field_01, IdPromocion, TipoPromocion, Descripcion, VigenciaIni, VigenciaFin, Prioridad, IdGrupoTienda, ArticuloProm,
         AplicaConv, AplicaAuto, Obligatoria, PrecioOferta, IdGenerico, Tipo, Subtipo, Articulo, Marca, PrecioDescontado,
         Descuento, Genericoc, Tipoc, Subtipoc, Articuloc, PrecioDescontadoc, Descuentoc, TipoPrecio,   TipoPrecioc,
-        Marcac
+        Marcac, MenorPrecio
     }
 
     private static Integer currentSite
@@ -40,6 +40,16 @@ class PromotionsAdapter {
     }
 
     protected boolean asBoolean( Field pField ) {
+        boolean value  = null
+        if (this.record.size >= Field.values().size() ){
+            try {
+                value = record.isEquals( pField.ordinal(), "1")
+            } catch (ParseException e) { }
+        }
+        return value
+    }
+
+    protected boolean asBooleanMenorPrecio( Field pField ) {
         boolean value  = null
         if (this.record.size >= Field.values().size() ){
             try {
@@ -115,6 +125,7 @@ class PromotionsAdapter {
             p.tipoPrecioC = this.tipoPrecioc
             p.precioDescontadoC = NumberUtils.createBigDecimal(String.format("%.2f", this.precioDescontadoc) )
             p.descuentoC = NumberUtils.createBigDecimal(String.format("%.2f", this.descuentoc) )
+            p.menodPrecio = this.menorPrecio
         }
     }
 
@@ -228,6 +239,11 @@ class PromotionsAdapter {
 
     Double getDescuentoc( ) {
         return asDouble( Field.Descuentoc )
+    }
+
+    Boolean getMenorPrecio( ) {
+
+        return asBoolean( Field.MenorPrecio )
     }
 
     String toString() {
