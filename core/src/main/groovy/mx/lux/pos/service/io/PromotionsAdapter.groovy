@@ -1,14 +1,10 @@
 package mx.lux.pos.service.io
 
-import mx.lux.pos.model.ArticuloSunglassAdapter
-import mx.lux.pos.model.ArticuloSunglassDescriptor
 import mx.lux.pos.util.StringList
-import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
 
 import java.text.ParseException
 import mx.lux.pos.model.Promocion
-import mx.lux.pos.model.NotaVenta
 import mx.lux.pos.service.business.Registry
 import mx.lux.pos.util.CustomDateUtils
 
@@ -53,7 +49,7 @@ class PromotionsAdapter {
         boolean value  = null
         if (this.record.size >= Field.values().size() ){
             try {
-                value = record.isEquals( pField.ordinal(), "1")
+                value = record.isEquals( pField.ordinal(), "si")
             } catch (ParseException e) { }
         }
         return value
@@ -125,7 +121,7 @@ class PromotionsAdapter {
             p.tipoPrecioC = this.tipoPrecioc
             p.precioDescontadoC = NumberUtils.createBigDecimal(String.format("%.2f", this.precioDescontadoc) )
             p.descuentoC = NumberUtils.createBigDecimal(String.format("%.2f", this.descuentoc) )
-            p.menodPrecio = this.menorPrecio
+            p.menorPrecio = this.menorPrecio
         }
     }
 
@@ -242,8 +238,12 @@ class PromotionsAdapter {
     }
 
     Boolean getMenorPrecio( ) {
-
-        return asBoolean( Field.MenorPrecio )
+        /*Iterator it = Field.MenorPrecio.properties.keySet().iterator();
+        while(it.hasNext()){
+            def key = it.next();
+            System.out.println("Clave: " + key + " -> Valor: " + Field.MenorPrecio.properties.get(key));
+        }*/
+        return asBooleanMenorPrecio( Field.MenorPrecio )
     }
 
     String toString() {

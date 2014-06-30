@@ -4,6 +4,8 @@ import groovy.model.DefaultTableModel
 import groovy.swing.SwingBuilder
 import mx.lux.pos.model.IPromotionAvailable
 import mx.lux.pos.model.PromotionAvailable
+import mx.lux.pos.model.PromotionCombo
+import mx.lux.pos.model.PromotionSingle
 import mx.lux.pos.model.SalesWithNoInventory
 import mx.lux.pos.ui.MainWindow
 import mx.lux.pos.ui.resources.UI_Standards
@@ -613,6 +615,33 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       ).createDialog( this, 'No se puede registrar la venta' )
           .show()
       return false
+    }
+    if (promotionSelectedList.size() == 1 && order.items.size() > 1 ) {
+      Integer idPromo = 0
+      if( promotionSelectedList.get(0).promotion instanceof PromotionSingle ){
+        idPromo = promotionSelectedList.get(0).promotion.entity.idPromocion
+      } else if( promotionSelectedList.get(0).promotion instanceof PromotionCombo ){
+        idPromo = promotionSelectedList.get(0).promotion.base.entity.idPromocion
+      }
+      if( OrderController.validPromoMenorPrecio( idPromo ) ){
+          Integer idPromoMenorPrecio = 0
+          BigDecimal montoPrecio = order.items.get(0).item.price
+          for(OrderItem item : order.items){
+              if(item.item.price < montoPrecio){
+                  montoPrecio = item.item.price
+                  idPromoMenorPrecio = item.item.id
+              }
+          }
+
+          if( promotionSelectedList.get(0).appliesToList.get(0).orderDetail.sku != idPromoMenorPrecio ){
+              sb.optionPane(
+                      message: 'La promocion debe estar aplicada al articulo de menor precio.',
+                      messageType: JOptionPane.ERROR_MESSAGE
+              ).createDialog( this, 'No se puede registrar la venta' )
+                      .show()
+              return false
+          }
+      }
     }
     return true
   }

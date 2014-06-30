@@ -545,4 +545,16 @@ class OrderController {
     return montoLimite
   }
 
+  static Boolean validPromoMenorPrecio( Integer idPromocion ){
+    Promocion promocion = ServiceManager.promotionService.obtenerPromocion( idPromocion )
+    Boolean validaPromo = false
+    if( promocion != null ){
+      if( promocion.menorPrecio ){
+        validaPromo = true
+      }
+    }
+    return validaPromo
+  }
+
+
 }

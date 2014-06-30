@@ -104,7 +104,7 @@ public class Promocion implements Serializable, Comparable<Promocion> {
     private BigDecimal descuentoC;
 
     @Column( name = "menor_precio" )
-    private Boolean menodPrecio;
+    private Boolean menorPrecio;
 
     // Internal Methods
     @PostLoad
@@ -352,12 +352,12 @@ public class Promocion implements Serializable, Comparable<Promocion> {
         descuentoC = pDescuentoC;
     }
 
-    public Boolean getMenodPrecio() {
-        return menodPrecio;
+    public Boolean getMenorPrecio() {
+        return menorPrecio;
     }
 
-    public void setMenodPrecio(Boolean menodPrecio) {
-        this.menodPrecio = menodPrecio;
+    public void setMenorPrecio(Boolean menorPrecio) {
+        this.menorPrecio = menorPrecio;
     }
 
     // Entity

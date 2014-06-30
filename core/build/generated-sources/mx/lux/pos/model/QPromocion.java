@@ -46,6 +46,8 @@ public class QPromocion extends EntityPathBase<Promocion> {
 
     public final StringPath marcaC = createString("marcaC");
 
+    public final BooleanPath menorPrecio = createBoolean("menorPrecio");
+
     public final BooleanPath obligatoria = createBoolean("obligatoria");
 
     public final NumberPath<java.math.BigDecimal> precioDescontado = createNumber("precioDescontado", java.math.BigDecimal.class);
