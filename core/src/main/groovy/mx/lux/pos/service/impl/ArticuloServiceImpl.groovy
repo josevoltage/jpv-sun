@@ -433,4 +433,38 @@ class ArticuloServiceImpl implements ArticuloService {
         }
         return generado
     }
+
+
+    Articulo buscaArticuloMenorPrecio( List<Integer> lstArticulo ){
+      Articulo articulo = new Articulo()
+      List<Articulo> lstArticulos = new ArrayList<>()
+      for(Integer id : lstArticulo){
+        lstArticulos.add(articuloRepository.findOne( id ))
+      }
+      if( lstArticulos.size() > 0 ){
+        BigDecimal montoPrecio = BigDecimal.ZERO
+        List<Precio> precio = precioRepository.findByArticulo( StringUtils.trimToEmpty(lstArticulos.get(0).articulo) )
+        if( precio.size() > 0 ){
+          montoPrecio = precio.get(0).precio
+        } else {
+          montoPrecio = lstArticulos.get(0).precio
+        }
+        for(Articulo art : lstArticulos){
+          List<Precio> precioTmp = precioRepository.findByArticulo( StringUtils.trimToEmpty(art.articulo) )
+          BigDecimal montoPrecioTmp = BigDecimal.ZERO
+          if( precioTmp.size() > 0 ){
+            montoPrecioTmp = precioTmp.get(0).precio
+          } else {
+            montoPrecioTmp = art.precio
+          }
+          if( montoPrecioTmp.compareTo(montoPrecio) < 0 ){
+            articulo = art
+            montoPrecio = montoPrecioTmp
+          }
+        }
+      }
+      return articulo
+    }
+
+
 }

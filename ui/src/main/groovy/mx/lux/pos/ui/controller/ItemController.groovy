@@ -207,5 +207,10 @@ class ItemController {
   }
 
 
+  static Item findArticleMinPrice( List<Integer> idsArticulo ){
+    Articulo articulo = articuloService.buscaArticuloMenorPrecio( idsArticulo )
+    return Item.toItem( articulo )
+  }
+
 
 }

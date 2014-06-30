@@ -3,6 +3,7 @@ package mx.lux.pos.ui.view.panel
 import groovy.model.DefaultTableModel
 import groovy.swing.SwingBuilder
 import mx.lux.pos.model.IPromotionAvailable
+import mx.lux.pos.model.PromotionApplied
 import mx.lux.pos.model.PromotionAvailable
 import mx.lux.pos.model.PromotionCombo
 import mx.lux.pos.model.PromotionSingle
@@ -616,30 +617,47 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           .show()
       return false
     }
-    if (promotionSelectedList.size() == 1 && order.items.size() > 1 ) {
-      Integer idPromo = 0
-      if( promotionSelectedList.get(0).promotion instanceof PromotionSingle ){
-        idPromo = promotionSelectedList.get(0).promotion.entity.idPromocion
-      } else if( promotionSelectedList.get(0).promotion instanceof PromotionCombo ){
-        idPromo = promotionSelectedList.get(0).promotion.base.entity.idPromocion
-      }
-      if( OrderController.validPromoMenorPrecio( idPromo ) ){
-          Integer idPromoMenorPrecio = 0
-          BigDecimal montoPrecio = order.items.get(0).item.price
-          for(OrderItem item : order.items){
-              if(item.item.price < montoPrecio){
-                  montoPrecio = item.item.price
-                  idPromoMenorPrecio = item.item.id
-              }
+    if ( order.items.size() > 1 && promotionSelectedList.size() > 0 ) {
+      for(def promotionSelectedList : this.promotionSelectedList){
+          Integer idPromo = 0
+          //Integer artSeleccionables = 0
+          Integer idPromoList = 0
+          List<Integer> lstArticulos = new ArrayList<>()
+          String descPromo = ""
+          if( promotionSelectedList.promotion instanceof PromotionSingle ){
+              idPromo = promotionSelectedList.promotion.entity.idPromocion
+              descPromo = promotionSelectedList.promotion.entity.descripcion
+          } else if( promotionSelectedList.promotion instanceof PromotionCombo ){
+              idPromo = promotionSelectedList.promotion.base.entity.idPromocion
+              descPromo = promotionSelectedList.promotion.base.entity.descripcion
           }
 
-          if( promotionSelectedList.get(0).appliesToList.get(0).orderDetail.sku != idPromoMenorPrecio ){
-              sb.optionPane(
-                      message: 'La promocion debe estar aplicada al articulo de menor precio.',
-                      messageType: JOptionPane.ERROR_MESSAGE
-              ).createDialog( this, 'No se puede registrar la venta' )
-                      .show()
-              return false
+          for(PromotionAvailable promotion : promotionList){
+              if( promotion.promotion instanceof PromotionSingle ){
+                  idPromoList = promotion.promotion.entity.idPromocion
+              } else if( promotion.promotion instanceof PromotionCombo ){
+                  idPromoList = promotion.promotion.base.entity.idPromocion
+              }
+            if( idPromo == idPromoList ){
+              for(PromotionApplied promoApp : promotion.appliesToList){
+                lstArticulos.add( promoApp.orderDetail.sku )
+              }
+              //artSeleccionables = artSeleccionables+1
+            }
+          }
+          if( lstArticulos.size() > 1 ){
+              if( OrderController.validPromoMenorPrecio( idPromo ) ){
+                 Item it = ItemController.findArticleMinPrice( lstArticulos )
+                  if( promotionSelectedList.appliesToList.get(0).orderDetail.sku != it.id ){
+                      sb.optionPane(
+                              message: "La promocion "+/"/+descPromo+/"/+"debe estar aplicada al articulo "+/"/+it.name+/"/+".",
+                              messageType: JOptionPane.ERROR_MESSAGE
+                      ).createDialog( this, 'No se puede registrar la venta' )
+                              .show()
+                      return false
+                      break
+                  }
+              }
           }
       }
     }

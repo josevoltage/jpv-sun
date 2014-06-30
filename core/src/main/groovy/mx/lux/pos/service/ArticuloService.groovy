@@ -52,4 +52,6 @@ interface ArticuloService {
   List<Diferencia> obtenerDiferencias(  )
 
   Boolean generarArchivoInventarioFisico( )
+
+  Articulo buscaArticuloMenorPrecio( List<Integer> lstArticulo )
 }
