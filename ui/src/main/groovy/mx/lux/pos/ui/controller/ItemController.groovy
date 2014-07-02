@@ -192,7 +192,11 @@ class ItemController {
       }
   }
 
-
+  static void generatePhysicalDiferencesInventory( ){
+    log.debug( "generatePhysicalInventoryFile( )" )
+    articuloService.generaDiferencias()
+    ticketService.imprimeDiferencias()
+  }
 
   static Boolean isInventoried( Integer idArticulo ){
     log.debug( "isInventoried( )" )

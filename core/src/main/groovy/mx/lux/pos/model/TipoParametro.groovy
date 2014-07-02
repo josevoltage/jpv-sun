@@ -47,6 +47,7 @@ enum TipoParametro {
   RUTA_CIERRE( 'ruta_cierre', 'C:/Documents and Settings/mensajero/cierre' ),
   RUTA_COMPROBANTES( 'ruta_comprobantes', 'C:/Documents and Settings/mensajero/facturas' ),
   RUTA_INVENTARIO( 'ruta_inv_tr', 'C:/Documents and Settings/mensajero/inventario' ),
+  RUTA_INVENTARIO_FISICO( 'ruta_inventario_fisico', 'C:/soi/inventario' ),
   RUTA_REMISION( 'ruta_remision', 'C:/Documents and Settings/mensajero/remision' ),
   RUTA_LISTA_PRECIOS( 'ruta_lista_precios', 'C:/Documents and Settings/mensajero/lp' ),
   RUTA_POR_ENVIAR( 'ruta_por_enviar', 'C:/Documents and Settings/mensajero/por_enviar' ),

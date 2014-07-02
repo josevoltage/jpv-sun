@@ -466,5 +466,36 @@ class ArticuloServiceImpl implements ArticuloService {
       return articulo
     }
 
+    void generaDiferencias( ){
+      String rutaArchivo = Registry.physicalInventoryFilePath
+      File folder = new File( rutaArchivo )
+      folder.eachFileMatch( ~/.+_.+_.+\.TXT/ ) { File file ->
+        String[] archivoName = file.name.split("_")
+        String idSucursal = StringUtils.trimToEmpty(Registry.currentSite.toString())
+        if( archivoName[0].equalsIgnoreCase( idSucursal ) ){
+          diferenciaRepository.deleteAll()
+          file.eachLine { String line ->
+            Diferencia diferencia = new Diferencia()
+            String[] registro = line.split(/\|/)
+            Integer cantidad = 0
+            Integer idArticulo = 0
+            try{
+              cantidad = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[0]))
+              idArticulo = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[1]).substring(0,6))
+            } catch ( NumberFormatException e ) { println e }
+            Articulo articulo = articuloRepository.findOne( idArticulo )
+            if( articulo != null ){
+              diferencia.id = articulo.id
+              diferencia.cantidadFisico = cantidad.intValue()
+              diferencia.cantidadSoi = articulo.cantExistencia
+              diferencia.diferencias = cantidad.intValue()-articulo.cantExistencia
+              diferenciaRepository.save( diferencia )
+              diferenciaRepository.flush()
+            }
+          }
+        }
+      }
+    }
+
 
 }
