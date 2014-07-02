@@ -488,7 +488,7 @@ class ArticuloServiceImpl implements ArticuloService {
               diferencia.id = articulo.id
               diferencia.cantidadFisico = cantidad.intValue()
               diferencia.cantidadSoi = articulo.cantExistencia
-              diferencia.diferencias = cantidad.intValue()-articulo.cantExistencia
+              diferencia.diferencias = articulo.cantExistencia-cantidad.intValue()
               diferenciaRepository.save( diferencia )
               diferenciaRepository.flush()
             }
