@@ -46,6 +46,7 @@ class ArticuloServiceImpl implements ArticuloService {
   private static final Integer CANT_CARACTEREZ_COD_BAR = 15
   private static final Integer CANT_ARTICULOS_ENVIAR = 500
   private static final String TAG_GENERICO_NO_INVENTARIABLE = "NO INVENTARIABLE"
+  private static final String TAG_GENERICO_ARMAZON = "A"
 
   private Articulo establecerPrecio( Articulo articulo ) {
     // log.debug( "estableciendo precio para el articulo id: ${articulo?.id} articulo: ${articulo?.articulo}" )
@@ -495,6 +496,25 @@ class ArticuloServiceImpl implements ArticuloService {
           }
         }
       }
+    }
+
+
+
+    Boolean inicializarInventario( ){
+      Boolean inicializado = false
+      QArticulo qArticulo = QArticulo.articulo1
+      List<Articulo> lstArmazones = articuloRepository.findAll( qArticulo.idGenerico.eq(TAG_GENERICO_ARMAZON) )
+      diferenciaRepository.deleteAll()
+      diferenciaRepository.flush()
+      for(Articulo armazon : lstArmazones){
+        Diferencia diferencia = new Diferencia()
+        diferencia.id = armazon.id
+        diferencia.cantidadSoi = armazon.cantExistencia
+        diferenciaRepository.save( diferencia )
+        diferenciaRepository.flush()
+        inicializado = true
+      }
+      return inicializado
     }
 
 

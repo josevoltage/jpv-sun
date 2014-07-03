@@ -243,9 +243,9 @@ class MainWindow extends JFrame implements KeyListener {
                     visible: false,
                     text: 'Inventario Fisico'
             ){
-                sendInventoryMenuItem = menuItem( text: 'Enviar Inventario',
+                sendInventoryMenuItem = menuItem( text: 'Inicializa Inventario',
                         actionPerformed: {
-                            sendInventoryFile()
+                          initializingInventory()
                         }
                 )
                 receivedDiferencesMenuItem = menuItem( text: 'Recibir Diferencias',
@@ -577,11 +577,20 @@ class MainWindow extends JFrame implements KeyListener {
   }
 
   void sendInventoryFile( ){
-      //WaitDialog dialog = new WaitDialog( "Envio inventario.", "Espere un momento." )
-      //sb.doOutside {
       ItemController.sendInventoryFile()
-      //dialog.dispose()
+  }
+
+  void initializingInventory( ){
+    Boolean inicializado = false
+    WaitDialog dialog = new WaitDialog( "Inicializando Inventario",
+            "<html>Inicializando. Este proceso puede tardar algunos minutos.</html>" )
+    //sb.doOutside {
+      //while ( inicializado ){
+        inicializado = ItemController.initializingInventory()
+        //dialog.dispose()
       //}
+      //dialog.show()
+    //}
   }
 
   void receivedDifferencesFile( ){

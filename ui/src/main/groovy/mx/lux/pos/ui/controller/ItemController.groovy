@@ -7,6 +7,7 @@ import mx.lux.pos.service.TicketService
 import mx.lux.pos.ui.model.Differences
 import mx.lux.pos.ui.model.Item
 import mx.lux.pos.ui.view.dialog.DifferencesDialog
+import mx.lux.pos.ui.view.dialog.WaitDialog
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -26,8 +27,11 @@ class ItemController {
   private static final String TXT_DIFERENCIAS = 'Diferencias'
   private static final String MSJ_DIFERENCIAS_NO_RECIBIDAS = 'No se recibieron correctamente las diferencias'
 
-    private static final String MSJ_INV_FISICO_NO_ENVIADO = 'No se han podido enviar los datos del inventario'
-    private static final String MSJ_INV_FISICO_ENVIADO = 'Se han enviado correctamente los datos del inventario'
+  private static final String MSJ_INV_FISICO_NO_ENVIADO = 'No se han podido enviar los datos del inventario'
+  private static final String MSJ_INV_FISICO_ENVIADO = 'Se han enviado correctamente los datos del inventario'
+
+  private static final String MSJ_INV_FISICO_NO_INICIALIZADO = 'No se han podido inicializar el inventario'
+  private static final String MSJ_INV_FISICO_INICIALIZADO = 'Se ha inicializado correctamente el inventario'
 
   private static ArticuloService articuloService
   private static TicketService ticketService
@@ -214,6 +218,19 @@ class ItemController {
   static Item findArticleMinPrice( List<Integer> idsArticulo ){
     Articulo articulo = articuloService.buscaArticuloMenorPrecio( idsArticulo )
     return Item.toItem( articulo )
+  }
+
+
+  static Boolean initializingInventory( ){
+    log.debug( "initializingInventory( )" )
+    Boolean inicializado = false
+    inicializado = articuloService.inicializarInventario()
+    if( inicializado ){
+      JOptionPane.showMessageDialog( new JDialog(), MSJ_INV_FISICO_INICIALIZADO, TXT_DIFERENCIAS, JOptionPane.INFORMATION_MESSAGE )
+    } else {
+      JOptionPane.showMessageDialog( new JDialog(), MSJ_INV_FISICO_NO_INICIALIZADO, TXT_DIFERENCIAS, JOptionPane.INFORMATION_MESSAGE )
+    }
+    return inicializado
   }
 
 
