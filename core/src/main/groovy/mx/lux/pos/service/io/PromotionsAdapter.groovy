@@ -49,7 +49,8 @@ class PromotionsAdapter {
         boolean value  = null
         if (this.record.size >= Field.values().size() ){
             try {
-                value = record.isEquals( pField.ordinal(), "si")
+                value = record.isEquals( pField.ordinal(), "si") || record.isEquals( pField.ordinal(), "yes") ||
+                        record.isEquals( pField.ordinal(), "s") || record.isEquals( pField.ordinal(), "y")
             } catch (ParseException e) { }
         }
         return value
@@ -238,11 +239,6 @@ class PromotionsAdapter {
     }
 
     Boolean getMenorPrecio( ) {
-        /*Iterator it = Field.MenorPrecio.properties.keySet().iterator();
-        while(it.hasNext()){
-            def key = it.next();
-            System.out.println("Clave: " + key + " -> Valor: " + Field.MenorPrecio.properties.get(key));
-        }*/
         return asBooleanMenorPrecio( Field.MenorPrecio )
     }
 
