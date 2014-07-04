@@ -12,6 +12,7 @@ import mx.lux.pos.ui.view.dialog.AuthorizationDialog
 import mx.lux.pos.ui.view.dialog.CaptureIncidentsDialog
 import mx.lux.pos.ui.view.dialog.ChangePasswordDialog
 import mx.lux.pos.ui.view.dialog.ChangeSellerDialog
+import mx.lux.pos.ui.view.dialog.ChargeDialog
 import mx.lux.pos.ui.view.dialog.PartClassDialog
 import mx.lux.pos.ui.view.dialog.TransactionsDateSelectionDialog
 import mx.lux.pos.ui.view.dialog.TwoDatesSelectionDialog
@@ -248,21 +249,21 @@ class MainWindow extends JFrame implements KeyListener {
                           initializingInventory()
                         }
                 )
-                receivedDiferencesMenuItem = menuItem( text: 'Recibir Diferencias',
+                receivedDiferencesMenuItem = menuItem( text: 'Carga Archivo Inventario Fisico',
                         actionPerformed: {
-                            receivedDifferencesFile()
+                          diferencesPhysicalInventory()
                         }
                 )
-                generatedInventoryFileMenuItem = menuItem( text: 'Genera Archivo de Inventario',
+                generatedInventoryFileMenuItem = menuItem( text: 'Imprime Diferencias',
                         actionPerformed: {
-                            generatesPhysicalInventoryFile()
+                          diferencesPhysicalInventoryPrint()
                         }
                 )
-                diferencesInventoryFileMenuItem = menuItem( text: 'Diferencias',
+                /*diferencesInventoryFileMenuItem = menuItem( text: 'Diferencias',
                         actionPerformed: {
                             diferencesPhysicalInventory()
                         }
-                )
+                )*/
             }
             /*sendInventoryMenuItem = menuItem( text: 'Enviar Inventario',
                     visible: false,
@@ -581,16 +582,9 @@ class MainWindow extends JFrame implements KeyListener {
   }
 
   void initializingInventory( ){
-    Boolean inicializado = false
-    WaitDialog dialog = new WaitDialog( "Inicializando Inventario",
-            "<html>Inicializando. Este proceso puede tardar algunos minutos.</html>" )
-    //sb.doOutside {
-      //while ( inicializado ){
-        inicializado = ItemController.initializingInventory()
-        //dialog.dispose()
-      //}
-      //dialog.show()
-    //}
+    sb.doOutside {
+      ItemController.initializingInventory()
+    }
   }
 
   void receivedDifferencesFile( ){
@@ -603,6 +597,10 @@ class MainWindow extends JFrame implements KeyListener {
 
   void diferencesPhysicalInventory( ){
     ItemController.generatePhysicalDiferencesInventory()
+  }
+
+  void diferencesPhysicalInventoryPrint( ){
+    ItemController.printPhysicalDiferencesInventory()
   }
 
   JPanel getMainPanel( ) {

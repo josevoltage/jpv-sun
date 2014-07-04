@@ -278,6 +278,10 @@ class Registry {
     return asString( TipoParametro.RUTA_INVENTARIO_FISICO )
   }
 
+  static String getPhysicalInventoryFileReadPath( ) {
+    return asString( TipoParametro.RUTA_INVENTARIO_FISICO_LEIDO )
+  }
+
   static String getArchivePathDropbox( ) {
       return asString( TipoParametro.RUTA_POR_ENVIAR_DROPBOX )
   }

@@ -2,10 +2,12 @@ package mx.lux.pos.ui.controller
 
 import groovy.util.logging.Slf4j
 import mx.lux.pos.model.Articulo
+import mx.lux.pos.model.InventarioFisico
 import mx.lux.pos.service.ArticuloService
 import mx.lux.pos.service.TicketService
 import mx.lux.pos.ui.model.Differences
 import mx.lux.pos.ui.model.Item
+import mx.lux.pos.ui.view.dialog.ChargeDialog
 import mx.lux.pos.ui.view.dialog.DifferencesDialog
 import mx.lux.pos.ui.view.dialog.WaitDialog
 import org.apache.commons.lang3.StringUtils
@@ -21,7 +23,7 @@ import mx.lux.pos.service.business.Registry
 @Component
 class ItemController {
 
-  private static final String MSJ_ARCHIVO_GENERADO = 'El archivo de inventario fue generado correctamente en %s'
+  private static final String MSJ_ARCHIVO_GENERADO = 'El archivo de inventario fue cargado correctamente'
   private static final String TXT_ARCHIVO_GENERADO = 'Archivo de Inventario'
   private static final String MSJ_ARCHIVO_NO_GENERADO = 'No se genero correctamente el archivo de inventario'
   private static final String TXT_DIFERENCIAS = 'Diferencias'
@@ -190,15 +192,37 @@ class ItemController {
       log.debug( "generatePhysicalInventoryFile( )" )
       Boolean archGenerado = articuloService.generarArchivoInventarioFisico()
       if( archGenerado ){
-          JOptionPane.showMessageDialog( new JDialog(), String.format(MSJ_ARCHIVO_GENERADO, Registry.archivePath), TXT_ARCHIVO_GENERADO, JOptionPane.INFORMATION_MESSAGE )
+          JOptionPane.showMessageDialog( new JDialog(), String.format("Se ha inicializado correctamente el inventario", Registry.archivePath), "Inventario SOI", JOptionPane.INFORMATION_MESSAGE )
       } else {
-          JOptionPane.showMessageDialog( new JDialog(), MSJ_ARCHIVO_NO_GENERADO, TXT_ARCHIVO_GENERADO, JOptionPane.INFORMATION_MESSAGE )
+          JOptionPane.showMessageDialog( new JDialog(), "No se ha inicializado correctamente el inventario", "Inventario SOI", JOptionPane.INFORMATION_MESSAGE )
       }
   }
 
-  static void generatePhysicalDiferencesInventory( ){
+  static Boolean generatePhysicalDiferencesInventory( ){
     log.debug( "generatePhysicalInventoryFile( )" )
-    articuloService.generaDiferencias()
+    Boolean archivoCargado = false
+    List<InventarioFisico> lstInventario = new ArrayList<>()
+    WaitDialog dialog = new WaitDialog( "Inventario", "Cargando archivo." )
+    Thread t = new Thread("Thread", new Runnable() {
+      void run(){
+        lstInventario = articuloService.cargaArchivoInventarioFisico()
+        archivoCargado = articuloService.generaDiferencias( lstInventario )
+        dialog.dispose()
+      }
+    })
+    t.start();
+    dialog.show()
+    println "archivo cargado"
+    if( archivoCargado ){
+      JOptionPane.showMessageDialog( new JDialog(), String.format(MSJ_ARCHIVO_GENERADO, Registry.archivePath), TXT_ARCHIVO_GENERADO, JOptionPane.INFORMATION_MESSAGE )
+    } else {
+      JOptionPane.showMessageDialog( new JDialog(), MSJ_ARCHIVO_NO_GENERADO, TXT_ARCHIVO_GENERADO, JOptionPane.INFORMATION_MESSAGE )
+    }
+    return archivoCargado
+  }
+
+  static void printPhysicalDiferencesInventory( ){
+    log.debug( "printPhysicalDiferencesInventory( )" )
     ticketService.imprimeDiferencias()
   }
 

@@ -1825,7 +1825,9 @@ class TicketServiceImpl implements TicketService {
     DateFormat df = new SimpleDateFormat( "dd-MM-yyyy" )
     Sucursal site = sucursalRepository.findOne( Registry.currentSite )
     String sucursal = site.nombre+' ['+site.id+']'
-    List<Diferencia> lstDiferencias = diferenciaRepository.findAll()
+    QDiferencia qDiferencia = QDiferencia.diferencia
+    List<Diferencia> lstDiferencias = diferenciaRepository.findAll( qDiferencia.diferencias.isNotNull().
+            and(qDiferencia.diferencias.goe(1).or(qDiferencia.diferencias.loe(-1))) )
     if(lstDiferencias.size() > 0){
         def datos = [
             nombre_ticket: "ticket-diferencias",

@@ -4,6 +4,7 @@ import mx.lux.pos.model.Articulo
 import mx.lux.pos.model.ArticuloSombra
 import mx.lux.pos.model.Diferencia
 import mx.lux.pos.model.Generico
+import mx.lux.pos.model.InventarioFisico
 
 interface ArticuloService {
 
@@ -55,7 +56,9 @@ interface ArticuloService {
 
   Articulo buscaArticuloMenorPrecio( List<Integer> lstArticulo )
 
-  void generaDiferencias( )
+  Boolean generaDiferencias( List<InventarioFisico> lstInventarioFisico )
+
+  List<InventarioFisico> cargaArchivoInventarioFisico()
 
   Boolean inicializarInventario( )
 }
