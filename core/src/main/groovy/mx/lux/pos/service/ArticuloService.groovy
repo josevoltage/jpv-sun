@@ -61,4 +61,7 @@ interface ArticuloService {
   List<InventarioFisico> cargaArchivoInventarioFisico()
 
   Boolean inicializarInventario( )
+
+  void difArticulosNoInv()
+
 }

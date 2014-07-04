@@ -202,17 +202,18 @@ class ItemController {
     log.debug( "generatePhysicalInventoryFile( )" )
     Boolean archivoCargado = false
     List<InventarioFisico> lstInventario = new ArrayList<>()
-    WaitDialog dialog = new WaitDialog( "Inventario", "Cargando archivo." )
-    Thread t = new Thread("Thread", new Runnable() {
+    WaitDialog dialog = new WaitDialog( "Inventario", "<html>Cargando archivo de inventario Fisico. Espere un momento</html>" )
+    Runnable runnable = new Runnable() {
       void run(){
         lstInventario = articuloService.cargaArchivoInventarioFisico()
         archivoCargado = articuloService.generaDiferencias( lstInventario )
+        articuloService.difArticulosNoInv()
         dialog.dispose()
       }
-    })
+    }
+    Thread t = new Thread( runnable )
     t.start();
     dialog.show()
-    println "archivo cargado"
     if( archivoCargado ){
       JOptionPane.showMessageDialog( new JDialog(), String.format(MSJ_ARCHIVO_GENERADO, Registry.archivePath), TXT_ARCHIVO_GENERADO, JOptionPane.INFORMATION_MESSAGE )
     } else {

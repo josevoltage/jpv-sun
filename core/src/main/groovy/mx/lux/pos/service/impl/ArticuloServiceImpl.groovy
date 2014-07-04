@@ -551,4 +551,18 @@ class ArticuloServiceImpl implements ArticuloService {
     }
 
 
+    @Override
+    void difArticulosNoInv(){
+      QDiferencia qDiferencia = QDiferencia.diferencia
+      List<Diferencia> lstDifNoInv = diferenciaRepository.findAll( qDiferencia.cantidadFisico.isNull().
+              and(qDiferencia.diferencias.isNull()))
+      for(Diferencia dif : lstDifNoInv){
+        dif.cantidadFisico = 0;
+        dif.diferencias = dif.cantidadSoi
+        diferenciaRepository.save( dif )
+        diferenciaRepository.flush()
+      }
+    }
+
+
 }
