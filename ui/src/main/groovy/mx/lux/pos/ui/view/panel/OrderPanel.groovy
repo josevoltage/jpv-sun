@@ -648,9 +648,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           if( lstArticulos.size() > 1 ){
               if( OrderController.validPromoMenorPrecio( idPromo ) ){
                  Item it = ItemController.findArticleMinPrice( lstArticulos )
-                  if( promotionSelectedList.appliesToList.get(0).orderDetail.sku != it.id ){
+                  if( it != null && promotionSelectedList.appliesToList.get(0).orderDetail.sku != it.id ){
                       sb.optionPane(
-                              message: "La promocion "+/"/+descPromo+/"/+"debe estar aplicada al articulo "+/"/+it.name+/"/+".",
+                              message: "El articulo "+/"/+it.id+/"/+" no es el de menor precio.",
                               messageType: JOptionPane.ERROR_MESSAGE
                       ).createDialog( this, 'No se puede registrar la venta' )
                               .show()
