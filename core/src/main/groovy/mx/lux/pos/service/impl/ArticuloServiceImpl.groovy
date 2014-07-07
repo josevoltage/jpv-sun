@@ -494,16 +494,16 @@ class ArticuloServiceImpl implements ArticuloService {
                 file.eachLine { String line ->
                     InventarioFisico inventarioFisico = new InventarioFisico()
                     String[] registro = line.split(/\|/)
-                    Integer cantidad = 0
+                    Integer cantidad = 1
                     Integer idArticulo = 0
                     try{
-                        cantidad = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[0]))
+                        //cantidad = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[0]))
                         idArticulo = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[1]).substring(0,6))
                     } catch ( NumberFormatException e ) { println e }
                     Articulo articulo = articuloRepository.findOne( idArticulo )
                     if( articulo != null ){
                         inventarioFisico.idArticulo = articulo.id
-                        inventarioFisico.cantidadFisico = cantidad.intValue()
+                        inventarioFisico.cantidadFisico = cantidad
                         lstInventarioFisico.add( inventarioFisico )
                     }
                 }
