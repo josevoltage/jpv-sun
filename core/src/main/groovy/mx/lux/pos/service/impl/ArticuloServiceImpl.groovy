@@ -437,6 +437,7 @@ class ArticuloServiceImpl implements ArticuloService {
 
     Articulo buscaArticuloMenorPrecio( List<Integer> lstArticulo ){
       Articulo articulo = new Articulo()
+      Articulo articuloTmp = new Articulo()
       List<Articulo> lstArticulos = new ArrayList<>()
       for(Integer id : lstArticulo){
         lstArticulos.add(articuloRepository.findOne( id ))
@@ -449,6 +450,8 @@ class ArticuloServiceImpl implements ArticuloService {
         } else {
           montoPrecio = lstArticulos.get(0).precio
         }
+        articulo =  lstArticulos.get(0)
+        articuloTmp = lstArticulos.get(0)
         for(Articulo art : lstArticulos){
           List<Precio> precioTmp = precioRepository.findByArticulo( StringUtils.trimToEmpty(art.articulo) )
           BigDecimal montoPrecioTmp = BigDecimal.ZERO
@@ -460,6 +463,11 @@ class ArticuloServiceImpl implements ArticuloService {
           if( montoPrecioTmp.compareTo(montoPrecio) < 0 ){
             articulo = art
             montoPrecio = montoPrecioTmp
+          } else if( montoPrecioTmp.compareTo(montoPrecio) == 0 ){
+            articulo = null
+          } else if( montoPrecioTmp.compareTo(montoPrecio) > 0 ) {
+            articulo = articuloTmp
+            articuloTmp = art
           }
         }
       }
