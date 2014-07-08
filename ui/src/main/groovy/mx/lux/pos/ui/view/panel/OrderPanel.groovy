@@ -740,6 +740,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     customer = CustomerController.findDefaultCustomer()
     // Benja: Favor de no cambiar la siguiente linea. Esta comentada porque NO debe de estar
     // this.promotionList = new ArrayList<PromotionAvailable>()
+    this.promotionSelectedList.clear()
     this.getPromotionDriver().init( this )
     doBindings()
     operationType.setSelectedItem( OperationType.DEFAULT )
