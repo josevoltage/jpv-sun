@@ -6,6 +6,7 @@ import mx.lux.pos.model.IPromotionAvailable
 import mx.lux.pos.model.PromotionApplied
 import mx.lux.pos.model.PromotionAvailable
 import mx.lux.pos.model.PromotionCombo
+import mx.lux.pos.model.PromotionDiscountType
 import mx.lux.pos.model.PromotionSingle
 import mx.lux.pos.model.SalesWithNoInventory
 import mx.lux.pos.ui.MainWindow
@@ -101,7 +102,11 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
   private PromotionDriver getPromotionDriver( ) {
-    return PromotionDriver.instance
+    PromotionDriver promotionDriver = null
+    if( order.items.size() <= 0 ){
+      promotionDriver = PromotionDriver.instance
+    }
+    return promotionDriver
   }
 
   private void buildUI( ) {
