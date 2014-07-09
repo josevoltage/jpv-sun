@@ -244,12 +244,12 @@ class MainWindow extends JFrame implements KeyListener {
                     visible: false,
                     text: 'Inventario Fisico'
             ){
-                sendInventoryMenuItem = menuItem( text: 'Inicializa Inventario',
+                sendInventoryMenuItem = menuItem( text: 'Inicializar',
                         actionPerformed: {
                           initializingInventory()
                         }
                 )
-                receivedDiferencesMenuItem = menuItem( text: 'Carga Archivo Inventario Fisico',
+                receivedDiferencesMenuItem = menuItem( text: 'Cargar Archivo',
                         actionPerformed: {
                           diferencesPhysicalInventory()
                         }
