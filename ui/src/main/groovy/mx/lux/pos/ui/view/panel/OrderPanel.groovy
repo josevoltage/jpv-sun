@@ -445,9 +445,11 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       }
       PromotionSelectionDialog promotionSelectionDialog = new PromotionSelectionDialog( lstPromosArt )
       promotionSelectionDialog.show()
-      promotionListSelected.add( promotionSelectionDialog.promotionSelected )
-      onTogglePromotion( promotionSelectionDialog.promotionSelected, true )
-      doBindings()
+      if( promotionSelectionDialog.promotionSelected != null ){
+        promotionListSelected.add( promotionSelectionDialog.promotionSelected )
+        onTogglePromotion( promotionSelectionDialog.promotionSelected, true )
+        doBindings()
+      }
     }
   }
 
@@ -701,6 +703,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     } else {
       this.promotionSelectedList.remove( pPromotion )
       this.promotionDriver.requestCancelPromotion( pPromotion )
+      this.promotionListSelected.remove( pPromotion )
     }
   }
 
@@ -710,6 +713,10 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
 
   public List<IPromotionAvailable> getPromotionList( ) {
     return this.promotionList
+  }
+
+  public List<IPromotionAvailable> getPromotionListSelected( ) {
+        return this.promotionListSelected
   }
 
   DefaultTableModel getPromotionModel( ) {
@@ -752,6 +759,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     customer = CustomerController.findDefaultCustomer()
     // Benja: Favor de no cambiar la siguiente linea. Esta comentada porque NO debe de estar
     // this.promotionList = new ArrayList<PromotionAvailable>()
+    this.promotionListSelected.clear()
     this.promotionSelectedList.clear()
     this.getPromotionDriver().init( this )
     doBindings()

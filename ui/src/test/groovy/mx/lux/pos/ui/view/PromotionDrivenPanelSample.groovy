@@ -198,6 +198,10 @@ class PromotionDrivenPanelSample extends JFrame implements IPromotionDrivenPanel
     return this.promotionList
   }
 
+  List<IPromotionAvailable> getPromotionListSelected( ) {
+    return this.promotionListSelected
+  }
+
   DefaultTableModel getPromotionModel( ) {
     return this.promotionModel
   }
