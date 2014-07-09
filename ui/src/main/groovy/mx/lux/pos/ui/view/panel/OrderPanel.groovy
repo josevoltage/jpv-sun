@@ -439,17 +439,24 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       OrderItem orderItem = ev.source.selectedElement
       List<IPromotionAvailable> lstPromosArt = new ArrayList<>()
       for(IPromotionAvailable promo : promotionList){
-        if( orderItem.item.id == promo.appliesToList.get(0).orderDetail.sku ){
-          Boolean valid = true
-          for(IPromotionAvailable promoSelected : promotionListSelected){
-            if( promoSelected.promotion.base.entity.idPromocion == promo.promotion.base.entity.idPromocion ){
-              valid = false
+            if( orderItem.item.id == promo.appliesToList.get(0).orderDetail.sku ){
+              Boolean valid = true
+              for(IPromotionAvailable promoSelected : promotionListSelected){
+              if( promoSelected.promotion.base.entity.idPromocion == promo.promotion.base.entity.idPromocion ){
+                valid = false
+              }
+              if( valid ){
+                for(PromotionApplied applied : promoSelected.appliesToList){
+                  if(applied.orderDetail.sku == orderItem.item.id){
+                    valid = false
+                  }
+                }
+              }
+            }
+            if( valid ){
+              lstPromosArt.add( promo )
             }
           }
-          if( valid ){
-            lstPromosArt.add( promo )
-          }
-        }
       }
       PromotionSelectionDialog promotionSelectionDialog = new PromotionSelectionDialog( lstPromosArt, orderItem.item.id )
       promotionSelectionDialog.show()

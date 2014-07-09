@@ -23,6 +23,7 @@ class PromotionSelectionDialog extends JDialog {
   private DateVerifier dv = DateVerifier.instance
   private def sb = new SwingBuilder()
   private JLabel lblWarning
+  private JTable table
 
   private DefaultTableModel promotionModel
   private List<IPromotionAvailable> promotionList
@@ -56,7 +57,7 @@ class PromotionSelectionDialog extends JDialog {
                     //mouseClicked: { MouseEvent ev -> onMouseClickedAtPromotions( ev ) },
                     //mouseReleased: { MouseEvent ev -> onMouseClickedAtPromotions( ev ) }
             ) {
-                table( selectionMode: ListSelectionModel.SINGLE_SELECTION,
+                table = table( selectionMode: ListSelectionModel.SINGLE_SELECTION,
                         mouseClicked: doShowItemClick,
                         //mouseClicked: { MouseEvent ev -> onMouseClickedAtPromotions( ev ) },
                         //mouseReleased: { MouseEvent ev -> onMouseClickedAtPromotions( ev ) }
@@ -131,8 +132,9 @@ class PromotionSelectionDialog extends JDialog {
   }
 
   protected void onButtonOk( ) {
-    if(promotionModel.rowModel.value != null){
-      promotionSelected = ev.source.selectedElement
+    int index = table.convertRowIndexToModel(table.getSelectedRow())
+    if(table.selectedRowCount > 0){
+      promotionSelected = promotionModel.rowModel.value as IPromotionAvailable
       dispose()
     } else {
       lblWarning.setText( "Seleccione una promocion" )
