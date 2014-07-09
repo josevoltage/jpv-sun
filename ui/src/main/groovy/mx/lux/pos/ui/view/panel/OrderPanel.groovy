@@ -69,6 +69,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private JTextArea comments
   private JTextField itemSearch
   private List<IPromotionAvailable> promotionList
+  private List<IPromotionAvailable> promotionListSelected
   private List<IPromotionAvailable> promotionSelectedList
   private List<String> lstPromotioSelected
   private DefaultTableModel itemsModel
@@ -93,6 +94,8 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     order = new Order()
     customer = CustomerController.findDefaultCustomer()
     promotionList = new ArrayList<PromotionAvailable>()
+    promotionListSelected = new ArrayList<>()
+    promotionSelectedList = new ArrayList<PromotionAvailable>()
     promotionSelectedList = new ArrayList<PromotionAvailable>()
     lstPromotioSelected = new ArrayList<String>()
     this.promotionDriver.init( this )
@@ -102,11 +105,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
   private PromotionDriver getPromotionDriver( ) {
-    PromotionDriver promotionDriver = null
-    if( order.items.size() <= 0 ){
-      promotionDriver = PromotionDriver.instance
-    }
-    return promotionDriver
+    return PromotionDriver.instance
   }
 
   private void buildUI( ) {
@@ -191,7 +190,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
               mouseClicked: { MouseEvent ev -> onMouseClickedAtPromotions( ev ) },
               mouseReleased: { MouseEvent ev -> onMouseClickedAtPromotions( ev ) }
           ) {
-            promotionModel = tableModel( list: promotionList ) {
+            promotionModel = tableModel( list: promotionListSelected ) {
               closureColumn( header: "", type: Boolean, maxWidth: 25,
                   read: { row -> row.applied },
                   write: { row, newValue ->
@@ -436,6 +435,19 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         }
         updateOrder( order?.id )
       }
+    } else if ( SwingUtilities.isRightMouseButton( ev ) && ev.source.selectedElement != null ) {
+      OrderItem orderItem = ev.source.selectedElement
+      List<IPromotionAvailable> lstPromosArt = new ArrayList<>()
+      for(IPromotionAvailable promo : promotionList){
+        if( orderItem.item.id == promo.appliesToList.get(0).orderDetail.sku ){
+          lstPromosArt.add( promo )
+        }
+      }
+      PromotionSelectionDialog promotionSelectionDialog = new PromotionSelectionDialog( lstPromosArt )
+      promotionSelectionDialog.show()
+      promotionListSelected.add( promotionSelectionDialog.promotionSelected )
+      onTogglePromotion( promotionSelectionDialog.promotionSelected, true )
+      doBindings()
     }
   }
 
