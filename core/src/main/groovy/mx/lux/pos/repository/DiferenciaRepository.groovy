@@ -17,6 +17,11 @@ interface DiferenciaRepository extends JpaRepository<Diferencia, Integer>, Query
 
     @Modifying
     @Transactional
+    @Query( value = "UPDATE diferencias SET cantidad_soi = 0 WHERE cantidad_soi is null", nativeQuery = true)
+    void inicializarInventarioExistNull()
+
+    @Modifying
+    @Transactional
     @Query( value = "DELETE FROM diferencias", nativeQuery = true )
     void limpiarTabla()
 

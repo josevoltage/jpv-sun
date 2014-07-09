@@ -506,46 +506,48 @@ class ArticuloServiceImpl implements ArticuloService {
         File destination = new File( Registry.physicalInventoryFileReadPath )
         List<File> lstFiles = new ArrayList<>();
         List<InventarioFisico> lstInventarioFisico = new ArrayList<>()
-        source.eachFileMatch( ~/.+_.+_.+\.TXT/ ) { File file ->
-            String[] archivoName = file.name.split("_")
-            String idSucursal = StringUtils.trimToEmpty(Registry.currentSite.toString())
-            if( archivoName[0].equalsIgnoreCase( idSucursal ) ){
-                file.eachLine { String line ->
-                    InventarioFisico inventarioFisico = new InventarioFisico()
-                    String[] registro = line.split(/\|/)
-                    Integer cantidad = 1
-                    Integer idArticulo = 0
-                    try{
-                        //cantidad = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[0]))
-                        idArticulo = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[1]).substring(0,6))
-                    } catch ( NumberFormatException e ) { println e }
-                    Articulo articulo = articuloRepository.findOne( idArticulo )
-                    if( articulo != null ){
-                        inventarioFisico.idArticulo = articulo.id
-                        inventarioFisico.cantidadFisico = cantidad
-                        lstInventarioFisico.add( inventarioFisico )
+        if( source.exists() && destination.exists() ){
+            source.eachFileMatch( ~/.+_.+_.+\.TXT/ ) { File file ->
+                String[] archivoName = file.name.split("_")
+                String idSucursal = StringUtils.trimToEmpty(Registry.currentSite.toString())
+                if( archivoName[0].equalsIgnoreCase( idSucursal ) ){
+                    file.eachLine { String line ->
+                        InventarioFisico inventarioFisico = new InventarioFisico()
+                        String[] registro = line.split(/\|/)
+                        Integer cantidad = 1
+                        Integer idArticulo = 0
+                        try{
+                            //cantidad = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[0]))
+                            idArticulo = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[1]).substring(0,6))
+                        } catch ( NumberFormatException e ) { println e }
+                        Articulo articulo = articuloRepository.findOne( idArticulo )
+                        if( articulo != null ){
+                            inventarioFisico.idArticulo = articulo.id
+                            inventarioFisico.cantidadFisico = cantidad
+                            lstInventarioFisico.add( inventarioFisico )
+                        }
                     }
                 }
+                File newFile = new File( destination, file.name )
+                if(newFile.exists()) {
+                    newFile.delete()
+                }
+                try {
+                    FileInputStream inFile = new FileInputStream(file);
+                    FileOutputStream outFile = new FileOutputStream(newFile);
+                    Integer c;
+                    lstFiles.add(file)
+                    while( (c = inFile.read() ) != -1)
+                        outFile.write(c);
+                    inFile.close();
+                    outFile.close();
+                } catch(IOException e) {
+                    System.out.println( e )
+                }
             }
-            File newFile = new File( destination, file.name )
-            if(newFile.exists()) {
-                newFile.delete()
+            for(File files : lstFiles){
+                files.delete()
             }
-            try {
-                FileInputStream inFile = new FileInputStream(file);
-                FileOutputStream outFile = new FileOutputStream(newFile);
-                Integer c;
-                lstFiles.add(file)
-                while( (c = inFile.read() ) != -1)
-                    outFile.write(c);
-                inFile.close();
-                outFile.close();
-            } catch(IOException e) {
-                System.out.println( e )
-            }
-        }
-        for(File files : lstFiles){
-            files.delete()
         }
       return lstInventarioFisico
     }
@@ -557,6 +559,7 @@ class ArticuloServiceImpl implements ArticuloService {
       try{
         diferenciaRepository.limpiarTabla()
         diferenciaRepository.inicializarInventario()
+        diferenciaRepository.inicializarInventarioExistNull()
         inicializado = true
       } catch ( Exception e ) {
         println e
@@ -572,8 +575,9 @@ class ArticuloServiceImpl implements ArticuloService {
       List<Diferencia> lstDifNoInv = diferenciaRepository.obtenerArtPend( )
       println "Cantiada articulos no inventario fisico: ${lstDifNoInv.size()}"
       for(Diferencia dif : lstDifNoInv){
+        Integer diferencia = dif.cantidadSoi != null ? dif.cantidadSoi : 0
         diferenciaRepository.actualizaCantFisico(0,dif.id)
-        diferenciaRepository.insertaDiferencias( dif.cantidadSoi, dif.id)
+        diferenciaRepository.insertaDiferencias( diferencia, dif.id)
       }
     }
 
