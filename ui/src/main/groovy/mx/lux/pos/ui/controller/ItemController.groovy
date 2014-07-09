@@ -206,9 +206,13 @@ class ItemController {
     Runnable runnable = new Runnable() {
       void run(){
         lstInventario = articuloService.cargaArchivoInventarioFisico()
-        archivoCargado = articuloService.generaDiferencias( lstInventario )
-        articuloService.difArticulosNoInv()
-        dialog.dispose()
+        if( lstInventario.size() > 0 ){
+          archivoCargado = articuloService.generaDiferencias( lstInventario )
+          articuloService.difArticulosNoInv()
+          dialog.dispose()
+        } else {
+          dialog.dispose()
+        }
       }
     }
     Thread t = new Thread( runnable )

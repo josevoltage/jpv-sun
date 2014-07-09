@@ -476,15 +476,26 @@ class ArticuloServiceImpl implements ArticuloService {
 
     Boolean generaDiferencias( List<InventarioFisico> lstInventarioFisico ){
       Boolean archivoCargado = false
+      println "Cantidad de articulos en archivos: ${lstInventarioFisico.size()}"
       for(InventarioFisico inventario : lstInventarioFisico){
         Diferencia diferencia = diferenciaRepository.findOne( inventario.idArticulo )
         if( diferencia != null ){
-          Integer cantidadFisico = diferencia.cantidadFisico != null ? diferencia.cantidadFisico : 0
+          try {
+            Integer cantidadFisico = diferencia.cantidadFisico != null ? diferencia.cantidadFisico : 0
+            diferencia.cantidadFisico = cantidadFisico+inventario.cantidadFisico
+            diferencia.diferencias =  diferencia.cantidadSoi-inventario.cantidadFisico
+            diferenciaRepository.actualizaCantFisico( diferencia.cantidadFisico, inventario.idArticulo )
+            diferenciaRepository.insertaDiferencias( diferencia.diferencias, inventario.idArticulo )
+            archivoCargado = true
+          } catch ( Exception e ) {
+            println e
+            archivoCargado = false
+          }
+          /*Integer cantidadFisico = diferencia.cantidadFisico != null ? diferencia.cantidadFisico : 0
           diferencia.cantidadFisico = cantidadFisico+inventario.cantidadFisico
           diferencia.diferencias =  diferencia.cantidadSoi-inventario.cantidadFisico
           diferenciaRepository.save(diferencia)
-          diferenciaRepository.flush()
-          archivoCargado = true
+          diferenciaRepository.flush()*/
         }
       }
       return archivoCargado
@@ -543,17 +554,13 @@ class ArticuloServiceImpl implements ArticuloService {
 
     Boolean inicializarInventario( ){
       Boolean inicializado = false
-      QArticulo qArticulo = QArticulo.articulo1
-      List<Articulo> lstArmazones = articuloRepository.findAll( qArticulo.idGenerico.eq(TAG_GENERICO_ARMAZON) )
-      diferenciaRepository.deleteAll()
-      diferenciaRepository.flush()
-      for(Articulo armazon : lstArmazones){
-        Diferencia diferencia = new Diferencia()
-        diferencia.id = armazon.id
-        diferencia.cantidadSoi = armazon.cantExistencia
-        diferenciaRepository.save( diferencia )
-        diferenciaRepository.flush()
+      try{
+        diferenciaRepository.limpiarTabla()
+        diferenciaRepository.inicializarInventario()
         inicializado = true
+      } catch ( Exception e ) {
+        println e
+        inicializado = false
       }
       return inicializado
     }
@@ -562,13 +569,11 @@ class ArticuloServiceImpl implements ArticuloService {
     @Override
     void difArticulosNoInv(){
       QDiferencia qDiferencia = QDiferencia.diferencia
-      List<Diferencia> lstDifNoInv = diferenciaRepository.findAll( qDiferencia.cantidadFisico.isNull().
-              and(qDiferencia.diferencias.isNull()))
+      List<Diferencia> lstDifNoInv = diferenciaRepository.obtenerArtPend( )
+      println "Cantiada articulos no inventario fisico: ${lstDifNoInv.size()}"
       for(Diferencia dif : lstDifNoInv){
-        dif.cantidadFisico = 0;
-        dif.diferencias = dif.cantidadSoi
-        diferenciaRepository.save( dif )
-        diferenciaRepository.flush()
+        diferenciaRepository.actualizaCantFisico(0,dif.id)
+        diferenciaRepository.insertaDiferencias( dif.cantidadSoi, dif.id)
       }
     }
 
