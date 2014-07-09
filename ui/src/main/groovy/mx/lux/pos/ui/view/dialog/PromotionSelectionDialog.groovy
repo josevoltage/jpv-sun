@@ -22,6 +22,7 @@ class PromotionSelectionDialog extends JDialog {
   private DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
   private DateVerifier dv = DateVerifier.instance
   private def sb = new SwingBuilder()
+  private JLabel lblWarning
 
   private DefaultTableModel promotionModel
   private List<IPromotionAvailable> promotionList
@@ -30,16 +31,18 @@ class PromotionSelectionDialog extends JDialog {
   private List<IPromotionAvailable> promotionSelectedList
 
   public boolean button = false
+  String title
 
-    PromotionSelectionDialog( List<IPromotionAvailable> listPromo ) {
+    PromotionSelectionDialog( List<IPromotionAvailable> listPromo, Integer idArticulo ) {
     promotionListSelected.addAll( listPromo )
+    title = "Promociones para articulo: ${idArticulo}"
     buildUI()
   }
 
   // UI Layout Definition
   void buildUI( ) {
     sb.dialog( this,
-        title: "Seleccionar fechas",
+        title: title,
         resizable: true,
         pack: true,
         modal: true,
@@ -65,21 +68,21 @@ class PromotionSelectionDialog extends JDialog {
                                     onTogglePromotion( row, newValue )
                                 }
                         )*/
-                        propertyColumn( header: "Descripci\u00f3n", propertyName: "description", editable: false )
-                        propertyColumn( header: "Art\u00edculo", propertyName: "partNbrList", maxWidth: 100, editable: false )
+                        propertyColumn( header: "Descripci\u00f3n", propertyName: "description", editable: false, minWidth: 100 )
+                        //propertyColumn( header: "Art\u00edculo", propertyName: "partNbrList", maxWidth: 100, editable: false )
                         closureColumn( header: "Precio Base",
                                 read: { IPromotionAvailable promotion -> promotion.baseAmount },
-                                maxWidth: 80,
+                                minWidth: 80,
                                 cellRenderer: new MoneyCellRenderer()
                         )
                         closureColumn( header: "Descto",
                                 read: { IPromotionAvailable promotion -> promotion.discountAmount },
-                                maxWidth: 80,
+                                minWidth: 80,
                                 cellRenderer: new MoneyCellRenderer()
                         )
                         closureColumn( header: "Promoci\u00f3n",
                                 read: { IPromotionAvailable promotion -> promotion.promotionAmount },
-                                maxWidth: 80,
+                                minWidth: 80,
                                 cellRenderer: new MoneyCellRenderer()
                         )
                     } as DefaultTableModel
@@ -89,9 +92,10 @@ class PromotionSelectionDialog extends JDialog {
         panel( constraints: BorderLayout.PAGE_END ) {
           borderLayout()
           panel( constraints: BorderLayout.LINE_END ) {
-            /*button( text: "Generar", preferredSize: UI_Standards.BUTTON_SIZE,
+            lblWarning = label( "" )
+            button( text: "Aceptar", preferredSize: UI_Standards.BUTTON_SIZE,
                 actionPerformed: { onButtonOk() }
-            )*/
+            )
             button( text: "Cerrar", preferredSize: UI_Standards.BUTTON_SIZE,
                 actionPerformed: { onButtonCancel() }
             )
@@ -127,6 +131,11 @@ class PromotionSelectionDialog extends JDialog {
   }
 
   protected void onButtonOk( ) {
-    dispose()
+    if(promotionModel.rowModel.value != null){
+      promotionSelected = ev.source.selectedElement
+      dispose()
+    } else {
+      lblWarning.setText( "Seleccione una promocion" )
+    }
   }
 }
