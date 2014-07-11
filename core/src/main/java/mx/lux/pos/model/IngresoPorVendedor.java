@@ -53,7 +53,9 @@ public class IngresoPorVendedor {
 
 
     public void AcumulaCancelaciones( String idFactura, BigDecimal monto, Double iva, Date FechaPago, Integer piezas ) {
-        IngresoPorFactura ingreso = FindOrCreate( pagos, idFactura );
+        //IngresoPorFactura ingreso = FindOrCreate( pagos, idFactura );
+        IngresoPorFactura ingreso = new IngresoPorFactura( idFactura );
+        pagos.add( ingreso );
         double ivaMonto = (iva/porcentaje);
         ingreso.AcumulaCancelaciones( new BigDecimal(monto.doubleValue()/( 1+ivaMonto )), FechaPago );
         ingreso.AcumulaCancelacionesSinIva( monto, FechaPago, new BigDecimal(ivaMonto), piezas );
@@ -166,8 +168,7 @@ public class IngresoPorVendedor {
         return totalDevoluciones;
     }
 
-    protected IngresoPorFactura FindOrCreate(
-            List<IngresoPorFactura> lstIngresos, String idFactura ) {
+    protected IngresoPorFactura FindOrCreate(List<IngresoPorFactura> lstIngresos, String idFactura ) {
         IngresoPorFactura found = null;
 
         for ( IngresoPorFactura ingresos : lstIngresos ) {
