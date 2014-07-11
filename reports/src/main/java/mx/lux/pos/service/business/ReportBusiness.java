@@ -234,11 +234,11 @@ public class ReportBusiness {
         List<IngresoPorVendedor> lstIngresos = new ArrayList<IngresoPorVendedor>();
         QNotaVenta notaVenta = QNotaVenta.notaVenta;
         List<NotaVenta> lstVentas = ( List<NotaVenta> ) notaVentaRepository.findAll( notaVenta.factura.isNotEmpty().and( notaVenta.factura.isNotNull() ).
-                and( notaVenta.fechaHoraFactura.between( fechaInicio, fechaFin ) ).and( notaVenta.sFactura.ne( "T" ) ),
+                and( notaVenta.fechaHoraFactura.between( fechaInicio, fechaFin ) ),
                 notaVenta.idEmpleado.asc(), notaVenta.fechaHoraFactura.asc() );
 
         for ( NotaVenta venta : lstVentas ) {
-            if ( venta.getFactura() != null && ( !venta.getsFactura().equals( "E" ) || !venta.getsFactura().equals( "T" ) ) ) {
+            if ( venta.getFactura() != null && ( !venta.getsFactura().equals( "E" ) ) ) {
                 String idEmpleado = venta.getIdEmpleado();
                 Integer piezas = 0;
                 for(DetalleNotaVenta detalle : venta.getDetalles()){
