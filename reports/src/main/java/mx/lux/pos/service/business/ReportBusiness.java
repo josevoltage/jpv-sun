@@ -252,8 +252,7 @@ public class ReportBusiness {
         }
 
         QModificacion modificacion = QModificacion.modificacion;
-        List<Modificacion> lstModificaciones = ( List<Modificacion> ) modificacionRepository.findAll(modificacion.fecha.between(fechaInicio,fechaFin).
-                and( modificacion.notaVenta.fechaHoraFactura.notBetween( fechaInicio, fechaFin ) ));
+        List<Modificacion> lstModificaciones = ( List<Modificacion> ) modificacionRepository.findAll(modificacion.fecha.between(fechaInicio,fechaFin));
         for ( Modificacion mod : lstModificaciones ) {
             if( mod.getTipo().equalsIgnoreCase("can") ){
                 Integer piezas = 0;
