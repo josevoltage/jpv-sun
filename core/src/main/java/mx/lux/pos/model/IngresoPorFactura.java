@@ -96,6 +96,10 @@ public class IngresoPorFactura {
         iva = montoIva;
         contador = new BigDecimal( contador.intValue() - 1 );
         sumaMonto.add( montoPagoSinIVA );
+        BigDecimal contTmp = BigDecimal.ZERO;
+        if( contador.compareTo(BigDecimal.ZERO) == 0 ){
+          contador = new BigDecimal(1);
+        }
         promedio = sumaMonto.divide( contador, 10, RoundingMode.CEILING );
         noFacturas = noFacturas-1;
         existencia = existencia-piezas;

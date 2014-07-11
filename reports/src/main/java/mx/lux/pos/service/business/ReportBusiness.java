@@ -234,11 +234,11 @@ public class ReportBusiness {
         List<IngresoPorVendedor> lstIngresos = new ArrayList<IngresoPorVendedor>();
         QNotaVenta notaVenta = QNotaVenta.notaVenta;
         List<NotaVenta> lstVentas = ( List<NotaVenta> ) notaVentaRepository.findAll( notaVenta.factura.isNotEmpty().and( notaVenta.factura.isNotNull() ).
-                and( notaVenta.fechaHoraFactura.between( fechaInicio, fechaFin ) ).and( notaVenta.sFactura.ne( "T" ) ),
+                and( notaVenta.fechaHoraFactura.between( fechaInicio, fechaFin ) ),
                 notaVenta.idEmpleado.asc(), notaVenta.fechaHoraFactura.asc() );
 
         for ( NotaVenta venta : lstVentas ) {
-            if ( venta.getFactura() != null && ( !venta.getsFactura().equals( "E" ) || !venta.getsFactura().equals( "T" ) ) ) {
+            if ( venta.getFactura() != null && ( !venta.getsFactura().equals( "E" ) ) ) {
                 String idEmpleado = venta.getIdEmpleado();
                 Integer piezas = 0;
                 for(DetalleNotaVenta detalle : venta.getDetalles()){
@@ -252,8 +252,7 @@ public class ReportBusiness {
         }
 
         QModificacion modificacion = QModificacion.modificacion;
-        List<Modificacion> lstModificaciones = ( List<Modificacion> ) modificacionRepository.findAll(modificacion.fecha.between(fechaInicio,fechaFin).
-                and( modificacion.notaVenta.fechaHoraFactura.notBetween( fechaInicio, fechaFin ) ));
+        List<Modificacion> lstModificaciones = ( List<Modificacion> ) modificacionRepository.findAll(modificacion.fecha.between(fechaInicio,fechaFin));
         for ( Modificacion mod : lstModificaciones ) {
             if( mod.getTipo().equalsIgnoreCase("can") ){
                 Integer piezas = 0;
