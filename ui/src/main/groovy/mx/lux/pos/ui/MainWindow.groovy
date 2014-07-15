@@ -200,7 +200,7 @@ class MainWindow extends JFrame implements KeyListener {
                 ticketInventoryTransactionsMenuItem.visible = userLoggedIn
                 //sendInventoryMenuItem.visible = userLoggedIn
                 //receivedDiferencesMenuItem.visible = userLoggedIn
-                sendReceivedInventoryMenu.visible = false
+                sendReceivedInventoryMenu.visible = userLoggedIn
               }
           ) {
             inventoryTransactionMenuItem = menuItem( text: 'Transacciones',
