@@ -58,6 +58,8 @@ interface ArticuloService {
 
   Boolean generaDiferencias( List<InventarioFisico> lstInventarioFisico )
 
+  Boolean cargaDiferencias( )
+
   List<InventarioFisico> cargaArchivoInventarioFisico()
 
   Boolean inicializarInventario( )

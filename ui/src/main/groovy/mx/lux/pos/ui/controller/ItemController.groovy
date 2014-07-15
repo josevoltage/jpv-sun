@@ -209,6 +209,7 @@ class ItemController {
         if( lstInventario.size() > 0 ){
           archivoCargado = articuloService.generaDiferencias( lstInventario )
           articuloService.difArticulosNoInv()
+          archivoCargado = articuloService.cargaDiferencias( )
           dialog.dispose()
         } else {
           dialog.dispose()

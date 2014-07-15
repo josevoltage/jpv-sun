@@ -17,6 +17,7 @@ import javax.annotation.Resource
 
 import mx.lux.pos.model.*
 
+import java.sql.SQLException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.regex.Pattern
@@ -487,9 +488,7 @@ class ArticuloServiceImpl implements ArticuloService {
           try {
             Integer cantidadFisico = diferencia.cantidadFisico != null ? diferencia.cantidadFisico : 0
             diferencia.cantidadFisico = cantidadFisico+inventario.cantidadFisico
-            diferencia.diferencias =  diferencia.cantidadSoi-inventario.cantidadFisico
             diferenciaRepository.actualizaCantFisico( diferencia.cantidadFisico, inventario.idArticulo )
-            diferenciaRepository.insertaDiferencias( diferencia.diferencias, inventario.idArticulo )
             archivoCargado = true
           } catch ( Exception e ) {
             println e
@@ -504,6 +503,23 @@ class ArticuloServiceImpl implements ArticuloService {
       }
       return archivoCargado
     }
+
+
+    Boolean cargaDiferencias(  ) {
+      Boolean cargado = false
+      List<Diferencia> lstDiferencias = diferenciaRepository.obtenerDiferenciasPend()
+      for(Diferencia dif : lstDiferencias){
+        try{
+          diferenciaRepository.calcularDiferencias( dif.id )
+          cargado = true
+        } catch ( SQLException e ){
+          println dif.id
+          println e
+        }
+      }
+      return cargado
+    }
+
 
     List<InventarioFisico> cargaArchivoInventarioFisico(){
         File source = new File( Registry.physicalInventoryFilePath )
@@ -575,7 +591,6 @@ class ArticuloServiceImpl implements ArticuloService {
 
     @Override
     void difArticulosNoInv(){
-      QDiferencia qDiferencia = QDiferencia.diferencia
       List<Diferencia> lstDifNoInv = diferenciaRepository.obtenerArtPend( )
       println "Cantiada articulos no inventario fisico: ${lstDifNoInv.size()}"
       for(Diferencia dif : lstDifNoInv){
@@ -583,6 +598,7 @@ class ArticuloServiceImpl implements ArticuloService {
         diferenciaRepository.actualizaCantFisico(0,dif.id)
         diferenciaRepository.insertaDiferencias( diferencia, dif.id)
       }
+      diferenciaRepository.insertaDiferenciasCero()
     }
 
 

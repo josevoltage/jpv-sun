@@ -37,5 +37,18 @@ interface DiferenciaRepository extends JpaRepository<Diferencia, Integer>, Query
 
     @Query( value = "SELECT * FROM diferencias WHERE cantidad_fisico IS NULL", nativeQuery = true)
     List<Diferencia> obtenerArtPend( )
+
+    @Query( value = "SELECT * FROM diferencias WHERE diferencias IS NULL", nativeQuery = true)
+    List<Diferencia> obtenerDiferenciasPend( )
+
+    @Modifying
+    @Transactional
+    @Query( value = "UPDATE diferencias SET diferencias = (SELECT cantidad_soi-cantidad_fisico FROM diferencias WHERE id_articulo = ?1) WHERE id_articulo = ?1", nativeQuery = true)
+    void calcularDiferencias( Integer idArticulo )
+
+    @Modifying
+    @Transactional
+    @Query( value = "UPDATE diferencias SET diferencias = 0 WHERE cantidad_soi = cantidad_fisico", nativeQuery = true)
+    void insertaDiferenciasCero( )
 }
 
