@@ -397,7 +397,11 @@ class ArticuloServiceImpl implements ArticuloService {
 
   @Override
   List<Diferencia> obtenerDiferencias(  ) {
-      return diferenciaRepository.findAll()
+    //return diferenciaRepository.findAll()
+    QDiferencia qDiferencia = QDiferencia.diferencia
+    List<Diferencia> lstDiferencias = diferenciaRepository.findAll( qDiferencia.diferencias.isNotNull().
+          and(qDiferencia.diferencias.goe(1).or(qDiferencia.diferencias.loe(-1))), qDiferencia.id.asc() )
+    return lstDiferencias
   }
 
 

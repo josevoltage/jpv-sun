@@ -165,14 +165,14 @@ class ItemController {
 
 
   static void receivedDifferencesFile(  ){
-      log.debug( "receivedDifferencesFile( )" )
+      /*log.debug( "receivedDifferencesFile( )" )
       Boolean recibidos = articuloService.recibeDiferencias( )
-      if( recibidos ){
+      if( recibidos ){*/
           DifferencesDialog dialog = new DifferencesDialog( )
           dialog.show()
-      } else {
+      /*} else {
           JOptionPane.showMessageDialog( new JDialog(), MSJ_DIFERENCIAS_NO_RECIBIDAS, TXT_DIFERENCIAS, JOptionPane.INFORMATION_MESSAGE )
-      }
+      }*/
   }
 
   static List<Differences> findAllDifferences( ) {
