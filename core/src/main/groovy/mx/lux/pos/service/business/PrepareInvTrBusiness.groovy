@@ -150,10 +150,32 @@ class PrepareInvTrBusiness {
     return valid
   }
 
+
+    private verifyRequestSales( InvTrRequest pRequest ) {
+        boolean valid = true
+        // SiteTo
+        if ( valid && pRequest.siteTo )
+            valid = sites.validarSucursal( pRequest.siteTo )
+        // Part
+        if ( valid ) {
+            for ( part in pRequest.skuList ) {
+                if ( valid )
+                    valid = parts.validarArticulo( part.sku )
+            }
+        }
+        return valid
+    }
+
   // Public methods
   TransInv prepareRequest( InvTrRequest pRequest ) {
     TransInv tr = null
-    if ( verifyRequest( pRequest ) ) {
+    Boolean valid = false
+    if(TR_TYPE_ISSUE_SALES.equalsIgnoreCase(pRequest.trType)){
+      valid = verifyRequestSales( pRequest )
+    } else {
+      valid = verifyRequest( pRequest )
+    }
+    if ( valid ) {
       tr = prepareTransaction( pRequest )
     }
     return tr
