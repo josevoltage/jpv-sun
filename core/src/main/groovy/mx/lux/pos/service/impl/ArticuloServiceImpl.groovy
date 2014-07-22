@@ -457,22 +457,16 @@ class ArticuloServiceImpl implements ArticuloService {
         }
         articulo =  lstArticulos.get(0)
         articuloTmp = lstArticulos.get(0)
-        for(Articulo art : lstArticulos){
-          List<Precio> precioTmp = precioRepository.findByArticulo( StringUtils.trimToEmpty(art.articulo) )
+        for(int i=1;i<lstArticulos.size();i++){
+          List<Precio> precioTmp = precioRepository.findByArticulo( StringUtils.trimToEmpty(lstArticulos.get(i).articulo) )
           BigDecimal montoPrecioTmp = BigDecimal.ZERO
           if( precioTmp.size() > 0 ){
             montoPrecioTmp = precioTmp.get(0).precio
           } else {
-            montoPrecioTmp = art.precio
+            montoPrecioTmp = lstArticulos.get(i).precio
           }
-          if( montoPrecioTmp.compareTo(montoPrecio) < 0 ){
-            articulo = art
-            montoPrecio = montoPrecioTmp
-          } else if( montoPrecioTmp.compareTo(montoPrecio) == 0 ){
-            articulo = null
-          } else if( montoPrecioTmp.compareTo(montoPrecio) > 0 ) {
-            articulo = articuloTmp
-            articuloTmp = art
+          if (montoPrecioTmp.compareTo(montoPrecio) < 0){
+                articulo = lstArticulos.get(i);
           }
         }
       }
