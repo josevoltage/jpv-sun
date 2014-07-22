@@ -596,4 +596,40 @@ class ArticuloServiceImpl implements ArticuloService {
     }
 
 
+
+    Boolean tienenArticuloMsimoPrecio( List<Integer> lstArticulo ){
+      Boolean hasSamePrice = true
+        Articulo articulo = new Articulo()
+        Articulo articuloTmp = new Articulo()
+        List<Articulo> lstArticulos = new ArrayList<>()
+        for(Integer id : lstArticulo){
+            lstArticulos.add(articuloRepository.findOne( id ))
+        }
+        if( lstArticulos.size() > 0 ){
+            BigDecimal montoPrecio = BigDecimal.ZERO
+            List<Precio> precio = precioRepository.findByArticulo( StringUtils.trimToEmpty(lstArticulos.get(0).articulo) )
+            if( precio.size() > 0 ){
+                montoPrecio = precio.get(0).precio
+            } else {
+                montoPrecio = lstArticulos.get(0).precio
+            }
+            articulo =  lstArticulos.get(0)
+            articuloTmp = lstArticulos.get(0)
+            for(int i=1;i<lstArticulos.size();i++){
+                List<Precio> precioTmp = precioRepository.findByArticulo( StringUtils.trimToEmpty(lstArticulos.get(i).articulo) )
+                BigDecimal montoPrecioTmp = BigDecimal.ZERO
+                if( precioTmp.size() > 0 ){
+                    montoPrecioTmp = precioTmp.get(0).precio
+                } else {
+                    montoPrecioTmp = lstArticulos.get(i).precio
+                }
+                if (montoPrecioTmp.compareTo(montoPrecio) < 0 || montoPrecioTmp.compareTo(montoPrecio) > 0){
+                   hasSamePrice = false
+                }
+            }
+        }
+        return hasSamePrice
+    }
+
+
 }

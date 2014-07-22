@@ -647,8 +647,13 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           }
           if( lstArticulos.size() > 1 ){
               if( OrderController.validPromoMenorPrecio( idPromo ) ){
-                 Item it = ItemController.findArticleMinPrice( lstArticulos )
-                  Integer idArt = promotionSelectedList.appliesToList.get(0).orderDetail.sku
+                Item it = new Item()
+                Integer idArt = promotionSelectedList.appliesToList.get(0).orderDetail.sku
+                if( ItemController.areArticlesSamePrice( lstArticulos ) ){
+                  it.id = idArt
+                } else {
+                  it = ItemController.findArticleMinPrice( lstArticulos )
+                }
                   if( it != null && it.id > -1 && idArt != it.id ){
                       sb.optionPane(
                               message: "El articulo "+/"/+idArt+/"/+" no es el de menor precio.",

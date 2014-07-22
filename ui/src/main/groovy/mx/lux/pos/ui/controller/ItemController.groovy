@@ -251,6 +251,12 @@ class ItemController {
   }
 
 
+  static Boolean areArticlesSamePrice( List<Integer> idsArticulo ){
+    Boolean samePrice = articuloService.tienenArticuloMsimoPrecio( idsArticulo )
+    return samePrice
+  }
+
+
   static Boolean initializingInventory( ){
     log.debug( "initializingInventory( )" )
     Boolean inicializado = false
