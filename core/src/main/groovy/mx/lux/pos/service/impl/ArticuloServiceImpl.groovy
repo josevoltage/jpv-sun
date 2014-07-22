@@ -465,7 +465,7 @@ class ArticuloServiceImpl implements ArticuloService {
           } else {
             montoPrecioTmp = lstArticulos.get(i).precio
           }
-          if (montoPrecioTmp.compareTo(montoPrecio) < 0){
+          if (montoPrecioTmp.compareTo(montoPrecio) <= 0){
                 articulo = lstArticulos.get(i);
           }
         }
