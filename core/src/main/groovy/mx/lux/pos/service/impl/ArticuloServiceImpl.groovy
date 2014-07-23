@@ -523,7 +523,8 @@ class ArticuloServiceImpl implements ArticuloService {
         if( source.exists() && destination.exists() ){
             source.eachFileMatch( ~/.+_.+_.+\.TXT/ ) { File file ->
                 String[] archivoName = file.name.split("_")
-                String idSucursal = StringUtils.trimToEmpty(Registry.currentSite.toString())
+                 //Integer.parseInt(mystring));
+                String idSucursal = String.format("%02d", Registry.currentSite)
                 if( archivoName[0].equalsIgnoreCase( idSucursal ) ){
                     file.eachLine { String line ->
                         InventarioFisico inventarioFisico = new InventarioFisico()
