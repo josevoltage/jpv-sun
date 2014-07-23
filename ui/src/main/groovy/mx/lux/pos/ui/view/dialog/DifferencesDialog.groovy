@@ -89,7 +89,7 @@ class DifferencesDialog extends JDialog {
   protected void onGenerateFile( ) {
     Boolean generated = ItemController.generateDifferencesFile()
     if( generated ){
-        JOptionPane.showMessageDialog( new JDialog(), "El archivo de diferencias fue generado correctamente en la carpeta ${Registry.diferencesPath}",
+        JOptionPane.showMessageDialog( new JDialog(), "El archivo se genero en la carpeta ${Registry.diferencesPath}",
                 "Archivo de diferencias", JOptionPane.INFORMATION_MESSAGE )
     } else {
         JOptionPane.showMessageDialog( new JDialog(), "El archivo de diferencias no se genero correctamente",
