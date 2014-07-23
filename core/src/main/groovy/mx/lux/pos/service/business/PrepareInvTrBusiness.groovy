@@ -170,7 +170,7 @@ class PrepareInvTrBusiness {
   TransInv prepareRequest( InvTrRequest pRequest ) {
     TransInv tr = null
     Boolean valid = false
-    if(TR_TYPE_ISSUE_SALES.equalsIgnoreCase(pRequest.trType)){
+    if(TR_TYPE_ISSUE_SALES.equalsIgnoreCase(pRequest.trType) || TR_TYPE_RECEIPT_RETURN.equalsIgnoreCase(pRequest.trType)){
       valid = verifyRequestSales( pRequest )
     } else {
       valid = verifyRequest( pRequest )
