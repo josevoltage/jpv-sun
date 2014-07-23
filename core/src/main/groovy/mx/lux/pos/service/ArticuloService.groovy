@@ -68,4 +68,6 @@ interface ArticuloService {
 
   void difArticulosNoInv()
 
+  Boolean generarArchivoDiferencias( )
+
 }

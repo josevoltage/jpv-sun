@@ -188,6 +188,10 @@ class ItemController {
   }
 
 
+  static Boolean generateDifferencesFile( ){
+    return articuloService.generarArchivoDiferencias()
+  }
+
   static void generatePhysicalInventoryFile( ){
       log.debug( "generatePhysicalInventoryFile( )" )
       Boolean archGenerado = articuloService.generarArchivoInventarioFisico()

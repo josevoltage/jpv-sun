@@ -633,4 +633,30 @@ class ArticuloServiceImpl implements ArticuloService {
     }
 
 
+
+  @Override
+  Boolean generarArchivoDiferencias( ){
+    log.debug( "Generando archivo de diferencias" )
+    Boolean generated = false
+    File file = new File( "${Registry.diferencesPath}/${String.format("%02d",Registry.currentSite)}_${new Date().format("ddMMyy")}_dif.TXT" )
+    QDiferencia qDiferencia = QDiferencia.diferencia
+      List<Diferencia> lstDiferencias = diferenciaRepository.findAll( qDiferencia.diferencias.isNotNull().
+            and(qDiferencia.diferencias.goe(1).or(qDiferencia.diferencias.loe(-1))), qDiferencia.id.asc() )
+      try{
+          PrintStream strOut = new PrintStream( file )
+          StringBuffer sb = new StringBuffer()
+          //sb.append("${String.format("%02d",Registry.currentSite)}_${new Date().format("ddMMyy")}_dif.TXT")
+          for(Diferencia dif : lstDiferencias){
+              sb.append("${dif.id}|${dif.cantidadFisico}|${dif.cantidadSoi}|${dif.diferencias}|\n")
+          }
+          strOut.println sb.toString()
+          strOut.close()
+          generated = true
+      } catch ( Exception e ) {
+        println e
+      }
+     return generated
+  }
+
+
 }
