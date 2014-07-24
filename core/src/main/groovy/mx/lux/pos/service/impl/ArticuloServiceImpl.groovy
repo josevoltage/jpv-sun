@@ -647,7 +647,10 @@ class ArticuloServiceImpl implements ArticuloService {
           StringBuffer sb = new StringBuffer()
           //sb.append("${String.format("%02d",Registry.currentSite)}_${new Date().format("ddMMyy")}_dif.TXT")
           for(Diferencia dif : lstDiferencias){
-              sb.append("${dif.id}|${dif.cantidadFisico}|${dif.cantidadSoi}|${dif.diferencias}|\n")
+              String marca = StringUtils.trimToEmpty(dif.articulo.marca)
+              String articulo = StringUtils.trimToEmpty(dif.articulo.articulo)
+              String descripcion = StringUtils.trimToEmpty(dif.articulo.descripcion)
+              sb.append("${dif.id}|${marca}|${articulo}|${descripcion}|${dif.cantidadFisico}|${dif.cantidadSoi}|${dif.diferencias}|\n")
           }
           strOut.println sb.toString()
           strOut.close()
