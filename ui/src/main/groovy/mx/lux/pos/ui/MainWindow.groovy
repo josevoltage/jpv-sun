@@ -256,7 +256,8 @@ class MainWindow extends JFrame implements KeyListener {
                 )
                 generatedInventoryFileMenuItem = menuItem( text: 'Imprime Diferencias',
                         actionPerformed: {
-                          diferencesPhysicalInventoryPrint()
+                          //diferencesPhysicalInventoryPrint()
+                          receivedDifferencesFile()
                         }
                 )
                 /*diferencesInventoryFileMenuItem = menuItem( text: 'Diferencias',

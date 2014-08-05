@@ -2,6 +2,7 @@ package mx.lux.pos.ui.view.dialog
 
 import groovy.model.DefaultTableModel
 import groovy.swing.SwingBuilder
+import mx.lux.pos.service.business.Registry
 import mx.lux.pos.ui.controller.ItemController
 import mx.lux.pos.ui.model.Differences
 import mx.lux.pos.ui.resources.UI_Standards
@@ -63,6 +64,9 @@ class DifferencesDialog extends JDialog {
               button( text: "Imprimir", preferredSize: UI_Standards.BUTTON_SIZE,
                       actionPerformed: { onButtonOk() }
               )
+              button( text: "Archivo", preferredSize: UI_Standards.BUTTON_SIZE,
+                      actionPerformed: { onGenerateFile() }
+              )
               button( text: "Cerrar", preferredSize: UI_Standards.BUTTON_SIZE,
                       actionPerformed: { onButtonCancel() }
               )
@@ -80,6 +84,17 @@ class DifferencesDialog extends JDialog {
 
   protected void onButtonOk( ) {
     ItemController.printDifferences()
+  }
+
+  protected void onGenerateFile( ) {
+    Boolean generated = ItemController.generateDifferencesFile()
+    if( generated ){
+        JOptionPane.showMessageDialog( new JDialog(), "El archivo se genero en la carpeta ${Registry.diferencesPath}",
+                "Archivo de diferencias", JOptionPane.INFORMATION_MESSAGE )
+    } else {
+        JOptionPane.showMessageDialog( new JDialog(), "El archivo de diferencias no se genero correctamente",
+                "Archivo de diferencias", JOptionPane.INFORMATION_MESSAGE )
+    }
   }
 
 }

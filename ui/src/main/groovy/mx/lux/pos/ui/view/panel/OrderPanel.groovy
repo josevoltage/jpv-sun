@@ -442,8 +442,14 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             if( orderItem.item.id == promo.appliesToList.get(0).orderDetail.sku ){
               Boolean valid = true
               for(IPromotionAvailable promoSelected : promotionListSelected){
-              if( promoSelected.promotion.base.entity.idPromocion == promo.promotion.base.entity.idPromocion ){
-                valid = false
+              if( promo instanceof PromotionCombo ){
+                if( promoSelected.promotion.base.entity.idPromocion == promo.promotion.base.entity.idPromocion ){
+                  valid = false
+                }
+              } else if( promo instanceof PromotionSingle ){
+                if( promoSelected.promotion.base.entity.idPromocion == promo.promotion.entity.idPromocion ){
+                      valid = false
+                }
               }
               if( valid ){
                 for(PromotionApplied applied : promoSelected.appliesToList){
@@ -681,8 +687,13 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           }
           if( lstArticulos.size() > 1 ){
               if( OrderController.validPromoMenorPrecio( idPromo ) ){
-                 Item it = ItemController.findArticleMinPrice( lstArticulos )
-                  Integer idArt = promotionSelectedList.appliesToList.get(0).orderDetail.sku
+                Item it = new Item()
+                Integer idArt = promotionSelectedList.appliesToList.get(0).orderDetail.sku
+                if( ItemController.areArticlesSamePrice( lstArticulos ) ){
+                  it.id = idArt
+                } else {
+                  it = ItemController.findArticleMinPrice( lstArticulos )
+                }
                   if( it != null && it.id > -1 && idArt != it.id ){
                       sb.optionPane(
                               message: "El articulo "+/"/+idArt+/"/+" no es el de menor precio.",

@@ -165,14 +165,14 @@ class ItemController {
 
 
   static void receivedDifferencesFile(  ){
-      log.debug( "receivedDifferencesFile( )" )
+      /*log.debug( "receivedDifferencesFile( )" )
       Boolean recibidos = articuloService.recibeDiferencias( )
-      if( recibidos ){
+      if( recibidos ){*/
           DifferencesDialog dialog = new DifferencesDialog( )
           dialog.show()
-      } else {
+      /*} else {
           JOptionPane.showMessageDialog( new JDialog(), MSJ_DIFERENCIAS_NO_RECIBIDAS, TXT_DIFERENCIAS, JOptionPane.INFORMATION_MESSAGE )
-      }
+      }*/
   }
 
   static List<Differences> findAllDifferences( ) {
@@ -187,6 +187,10 @@ class ItemController {
     ticketService.imprimeDiferencias()
   }
 
+
+  static Boolean generateDifferencesFile( ){
+    return articuloService.generarArchivoDiferencias()
+  }
 
   static void generatePhysicalInventoryFile( ){
       log.debug( "generatePhysicalInventoryFile( )" )
@@ -209,6 +213,7 @@ class ItemController {
         if( lstInventario.size() > 0 ){
           archivoCargado = articuloService.generaDiferencias( lstInventario )
           articuloService.difArticulosNoInv()
+          archivoCargado = articuloService.cargaDiferencias( )
           dialog.dispose()
         } else {
           dialog.dispose()
@@ -247,6 +252,12 @@ class ItemController {
   static Item findArticleMinPrice( List<Integer> idsArticulo ){
     Articulo articulo = articuloService.buscaArticuloMenorPrecio( idsArticulo )
     return Item.toItem( articulo )
+  }
+
+
+  static Boolean areArticlesSamePrice( List<Integer> idsArticulo ){
+    Boolean samePrice = articuloService.tienenArticuloMsimoPrecio( idsArticulo )
+    return samePrice
   }
 
 

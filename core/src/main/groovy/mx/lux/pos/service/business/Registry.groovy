@@ -274,6 +274,10 @@ class Registry {
     return asString( TipoParametro.RUTA_POR_ENVIAR )
   }
 
+  static String getDiferencesPath( ) {
+    return asString( TipoParametro.RUTA_INVENTARIO_FISICO_DIFERENCIAS )
+  }
+
   static String getPhysicalInventoryFilePath( ) {
     return asString( TipoParametro.RUTA_INVENTARIO_FISICO )
   }

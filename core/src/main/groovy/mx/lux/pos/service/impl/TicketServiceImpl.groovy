@@ -1827,7 +1827,7 @@ class TicketServiceImpl implements TicketService {
     String sucursal = site.nombre+' ['+site.id+']'
     QDiferencia qDiferencia = QDiferencia.diferencia
     List<Diferencia> lstDiferencias = diferenciaRepository.findAll( qDiferencia.diferencias.isNotNull().
-            and(qDiferencia.diferencias.goe(1).or(qDiferencia.diferencias.loe(-1))) )
+            and(qDiferencia.diferencias.goe(1).or(qDiferencia.diferencias.loe(-1))), qDiferencia.id.asc() )
     if(lstDiferencias.size() > 0){
         def datos = [
             nombre_ticket: "ticket-diferencias",

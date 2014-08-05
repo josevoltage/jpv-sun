@@ -17,6 +17,7 @@ import javax.annotation.Resource
 
 import mx.lux.pos.model.*
 
+import java.sql.SQLException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.regex.Pattern
@@ -397,7 +398,11 @@ class ArticuloServiceImpl implements ArticuloService {
 
   @Override
   List<Diferencia> obtenerDiferencias(  ) {
-      return diferenciaRepository.findAll()
+    //return diferenciaRepository.findAll()
+    QDiferencia qDiferencia = QDiferencia.diferencia
+    List<Diferencia> lstDiferencias = diferenciaRepository.findAll( qDiferencia.diferencias.isNotNull().
+          and(qDiferencia.diferencias.goe(1).or(qDiferencia.diferencias.loe(-1))), qDiferencia.id.asc() )
+    return lstDiferencias
   }
 
 
@@ -452,22 +457,16 @@ class ArticuloServiceImpl implements ArticuloService {
         }
         articulo =  lstArticulos.get(0)
         articuloTmp = lstArticulos.get(0)
-        for(Articulo art : lstArticulos){
-          List<Precio> precioTmp = precioRepository.findByArticulo( StringUtils.trimToEmpty(art.articulo) )
+        for(int i=1;i<lstArticulos.size();i++){
+          List<Precio> precioTmp = precioRepository.findByArticulo( StringUtils.trimToEmpty(lstArticulos.get(i).articulo) )
           BigDecimal montoPrecioTmp = BigDecimal.ZERO
           if( precioTmp.size() > 0 ){
             montoPrecioTmp = precioTmp.get(0).precio
           } else {
-            montoPrecioTmp = art.precio
+            montoPrecioTmp = lstArticulos.get(i).precio
           }
-          if( montoPrecioTmp.compareTo(montoPrecio) < 0 ){
-            articulo = art
-            montoPrecio = montoPrecioTmp
-          } else if( montoPrecioTmp.compareTo(montoPrecio) == 0 ){
-            articulo = null
-          } else if( montoPrecioTmp.compareTo(montoPrecio) > 0 ) {
-            articulo = articuloTmp
-            articuloTmp = art
+          if (montoPrecioTmp.compareTo(montoPrecio) <= 0){
+                articulo = lstArticulos.get(i);
           }
         }
       }
@@ -483,9 +482,7 @@ class ArticuloServiceImpl implements ArticuloService {
           try {
             Integer cantidadFisico = diferencia.cantidadFisico != null ? diferencia.cantidadFisico : 0
             diferencia.cantidadFisico = cantidadFisico+inventario.cantidadFisico
-            diferencia.diferencias =  diferencia.cantidadSoi-inventario.cantidadFisico
             diferenciaRepository.actualizaCantFisico( diferencia.cantidadFisico, inventario.idArticulo )
-            diferenciaRepository.insertaDiferencias( diferencia.diferencias, inventario.idArticulo )
             archivoCargado = true
           } catch ( Exception e ) {
             println e
@@ -501,6 +498,23 @@ class ArticuloServiceImpl implements ArticuloService {
       return archivoCargado
     }
 
+
+    Boolean cargaDiferencias(  ) {
+      Boolean cargado = false
+      List<Diferencia> lstDiferencias = diferenciaRepository.obtenerDiferenciasPend()
+      for(Diferencia dif : lstDiferencias){
+        try{
+          diferenciaRepository.calcularDiferencias( dif.id )
+          cargado = true
+        } catch ( SQLException e ){
+          println dif.id
+          println e
+        }
+      }
+      return cargado
+    }
+
+
     List<InventarioFisico> cargaArchivoInventarioFisico(){
         File source = new File( Registry.physicalInventoryFilePath )
         File destination = new File( Registry.physicalInventoryFileReadPath )
@@ -509,7 +523,8 @@ class ArticuloServiceImpl implements ArticuloService {
         if( source.exists() && destination.exists() ){
             source.eachFileMatch( ~/.+_.+_.+\.TXT/ ) { File file ->
                 String[] archivoName = file.name.split("_")
-                String idSucursal = StringUtils.trimToEmpty(Registry.currentSite.toString())
+                 //Integer.parseInt(mystring));
+                String idSucursal = String.format("%02d", Registry.currentSite)
                 if( archivoName[0].equalsIgnoreCase( idSucursal ) ){
                     file.eachLine { String line ->
                         InventarioFisico inventarioFisico = new InventarioFisico()
@@ -571,7 +586,6 @@ class ArticuloServiceImpl implements ArticuloService {
 
     @Override
     void difArticulosNoInv(){
-      QDiferencia qDiferencia = QDiferencia.diferencia
       List<Diferencia> lstDifNoInv = diferenciaRepository.obtenerArtPend( )
       println "Cantiada articulos no inventario fisico: ${lstDifNoInv.size()}"
       for(Diferencia dif : lstDifNoInv){
@@ -579,7 +593,73 @@ class ArticuloServiceImpl implements ArticuloService {
         diferenciaRepository.actualizaCantFisico(0,dif.id)
         diferenciaRepository.insertaDiferencias( diferencia, dif.id)
       }
+      diferenciaRepository.insertaDiferenciasCero()
     }
+
+
+
+    Boolean tienenArticuloMsimoPrecio( List<Integer> lstArticulo ){
+      Boolean hasSamePrice = true
+        Articulo articulo = new Articulo()
+        Articulo articuloTmp = new Articulo()
+        List<Articulo> lstArticulos = new ArrayList<>()
+        for(Integer id : lstArticulo){
+            lstArticulos.add(articuloRepository.findOne( id ))
+        }
+        if( lstArticulos.size() > 0 ){
+            BigDecimal montoPrecio = BigDecimal.ZERO
+            List<Precio> precio = precioRepository.findByArticulo( StringUtils.trimToEmpty(lstArticulos.get(0).articulo) )
+            if( precio.size() > 0 ){
+                montoPrecio = precio.get(0).precio
+            } else {
+                montoPrecio = lstArticulos.get(0).precio
+            }
+            articulo =  lstArticulos.get(0)
+            articuloTmp = lstArticulos.get(0)
+            for(int i=1;i<lstArticulos.size();i++){
+                List<Precio> precioTmp = precioRepository.findByArticulo( StringUtils.trimToEmpty(lstArticulos.get(i).articulo) )
+                BigDecimal montoPrecioTmp = BigDecimal.ZERO
+                if( precioTmp.size() > 0 ){
+                    montoPrecioTmp = precioTmp.get(0).precio
+                } else {
+                    montoPrecioTmp = lstArticulos.get(i).precio
+                }
+                if (montoPrecioTmp.compareTo(montoPrecio) < 0 || montoPrecioTmp.compareTo(montoPrecio) > 0){
+                   hasSamePrice = false
+                }
+            }
+        }
+        return hasSamePrice
+    }
+
+
+
+  @Override
+  Boolean generarArchivoDiferencias( ){
+    log.debug( "Generando archivo de diferencias" )
+    Boolean generated = false
+    File file = new File( "${Registry.diferencesPath}/${String.format("%02d",Registry.currentSite)}_${new Date().format("ddMMyy")}_dif.TXT" )
+    QDiferencia qDiferencia = QDiferencia.diferencia
+      List<Diferencia> lstDiferencias = diferenciaRepository.findAll( qDiferencia.diferencias.isNotNull().
+            and(qDiferencia.diferencias.goe(1).or(qDiferencia.diferencias.loe(-1))), qDiferencia.id.asc() )
+      try{
+          PrintStream strOut = new PrintStream( file )
+          StringBuffer sb = new StringBuffer()
+          //sb.append("${String.format("%02d",Registry.currentSite)}_${new Date().format("ddMMyy")}_dif.TXT")
+          for(Diferencia dif : lstDiferencias){
+              String marca = StringUtils.trimToEmpty(dif.articulo.marca)
+              String articulo = StringUtils.trimToEmpty(dif.articulo.articulo)
+              String descripcion = StringUtils.trimToEmpty(dif.articulo.descripcion)
+              sb.append("${dif.id}|${marca}|${articulo}|${descripcion}|${dif.cantidadFisico}|${dif.cantidadSoi}|${dif.diferencias}|\n")
+          }
+          strOut.println sb.toString()
+          strOut.close()
+          generated = true
+      } catch ( Exception e ) {
+        println e
+      }
+     return generated
+  }
 
 
 }

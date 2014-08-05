@@ -56,12 +56,18 @@ interface ArticuloService {
 
   Articulo buscaArticuloMenorPrecio( List<Integer> lstArticulo )
 
+  Boolean tienenArticuloMsimoPrecio( List<Integer> lstArticulo )
+
   Boolean generaDiferencias( List<InventarioFisico> lstInventarioFisico )
+
+  Boolean cargaDiferencias( )
 
   List<InventarioFisico> cargaArchivoInventarioFisico()
 
   Boolean inicializarInventario( )
 
   void difArticulosNoInv()
+
+  Boolean generarArchivoDiferencias( )
 
 }
