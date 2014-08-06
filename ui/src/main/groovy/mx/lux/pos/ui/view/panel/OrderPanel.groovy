@@ -6,6 +6,7 @@ import mx.lux.pos.model.IPromotionAvailable
 import mx.lux.pos.model.PromotionApplied
 import mx.lux.pos.model.PromotionAvailable
 import mx.lux.pos.model.PromotionCombo
+import mx.lux.pos.model.PromotionDiscountType
 import mx.lux.pos.model.PromotionSingle
 import mx.lux.pos.model.SalesWithNoInventory
 import mx.lux.pos.ui.MainWindow
@@ -68,6 +69,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private JTextArea comments
   private JTextField itemSearch
   private List<IPromotionAvailable> promotionList
+  private List<IPromotionAvailable> promotionListSelected
   private List<IPromotionAvailable> promotionSelectedList
   private List<String> lstPromotioSelected
   private DefaultTableModel itemsModel
@@ -92,6 +94,8 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     order = new Order()
     customer = CustomerController.findDefaultCustomer()
     promotionList = new ArrayList<PromotionAvailable>()
+    promotionListSelected = new ArrayList<>()
+    promotionSelectedList = new ArrayList<PromotionAvailable>()
     promotionSelectedList = new ArrayList<PromotionAvailable>()
     lstPromotioSelected = new ArrayList<String>()
     this.promotionDriver.init( this )
@@ -186,7 +190,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
               mouseClicked: { MouseEvent ev -> onMouseClickedAtPromotions( ev ) },
               mouseReleased: { MouseEvent ev -> onMouseClickedAtPromotions( ev ) }
           ) {
-            promotionModel = tableModel( list: promotionList ) {
+            promotionModel = tableModel( list: promotionListSelected ) {
               closureColumn( header: "", type: Boolean, maxWidth: 25,
                   read: { row -> row.applied },
                   write: { row, newValue ->
@@ -430,6 +434,42 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             }
         }
         updateOrder( order?.id )
+      }
+    } else if ( SwingUtilities.isRightMouseButton( ev ) && ev.source.selectedElement != null ) {
+      OrderItem orderItem = ev.source.selectedElement
+      List<IPromotionAvailable> lstPromosArt = new ArrayList<>()
+      for(IPromotionAvailable promo : promotionList){
+            if( orderItem.item.id == promo.appliesToList.get(0).orderDetail.sku ){
+              Boolean valid = true
+              for(IPromotionAvailable promoSelected : promotionListSelected){
+              if( promo instanceof PromotionCombo ){
+                if( promoSelected.promotion.base.entity.idPromocion == promo.promotion.base.entity.idPromocion ){
+                  valid = false
+                }
+              } else if( promo instanceof PromotionSingle ){
+                if( promoSelected.promotion.base.entity.idPromocion == promo.promotion.entity.idPromocion ){
+                      valid = false
+                }
+              }
+              if( valid ){
+                for(PromotionApplied applied : promoSelected.appliesToList){
+                  if(applied.orderDetail.sku == orderItem.item.id){
+                    valid = false
+                  }
+                }
+              }
+            }
+            if( valid ){
+              lstPromosArt.add( promo )
+            }
+          }
+      }
+      PromotionSelectionDialog promotionSelectionDialog = new PromotionSelectionDialog( lstPromosArt, orderItem.item.id )
+      promotionSelectionDialog.show()
+      if( promotionSelectionDialog.promotionSelected != null ){
+        promotionListSelected.add( promotionSelectionDialog.promotionSelected )
+        onTogglePromotion( promotionSelectionDialog.promotionSelected, true )
+        doBindings()
       }
     }
   }
@@ -689,6 +729,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     } else {
       this.promotionSelectedList.remove( pPromotion )
       this.promotionDriver.requestCancelPromotion( pPromotion )
+      this.promotionListSelected.remove( pPromotion )
     }
   }
 
@@ -698,6 +739,10 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
 
   public List<IPromotionAvailable> getPromotionList( ) {
     return this.promotionList
+  }
+
+  public List<IPromotionAvailable> getPromotionListSelected( ) {
+        return this.promotionListSelected
   }
 
   DefaultTableModel getPromotionModel( ) {
@@ -740,6 +785,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     customer = CustomerController.findDefaultCustomer()
     // Benja: Favor de no cambiar la siguiente linea. Esta comentada porque NO debe de estar
     // this.promotionList = new ArrayList<PromotionAvailable>()
+    this.promotionListSelected.clear()
     this.promotionSelectedList.clear()
     this.getPromotionDriver().init( this )
     doBindings()

@@ -11,5 +11,7 @@ interface IPromotionDrivenPanel {
  
   List<IPromotionAvailable> getPromotionList( )
 
+  List<IPromotionAvailable> getPromotionListSelected( )
+
   void refreshData( )
 }

@@ -56,6 +56,16 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
     view.promotionModel.fireTableDataChanged()
   }
 
+  protected void updatePromotionListMenu( ) {
+    view.promotionListSelected.clear()
+    //view.promotionListSelected.addAll( this.model.listAvailablePromotions() )
+    if ( this.model.hasOrderDiscountApplied() ) {
+      view.promotionListSelected.add( this.model.orderDiscount )
+      Collections.sort( view.promotionListSelected )
+    }
+    view.promotionModel.fireTableDataChanged()
+  }
+
   // Properties
   static PromotionDriver getInstance() {
     if (instance == null) {
@@ -135,6 +145,7 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
       if ( service.requestOrderDiscount( this.model, "", discount ) ) {
         log.debug( this.model.orderDiscount.toString() )
         this.updatePromotionList()
+        this.updatePromotionListMenu()
         view.refreshData()
       } else {
         JOptionPane.showMessageDialog( view as JComponent, MSG_POST_DISCOUNT_FAILED, TXT_POST_DISCOUNT_TITLE,
