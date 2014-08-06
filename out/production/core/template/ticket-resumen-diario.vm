@@ -14,10 +14,12 @@ ${COLUMNAS}#ALINEAR_CENTRO()#SEPARACION()${LF}
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_A} ${NEGRITA} ${DOBLE_ALTURA} ${DOBLE_ANCHURA} 0)RESUMEN DIARIO${LF}
 #RESET_TEXTO()#DO()#SEPARACION()${LF}
 #FUENTE_B()#DO()#ALINEAR_IZQUIERDA()
-SUCURSAL: ${nombre_sucursal} [${id_sucursal}] #ALINEAR_DERECHA()${COLUMNA_7} ${fecha_cierre}
+#NEGRITA()#DOBLE_ALTURA()#DOBLE_ANCHURA()#FUENTE_B()#DO()#ALINEAR_DERECHA()${COLUMNA_5}${fecha_cierre}${LF}
+#RESET_TEXTO()#DO()#SIN_NEGRITA()#FUENTE_B()#DO()#ALINEAR_IZQUIERDA()SUCURSAL:
+${nombre_sucursal} [${id_sucursal}]
 #RESET_TEXTO()#DO()#SEPARACION()${LF}
 #FUENTE_B()#DO()#ALINEAR_IZQUIERDA()
-#if($estado_cierre_diario=='a') ABIERTO#else CERRADO#end#ALINEAR_DERECHA()${COLUMNA_7}#if($estado_cierre_diario=='c') ${hora_cierre}#end
+#if($estado_cierre_diario=='a') ABIERTO#else CERRADO#end#ALINEAR_DERECHA()${COLUMNA_5}#if($estado_cierre_diario=='c')     ${hora_cierre}#end
 
 #RESET_TEXTO()#DO()#SEPARACION()${LF}
 

@@ -824,7 +824,7 @@ class TicketServiceImpl implements TicketService {
       }
 
       def datos = [ nombre_ticket: 'ticket-resumen-diario',
-          fecha_cierre: MyDateUtils.format( fechaCierre, 'yyyy-MM-dd' ),
+          fecha_cierre: MyDateUtils.format( fechaCierre, 'dd-MM-yyyy' ),
           hora_cierre: cierreDiario.horaCierre != null ? MyDateUtils.format( new Date(), 'HH:mm:ss' ) : '',
           empleado: empleado.nombreCompleto(),
           id_sucursal: empleado.sucursal.id,
