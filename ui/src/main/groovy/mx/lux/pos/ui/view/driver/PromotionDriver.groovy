@@ -50,7 +50,12 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
     view.promotionList.clear()
     view.promotionList.addAll( this.model.listAvailablePromotions() )
     if ( this.model.hasOrderDiscountApplied() ) {
+      println "CLAVE CORPORATIVA: "+this.model.orderDiscount.corporateKey
       view.promotionList.add( this.model.orderDiscount )
+      if( StringUtils.trimToEmpty(this.model.orderDiscount.corporateKey).length() > 0
+              && view.promotionListSelected.size() <= 0 ){
+        view.promotionListSelected.add( this.model.orderDiscount )
+      }
       Collections.sort( view.promotionList )
     }
     view.promotionModel.fireTableDataChanged()
@@ -60,6 +65,7 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
     view.promotionListSelected.clear()
     //view.promotionListSelected.addAll( this.model.listAvailablePromotions() )
     if ( this.model.hasOrderDiscountApplied() ) {
+      println "DESCUENTO TIENDA "
       view.promotionListSelected.add( this.model.orderDiscount )
       Collections.sort( view.promotionListSelected )
     }

@@ -6,7 +6,7 @@ import mx.lux.pos.model.IPromotionAvailable
 import mx.lux.pos.model.PromotionApplied
 import mx.lux.pos.model.PromotionAvailable
 import mx.lux.pos.model.PromotionCombo
-import mx.lux.pos.model.PromotionDiscountType
+import mx.lux.pos.model.PromotionDiscount
 import mx.lux.pos.model.PromotionSingle
 import mx.lux.pos.model.SalesWithNoInventory
 import mx.lux.pos.ui.MainWindow
@@ -155,7 +155,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             )
             closureColumn(
                 header: 'Descripci\u00f3n',
-                read: {OrderItem tmp -> tmp?.description}
+                read: {OrderItem tmp -> lstPromotionsAvalibles(tmp).size() <= 0 ? tmp?.description : "**"+tmp?.description}
             )
             closureColumn(
                 header: 'Cantidad',
@@ -437,33 +437,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       }
     } else if ( SwingUtilities.isRightMouseButton( ev ) && ev.source.selectedElement != null ) {
       OrderItem orderItem = ev.source.selectedElement
-      List<IPromotionAvailable> lstPromosArt = new ArrayList<>()
-      for(IPromotionAvailable promo : promotionList){
-            if( orderItem.item.id == promo.appliesToList.get(0).orderDetail.sku ){
-              Boolean valid = true
-              for(IPromotionAvailable promoSelected : promotionListSelected){
-              if( promo instanceof PromotionCombo ){
-                if( promoSelected.promotion.base.entity.idPromocion == promo.promotion.base.entity.idPromocion ){
-                  valid = false
-                }
-              } else if( promo instanceof PromotionSingle ){
-                if( promoSelected.promotion.base.entity.idPromocion == promo.promotion.entity.idPromocion ){
-                      valid = false
-                }
-              }
-              if( valid ){
-                for(PromotionApplied applied : promoSelected.appliesToList){
-                  if(applied.orderDetail.sku == orderItem.item.id){
-                    valid = false
-                  }
-                }
-              }
-            }
-            if( valid ){
-              lstPromosArt.add( promo )
-            }
-          }
-      }
+      List<IPromotionAvailable> lstPromosArt = lstPromotionsAvalibles( orderItem )
       PromotionSelectionDialog promotionSelectionDialog = new PromotionSelectionDialog( lstPromosArt, orderItem.item.id )
       promotionSelectionDialog.show()
       if( promotionSelectionDialog.promotionSelected != null ){
@@ -800,4 +774,41 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       }
     }
   }
+
+  private List<IPromotionAvailable> lstPromotionsAvalibles ( OrderItem orderItem ){
+      List<IPromotionAvailable> lstPromosArt = new ArrayList<>()
+      for(IPromotionAvailable promo : promotionList){
+        if( promo instanceof PromotionAvailable ){
+          if( orderItem.item.id == promo.appliesToList.get(0).orderDetail.sku ){
+              Boolean valid = true
+              for(IPromotionAvailable promoSelected : promotionListSelected){
+                  if( promo instanceof PromotionCombo ){
+                      if( promoSelected.promotion.base.entity.idPromocion == promo.promotion.base.entity.idPromocion ){
+                          valid = false
+                      }
+                  } else if( promo instanceof PromotionSingle ){
+                      if( promoSelected.promotion.base.entity.idPromocion == promo.promotion.entity.idPromocion ){
+                          valid = false
+                      }
+                  }
+                  if( valid ){
+                      if( !promoSelected instanceof PromotionDiscount){
+                        for(PromotionApplied applied : promoSelected.appliesToList){
+                          if(applied.orderDetail.sku == orderItem.item.id){
+                            valid = false
+                          }
+                        }
+                      }
+                  }
+              }
+              if( valid ){
+                  lstPromosArt.add( promo )
+              }
+          }
+        }
+      }
+    return lstPromosArt
+  }
+
+
 }
