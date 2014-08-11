@@ -645,8 +645,14 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
               idPromo = promotionSelectedList.promotion.base.entity.idPromocion
               descPromo = promotionSelectedList.promotion.base.entity.descripcion
           }
+          List<PromotionAvailable> lstPromotionDiscount = new ArrayList<>()
+          for(IPromotionAvailable promo : promotionList){
+            if(!(promo instanceof PromotionDiscount)){
+              lstPromotionDiscount.add( promo )
+            }
+          }
 
-          for(PromotionAvailable promotion : promotionList){
+          for(PromotionAvailable promotion : lstPromotionDiscount){
               if( promotion.promotion instanceof PromotionSingle ){
                   idPromoList = promotion.promotion.entity.idPromocion
               } else if( promotion.promotion instanceof PromotionCombo ){
