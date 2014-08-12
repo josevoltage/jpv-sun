@@ -52,7 +52,8 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
     if ( this.model.hasOrderDiscountApplied() ) {
       println "CLAVE CORPORATIVA: "+this.model.orderDiscount.corporateKey
       view.promotionList.add( this.model.orderDiscount )
-      if( StringUtils.trimToEmpty(this.model.orderDiscount.corporateKey).length() > 0  ){
+      if( StringUtils.trimToEmpty(this.model.orderDiscount.corporateKey).length() > 0
+              && view.promotionListSelected.size() <= 0 ){
         view.promotionListSelected.add( this.model.orderDiscount )
       }
       Collections.sort( view.promotionList )
