@@ -18,6 +18,8 @@ import javax.annotation.Resource
 import mx.lux.pos.model.*
 import mx.lux.pos.repository.*
 
+import java.text.NumberFormat
+
 @Slf4j
 @Service( 'notaVentaService' )
 @Transactional( readOnly = true )
@@ -469,4 +471,38 @@ class NotaVentaServiceImpl implements NotaVentaService {
       }
       return lstNotasVentas
   }
+
+
+    @Override
+    @Transactional
+    void actualizaSubtipoAutomaticamente( ){
+        String ubicacionSource = Registry.inputFilePath
+        String ubicacionsDestination = Registry.processedFilesPath
+        File source = new File( ubicacionSource )
+        File destination = new File( ubicacionsDestination )
+        if ( source.exists() && destination.exists() ) {
+            source.eachFile() { file ->
+                if ( file.getName().startsWith( "ST" ) ) {
+                    try {
+                        file.eachLine { String pLine ->
+                            String[] data = pLine.split(/\|/)
+                            Integer idArticulo = 0
+                            try{
+                                idArticulo = NumberFormat.getInstance().parse( data[0] )
+                            } catch ( NumberFormatException e ){ println e }
+                            Articulo articulo = articuloRepository.findOne( idArticulo )
+                            if( articulo != null ){
+                                articulo.subtipo = data[1]
+                                articuloRepository.save( articulo )
+                                articuloRepository.flush()
+                            }
+                        }
+                    } catch ( Exception ex ) { System.out.println( ex ) }
+
+                    def newFile = new File( destination, file.name )
+                    def moved = file.renameTo( newFile )
+                }
+            }
+        }
+    }
 }

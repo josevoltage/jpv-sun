@@ -38,4 +38,6 @@ interface NotaVentaService {
 
   List<NotaVenta> obtenerDevolucionesPendientes( Date fecha )
 
+  void actualizaSubtipoAutomaticamente( )
+
 }

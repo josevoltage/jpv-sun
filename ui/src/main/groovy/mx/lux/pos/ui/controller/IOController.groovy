@@ -256,5 +256,8 @@ class IOController {
       ServiceManager.promotionService.cargaArchivoMensajeTicket()
     }
 
+    void autoUpdateSubtype( ) {
+        ServiceManager.orderService.actualizaSubtipoAutomaticamente()
+    }
 }
 
