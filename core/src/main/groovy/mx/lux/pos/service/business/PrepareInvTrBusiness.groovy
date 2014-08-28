@@ -139,7 +139,11 @@ class PrepareInvTrBusiness {
             genericoInvalido = StringUtils.trimToEmpty(parts.validarGenericoArticulo( part.sku ))
           }
           if( genericoInvalido.equalsIgnoreCase(TAG_GENERICO_NO_INVENTARIABLE)){
-
+            Articulo articulo = parts.buscaArticulo( part.sku )
+            genericoInvalido = ""
+            genericoInvalido = articulo.idGenerico+","+part.sku
+            valid = false
+            break
           } else if(StringUtils.trimToEmpty(genericoInvalido).length() > 0){
             genericoInvalido = genericoInvalido+","+part.sku
           }

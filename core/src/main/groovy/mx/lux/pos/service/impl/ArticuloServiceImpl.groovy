@@ -663,4 +663,11 @@ class ArticuloServiceImpl implements ArticuloService {
   }
 
 
+
+  @Override
+  Articulo buscaArticulo( Integer id ){
+    return articuloRepository.findOne( id )
+  }
+
+
 }
