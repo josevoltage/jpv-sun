@@ -452,8 +452,8 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     if ( SwingUtilities.isLeftMouseButton( ev ) ) {
       if ( ev.clickCount == 1 ) {
         if ( order.due ) {
-          new PaymentDialog( ev.component, order, null ).show()
-          updateOrder( order?.id )
+            new PaymentDialog( ev.component, order, null ).show()
+            updateOrder( order?.id )
         } else {
           sb.optionPane(
               message: 'No hay saldo para aplicar pago',

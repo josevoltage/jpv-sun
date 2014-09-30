@@ -556,5 +556,39 @@ class OrderController {
     return validaPromo
   }
 
+  static Payment readCard( String idOrder, Payment tmpPayment ){
+    Payment payment = null
+    Pago pago = new Pago()
+    pago.idFPago = tmpPayment.paymentTypeId
+    pago.idTerminal = ""
+    pago.idBancoEmisor = tmpPayment.issuerBankId
+    pago.monto = tmpPayment.amount
+    pago.idPlan = tmpPayment.planId
+    pago.plan = new mx.lux.pos.model.Plan()
+    pago.plan.id = tmpPayment.planId
+    pago.plan.descripcion = tmpPayment.plan
+    pago = pagoService.leerTarjeta( idOrder, pago )
+    if( pago != null ){
+      payment = new Payment(
+         order: pago.idFactura,
+         paymentReference: pago.referenciaPago,
+         codeReference: pago.referenciaClave,
+         username: pago.idEmpleado,
+         paymentType: pago.eTipoPago?.descripcion,
+         paymentTypeId: pago.idFPago,
+         terminal: pago.terminal?.descripcion,
+         terminalId: pago.idTerminal,
+         plan: pago.plan?.descripcion,
+         planId: pago.idPlan,
+         issuerBankId: pago.idBancoEmisor,
+         factura: pago.notaVenta?.factura,
+         amount: pago.monto,
+         refundable: pago.porDevolver,
+         date: pago.fecha
+        )
+    }
+    return payment
+  }
+
 
 }

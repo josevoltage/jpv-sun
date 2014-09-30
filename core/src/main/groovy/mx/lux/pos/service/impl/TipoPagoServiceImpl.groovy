@@ -6,6 +6,7 @@ import mx.lux.pos.model.TipoParametro
 import mx.lux.pos.repository.ParametroRepository
 import mx.lux.pos.repository.TipoPagoRepository
 import mx.lux.pos.service.TipoPagoService
+import mx.lux.pos.service.business.Registry
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -58,10 +59,35 @@ class TipoPagoServiceImpl implements TipoPagoService {
     if ( valores.any() ) {
       List<TipoPago> resultados = listarTiposPagoRegistrados()
       log.debug( "tipos de pago existentes: ${resultados*.id}" )
-      tiposPago = resultados.findAll { TipoPago tipoPago ->
-        valores.contains( tipoPago?.id?.trim() )
+      /*if(Registry.activeTpv){
+        List<String> valoresTmp = new ArrayList<>()
+        for(String val : valores){
+          if(!StringUtils.trimToEmpty(val).startsWith("TC") && !StringUtils.trimToEmpty(val).startsWith("TD")){
+            valoresTmp.add(val)
+          }
+        }
+        tiposPago = resultados.findAll { TipoPago tipoPago ->
+              valoresTmp.contains( tipoPago?.id?.trim() )
       }
-      log.debug( "tipos de pago obtenidos: ${tiposPago*.id}" )
+        TipoPago tipo = new TipoPago()
+        tipo.setId("TM")
+        tipo.setDescripcion("MN TARJETA")
+        tipo.setTipoSoi("TM")
+        tipo.setTipoCon("R")
+        tiposPago.add(tipo)
+        tipo = new TipoPago()
+        tipo.setId("TD")
+        tipo.setDescripcion("US TARJETA")
+        tipo.setTipoSoi("TD")
+        tipo.setTipoCon("R")
+        tiposPago.add(tipo)
+        log.debug( "tipos de pago obtenidos: ${tiposPago*.id}" )
+      } else {*/
+        tiposPago = resultados.findAll { TipoPago tipoPago ->
+          valores.contains( tipoPago?.id?.trim() )
+        }
+        log.debug( "tipos de pago obtenidos: ${tiposPago*.id}" )
+      //}
     }
     return tiposPago
   }
