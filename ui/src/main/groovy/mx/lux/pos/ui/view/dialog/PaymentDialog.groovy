@@ -392,7 +392,7 @@ class PaymentDialog extends JDialog implements KeyListener{
               tmpPayment.plan = StringUtils.trimToEmpty(String.format("%02d", meses ))
             }
             tmpPayment = OrderController.readCard( StringUtils.trimToEmpty(order.id), tmpPayment )
-            if(StringUtils.trimToEmpty(tmpPayment.paymentTypeId).startsWith("TD")){
+            if(tmpPayment != null && StringUtils.trimToEmpty(tmpPayment.paymentTypeId).startsWith("TD")){
               tmpPayment.planId = ""
             }
             if( tmpPayment != null ){

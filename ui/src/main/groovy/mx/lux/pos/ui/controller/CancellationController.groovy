@@ -212,4 +212,12 @@ class CancellationController {
       CausaCancelacion result = cancelacionService.causaCancelacion( id )
       return result.descripcion
   }
+
+
+  static void cancelVoucherTpv( String idOrder ){
+    cancelacionService.cancelaVoucherTpv( idOrder )
+  }
+
+
+
 }

@@ -43,5 +43,5 @@ interface TicketService {
 
   void imprimeIncidencias( Incidencia incidencia )
 
-  void imprimeVoucherTpv( GPAYAPI ctx, String copia )
+  void imprimeVoucherTpv( Pago pago, String copia )
 }

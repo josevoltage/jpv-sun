@@ -43,6 +43,8 @@ class OrderController {
 
   private static final String TAG_USD = "USD"
   private static final String TAG_TIPO_PAGO_NOTA_CREDITO = "NOT"
+  private static final String TAG_TARJETA_CREDITO = "TC"
+  private static final String TAG_TARJETA_DEBITO = "TD"
 
   @Autowired
   public OrderController(
@@ -588,6 +590,26 @@ class OrderController {
         )
     }
     return payment
+  }
+
+
+  static void printVoucherTpv( String orderId ) {
+    List<Pago> lstPagosTarj = new ArrayList<>()
+    NotaVenta nota = notaVentaService.obtenerNotaVenta( StringUtils.trimToEmpty(orderId) )
+    if(nota != null){
+      for(Pago pago : nota.pagos){
+        if( StringUtils.trimToEmpty(pago.idTerminal).contains("|") &&
+                (pago.idFPago.startsWith(TAG_TARJETA_CREDITO) || pago.idFPago.startsWith(TAG_TARJETA_DEBITO)) ){
+          lstPagosTarj.add(pago)
+        }
+      }
+    }
+    if(Registry.activeTpv && lstPagosTarj.size() > 0){
+      for(Pago pay : lstPagosTarj){
+        ticketService.imprimeVoucherTpv( pay, "ORIGINAL" )
+        ticketService.imprimeVoucherTpv( pay, "COPIA CLIENTE" )
+      }
+    }
   }
 
 

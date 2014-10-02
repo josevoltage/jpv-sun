@@ -33,7 +33,7 @@ class TipoPagoServiceImpl implements TipoPagoService {
       StringUtils.isNotBlank( tipoPago?.id )
     }
     return resultados.sort { TipoPago tipoPago ->
-      tipoPago.descripcion
+      tipoPago.tipoCon
     }
   }
 
@@ -59,35 +59,10 @@ class TipoPagoServiceImpl implements TipoPagoService {
     if ( valores.any() ) {
       List<TipoPago> resultados = listarTiposPagoRegistrados()
       log.debug( "tipos de pago existentes: ${resultados*.id}" )
-      /*if(Registry.activeTpv){
-        List<String> valoresTmp = new ArrayList<>()
-        for(String val : valores){
-          if(!StringUtils.trimToEmpty(val).startsWith("TC") && !StringUtils.trimToEmpty(val).startsWith("TD")){
-            valoresTmp.add(val)
-          }
-        }
-        tiposPago = resultados.findAll { TipoPago tipoPago ->
-              valoresTmp.contains( tipoPago?.id?.trim() )
+      tiposPago = resultados.findAll { TipoPago tipoPago ->
+        valores.contains( tipoPago?.id?.trim() )
       }
-        TipoPago tipo = new TipoPago()
-        tipo.setId("TM")
-        tipo.setDescripcion("MN TARJETA")
-        tipo.setTipoSoi("TM")
-        tipo.setTipoCon("R")
-        tiposPago.add(tipo)
-        tipo = new TipoPago()
-        tipo.setId("TD")
-        tipo.setDescripcion("US TARJETA")
-        tipo.setTipoSoi("TD")
-        tipo.setTipoCon("R")
-        tiposPago.add(tipo)
-        log.debug( "tipos de pago obtenidos: ${tiposPago*.id}" )
-      } else {*/
-        tiposPago = resultados.findAll { TipoPago tipoPago ->
-          valores.contains( tipoPago?.id?.trim() )
-        }
-        log.debug( "tipos de pago obtenidos: ${tiposPago*.id}" )
-      //}
+      log.debug( "tipos de pago obtenidos: ${tiposPago*.id}" )
     }
     return tiposPago
   }

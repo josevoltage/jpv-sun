@@ -54,6 +54,8 @@ class TicketServiceImpl implements TicketService {
   private static final String TAG_TRANSACCION_ENTRADA = 'E'
   private static final String TAG_TRANSACCION_SALIDA = 'S'
   private static final String TAG_FORMA_PAGO_USD = "EFD";
+  private static final String TAG_FORMA_PAGO_TC = "TC";
+  private static final String TAG_FORMA_PAGO_TD = "TD";
   //private static final String TAG_TRANSACCION_ENTRADA_TIENDA = 'ENTRADA_TIENDA'
   //private static final String TAG_TRANSACCION_SALIDA_TIENDA = 'SALIDA_TIENDA'
 
@@ -1867,29 +1869,35 @@ class TicketServiceImpl implements TicketService {
   }
 
 
-  void imprimeVoucherTpv( GPAYAPI ctx, String copia ){
+  void imprimeVoucherTpv( Pago pago, String copia ){
     log.debug( "imprimeVoucherTpv( )" )
     AddressAdapter companyAddress = Registry.companyAddress
     Boolean meses = false
-    if( ctx.GetInteger("trn_qty_pay") > 1 ){
+    Integer months = 0
+    try{
+      months = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).intValue()
+    } catch ( NumberFormatException e ){ println e }
+    if( months > 1 ){
       meses = true
     }
-    String fecha = new Date().format("dd-MM-yyyy")
-    String hora= new Date().format("HH:mm")
-    String[] fechaHora = ctx.GetString("trn_fechaTrans").split(" ")
-    if( fechaHora.length > 1 ){
-      fecha = fechaHora[0]
-      hora = fechaHora[1]
+    String fecha = pago.fecha.format("dd-MM-yyyy")
+    String hora= pago.fecha.format("HH:mm")
+    String idSucursal = parametroRepository.findOne( TipoParametro.ID_SUCURSAL.value )?.valor
+    Sucursal sucursal = sucursalRepository.findOne( idSucursal?.toInteger() )
+    String[] data = pago.idTerminal.split(/\|/)
+    String producto = ""
+    String operacion = ""
+    String aid = ""
+    String arqc = ""
+    String cliente = ""
+    if( data.length >= 5 ){
+      producto = data[0]
+      operacion = data[1]
+      aid = data[2]
+      arqc = data[3]
+      cliente = data[4]
     }
-    String tipo = ""
-    if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("0")){
-      tipo = "NO IDENTIFICADO"
-    } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("1")){
-      tipo = "CREDITO"
-    } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("2")){
-      tipo = "DEBITO"
-    }
-    if(ctx != null){
+    if(pago != null){
       def datos = [
           fecha: fecha,
           hora: hora,
@@ -1898,17 +1906,17 @@ class TicketServiceImpl implements TicketService {
           direccionEmpresa1: companyAddress.address_1,
           direccionEmpresa2: companyAddress.address_2,
           direccionEmpresa3: companyAddress.address_3,
-          tarjeta: ctx.GetString("trn_card_number"),
-          producto: ctx.GetString("trn_pro_name"),
+          tarjeta: pago.referenciaPago,
+          producto: producto,
           meses: meses,
-          tipo: tipo,
-          plan: ctx.GetInteger("trn_qty_pay"),
-          estatus: ctx.GetString("trn_msg_host"),
-          numAutorizacion: ctx.GetString("trn_auth_code"),
-          operacion: ctx.GetString("trn_id"),
-          aid: ctx.GetString("trn_aid"),
-          arqc: ctx.GetString("trn_arqc "),
-          cliente: ctx.GetString("trn_cardholder_name")
+          tipo: StringUtils.trimToEmpty(pago.idFPago).startsWith(TAG_FORMA_PAGO_TC) ? "CREDITO" : "DEBITO",
+          plan: months,
+          estatus: "APROVADA",
+          numAutorizacion: pago.referenciaClave,
+          operacion: operacion,
+          aid: aid,
+          arqc: arqc,
+          cliente: cliente
       ]
       imprimeTicket( 'template/ticket-tpv.vm', datos )
     } else {

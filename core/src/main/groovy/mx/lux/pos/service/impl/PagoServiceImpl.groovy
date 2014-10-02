@@ -18,6 +18,7 @@ import mx.lux.pos.service.NotaVentaService
 import mx.lux.pos.service.TicketService
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateUtils
+import org.omg.IOP.TAG_JAVA_CODEBASE
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import subtech.GPAYAPI
@@ -44,6 +45,9 @@ class PagoServiceImpl implements PagoService {
 
   @Resource
   private TicketService ticketService
+
+  private String TAG_TC = "TC"
+  private String TAG_TD = "TD"
 
   @Override
   Pago obtenerPago( Integer id ) {
@@ -131,7 +135,16 @@ class PagoServiceImpl implements PagoService {
       ctx.SetString( "trn_usr_id", user )
       ctx.SetString( "trn_password", pass )
       ctx.SetString( "dcs_reply_get", "localhost" )
-      ctx.SetFloat( "trn_amount", pago.monto.doubleValue() )
+      if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("TCD") ){
+        Double montoDolares = 0.00
+        try{
+          montoDolares = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).doubleValue()
+        } catch( NumberFormatException e ){ println e }
+        ctx.SetFloat( "trn_amount", montoDolares )
+      } else{
+        ctx.SetFloat( "trn_amount", pago.monto.doubleValue() )
+      }
+
       if( StringUtils.trimToEmpty(pago.idFPago).startsWith("TD") || StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("TCD") ){
         ctx.SetInteger( "trn_qty_pay", 1 )
       } else {
@@ -156,10 +169,18 @@ class PagoServiceImpl implements PagoService {
           pago.monto = ctx.GetFloat( "trn_amount" )
           pago.clave = ctx.GetString( "trn_card_number" )
           pago.referenciaClave = ctx.GetString( "trn_auth_code" )
-          pago.idTerminal = ctx.GetInteger( "trn_external_ter_id" )
+          pago.idTerminal = ctx.GetString("trn_pro_name")+"|"+ctx.GetString("trn_id")+"|"+ctx.GetString("trn_aid")+"|"+ctx.GetString("trn_arqc ")+"|"+ctx.GetString("trn_cardholder_name")
           pago.idPlan = ctx.GetInteger( "trn_qty_pay" )
-          ticketService.imprimeVoucherTpv( ctx, "ORIGINAL" )
-          ticketService.imprimeVoucherTpv( ctx, "COPIA CLIENTE" )
+          String tipo = ""
+          if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("1")){
+            if( pago.idFPago.startsWith(TAG_TD) ){
+              pago.idFPago = "TCM"
+            }
+          } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("2")){
+            if( pago.idFPago.startsWith(TAG_TC) ){
+                  pago.idFPago = "TDM"
+            }
+          }
           ctx.TCP_Close();
       } else {
           println( "ERROR AL VALIDAR PAGO" ) ;

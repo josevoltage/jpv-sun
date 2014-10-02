@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import subtech.GPAYAPI
 
 import javax.annotation.Resource
 
@@ -416,4 +417,30 @@ class CancelacionServiceImpl implements CancelacionService {
         log.debug("obtiene causa: ${causa?.descripcion}")
         return causa != null ? causa : null
     }
+
+
+
+  @Override
+  void cancelaVoucherTpv( Integer idPago ){
+    Pago pago = pagoRepository.findOne(idPago)
+    if( pago != null ){
+      String host = Registry.hostTpv
+      Integer puerto = Registry.portTpv
+      Integer timeout = Registry.timeoutTpv
+      String user = Registry.userTpv
+      String pass = Registry.passTpv
+      String transaccion = ""
+      GPAYAPI ctx = new GPAYAPI();
+      ctx.SetAttribute( "HOST", host );
+      ctx.SetAttribute( "PORT", puerto )
+      ctx.SetAttribute( "TIMEOUT", timeout );
+      ctx.SetString( "dcs_form", "T060S000" )
+      ctx.SetString( "trn_usr_id", user )
+      ctx.SetString( "trn_password", pass )
+      ctx.SetString( "dcs_reply_get", "localhost" )
+    }
+  }
+
+
+
 }
