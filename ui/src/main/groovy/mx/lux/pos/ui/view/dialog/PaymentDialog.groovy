@@ -173,7 +173,12 @@ class PaymentDialog extends JDialog implements KeyListener{
       bean( issuer, text: bind( source: tmpPayment, sourceProperty: 'issuerBankId', mutual: true ) )
       bean( terminal, selectedItem: bind( source: tmpPayment, sourceProperty: 'terminal', mutual: true ) )
       bean( plan, selectedItem: bind( source: tmpPayment, sourceProperty: 'plan', mutual: true ) )
-      bean( dollarsReceived, text: bind( source: tmpPayment, sourceProperty: 'planId', mutual: true ) )
+
+      if( activeTpv ){
+        dollarsReceived.text = ""
+      } else {
+        bean( dollarsReceived, text: bind( source: tmpPayment, sourceProperty: 'planId', mutual: true ) )
+      }
     }
   }
 
@@ -195,23 +200,7 @@ class PaymentDialog extends JDialog implements KeyListener{
             ).createDialog( this, 'Pago sin saldo' )
                 .show()
           }
-        }/* else if ( Registry.activeTpv && (paymentType?.id.startsWith( 'TC' ) || paymentType?.id.startsWith( 'TD' )) ){
-          Payment response = OrderController.readCard( StringUtils.trimToEmpty(order.id), StringUtils.trimToEmpty(paymentType?.id) )
-          if( response != null ){
-            response.paymentTypeId = paymentType?.id
-            tmpPayment = response
-            //if ( isValid( order ) ) {
-              OrderController.addPaymentToOrder( order.id, tmpPayment )
-              dispose()
-            //}
-          } else {
-              sb.optionPane(
-                  message: 'Error de conexion en terminal. Notifique a Soporte Tecnico',
-                  messageType: JOptionPane.ERROR_MESSAGE
-              ).createDialog( this, 'Error en TPV' ).show()
-              dispose()
-          }
-        } */else {
+        } else {
           tmpPayment.paymentTypeId = paymentType?.id
           if ( StringUtils.isNotBlank( paymentType?.f1 ) ) {
             if( paymentType?.id?.startsWith("TC") || paymentType?.id?.startsWith("TD") ){
@@ -261,7 +250,14 @@ class PaymentDialog extends JDialog implements KeyListener{
           if ( StringUtils.isNotBlank( paymentType?.f5 ) ) {
             planLabel.visible = true
             planLabel.text = paymentType.f5
-            plan.visible = true
+            if( activeTpv && (paymentType?.id?.startsWith("TC") || paymentType?.id?.startsWith("TD")) ){
+              dollarsReceived.visible = true
+              plan.visible = false
+              mediumLabel.visible = false
+              medium.visible = false
+            } else {
+              plan.visible = true
+            }
           }
           if( PaymentController.findTypePaymentsDollar(paymentType?.id) ){
             dollarsReceivedLabel.visible = true
@@ -387,6 +383,14 @@ class PaymentDialog extends JDialog implements KeyListener{
     source.enabled = false
     if ( isValid( order ) ) {
         if ( activeTpv && (tmpPayment?.paymentTypeId?.startsWith( 'TC' ) || tmpPayment?.paymentTypeId?.startsWith( 'TD' )) ){
+            if( dollarsReceived.visible ){
+              Integer meses = 1
+              try{
+                meses = NumberFormat.getInstance().parse( dollarsReceived.text )
+              } catch ( NumberFormatException e ){ println e }
+              tmpPayment.planId = StringUtils.trimToEmpty(String.format("%02d", meses ))
+              tmpPayment.plan = StringUtils.trimToEmpty(String.format("%02d", meses ))
+            }
             tmpPayment = OrderController.readCard( StringUtils.trimToEmpty(order.id), tmpPayment )
             if(StringUtils.trimToEmpty(tmpPayment.paymentTypeId).startsWith("TD")){
               tmpPayment.planId = ""
@@ -396,9 +400,9 @@ class PaymentDialog extends JDialog implements KeyListener{
               dispose()
             } else {
                 sb.optionPane(
-                        message: 'Error de conexion en terminal. Notifique a Soporte Tecnico',
+                        message: 'Error al procesar pago en terminal.',
                         messageType: JOptionPane.ERROR_MESSAGE
-                ).createDialog( this, 'Error en TPV' ).show()
+                ).createDialog( this, 'Error' ).show()
                 dispose()
             }
         } else {

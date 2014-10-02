@@ -1,6 +1,7 @@
 package mx.lux.pos.service
 
 import mx.lux.pos.model.*
+import subtech.GPAYAPI
 
 interface TicketService {
 
@@ -41,4 +42,6 @@ interface TicketService {
   void imprimeDiferencias(  )
 
   void imprimeIncidencias( Incidencia incidencia )
+
+  void imprimeVoucherTpv( GPAYAPI ctx, String copia )
 }

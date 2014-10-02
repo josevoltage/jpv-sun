@@ -9,6 +9,7 @@ import mx.lux.pos.model.PromotionCombo
 import mx.lux.pos.model.PromotionDiscount
 import mx.lux.pos.model.PromotionSingle
 import mx.lux.pos.model.SalesWithNoInventory
+import mx.lux.pos.service.business.Registry
 import mx.lux.pos.ui.MainWindow
 import mx.lux.pos.ui.resources.UI_Standards
 import mx.lux.pos.ui.view.component.DiscountContextMenu
@@ -56,6 +57,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private static final String TXT_QUITAR_PAGOS = 'Error al cerrar sesion.'
   private static final String MSJ_CAMBIAR_VENDEDOR = 'Esta seguro que desea salir de esta sesion.'
   private static final String TXT_CAMBIAR_VENDEDOR = 'Cerrar Sesion'
+
+  private static final String TAG_TC = 'TC'
+  private static final String TAG_TD = 'TD'
 
   private Logger logger = LoggerFactory.getLogger(this.getClass())
   private SwingBuilder sb
@@ -468,8 +472,13 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private def doShowPaymentClick = { MouseEvent ev ->
     if ( SwingUtilities.isLeftMouseButton( ev ) ) {
       if ( ev.clickCount == 2 ) {
-        new PaymentDialog( ev.component, order, ev.source.selectedElement ).show()
-        updateOrder( order?.id )
+        Payment pay = ev.source.selectedElement
+        if(Registry.activeTpv && (pay.paymentTypeId.startsWith(TAG_TC) || pay.paymentTypeId.startsWith(TAG_TD)) ){
+
+        } else {
+          new PaymentDialog( ev.component, order, ev.source.selectedElement ).show()
+          updateOrder( order?.id )
+        }
       }
     }
   }

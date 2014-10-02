@@ -19,6 +19,7 @@ import org.springframework.format.number.CurrencyFormatter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.velocity.VelocityEngineUtils
+import subtech.GPAYAPI
 
 import javax.xml.bind.DatatypeConverter
 import java.awt.image.BufferedImage
@@ -1863,6 +1864,56 @@ class TicketServiceImpl implements TicketService {
       } else {
           log.debug( String.format( 'No existe registro de incidencias' ) )
       }
+  }
+
+
+  void imprimeVoucherTpv( GPAYAPI ctx, String copia ){
+    log.debug( "imprimeVoucherTpv( )" )
+    AddressAdapter companyAddress = Registry.companyAddress
+    Boolean meses = false
+    if( ctx.GetInteger("trn_qty_pay") > 1 ){
+      meses = true
+    }
+    String fecha = new Date().format("dd-MM-yyyy")
+    String hora= new Date().format("HH:mm")
+    String[] fechaHora = ctx.GetString("trn_fechaTrans").split(" ")
+    if( fechaHora.length > 1 ){
+      fecha = fechaHora[0]
+      hora = fechaHora[1]
+    }
+    String tipo = ""
+    if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("0")){
+      tipo = "NO IDENTIFICADO"
+    } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("1")){
+      tipo = "CREDITO"
+    } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("2")){
+      tipo = "DEBITO"
+    }
+    if(ctx != null){
+      def datos = [
+          fecha: fecha,
+          hora: hora,
+          copia: copia,
+          nombreEmpresa: companyAddress.shortName,
+          direccionEmpresa1: companyAddress.address_1,
+          direccionEmpresa2: companyAddress.address_2,
+          direccionEmpresa3: companyAddress.address_3,
+          tarjeta: ctx.GetString("trn_card_number"),
+          producto: ctx.GetString("trn_pro_name"),
+          meses: meses,
+          tipo: tipo,
+          plan: ctx.GetInteger("trn_qty_pay"),
+          estatus: ctx.GetString("trn_msg_host"),
+          numAutorizacion: ctx.GetString("trn_auth_code"),
+          operacion: ctx.GetString("trn_id"),
+          aid: ctx.GetString("trn_aid"),
+          arqc: ctx.GetString("trn_arqc "),
+          cliente: ctx.GetString("trn_cardholder_name")
+      ]
+      imprimeTicket( 'template/ticket-tpv.vm', datos )
+    } else {
+      log.debug( String.format( 'No existe registro de tarjeta' ) )
+    }
   }
 
 

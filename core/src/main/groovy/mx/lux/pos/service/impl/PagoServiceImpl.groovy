@@ -15,6 +15,7 @@ import mx.lux.pos.repository.RetornoRepository
 import mx.lux.pos.service.CLibrary
 import mx.lux.pos.service.PagoService
 import mx.lux.pos.service.NotaVentaService
+import mx.lux.pos.service.TicketService
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.stereotype.Service
@@ -40,6 +41,9 @@ class PagoServiceImpl implements PagoService {
 
   @Resource
   private RetornoRepository retornoRepository
+
+  @Resource
+  private TicketService ticketService
 
   @Override
   Pago obtenerPago( Integer id ) {
@@ -128,7 +132,7 @@ class PagoServiceImpl implements PagoService {
       ctx.SetString( "trn_password", pass )
       ctx.SetString( "dcs_reply_get", "localhost" )
       ctx.SetFloat( "trn_amount", pago.monto.doubleValue() )
-      if( StringUtils.trimToEmpty(pago.idFPago).startsWith("TD") ){
+      if( StringUtils.trimToEmpty(pago.idFPago).startsWith("TD") || StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("TCD") ){
         ctx.SetInteger( "trn_qty_pay", 1 )
       } else {
         Integer plan = 1
@@ -146,7 +150,7 @@ class PagoServiceImpl implements PagoService {
 
       int execute = ctx.Execute()
       println "Respuesta de la ejecucion: "+execute
-      if ( execute == 0 ){
+      if ( execute == 0 && StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ){
           pago.idFactura = idOrder
           pago.referenciaPago = ctx.GetString( "trn_card_number" )
           pago.monto = ctx.GetFloat( "trn_amount" )
@@ -154,12 +158,15 @@ class PagoServiceImpl implements PagoService {
           pago.referenciaClave = ctx.GetString( "trn_auth_code" )
           pago.idTerminal = ctx.GetInteger( "trn_external_ter_id" )
           pago.idPlan = ctx.GetInteger( "trn_qty_pay" )
+          ticketService.imprimeVoucherTpv( ctx, "ORIGINAL" )
+          ticketService.imprimeVoucherTpv( ctx, "COPIA CLIENTE" )
           ctx.TCP_Close();
       } else {
-          println( "ERROR AL EJECUTAR" ) ;
+          println( "ERROR AL VALIDAR PAGO" ) ;
           ctx.ClearAttributes()
           ctx.ClearFields()
           ctx.TCP_Close();
+          pago = null
       }
       ctx.ClearFields();
     return pago
