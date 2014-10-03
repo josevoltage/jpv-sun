@@ -1965,6 +1965,9 @@ class TicketServiceImpl implements TicketService {
             tdm: pagosTdm.size() > 0,
             tcm: pagosTcm.size() > 0,
             tcd: pagosTcd.size() > 0,
+            tdmTotal: pagosTdm.size(),
+            tcmTotal: pagosTcm.size(),
+            tcdTotal: pagosTcd.size(),
       ]
       imprimeTicket( 'template/ticket-resumen-tarjetas.vm', datos )
     } else {
