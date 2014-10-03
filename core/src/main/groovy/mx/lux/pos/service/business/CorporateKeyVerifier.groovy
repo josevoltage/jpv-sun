@@ -29,9 +29,11 @@ class CorporateKeyVerifier {
     }
     
     // Dig 7 = Val 7
-    if ( verified ) {
+    /*if ( verified ) {
+      println Integer.valueOf( key.substring( 6, 7 ) )
+      println valueOf( key, 7 )
       verified = Integer.valueOf( key.substring( 6, 7 ) ) == valueOf( key, 7 )
-    }
+    }*/
     
     return verified
   }

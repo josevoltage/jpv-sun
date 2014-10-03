@@ -90,7 +90,16 @@ class PromotionEngine {
   }
 
   Boolean verifyCorporateKey( String pCorporateKey, Double pDiscountPct ) {
-    String key = StringUtils.trimToEmpty( pCorporateKey )
+    String keyTmp = StringUtils.trimToEmpty( pCorporateKey )
+    keyTmp = keyTmp.substring(0,keyTmp.length()-1)
+    String key = ""
+    for(int i=0;i<keyTmp.length();i++){
+      if(keyTmp.charAt(i).isDigit()){
+        key = key+keyTmp.charAt(i)
+      } else {
+        key = key+"0"
+      }
+    }
     Boolean verified = ( ( key.length() == 7 ) && ( StringUtils.isNumeric( key ) ) )
 
     // Verify Key is well formed
@@ -100,8 +109,8 @@ class PromotionEngine {
 
     // Verify discount is under restriction
     if ( verified ) {
-      Double pTopDiscount = NumberUtils.createDouble( key.substring( 1, 3 ) )
-      verified = ( pDiscountPct < pTopDiscount || pDiscountPct == 100.0 )
+      Double pTopDiscount = NumberUtils.createDouble( key.substring( 4, 7 ) )
+      verified = ( pDiscountPct <= pTopDiscount )
     }
 
     // Verify discount has not been registered
