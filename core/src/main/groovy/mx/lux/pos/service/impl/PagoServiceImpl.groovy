@@ -1,8 +1,5 @@
 package mx.lux.pos.service.impl
 
-import com.sun.jna.Library
-import com.sun.jna.Native
-import com.sun.jna.Platform
 import groovy.util.logging.Slf4j
 import mx.lux.pos.model.Pago
 import mx.lux.pos.model.NotaVenta

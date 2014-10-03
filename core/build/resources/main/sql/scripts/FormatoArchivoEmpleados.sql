@@ -1,1 +1,0 @@
-UPDATE gparametro SET valor = 'emp*.txt' where id_parametro = 'archivo_empleados';

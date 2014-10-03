@@ -38,7 +38,7 @@ allprojects {
 
   repositories {
     ivy { 
-        url "/jpv-sun/lib/contents"
+        url "/soi/lib/contents"
         layout 'pattern', {
             artifact "[module]/[revision]/[type]/[artifact]-[revision].[ext]"
             ivy "[module]/[revision]/ivy.xml"
