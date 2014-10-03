@@ -203,8 +203,8 @@ class PaymentDialog extends JDialog implements KeyListener{
         } else {
           tmpPayment.paymentTypeId = paymentType?.id
           if ( StringUtils.isNotBlank( paymentType?.f1 ) ) {
-            if( paymentType?.id?.startsWith("TC") || paymentType?.id?.startsWith("TD") ){
-              if( !activeTpv ){
+            if( paymentType?.id?.contains("TPV") ){
+              if(!activeTpv){
                 mediumLabel.visible = true
                 mediumLabel.text = paymentType.f1
                 medium.visible = true
@@ -217,8 +217,8 @@ class PaymentDialog extends JDialog implements KeyListener{
 
           }
           if ( StringUtils.isNotBlank( paymentType?.f2 ) ) {
-            if( paymentType?.id?.startsWith("TC") || paymentType?.id?.startsWith("TD") ){
-              if( !activeTpv ){
+            if( paymentType?.id?.contains("TPV") ){
+              if(!activeTpv){
                 codeLabel.visible = true
                 codeLabel.text = paymentType.f2
                 code.visible = true
@@ -235,8 +235,8 @@ class PaymentDialog extends JDialog implements KeyListener{
             issuer.visible = true
           }
           if ( StringUtils.isNotBlank( paymentType?.f4 ) ) {
-            if( paymentType?.id?.startsWith("TC") || paymentType?.id?.startsWith("TD") ){
-              if( !activeTpv ){
+            if( paymentType?.id?.contains("TPV") ){
+              if(!activeTpv){
                 terminalLabel.visible = true
                 terminalLabel.text = paymentType.f4
                 terminal.visible = true
@@ -250,7 +250,7 @@ class PaymentDialog extends JDialog implements KeyListener{
           if ( StringUtils.isNotBlank( paymentType?.f5 ) ) {
             planLabel.visible = true
             planLabel.text = paymentType.f5
-            if( activeTpv && (paymentType?.id?.startsWith("TC") || paymentType?.id?.startsWith("TD")) ){
+            if( activeTpv && paymentType?.id?.contains("TPV") ){
               dollarsReceived.visible = true
               plan.visible = false
               mediumLabel.visible = false
@@ -382,6 +382,8 @@ class PaymentDialog extends JDialog implements KeyListener{
     JButton source = ev.source as JButton
     source.enabled = false
     if ( isValid( order ) ) {
+        println "TEst: "+ tmpPayment?.paymentTypeId
+        println "TEst1: "+ tmpPayment?.paymentType
         if ( activeTpv && (tmpPayment?.paymentTypeId?.startsWith( 'TC' ) || tmpPayment?.paymentTypeId?.startsWith( 'TD' )) ){
             if( dollarsReceived.visible ){
               Integer meses = 1

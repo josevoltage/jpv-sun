@@ -53,14 +53,34 @@ class TipoPagoServiceImpl implements TipoPagoService {
   List<TipoPago> listarTiposPagoActivos( ) {
     log.info( "listando tipos de pago activos" )
     List<TipoPago> tiposPago = [ ]
+    List<TipoPago> tiposPagoTmp = [ ]
     Parametro parametro = parametroRepository.findOne( TipoParametro.TIPO_PAGO.value )
     String[] valores = parametro?.valores
     log.debug( "obteniendo parametro de formas de pago activas id: ${parametro?.id} valores: ${valores}" )
     if ( valores.any() ) {
       List<TipoPago> resultados = listarTiposPagoRegistrados()
       log.debug( "tipos de pago existentes: ${resultados*.id}" )
-      tiposPago = resultados.findAll { TipoPago tipoPago ->
+      tiposPagoTmp = resultados.findAll { TipoPago tipoPago ->
         valores.contains( tipoPago?.id?.trim() )
+      }
+      tiposPago.addAll(tiposPagoTmp)
+      if( Registry.activeTpv ){
+        for(TipoPago tipoPago : tiposPagoTmp){
+          if(StringUtils.trimToEmpty(tipoPago.id).startsWith("TC") ||
+                  StringUtils.trimToEmpty(tipoPago.id).startsWith("TD")){
+            TipoPago tipoPagoTpv = new TipoPago()
+            tipoPagoTpv.id = tipoPago.id+"TPV"
+            tipoPagoTpv.descripcion = "[TPV]"+tipoPago.descripcion
+            tipoPagoTpv.tipoSoi = tipoPago.tipoSoi
+            tipoPagoTpv.tipoCon = tipoPago.tipoCon
+            tipoPagoTpv.f1 = tipoPago.f1
+            tipoPagoTpv.f2 = tipoPago.f2
+            tipoPagoTpv.f3 = tipoPago.f3
+            tipoPagoTpv.f4 = tipoPago.f4
+            tipoPagoTpv.f5 = tipoPago.f5
+            tiposPago.add(tipoPagoTpv)
+          }
+        }
       }
       log.debug( "tipos de pago obtenidos: ${tiposPago*.id}" )
     }
