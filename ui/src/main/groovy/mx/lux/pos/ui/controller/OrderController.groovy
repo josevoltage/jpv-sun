@@ -43,6 +43,8 @@ class OrderController {
 
   private static final String TAG_USD = "USD"
   private static final String TAG_TIPO_PAGO_NOTA_CREDITO = "NOT"
+  private static final String TAG_TARJETA_CREDITO = "TC"
+  private static final String TAG_TARJETA_DEBITO = "TD"
 
   @Autowired
   public OrderController(
@@ -554,6 +556,60 @@ class OrderController {
       }
     }
     return validaPromo
+  }
+
+  static Payment readCard( String idOrder, Payment tmpPayment ){
+    Payment payment = null
+    Pago pago = new Pago()
+    pago.idFPago = tmpPayment.paymentTypeId
+    pago.idTerminal = ""
+    pago.idBancoEmisor = tmpPayment.issuerBankId
+    pago.monto = tmpPayment.amount
+    pago.idPlan = tmpPayment.planId
+    pago.plan = new mx.lux.pos.model.Plan()
+    pago.plan.id = tmpPayment.planId
+    pago.plan.descripcion = tmpPayment.plan
+    pago = pagoService.leerTarjeta( idOrder, pago )
+    if( pago != null ){
+      payment = new Payment(
+         order: pago.idFactura,
+         paymentReference: pago.referenciaPago,
+         codeReference: pago.referenciaClave,
+         username: pago.idEmpleado,
+         paymentType: pago.eTipoPago?.descripcion,
+         paymentTypeId: pago.idFPago,
+         terminal: pago.terminal?.descripcion,
+         terminalId: pago.idTerminal,
+         plan: pago.plan?.descripcion,
+         planId: pago.idPlan,
+         issuerBankId: pago.idBancoEmisor,
+         factura: pago.notaVenta?.factura,
+         amount: pago.monto,
+         refundable: pago.porDevolver,
+         date: pago.fecha
+        )
+    }
+    return payment
+  }
+
+
+  static void printVoucherTpv( String orderId ) {
+    List<Pago> lstPagosTarj = new ArrayList<>()
+    NotaVenta nota = notaVentaService.obtenerNotaVenta( StringUtils.trimToEmpty(orderId) )
+    if(nota != null){
+      for(Pago pago : nota.pagos){
+        if( StringUtils.trimToEmpty(pago.idTerminal).contains("|") &&
+                (pago.idFPago.startsWith(TAG_TARJETA_CREDITO) || pago.idFPago.startsWith(TAG_TARJETA_DEBITO)) ){
+          lstPagosTarj.add(pago)
+        }
+      }
+    }
+    if(Registry.activeTpv && lstPagosTarj.size() > 0){
+      for(Pago pay : lstPagosTarj){
+        ticketService.imprimeVoucherTpv( pay, "ORIGINAL" )
+        ticketService.imprimeVoucherTpv( pay, "COPIA CLIENTE" )
+      }
+    }
   }
 
 

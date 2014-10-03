@@ -6,6 +6,7 @@ import mx.lux.pos.model.TipoParametro
 import mx.lux.pos.repository.ParametroRepository
 import mx.lux.pos.repository.TipoPagoRepository
 import mx.lux.pos.service.TipoPagoService
+import mx.lux.pos.service.business.Registry
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -32,7 +33,7 @@ class TipoPagoServiceImpl implements TipoPagoService {
       StringUtils.isNotBlank( tipoPago?.id )
     }
     return resultados.sort { TipoPago tipoPago ->
-      tipoPago.descripcion
+      tipoPago.tipoCon
     }
   }
 

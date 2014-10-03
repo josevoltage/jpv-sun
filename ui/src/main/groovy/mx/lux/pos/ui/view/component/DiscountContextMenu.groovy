@@ -1,6 +1,7 @@
 package mx.lux.pos.ui.view.component
 
 import groovy.swing.SwingBuilder
+import mx.lux.pos.service.business.Registry
 import mx.lux.pos.ui.view.driver.PromotionDriver
 
 import java.awt.event.MouseEvent
@@ -22,7 +23,7 @@ class DiscountContextMenu extends JPopupMenu {
   protected buildUI( ) {
     sb.popupMenu( this ) {
       menuDiscount = menuItem( text: "Descuento Tienda",
-        visible: true,
+        visible: Registry.activeStoreDiscount,
         actionPerformed: { onDiscountSelected( ) },
       )
       menuCorporateDiscount = menuItem( text: "Descuento Corporativo", 

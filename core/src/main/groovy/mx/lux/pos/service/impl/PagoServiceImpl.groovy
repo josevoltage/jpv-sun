@@ -1,21 +1,28 @@
 package mx.lux.pos.service.impl
 
+import com.sun.jna.Library
+import com.sun.jna.Native
+import com.sun.jna.Platform
 import groovy.util.logging.Slf4j
 import mx.lux.pos.model.Pago
 import mx.lux.pos.model.NotaVenta
 import mx.lux.pos.model.QNotaVenta
-import mx.lux.pos.model.QPago
 import mx.lux.pos.model.QRetorno
 import mx.lux.pos.model.Retorno
 import mx.lux.pos.repository.NotaVentaRepository
 import mx.lux.pos.repository.PagoRepository
 import mx.lux.pos.repository.RetornoRepository
+import mx.lux.pos.service.CLibrary
 import mx.lux.pos.service.PagoService
 import mx.lux.pos.service.NotaVentaService
+import mx.lux.pos.service.TicketService
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateUtils
+import org.omg.IOP.TAG_JAVA_CODEBASE
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import subtech.GPAYAPI
+import sun.org.mozilla.javascript.internal.NativeArray
 
 import javax.annotation.Resource
 import mx.lux.pos.service.business.Registry
@@ -35,6 +42,12 @@ class PagoServiceImpl implements PagoService {
 
   @Resource
   private RetornoRepository retornoRepository
+
+  @Resource
+  private TicketService ticketService
+
+  private String TAG_TC = "TC"
+  private String TAG_TD = "TD"
 
   @Override
   Pago obtenerPago( Integer id ) {
@@ -103,6 +116,81 @@ class PagoServiceImpl implements PagoService {
   @Transactional
   Retorno actualizarRetorno( Retorno retorno ) {
       return retornoRepository.save( retorno )
+  }
+
+
+  @Override
+  Pago leerTarjeta( String idOrder, Pago tmpPago ){
+    Pago pago = tmpPago
+    String host = Registry.hostTpv
+    Integer puerto = Registry.portTpv
+    Integer timeout = Registry.timeoutTpv
+    String user = Registry.userTpv
+    String pass = Registry.passTpv
+    GPAYAPI ctx = new GPAYAPI();
+      ctx.SetAttribute( "HOST", host );
+      ctx.SetAttribute( "PORT", puerto )
+      ctx.SetAttribute( "TIMEOUT", timeout );
+      ctx.SetString( "dcs_form", "T060S000" )
+      ctx.SetString( "trn_usr_id", user )
+      ctx.SetString( "trn_password", pass )
+      ctx.SetString( "dcs_reply_get", "localhost" )
+      if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("TCD") ){
+        Double montoDolares = 0.00
+        try{
+          montoDolares = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).doubleValue()
+        } catch( NumberFormatException e ){ println e }
+        ctx.SetFloat( "trn_amount", montoDolares )
+      } else{
+        ctx.SetFloat( "trn_amount", pago.monto.doubleValue() )
+      }
+
+      if( StringUtils.trimToEmpty(pago.idFPago).startsWith("TD") || StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("TCD") ){
+        ctx.SetInteger( "trn_qty_pay", 1 )
+      } else {
+        Integer plan = 1
+        String sub = (pago?.plan != null && StringUtils.trimToEmpty(pago?.plan?.descripcion).length() > 1) ? StringUtils.trimToEmpty(pago?.plan?.descripcion).substring(0,2) : ""
+        if(StringUtils.trimToEmpty(sub).isNumber() ){
+          try{
+            plan = NumberFormat.getInstance().parse( StringUtils.trimToEmpty(sub) )
+          } catch ( NumberFormatException e ) { println e }
+        }
+        ctx.SetInteger( "trn_qty_pay", plan )
+      }
+      ctx.SetFloat( "trn_tip_amount", 0 )
+      ctx.SetFloat( "trn_cashback_amount", 0.00 )
+      Socket socket = ctx.TCP_Open();
+
+      int execute = ctx.Execute()
+      println "Respuesta de la ejecucion: "+execute
+      if ( execute == 0 && StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ){
+          pago.idFactura = idOrder
+          pago.referenciaPago = ctx.GetString( "trn_card_number" )
+          pago.monto = ctx.GetFloat( "trn_amount" )
+          pago.clave = ctx.GetString( "trn_card_number" )
+          pago.referenciaClave = ctx.GetString( "trn_auth_code" )
+          pago.idTerminal = ctx.GetString("trn_pro_name")+"|"+ctx.GetString("trn_id")+"|"+ctx.GetString("trn_aid")+"|"+ctx.GetString("trn_arqc ")+"|"+ctx.GetString("trn_cardholder_name")
+          pago.idPlan = ctx.GetInteger( "trn_qty_pay" )
+          String tipo = ""
+          if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("1")){
+            if( pago.idFPago.startsWith(TAG_TD) ){
+              pago.idFPago = "TCM"
+            }
+          } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("2")){
+            if( pago.idFPago.startsWith(TAG_TC) ){
+                  pago.idFPago = "TDM"
+            }
+          }
+          ctx.TCP_Close();
+      } else {
+          println( "ERROR AL VALIDAR PAGO" ) ;
+          ctx.ClearAttributes()
+          ctx.ClearFields()
+          ctx.TCP_Close();
+          pago = null
+      }
+      ctx.ClearFields();
+    return pago
   }
 
 

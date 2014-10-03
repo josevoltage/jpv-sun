@@ -223,6 +223,34 @@ class Registry {
       return isTrue( TipoParametro.ARTICULO_PROMOCIONAL_AUTOMATICO )
   }
 
+  static Boolean getActiveTpv( ) {
+    return isTrue( TipoParametro.ACTIVE_TPV )
+  }
+
+  static Boolean getActiveStoreDiscount( ) {
+    return isTrue( TipoParametro.ACTIVE_STORE_DISCOUNT )
+  }
+
+  static String getHostTpv( ) {
+    return asString( TipoParametro.HOST_TPV )
+  }
+
+  static String getUserTpv( ) {
+    return asString( TipoParametro.USER_TPV )
+  }
+
+  static String getPassTpv( ) {
+        return asString( TipoParametro.PASS_TPV )
+  }
+
+  static Integer getPortTpv( ) {
+        return asInteger( TipoParametro.PORT_TPV )
+  }
+
+  static Integer getTimeoutTpv( ) {
+        return asInteger( TipoParametro.TIMEOUT_TPV )
+  }
+
   static String getManualPriceTypeList( ) {
     return asString( TipoParametro.GENERICO_PRECIO_VARIABLE )
   }
@@ -427,7 +455,7 @@ class Registry {
 
   static Boolean isCardPaymentInDollars( String paymentType ){
     Boolean isPaymentDollar = false
-    if ( tipoPagoDolares.contains( paymentType.trim() ) ) {
+    if ( tipoPagoDolares.contains( StringUtils.trimToEmpty(paymentType) ) ) {
       isPaymentDollar = true
     }
     return isPaymentDollar

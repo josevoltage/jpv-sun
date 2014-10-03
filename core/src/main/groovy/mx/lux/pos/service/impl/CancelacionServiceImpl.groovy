@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import subtech.GPAYAPI
 
 import javax.annotation.Resource
 
@@ -49,6 +50,10 @@ class CancelacionServiceImpl implements CancelacionService {
 
     @Resource
     private DevolucionRepository devolucionRepository
+
+
+    private String TAG_TC = "TC"
+    private String TAG_TD = "TD"
 
     @Override
     List<CausaCancelacion> listarCausasCancelacion() {
@@ -416,4 +421,56 @@ class CancelacionServiceImpl implements CancelacionService {
         log.debug("obtiene causa: ${causa?.descripcion}")
         return causa != null ? causa : null
     }
+
+
+
+  @Override
+  void cancelaVoucherTpv( Integer idPago ){
+    Pago pago = pagoRepository.findOne(idPago)
+    if( pago != null && pago.idTerminal.contains("|") &&
+            (pago.idFPago.startsWith(TAG_TC) || pago.idFPago.startsWith(TAG_TD)) ){
+      String host = Registry.hostTpv
+      Integer puerto = Registry.portTpv
+      Integer timeout = Registry.timeoutTpv
+      String user = Registry.userTpv
+      String pass = Registry.passTpv
+      String transaccion = ""
+      GPAYAPI ctx = new GPAYAPI();
+      ctx.SetAttribute( "HOST", host );
+      ctx.SetAttribute( "PORT", puerto )
+      ctx.SetAttribute( "TIMEOUT", timeout );
+      ctx.SetString( "trn_usr_id", user )
+      ctx.SetString( "trn_password", pass )
+      ctx.SetString( "dcs_reply_get", "localhost" )
+      String[] data = pago.idTerminal.split(/\|/)
+      Integer seguimiento = 0
+      Integer autorizacion = 0
+      String seg = ""
+      if(data.length >= 5){
+        seg = data[1]
+      }
+      try{
+        seguimiento = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(seg))
+        autorizacion = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.referenciaClave))
+      } catch( NumberFormatException e ){ println e }
+      if( StringUtils.trimToEmpty(pago.fecha.format("dd/MM/yyyy")).equalsIgnoreCase(new Date().format("dd/MM/yyyy"))){
+        ctx.SetString( "dcs_form", "T120S000" )
+        ctx.SetInteger( "trn_orig_id", seguimiento )
+      } else {
+        ctx.SetString( "dcs_form", "T040S000" )
+        ctx.SetFloat( "trn_amount", pago.monto.doubleValue() )
+        ctx.SetInteger( "trn_orig_id", seguimiento )
+        ctx.SetInteger("trn_auth_code", autorizacion)
+      }
+      Socket socket = ctx.TCP_Open();
+      int execute = ctx.Execute()
+      println "Respuesta de la ejecucion: "+execute
+      if ( execute == 0 && StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ){
+        println ctx.GetString("trn_id")
+      }
+    }
+  }
+
+
+
 }

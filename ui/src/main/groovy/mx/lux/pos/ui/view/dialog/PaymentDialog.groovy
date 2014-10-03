@@ -1,6 +1,7 @@
 package mx.lux.pos.ui.view.dialog
 
 import groovy.swing.SwingBuilder
+import mx.lux.pos.service.business.Registry
 import mx.lux.pos.ui.controller.OrderController
 import mx.lux.pos.ui.controller.PaymentController
 import mx.lux.pos.ui.view.verifier.IsSelectedVerifier
@@ -59,6 +60,8 @@ class PaymentDialog extends JDialog implements KeyListener{
   private static final String TAG_PAGO_NOTA_CREDITO = 'NOTA DE CREDITO TIENDA';
   private static final String TAG_ID_PAGO_NOTA_CREDITO = 'NOT';
   private static final String TAG_EFECTIVO_DOLARES = 'EFD';
+
+  private Boolean activeTpv = Registry.activeTpv
 
   private static final String DOLARES = 'USD Recibidos'
 
@@ -170,7 +173,12 @@ class PaymentDialog extends JDialog implements KeyListener{
       bean( issuer, text: bind( source: tmpPayment, sourceProperty: 'issuerBankId', mutual: true ) )
       bean( terminal, selectedItem: bind( source: tmpPayment, sourceProperty: 'terminal', mutual: true ) )
       bean( plan, selectedItem: bind( source: tmpPayment, sourceProperty: 'plan', mutual: true ) )
-      bean( dollarsReceived, text: bind( source: tmpPayment, sourceProperty: 'planId', mutual: true ) )
+
+      if( activeTpv ){
+        dollarsReceived.text = ""
+      } else {
+        bean( dollarsReceived, text: bind( source: tmpPayment, sourceProperty: 'planId', mutual: true ) )
+      }
     }
   }
 
@@ -195,14 +203,31 @@ class PaymentDialog extends JDialog implements KeyListener{
         } else {
           tmpPayment.paymentTypeId = paymentType?.id
           if ( StringUtils.isNotBlank( paymentType?.f1 ) ) {
-            mediumLabel.visible = true
-            mediumLabel.text = paymentType.f1
-            medium.visible = true
+            if( paymentType?.id?.startsWith("TC") || paymentType?.id?.startsWith("TD") ){
+              if( !activeTpv ){
+                mediumLabel.visible = true
+                mediumLabel.text = paymentType.f1
+                medium.visible = true
+              }
+            } else {
+              mediumLabel.visible = true
+              mediumLabel.text = paymentType.f1
+              medium.visible = true
+            }
+
           }
           if ( StringUtils.isNotBlank( paymentType?.f2 ) ) {
-            codeLabel.visible = true
-            codeLabel.text = paymentType.f2
-            code.visible = true
+            if( paymentType?.id?.startsWith("TC") || paymentType?.id?.startsWith("TD") ){
+              if( !activeTpv ){
+                codeLabel.visible = true
+                codeLabel.text = paymentType.f2
+                code.visible = true
+              }
+            } else {
+              codeLabel.visible = true
+              codeLabel.text = paymentType.f2
+              code.visible = true
+            }
           }
           if ( StringUtils.isNotBlank( paymentType?.f3 ) ) {
             issuerLabel.visible = true
@@ -210,14 +235,29 @@ class PaymentDialog extends JDialog implements KeyListener{
             issuer.visible = true
           }
           if ( StringUtils.isNotBlank( paymentType?.f4 ) ) {
-            terminalLabel.visible = true
-            terminalLabel.text = paymentType.f4
-            terminal.visible = true
+            if( paymentType?.id?.startsWith("TC") || paymentType?.id?.startsWith("TD") ){
+              if( !activeTpv ){
+                terminalLabel.visible = true
+                terminalLabel.text = paymentType.f4
+                terminal.visible = true
+              }
+            } else {
+              terminalLabel.visible = true
+              terminalLabel.text = paymentType.f4
+              terminal.visible = true
+            }
           }
           if ( StringUtils.isNotBlank( paymentType?.f5 ) ) {
             planLabel.visible = true
             planLabel.text = paymentType.f5
-            plan.visible = true
+            if( activeTpv && (paymentType?.id?.startsWith("TC") || paymentType?.id?.startsWith("TD")) ){
+              dollarsReceived.visible = true
+              plan.visible = false
+              mediumLabel.visible = false
+              medium.visible = false
+            } else {
+              plan.visible = true
+            }
           }
           if( PaymentController.findTypePaymentsDollar(paymentType?.id) ){
             dollarsReceivedLabel.visible = true
@@ -342,8 +382,33 @@ class PaymentDialog extends JDialog implements KeyListener{
     JButton source = ev.source as JButton
     source.enabled = false
     if ( isValid( order ) ) {
-      OrderController.addPaymentToOrder( order.id, tmpPayment )
-      dispose()
+        if ( activeTpv && (tmpPayment?.paymentTypeId?.startsWith( 'TC' ) || tmpPayment?.paymentTypeId?.startsWith( 'TD' )) ){
+            if( dollarsReceived.visible ){
+              Integer meses = 1
+              try{
+                meses = NumberFormat.getInstance().parse( dollarsReceived.text )
+              } catch ( NumberFormatException e ){ println e }
+              tmpPayment.planId = StringUtils.trimToEmpty(String.format("%02d", meses ))
+              tmpPayment.plan = StringUtils.trimToEmpty(String.format("%02d", meses ))
+            }
+            tmpPayment = OrderController.readCard( StringUtils.trimToEmpty(order.id), tmpPayment )
+            if(tmpPayment != null && StringUtils.trimToEmpty(tmpPayment.paymentTypeId).startsWith("TD")){
+              tmpPayment.planId = ""
+            }
+            if( tmpPayment != null ){
+              OrderController.addPaymentToOrder( order.id, tmpPayment )
+              dispose()
+            } else {
+                sb.optionPane(
+                        message: 'Error al procesar pago en terminal.',
+                        messageType: JOptionPane.ERROR_MESSAGE
+                ).createDialog( this, 'Error' ).show()
+                dispose()
+            }
+        } else {
+          OrderController.addPaymentToOrder( order.id, tmpPayment )
+          dispose()
+        }
     } else {
       source.enabled = true
     }
