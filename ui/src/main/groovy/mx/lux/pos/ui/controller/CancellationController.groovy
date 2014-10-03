@@ -2,7 +2,9 @@ package mx.lux.pos.ui.controller
 
 import groovy.util.logging.Slf4j
 import mx.lux.pos.service.CancelacionService
+import mx.lux.pos.service.PagoService
 import mx.lux.pos.service.TicketService
+import mx.lux.pos.service.business.Registry
 import mx.lux.pos.ui.resources.ServiceManager
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,10 +18,12 @@ class CancellationController {
 
   private static CancelacionService cancelacionService
   private static TicketService ticketService
+  private static PagoService pagoService
 
-  @Autowired CancellationController( CancelacionService cancelacionService, TicketService ticketService ) {
+  @Autowired CancellationController( CancelacionService cancelacionService, TicketService ticketService, PagoService pagoService ) {
     this.cancelacionService = cancelacionService
     this.ticketService = ticketService
+    this.pagoService = pagoService
   }
 
   static List<String> findAllCancellationReasons( ) {
@@ -79,6 +83,9 @@ class CancellationController {
       creditRefunds?.each { Integer pagoId, String valor ->
         if ( StringUtils.isBlank( valor ) ) {
           creditRefunds.remove( pagoId )
+        }
+        if( Registry.activeTpv ){
+          cancelacionService.cancelaVoucherTpv( pagoId )
         }
       }
       List<Devolucion> results = cancelacionService.registrarDevolucionesDeNotaVenta( orderId, creditRefunds )
@@ -212,12 +219,6 @@ class CancellationController {
       CausaCancelacion result = cancelacionService.causaCancelacion( id )
       return result.descripcion
   }
-
-
-  static void cancelVoucherTpv( String idOrder ){
-    cancelacionService.cancelaVoucherTpv( idOrder )
-  }
-
 
 
 }
