@@ -80,6 +80,7 @@ enum TipoParametro {
   URL_ENTRADA_ALMACEN('url_entrada_sucursal',''),
   URL_CONFIRMA_ENTRADA('url_confirma_entrada',''),
   ACTIVE_TPV( 'tpv_activo', 'si' ),
+  ACTIVE_STORE_DISCOUNT( 'desc_tienda_activo', 'no' ),
   HOST_TPV( 'tpv_host', 'localhost' ),
   USER_TPV( 'tpv_usuario', 'OPTLUX01_op' ),
   PASS_TPV( 'tpv_password', 'rojo2012' ),

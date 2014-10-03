@@ -227,6 +227,10 @@ class Registry {
     return isTrue( TipoParametro.ACTIVE_TPV )
   }
 
+  static Boolean getActiveStoreDiscount( ) {
+    return isTrue( TipoParametro.ACTIVE_STORE_DISCOUNT )
+  }
+
   static String getHostTpv( ) {
     return asString( TipoParametro.HOST_TPV )
   }
