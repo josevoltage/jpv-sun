@@ -2,24 +2,17 @@ package mx.lux.pos.service.impl
 
 import groovy.util.logging.Slf4j
 import mx.lux.pos.model.Pago
-import mx.lux.pos.model.NotaVenta
-import mx.lux.pos.model.QNotaVenta
 import mx.lux.pos.model.QRetorno
 import mx.lux.pos.model.Retorno
 import mx.lux.pos.repository.NotaVentaRepository
 import mx.lux.pos.repository.PagoRepository
 import mx.lux.pos.repository.RetornoRepository
-import mx.lux.pos.service.CLibrary
 import mx.lux.pos.service.PagoService
-import mx.lux.pos.service.NotaVentaService
 import mx.lux.pos.service.TicketService
 import org.apache.commons.lang3.StringUtils
-import org.apache.commons.lang3.time.DateUtils
-import org.omg.IOP.TAG_JAVA_CODEBASE
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import subtech.GPAYAPI
-import sun.org.mozilla.javascript.internal.NativeArray
 
 import javax.annotation.Resource
 import mx.lux.pos.service.business.Registry

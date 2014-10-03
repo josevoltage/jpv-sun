@@ -86,6 +86,7 @@ project( 'core' ) {
     compile "com.mysema.querydsl:querydsl-jpa:${ext.querydslVersion}"
     compile 'postgresql:postgresql:9.1-901.jdbc4'
     compile 'com.ibm.icu:icu4j:49.1'
+    compile files('/soi/lib/contents/gpayAPI.jar')
     runtime 'org.javassist:javassist:3.15.0-GA'
   }
 
