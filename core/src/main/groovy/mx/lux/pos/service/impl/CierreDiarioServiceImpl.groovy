@@ -1478,4 +1478,29 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       }
     }
   }
+
+  @Override
+  List<Pago> buscarPagosTpvPorFechaCierrePorFactura( Date fechaCierre, String ticket ){
+    List<Pago> pagos = new ArrayList<>()
+    QPago qPago = QPago.pago
+    Date fechaInicio = DateUtils.truncate( fechaCierre, Calendar.DAY_OF_MONTH );
+    Date fechaFin = new Date( DateUtils.ceiling( fechaCierre, Calendar.DAY_OF_MONTH ).getTime() - 1 );
+    if( StringUtils.trimToEmpty(ticket).length() > 0 ){
+      pagos = pagoRepository.findAll( qPago.idFactura.eq(ticket).and(qPago.fecha.between(fechaInicio,fechaFin)) ) as List<Pago>
+    } else {
+      pagos = pagoRepository.findAll( qPago.fecha.between(fechaInicio,fechaFin) ) as List<Pago>
+    }
+    List<Pago> selected = new ArrayList<Pago>()
+    for ( Pago p : pagos ) {
+          if ( p.idTerminal.contains("|") && ('TCM'.equals( p.formaPago?.id ) || 'TCD'.equals( p.formaPago?.id ) || 'TDM'.equals( p.formaPago?.id )
+                  || 'TDD'.equals( p.formaPago?.id )) ) {
+              if( !StringUtils.trimToEmpty(p.notaVenta.factura).isEmpty() ){
+                  selected.add( p )
+              }
+          }
+    }
+    return selected
+  }
+
+
 }

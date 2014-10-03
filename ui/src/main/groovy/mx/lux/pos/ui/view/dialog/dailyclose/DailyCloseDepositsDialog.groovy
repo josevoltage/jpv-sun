@@ -117,6 +117,7 @@ class DailyCloseDepositsDialog extends JDialog {
         button( text: 'Resumen diario', enabled: true, actionPerformed: printDailyDigest )
         button( text: 'Cierres de Term.', actionPerformed: closeTerminalsAction )
         button( text: 'Corregir Term.', enabled: dailyClose.isOpen(), actionPerformed: fixTerminalsAction )
+        button( text: 'Resumen de Tarjetas', actionPerformed: cardResumeAction )
         button( text: 'Nuevo Deposito', enabled: dailyClose.isOpen(),
             actionPerformed: {
               new EditDepositDialog( this, closeDate, null, false ).show()
@@ -230,6 +231,10 @@ class DailyCloseDepositsDialog extends JDialog {
 
   private def fixTerminalsAction = {
     new TerminalFixDialog( closeDate ).show()
+  }
+
+  private def cardResumeAction = {
+      new CardResumeDialog( closeDate ).show()
   }
 
   private def closeTerminalsAction = {

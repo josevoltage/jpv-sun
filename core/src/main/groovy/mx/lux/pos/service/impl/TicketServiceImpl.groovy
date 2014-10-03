@@ -56,6 +56,9 @@ class TicketServiceImpl implements TicketService {
   private static final String TAG_FORMA_PAGO_USD = "EFD";
   private static final String TAG_FORMA_PAGO_TC = "TC";
   private static final String TAG_FORMA_PAGO_TD = "TD";
+  private static final String TAG_FORMA_PAGO_TCM = "TCM";
+  private static final String TAG_FORMA_PAGO_TDM = "TDM";
+  private static final String TAG_FORMA_PAGO_TCD = "TCD";
   //private static final String TAG_TRANSACCION_ENTRADA_TIENDA = 'ENTRADA_TIENDA'
   //private static final String TAG_TRANSACCION_SALIDA_TIENDA = 'SALIDA_TIENDA'
 
@@ -1921,6 +1924,51 @@ class TicketServiceImpl implements TicketService {
       imprimeTicket( 'template/ticket-tpv.vm', datos )
     } else {
       log.debug( String.format( 'No existe registro de tarjeta' ) )
+    }
+  }
+
+
+
+  void imprimeResumenTarjetas( Date fechaCierre ){
+    log.debug( "imprimeVoucherTpv( )" )
+    Date fechaInicio = DateUtils.truncate( fechaCierre, Calendar.DAY_OF_MONTH );
+    Date fechaFin = new Date( DateUtils.ceiling( fechaCierre, Calendar.DAY_OF_MONTH ).getTime() - 1 );
+    QPago qPago = QPago.pago
+    List<Pago> lstPagos = pagoRepository.findAll( qPago.fecha.between(fechaInicio,fechaFin) ) as List<Pago>
+    List<Pago> selected = new ArrayList<Pago>()
+    for ( Pago p : lstPagos ) {
+      if ( p.idTerminal.contains("|") && ('TCM'.equals( p.formaPago?.id ) || 'TCD'.equals( p.formaPago?.id ) || 'TDM'.equals( p.formaPago?.id )
+              || 'TDD'.equals( p.formaPago?.id )) ) {
+        if( !StringUtils.trimToEmpty(p.notaVenta.factura).isEmpty() ){
+          selected.add( p )
+        }
+      }
+    }
+    List<Pago> pagosTcm = new ArrayList<>()
+    List<Pago> pagosTdm = new ArrayList<>()
+    List<Pago> pagosTcd = new ArrayList<>()
+    for(Pago pago : selected){
+      if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TDM) ){
+        pagosTdm.add(pago)
+      } else if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCM) ){
+          pagosTcm.add(pago)
+      } else if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ){
+          pagosTcd.add(pago)
+      }
+    }
+    if(selected.size() > 0){
+      def datos = [
+            fecha: fechaCierre.format("dd/MM/yyyy"),
+            pagosTdm: pagosTdm,
+            pagosTcm: pagosTcm,
+            pagosTcd: pagosTcd,
+            tdm: pagosTdm.size() > 0,
+            tcm: pagosTcm.size() > 0,
+            tcd: pagosTcd.size() > 0,
+      ]
+      imprimeTicket( 'template/ticket-resumen-tarjetas.vm', datos )
+    } else {
+      log.debug( String.format( 'No existen pagos con tarjeta por tpv' ) )
     }
   }
 
