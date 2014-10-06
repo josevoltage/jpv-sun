@@ -1914,7 +1914,7 @@ class TicketServiceImpl implements TicketService {
           meses: meses,
           tipo: StringUtils.trimToEmpty(pago.idFPago).startsWith(TAG_FORMA_PAGO_TC) ? "CREDITO" : "DEBITO",
           plan: months,
-          estatus: "APROVADA",
+          estatus: "APROBADA",
           numAutorizacion: pago.referenciaClave,
           operacion: operacion,
           aid: aid,

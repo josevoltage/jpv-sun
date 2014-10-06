@@ -33,7 +33,7 @@ class ReprintVoucherDialog extends JDialog {
   // UI Layout Definition
   void buildUI( ) {
     sb.dialog( this,
-        title: "Reimpresion de coucher",
+        title: "Reimpresion de voucher",
         resizable: true,
         pack: true,
         modal: true,
