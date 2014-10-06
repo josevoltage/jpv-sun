@@ -904,7 +904,10 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       Set<VoucherTmp> vouchers = [ ]
       Set<ResumenDiario> resumenes = [ ]
       Set<Terminal> terminales = terminalRepository.findByDescripcionNotNullOrderByDescripcionAsc() ?: [ ]
-      Set<String> terminalesId = terminales*.id
+      Set<String> terminalesId = new ArrayList<>()
+      for(Terminal term : terminales){
+        terminalesId.add(StringUtils.trimToEmpty(term.id))
+      }
       log.debug( "obteniendo terminales: ${terminalesId}" )
       Date fechaInicio = fecha.clearTime()
       Date fechaFin = new Date( fecha.next().time - 1 )
