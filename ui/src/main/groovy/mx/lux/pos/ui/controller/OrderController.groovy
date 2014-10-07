@@ -572,7 +572,7 @@ class OrderController {
     pago.monto = tmpPayment.amount
     pago.idPlan = tmpPayment.planId
     pago.plan = new mx.lux.pos.model.Plan()
-    pago.plan.id = tmpPayment.planId
+    pago.plan.id = StringUtils.trimToEmpty(tmpPayment.planId)
     pago.plan.descripcion = tmpPayment.plan
     pago = pagoService.leerTarjeta( idOrder, pago )
     if( pago != null ){

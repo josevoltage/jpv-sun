@@ -145,7 +145,7 @@ class PagoServiceImpl implements PagoService {
             plan = NumberFormat.getInstance().parse( StringUtils.trimToEmpty(sub) )
           } catch ( NumberFormatException e ) { println e }
         }
-        ctx.SetInteger( "trn_qty_pay", plan )
+        ctx.SetInteger( "trn_qty_pay", plan <= 0 ? 1 : plan )
       }
       ctx.SetFloat( "trn_tip_amount", 0 )
       ctx.SetFloat( "trn_cashback_amount", 0.00 )

@@ -19,7 +19,6 @@ import org.springframework.format.number.CurrencyFormatter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.velocity.VelocityEngineUtils
-import subtech.GPAYAPI
 
 import javax.xml.bind.DatatypeConverter
 import java.awt.image.BufferedImage
