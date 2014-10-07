@@ -30,5 +30,5 @@ interface CancelacionService {
 
   CausaCancelacion causaCancelacion( Integer id )
 
-  void cancelaVoucherTpv( Integer idPago )
+  String cancelaVoucherTpv( Integer idPago )
 }

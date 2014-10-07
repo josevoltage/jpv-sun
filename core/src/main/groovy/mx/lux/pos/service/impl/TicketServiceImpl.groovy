@@ -1874,6 +1874,7 @@ class TicketServiceImpl implements TicketService {
 
   void imprimeVoucherTpv( Pago pago, String copia ){
     log.debug( "imprimeVoucherTpv( )" )
+    NumberFormat formatter = NumberFormat.getCurrencyInstance( Locale.US )
     AddressAdapter companyAddress = Registry.companyAddress
     Boolean meses = false
     Integer months = 0
@@ -1906,9 +1907,9 @@ class TicketServiceImpl implements TicketService {
           hora: hora,
           copia: copia,
           nombreEmpresa: companyAddress.shortName,
-          direccionEmpresa1: companyAddress.address_1,
-          direccionEmpresa2: companyAddress.address_2,
-          direccionEmpresa3: companyAddress.address_3,
+          direccionEmpresa1: StringUtils.trimToEmpty(sucursal?.direccion),
+          direccionEmpresa2: StringUtils.trimToEmpty(sucursal?.colonia),
+          direccionEmpresa3: StringUtils.trimToEmpty(sucursal?.idLocalidad),
           tarjeta: pago.referenciaPago,
           producto: producto,
           meses: meses,
@@ -1919,7 +1920,8 @@ class TicketServiceImpl implements TicketService {
           operacion: operacion,
           aid: aid,
           arqc: arqc,
-          cliente: cliente
+          cliente: cliente,
+          importe: formatter.format(pago.monto)
       ]
       imprimeTicket( 'template/ticket-tpv.vm', datos )
     } else {
@@ -1973,6 +1975,67 @@ class TicketServiceImpl implements TicketService {
     } else {
       log.debug( String.format( 'No existen pagos con tarjeta por tpv' ) )
     }
+  }
+
+
+
+  void imprimeVoucherCancelacionTpv( Integer idPago, String copia, String transaccion ){
+      log.debug( "imprimeVoucherCancelacionTpv( )" )
+      NumberFormat formatter = NumberFormat.getCurrencyInstance( Locale.US )
+      AddressAdapter companyAddress = Registry.companyAddress
+      Boolean meses = false
+      Integer months = 0
+      Pago pago = pagoRepository.findOne(idPago)
+      try{
+          months = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).intValue()
+      } catch ( NumberFormatException e ){ println e }
+      if( months > 1 ){
+          meses = true
+      }
+      String fecha = pago.fecha.format("dd-MM-yyyy")
+      String hora= pago.fecha.format("HH:mm")
+      String idSucursal = parametroRepository.findOne( TipoParametro.ID_SUCURSAL.value )?.valor
+      Sucursal sucursal = sucursalRepository.findOne( idSucursal?.toInteger() )
+      String[] data = pago.idTerminal.split(/\|/)
+      String producto = ""
+      String operacion = ""
+      String aid = ""
+      String arqc = ""
+      String cliente = ""
+      if( data.length >= 5 ){
+          producto = data[0]
+          operacion = data[1]
+          aid = data[2]
+          arqc = data[3]
+          cliente = data[4]
+      }
+      if(pago != null){
+          def datos = [
+                  fecha: fecha,
+                  hora: hora,
+                  copia: copia,
+                  transaccion: transaccion,
+                  nombreEmpresa: companyAddress.shortName,
+                  direccionEmpresa1: StringUtils.trimToEmpty(sucursal?.direccion),
+                  direccionEmpresa2: StringUtils.trimToEmpty(sucursal?.colonia),
+                  direccionEmpresa3: StringUtils.trimToEmpty(sucursal?.idLocalidad),
+                  tarjeta: pago.referenciaPago,
+                  producto: producto,
+                  meses: meses,
+                  tipo: StringUtils.trimToEmpty(pago.idFPago).startsWith(TAG_FORMA_PAGO_TC) ? "CREDITO" : "DEBITO",
+                  plan: months,
+                  estatus: "APROBADA",
+                  numAutorizacion: pago.referenciaClave,
+                  operacion: operacion,
+                  aid: aid,
+                  arqc: arqc,
+                  cliente: cliente,
+                  importe: String.format("-%s",formatter.format(pago.monto))
+          ]
+          imprimeTicket( 'template/ticket-tpv-can.vm', datos )
+      } else {
+          log.debug( String.format( 'No existe registro de tarjeta' ) )
+      }
   }
 
 

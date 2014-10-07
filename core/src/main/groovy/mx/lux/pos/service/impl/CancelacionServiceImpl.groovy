@@ -425,7 +425,8 @@ class CancelacionServiceImpl implements CancelacionService {
 
 
   @Override
-  void cancelaVoucherTpv( Integer idPago ){
+  String cancelaVoucherTpv( Integer idPago ){
+    String transaccion = ""
     Pago pago = pagoRepository.findOne(idPago)
     if( pago != null && pago.idTerminal.contains("|") &&
             (pago.idFPago.startsWith(TAG_TC) || pago.idFPago.startsWith(TAG_TD)) ){
@@ -434,7 +435,6 @@ class CancelacionServiceImpl implements CancelacionService {
       Integer timeout = Registry.timeoutTpv
       String user = Registry.userTpv
       String pass = Registry.passTpv
-      String transaccion = ""
       GPAYAPI ctx = new GPAYAPI();
       ctx.SetAttribute( "HOST", host );
       ctx.SetAttribute( "PORT", puerto )
@@ -447,16 +447,6 @@ class CancelacionServiceImpl implements CancelacionService {
       if(data.length >= 5){
         seg = data[1]
       }
-      /*Integer seguimiento = 0
-      Integer autorizacion = 0
-      String seg = ""
-      if(data.length >= 5){
-        seg = data[1]
-      }
-      try{
-        seguimiento = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(seg))
-        autorizacion = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.referenciaClave))
-      } catch( NumberFormatException e ){ println e }*/
       if( StringUtils.trimToEmpty(pago.fecha.format("dd/MM/yyyy")).equalsIgnoreCase(new Date().format("dd/MM/yyyy"))){
         ctx.SetString( "dcs_form", "T120S000" )
         ctx.SetString( "trn_orig_id", seg )
@@ -470,9 +460,14 @@ class CancelacionServiceImpl implements CancelacionService {
       int execute = ctx.Execute()
       println "Respuesta de la ejecucion: "+execute
       if ( execute == 0 && StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ){
-        println ctx.GetString("trn_id")
+        if(ctx.GetString("dcs_form").equalsIgnoreCase("T120S000")){
+          transaccion = "CANCELACION"
+        } else if(ctx.GetString("dcs_form").equalsIgnoreCase("T040S000")){
+          transaccion = "DEVOLUCION"
+        }
       }
     }
+    return transaccion
   }
 
 

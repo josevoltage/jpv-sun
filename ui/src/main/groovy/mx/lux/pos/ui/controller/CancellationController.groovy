@@ -85,7 +85,11 @@ class CancellationController {
           creditRefunds.remove( pagoId )
         }
         if( Registry.activeTpv ){
-          cancelacionService.cancelaVoucherTpv( pagoId )
+          String transaccion = cancelacionService.cancelaVoucherTpv( pagoId )
+          for(int i=0;i<2;i++){
+            String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
+            ticketService.imprimeVoucherCancelacionTpv(pagoId, copia, transaccion)
+          }
         }
       }
       List<Devolucion> results = cancelacionService.registrarDevolucionesDeNotaVenta( orderId, creditRefunds )

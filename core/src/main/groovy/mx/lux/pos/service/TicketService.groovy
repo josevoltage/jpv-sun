@@ -46,4 +46,6 @@ interface TicketService {
   void imprimeVoucherTpv( Pago pago, String copia )
 
   void imprimeResumenTarjetas( Date fechaCierre )
+
+  void imprimeVoucherCancelacionTpv( Integer idPago, String copia, String transaccion )
 }
