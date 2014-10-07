@@ -443,7 +443,11 @@ class CancelacionServiceImpl implements CancelacionService {
       ctx.SetString( "trn_password", pass )
       ctx.SetString( "dcs_reply_get", "localhost" )
       String[] data = pago.idTerminal.split(/\|/)
-      Integer seguimiento = 0
+      String seg = ""
+      if(data.length >= 5){
+        seg = data[1]
+      }
+      /*Integer seguimiento = 0
       Integer autorizacion = 0
       String seg = ""
       if(data.length >= 5){
@@ -452,15 +456,15 @@ class CancelacionServiceImpl implements CancelacionService {
       try{
         seguimiento = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(seg))
         autorizacion = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.referenciaClave))
-      } catch( NumberFormatException e ){ println e }
+      } catch( NumberFormatException e ){ println e }*/
       if( StringUtils.trimToEmpty(pago.fecha.format("dd/MM/yyyy")).equalsIgnoreCase(new Date().format("dd/MM/yyyy"))){
         ctx.SetString( "dcs_form", "T120S000" )
-        ctx.SetInteger( "trn_orig_id", seguimiento )
+        ctx.SetString( "trn_orig_id", seg )
       } else {
         ctx.SetString( "dcs_form", "T040S000" )
         ctx.SetFloat( "trn_amount", pago.monto.doubleValue() )
-        ctx.SetInteger( "trn_orig_id", seguimiento )
-        ctx.SetInteger("trn_auth_code", autorizacion)
+        ctx.SetString( "trn_orig_id", seg )
+        ctx.SetString("trn_auth_code", StringUtils.trimToEmpty(pago.referenciaClave))
       }
       Socket socket = ctx.TCP_Open();
       int execute = ctx.Execute()
