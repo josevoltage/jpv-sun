@@ -205,12 +205,17 @@ class OrderController {
 
       User user = Session.get( SessionItem.USER ) as User
       println "Banco Emisor:: ${payment.issuerBankId}"
+      String idfPayment = StringUtils.trimToEmpty(payment.paymentTypeId)
+      if( payment.paymentTypeId.contains("TPV") ){
+        idfPayment = payment.paymentTypeId.replace("TPV","")
+        idfPayment = StringUtils.trimToEmpty(idfPayment)
+      }
       Pago pago = new Pago(
-          idFormaPago: payment.paymentTypeId,
+          idFormaPago: idfPayment,
           referenciaPago: payment.paymentReference,
           monto: payment.amount,
           idEmpleado: user?.username,
-          idFPago: payment.paymentTypeId,
+          idFPago: idfPayment,
           clave: payment.paymentReference,
           referenciaClave: payment.codeReference,
           idBancoEmisor: payment.issuerBankId,

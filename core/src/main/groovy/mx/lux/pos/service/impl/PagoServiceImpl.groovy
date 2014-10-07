@@ -156,7 +156,11 @@ class PagoServiceImpl implements PagoService {
       if ( execute == 0 && StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ){
           pago.idFactura = idOrder
           pago.referenciaPago = ctx.GetString( "trn_card_number" )
-          pago.monto = ctx.GetFloat( "trn_amount" )
+          pago.monto = BigDecimal.ZERO
+          try{
+            pago.monto = NumberFormat.getInstance().parse(ctx.GetString( "trn_amount" ).replace(",",""))
+          } catch ( NumberFormatException e ){ println e }
+
           pago.clave = ctx.GetString( "trn_card_number" )
           pago.referenciaClave = ctx.GetString( "trn_auth_code" )
           pago.idTerminal = ctx.GetString("trn_pro_name")+"|"+ctx.GetString("trn_id")+"|"+ctx.GetString("trn_aid")+"|"+ctx.GetString("trn_arqc ")+"|"+ctx.GetString("trn_cardholder_name")

@@ -32,6 +32,12 @@ class TipoPagoServiceImpl implements TipoPagoService {
     resultados.retainAll { TipoPago tipoPago ->
       StringUtils.isNotBlank( tipoPago?.id )
     }
+    Collections.sort(resultados, new Comparator<TipoPago>() {
+        @Override
+        int compare(TipoPago o1, TipoPago o2) {
+            return o1.descripcion.compareToIgnoreCase(o2.descripcion)
+        }
+    })
     return resultados.sort { TipoPago tipoPago ->
       tipoPago.tipoCon
     }
