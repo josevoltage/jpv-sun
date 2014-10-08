@@ -1877,11 +1877,13 @@ class TicketServiceImpl implements TicketService {
     AddressAdapter companyAddress = Registry.companyAddress
     Boolean meses = false
     Integer months = 0
-    try{
-      months = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).intValue()
-    } catch ( NumberFormatException e ){ println e }
-    if( months > 1 ){
-      meses = true
+    if(StringUtils.trimToEmpty(pago.idPlan).length() > 0 && StringUtils.trimToEmpty(pago.idPlan).isNumber()){
+      try{
+        months = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).intValue()
+      } catch ( NumberFormatException e ){ println e }
+      if( months > 1 ){
+        meses = true
+      }
     }
     String fecha = pago.fecha.format("dd-MM-yyyy")
     String hora= pago.fecha.format("HH:mm")

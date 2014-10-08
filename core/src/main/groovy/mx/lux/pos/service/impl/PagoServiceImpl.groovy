@@ -125,7 +125,7 @@ class PagoServiceImpl implements PagoService {
       ctx.SetString( "trn_usr_id", user )
       ctx.SetString( "trn_password", pass )
       ctx.SetString( "dcs_reply_get", "localhost" )
-      if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("TCD") ){
+      if( StringUtils.trimToEmpty(pago.idFPago).contains("TCD") ){
         Double montoDolares = 0.00
         try{
           montoDolares = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).doubleValue()
@@ -135,7 +135,7 @@ class PagoServiceImpl implements PagoService {
         ctx.SetFloat( "trn_amount", pago.monto.doubleValue() )
       }
 
-      if( StringUtils.trimToEmpty(pago.idFPago).startsWith("TD") || StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("TCD") ){
+      if( StringUtils.trimToEmpty(pago.idFPago).startsWith("TD") || StringUtils.trimToEmpty(pago.idFPago).contains("TCD") ){
         ctx.SetInteger( "trn_qty_pay", 1 )
       } else {
         Integer plan = 1
