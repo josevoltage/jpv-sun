@@ -43,7 +43,7 @@ interface TicketService {
 
   void imprimeIncidencias( Incidencia incidencia )
 
-  void imprimeVoucherTpv( Pago pago, String copia )
+  void imprimeVoucherTpv( Pago pago, String copia, Boolean reimpresion )
 
   void imprimeResumenTarjetas( Date fechaCierre )
 

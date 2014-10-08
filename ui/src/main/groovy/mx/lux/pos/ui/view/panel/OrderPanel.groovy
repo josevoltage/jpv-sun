@@ -604,7 +604,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         this.promotionDriver.requestPromotionSave()
         if ( StringUtils.isNotBlank( newOrder?.id ) ) {
             OrderController.printOrder( newOrder.id )
-            OrderController.printVoucherTpv( newOrder.id )
+            OrderController.printVoucherTpv( newOrder.id, false )
             reviewForTransfers( newOrder.id )
             this.reset( )
         } else {

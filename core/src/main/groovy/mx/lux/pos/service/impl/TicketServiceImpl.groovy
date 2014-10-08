@@ -1871,7 +1871,7 @@ class TicketServiceImpl implements TicketService {
   }
 
 
-  void imprimeVoucherTpv( Pago pago, String copia ){
+  void imprimeVoucherTpv( Pago pago, String copia, Boolean reimpresion ){
     log.debug( "imprimeVoucherTpv( )" )
     NumberFormat formatter = NumberFormat.getCurrencyInstance( Locale.US )
     AddressAdapter companyAddress = Registry.companyAddress
@@ -1922,7 +1922,8 @@ class TicketServiceImpl implements TicketService {
           aid: aid,
           arqc: arqc,
           cliente: cliente,
-          importe: formatter.format(pago.monto)
+          importe: formatter.format(pago.monto),
+          reimpresion: reimpresion
       ]
       imprimeTicket( 'template/ticket-tpv.vm', datos )
     } else {

@@ -17,6 +17,7 @@ ${COLUMNAS}
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)${direccionEmpresa3}${CR}${LF}
 #ALINEAR_IZQUIERDA()FECHA: #altnull(${fecha})${CR}
 #ALINEAR_IZQUIERDA()HORA: #altnull(${hora})${LF}
+#if(${reimpresion})#ALINEAR_IZQUIERDA()REIMPRESION${LF}#end
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} ${DOBLE_ALTURA} 0 0)#altnull(${copia})${CR}${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)TARJETA: ${tarjeta}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)${tipo} ${producto}

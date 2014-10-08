@@ -83,7 +83,7 @@ class ReprintVoucherDialog extends JDialog {
       }
     }
     if( order != null && hasPayCard ){
-      OrderController.printVoucherTpv( order.id )
+      OrderController.printVoucherTpv( order.id, true )
       dispose()
     } else {
       lblWarning.visible = true

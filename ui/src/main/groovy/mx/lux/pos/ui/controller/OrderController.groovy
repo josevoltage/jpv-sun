@@ -598,7 +598,7 @@ class OrderController {
   }
 
 
-  static void printVoucherTpv( String orderId ) {
+  static void printVoucherTpv( String orderId, Boolean reprint ) {
     List<Pago> lstPagosTarj = new ArrayList<>()
     NotaVenta nota = notaVentaService.obtenerNotaVenta( StringUtils.trimToEmpty(orderId) )
     if(nota != null){
@@ -611,8 +611,8 @@ class OrderController {
     }
     if(Registry.activeTpv && lstPagosTarj.size() > 0){
       for(Pago pay : lstPagosTarj){
-        ticketService.imprimeVoucherTpv( pay, "ORIGINAL" )
-        ticketService.imprimeVoucherTpv( pay, "COPIA CLIENTE" )
+        ticketService.imprimeVoucherTpv( pay, "ORIGINAL", reprint )
+        ticketService.imprimeVoucherTpv( pay, "COPIA CLIENTE", reprint )
       }
     }
   }
