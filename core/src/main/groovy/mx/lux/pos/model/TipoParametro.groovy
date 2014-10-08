@@ -79,6 +79,7 @@ enum TipoParametro {
   URL_SALIDA_ALMACEN('url_salida_almacen',''),
   URL_ENTRADA_ALMACEN('url_entrada_sucursal',''),
   URL_CONFIRMA_ENTRADA('url_confirma_entrada',''),
+  ACTIVE_STORE_DISCOUNT( 'desc_tienda_activo', 'no' ),
   TRANS_INV_TIPO_CONFIRMA_ENTRADA( 'trans_inv_confirma_entrada', 'CONFIRMACION_ENTRADA' ),
   TRANS_INV_TIPO_SALIDA_ALMACEN( 'trans_inv_salida_almacen', 'SALIDA_TIENDA' ),
   TRANS_INV_TIPO_ENTRADA_ALMACEN( 'trans_inv_entrada_almacen', 'ENTRADA_TIENDA' ),

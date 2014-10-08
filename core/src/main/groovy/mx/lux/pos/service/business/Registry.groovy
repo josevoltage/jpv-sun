@@ -223,6 +223,9 @@ class Registry {
       return isTrue( TipoParametro.ARTICULO_PROMOCIONAL_AUTOMATICO )
   }
 
+  static Boolean getActiveStoreDiscount( ) {
+    return isTrue( TipoParametro.ACTIVE_STORE_DISCOUNT )
+  }
   static String getManualPriceTypeList( ) {
     return asString( TipoParametro.GENERICO_PRECIO_VARIABLE )
   }
