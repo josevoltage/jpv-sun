@@ -16,17 +16,17 @@ ${COLUMNAS}
 #if( ${tcm} )#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 ${SUBRAYADO})MN TARJETA DE CREDITO${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 0)TOTAL: ${tcmTotal}  #FIN_ESTILO()${CR}${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)FACTURA${COL_DET_1}PLAN${COL_DET_2}IMPORTE
-#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tcmDet in ${pagosTcm} )${tcmDet.notaVenta.factura}${COL_DET_1}${tcmDet.idPlan}${COL_DET_2}${tcmDet.monto}#end
+#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tcmDet in ${pagosTcm} )${tcmDet.notaVenta.factura}${COL_DET_1}${tcmDet.idPlan}${COL_DET_2}${tcmDet.monto}${LF}#end
 #end${LF}${LF}
 #if( ${tdm} )#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 ${SUBRAYADO})MN TARJETA DE DEBITO${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 0)TOTAL: ${tdmTotal}  #FIN_ESTILO()${CR}${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)FACTURA${COL_DET_1}PLAN${COL_DET_2}IMPORTE
-#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tdmDet in ${pagosTdm} )${tdmDet.notaVenta.factura}${COL_DET_1}${tdmDet.idPlan}${COL_DET_2}${tdmDet.monto}#end
+#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tdmDet in ${pagosTdm} )${tdmDet.notaVenta.factura}${COL_DET_1}${tdmDet.idPlan}${COL_DET_2}${tdmDet.monto}${LF}#end
 #end${LF}${LF}
 #if( ${tcd} )#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 ${SUBRAYADO})US TARJETA DE CREDITO${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 0)TOTAL: ${tcdTotal}  #FIN_ESTILO()${CR}${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)FACTURA${COL_DET_1}PLAN${COL_DET_2}IMPORTE
-#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tcdDet in ${pagosTcd} )${tcdDet.notaVenta.factura}${COL_DET_1}${tcdDet.idPlan}${COL_DET_2}${tcdDet.monto}#end
+#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tcdDet in ${pagosTcd} )${tcdDet.notaVenta.factura}${COL_DET_1}${tcdDet.idPlan}${COL_DET_2}${tcdDet.monto}${LF}#end
 #end${LF}${LF}
 #AVANZAR_LINEAS(4)
 #CORTE()

@@ -35,4 +35,19 @@ class TicketSampleIntegration extends Specification {
     true
   }
 
+
+
+    def "Print Tpv Cancelacion"() {
+        setup:
+        Integer idPago = 9762
+        String copia = 'ORIGINAL'
+        String trans = 'CANCELACION'
+
+        when:
+        boolean result = ServiceFactory.ticketEngine.imprimeVoucherCancelacionTpv(idPago, copia, trans)
+
+        then:
+        true
+    }
+
 }

@@ -1,6 +1,8 @@
 package mx.lux.pos.ui.controller
 
 import mx.lux.pos.service.CancelacionService
+import mx.lux.pos.service.NotaVentaService
+import mx.lux.pos.service.PagoService
 import mx.lux.pos.service.TicketService
 import mx.lux.pos.ui.model.Refund
 import mx.lux.pos.ui.model.Session
@@ -14,15 +16,20 @@ import static mx.lux.pos.ui.assertions.Assert.assertRefundEquals
 class CancellationControllerTest extends Specification {
 
   private CancellationController controller
+  private NotaVentaService notaVentaService
   private CancelacionService cancelacionService
   private TicketService ticketService
+  private PagoService pagoService
 
   def setup( ) {
     cancelacionService = Mock( CancelacionService )
     ticketService = Mock( TicketService )
+    notaVentaService = Mock( NotaVentaService )
+    pagoService = Mock( PagoService )
     controller = new CancellationController(
         cancelacionService,
-        ticketService
+        ticketService,
+        pagoService
     )
   }
 
@@ -603,4 +610,28 @@ class CancellationControllerTest extends Specification {
     then:
     actual == [ sourceOrderId1 ]
   }
+
+
+
+    def 'imprime cancelacion tpv'( ) {
+        given:
+        def orderId = 'A10360'
+
+        when:
+        def nota = notaVentaService.obtenerNotaVenta( orderId )
+        Integer idPago = 0
+        if(nota != null){
+          for(Pago pago : nota.pagos){
+            if(pago?.idTerminal?.contains("|")){
+              idPago = pago.id
+            }
+          }
+        }
+
+        then:
+        for(int i=0;i<2;i++){
+          String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
+          ticketService.imprimeVoucherCancelacionTpv(idPago, copia, "CANCELACION")
+        }
+    }
 }

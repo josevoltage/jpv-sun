@@ -1987,9 +1987,11 @@ class TicketServiceImpl implements TicketService {
       Boolean meses = false
       Integer months = 0
       Pago pago = pagoRepository.findOne(idPago)
-      try{
+      if(StringUtils.trimToEmpty(pago.idPlan).length() > 0 && StringUtils.trimToEmpty(pago.idPlan).isNumber()){
+        try{
           months = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).intValue()
-      } catch ( NumberFormatException e ){ println e }
+        } catch ( NumberFormatException e ){ println e }
+      }
       if( months > 1 ){
           meses = true
       }
