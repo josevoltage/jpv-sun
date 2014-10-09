@@ -596,8 +596,17 @@ class TicketServiceImpl implements TicketService {
       BigDecimal diferenciaEfectivoUS = totalDepositosUS - efectivoNetoUS
 
       List<ResumenDiario> resumenesDiario = resumenDiarioRepository.findByFechaCierre( fechaCierre )
+      /*List<ResumenDiario> resumenesDiario = new ArrayList<>()
+
+      for(ResumenDiario res : resumenesDiarioTmp){
+        if(StringUtils.trimToEmpty(res.tipo).length() > 0 && StringUtils.trimToEmpty(res.idTerminal).length() > 0){
+          resumenesDiario.add( res )
+        }
+      }*/
 
       List<ResumenDiario> resumenTerminales = new ArrayList<ResumenDiario>()
+      List<ResumenDiario> resumenTerminalesTpv = new ArrayList<ResumenDiario>()
+      List<ResumenDiario> resumenTerminalesTpvCan = new ArrayList<ResumenDiario>()
       String terminal
 
       if ( resumenesDiario.size() == 1 ) {
@@ -616,7 +625,12 @@ class TicketServiceImpl implements TicketService {
         resumen.formaPago = new FormaPago()
         resumen.formaPago.descripcion = String.format('%10s', formatter.format( resumen.importe ) )
         if( resumen.importe.compareTo(BigDecimal.ZERO) > 0 ){
-          resumenTerminales.add( resumen )
+          if( StringUtils.trimToEmpty(resumen.idTerminal).length() <= 0 ){
+            resumen.idTerminal = resumen.tipo
+            resumenTerminalesTpv.add( resumen )
+          } else {
+            resumenTerminales.add( resumen )
+          }
         }
       } else {
         Collections.sort( resumenesDiario )
@@ -627,7 +641,13 @@ class TicketServiceImpl implements TicketService {
             current = new ResumenDiario()
             current.idTerminal = resumen.idTerminal.toUpperCase()
             current.importe = BigDecimal.ZERO
-            resumenTerminales.add( current )
+            if( StringUtils.trimToEmpty(current.idTerminal).length() <= 0 ){
+              //current.idTerminal = resumen.tipo
+              //resumenTerminalesTpv.add( current )
+              //findOrCreateTrans( resumenTerminalesTpv, current.idTerminal )
+            } else {
+              resumenTerminales.add( current )
+            }
             montoDolares = BigDecimal.ZERO
           }
           if ( resumen.plan?.equals( TAG_CANCELADO ) || resumen.plan?.equals( TAG_DEVUELTO ) ) {
@@ -658,8 +678,17 @@ class TicketServiceImpl implements TicketService {
           current.formaPago = new FormaPago()
           current.formaPago.descripcion = String.format('%10s', formatter.format( current.importe ) )
           if( current.importe.compareTo(BigDecimal.ZERO) == 0 ){
-            resumenTerminales.remove( current )
+            if( StringUtils.trimToEmpty(current.idTerminal).length() <= 0 ){
+              current.idTerminal = resumen.tipo
+              resumenTerminalesTpv.remove( current )
+            } else {
+              resumenTerminales.remove( current )
+            }
           }
+            if( StringUtils.trimToEmpty(current.idTerminal).length() <= 0 ){
+                current.idTerminal = resumen.tipo
+                ResumenDiario tmp = findOrCreateTrans( resumenTerminalesTpv, current )
+            }
         }
       }
 
@@ -872,6 +901,8 @@ class TicketServiceImpl implements TicketService {
           faltanteUS: diferenciaEfectivoUS < 0 ? String.format('%10s', formatter.format( diferenciaEfectivoUS ) ) : null,
           sobranteUS: diferenciaEfectivoUS > 0 ? String.format('%10s', formatter.format( diferenciaEfectivoUS ) ) : null,
           resumen_terminales: resumenTerminales.size() > 0 ? resumenTerminales : null,
+          resumen_terminales_tpv: resumenTerminalesTpv.size() > 0 ? resumenTerminalesTpv : null,
+          resumen_terminales_tpv_can: resumenTerminalesTpvCan.size() > 0 ? resumenTerminalesTpvCan : null,
           numero_vales: vales.size(),
           monto_vales: montoVales.compareTo(BigDecimal.ZERO) == 0 ? '-' : String.format('%10s', formatter.format( montoVales ) ),
           vales: vales.size() > 0 ? vales : null,
@@ -2099,4 +2130,20 @@ class TicketServiceImpl implements TicketService {
   }
 
 
+
+  private static ResumenDiario findOrCreateTrans( List<ResumenDiario> lstResumenesDiarios, ResumenDiario pResumenDiario ) {
+    ResumenDiario found = null
+    for ( ResumenDiario resumenDiario : lstResumenesDiarios ) {
+      if ( resumenDiario.idTerminal.equals( pResumenDiario.idTerminal ) ) {
+        resumenDiario.importe = resumenDiario.importe.add(pResumenDiario.importe)
+        found = resumenDiario
+        break
+      }
+    }
+    if ( found == null ) {
+      found = pResumenDiario
+      lstResumenesDiarios.add( found )
+    }
+    return found
+  }
 }

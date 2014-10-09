@@ -86,9 +86,11 @@ class CancellationController {
         }
         if( Registry.activeTpv ){
           String transaccion = cancelacionService.cancelaVoucherTpv( pagoId )
-          for(int i=0;i<2;i++){
-            String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
-            ticketService.imprimeVoucherCancelacionTpv(pagoId, copia, transaccion)
+          if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
+            for(int i=0;i<2;i++){
+              String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
+              ticketService.imprimeVoucherCancelacionTpv(pagoId, copia, transaccion)
+            }
           }
         }
       }

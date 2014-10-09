@@ -914,7 +914,9 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       Date fechaInicio = fecha.clearTime()
       Date fechaFin = new Date( fecha.next().time - 1 )
       log.debug( "buscando pagos del: ${fechaInicio.format( DATE_TIME_FORMAT )} al: ${fechaFin.format( DATE_TIME_FORMAT )}" )
-      Set<Pago> pagos = pagoRepository.findByFechaBetweenAndIdTerminalIn( fechaInicio, fechaFin, terminalesId ) ?: [ ]
+      //Set<Pago> pagos = pagoRepository.findByFechaBetweenAndIdTerminalIn( fechaInicio, fechaFin, terminalesId ) ?: [ ]
+      QPago qPago = QPago.pago
+      Set<Pago> pagos = pagoRepository.findAll( qPago.fecha.between(fechaInicio,fechaFin).and(qPago.terminal.id.in(terminalesId).or(qPago.idTerminal.contains("|"))) ) as Set<Pago> ?: [ ]
       procesarVouchersResumenesDePagos( pagos, vouchers, resumenes )
       log.debug( "buscando pagos externos del:${fechaInicio.format( DATE_TIME_FORMAT )} al: ${fechaFin.format( DATE_TIME_FORMAT )}" )
       Set<PagoExterno> pagosExternos = pagoExternoRepository.findByFechaBetweenAndIdTerminalIn( fechaInicio, fechaFin, terminalesId ) ?: [ ]
