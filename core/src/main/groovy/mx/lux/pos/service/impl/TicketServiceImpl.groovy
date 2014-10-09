@@ -1935,10 +1935,12 @@ class TicketServiceImpl implements TicketService {
 
   void imprimeResumenTarjetas( Date fechaCierre ){
     log.debug( "imprimeVoucherTpv( )" )
+    NumberFormat formatter = NumberFormat.getCurrencyInstance( Locale.US )
     Date fechaInicio = DateUtils.truncate( fechaCierre, Calendar.DAY_OF_MONTH );
     Date fechaFin = new Date( DateUtils.ceiling( fechaCierre, Calendar.DAY_OF_MONTH ).getTime() - 1 );
     QPago qPago = QPago.pago
     List<Pago> lstPagos = pagoRepository.findAll( qPago.fecha.between(fechaInicio,fechaFin) ) as List<Pago>
+    List<Modificacion> lstModificacion = modificacionRepository.findByFechaBetween(fechaInicio,fechaFin) as List<Modificacion>
     List<Pago> selected = new ArrayList<Pago>()
     for ( Pago p : lstPagos ) {
       if ( p.idTerminal.contains("|") && ('TCM'.equals( p.formaPago?.id ) || 'TCD'.equals( p.formaPago?.id ) || 'TDM'.equals( p.formaPago?.id )
@@ -1951,27 +1953,81 @@ class TicketServiceImpl implements TicketService {
     List<Pago> pagosTcm = new ArrayList<>()
     List<Pago> pagosTdm = new ArrayList<>()
     List<Pago> pagosTcd = new ArrayList<>()
+    BigDecimal pagosTcmMonto = BigDecimal.ZERO
+    BigDecimal pagosTdmMonto = BigDecimal.ZERO
+    BigDecimal pagosTcdMonto = BigDecimal.ZERO
+    def pagosTcmCan = [ ]
+    def pagosTdmCan = [ ]
+    def pagosTcdCan = [ ]
     for(Pago pago : selected){
       if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TDM) ){
+        pago.idRecibo = formatter.format(pago.monto)
         pagosTdm.add(pago)
+        pagosTdmMonto = pagosTdmMonto.add(pago.monto)
       } else if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCM) ){
-          pagosTcm.add(pago)
+        pago.idRecibo = formatter.format(pago.monto)
+        pagosTcm.add(pago)
+        pagosTcmMonto = pagosTcmMonto.add(pago.monto)
       } else if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ){
-          pagosTcd.add(pago)
+        pago.idRecibo = formatter.format(pago.monto)
+        pagosTcd.add(pago)
+        pagosTcdMonto = pagosTcdMonto.add(pago.monto)
       }
     }
-    if(selected.size() > 0){
+    for(Modificacion modificacion : lstModificacion){
+      for(Pago pago : modificacion.notaVenta.pagos){
+        List<Devolucion> lstDev = devolucionRepository.findByIdPago( pago.id )
+        String status = ""
+        if( lstDev.size() > 0 ){
+          status = "D"
+        } else {
+          status = "C"
+        }
+        if( pago.idTerminal.contains("|") && StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TDM) ){
+          def data = [
+            factura: StringUtils.trimToEmpty(modificacion.notaVenta.factura),
+            plan: StringUtils.trimToEmpty(pago.idPlan),
+            importe: "(${StringUtils.trimToEmpty(formatter.format(pago.monto))})${status}"
+          ]
+          pagosTdmCan.add(data)
+          pagosTdmMonto = pagosTdmMonto.subtract(pago.monto)
+        } else if( pago.idTerminal.contains("|") && StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCM) ){
+          def data = [
+            factura: StringUtils.trimToEmpty(modificacion.notaVenta.factura),
+            plan: StringUtils.trimToEmpty(pago.idPlan),
+            importe: "(${StringUtils.trimToEmpty(formatter.format(pago.monto))})${status}"
+          ]
+          pagosTcmCan.add(data)
+          pagosTcmMonto = pagosTcmMonto.subtract(pago.monto)
+        } else if( pago.idTerminal.contains("|") && StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ){
+          def data = [
+            factura: StringUtils.trimToEmpty(modificacion.notaVenta.factura),
+            plan: StringUtils.trimToEmpty(pago.idPlan),
+            importe: "(${StringUtils.trimToEmpty(formatter.format(pago.monto))})${status}"
+          ]
+          pagosTcdCan.add(data)
+          pagosTcdMonto = pagosTcdMonto.subtract(pago.monto)
+        }
+      }
+    }
+    if(selected.size() > 0 || lstModificacion.size() > 0){
       def datos = [
             fecha: fechaCierre.format("dd/MM/yyyy"),
             pagosTdm: pagosTdm,
             pagosTcm: pagosTcm,
             pagosTcd: pagosTcd,
+            pagosTdmCan: pagosTdmCan,
+            pagosTcmCan: pagosTcmCan,
+            pagosTcdCan: pagosTcdCan,
             tdm: pagosTdm.size() > 0,
             tcm: pagosTcm.size() > 0,
             tcd: pagosTcd.size() > 0,
             tdmTotal: pagosTdm.size(),
             tcmTotal: pagosTcm.size(),
             tcdTotal: pagosTcd.size(),
+            tdmTotalMonto: formatter.format(pagosTdmMonto),
+            tcmTotalMonto: formatter.format(pagosTcmMonto),
+            tcdTotalMonto: formatter.format(pagosTcdMonto),
       ]
       imprimeTicket( 'template/ticket-resumen-tarjetas.vm', datos )
     } else {

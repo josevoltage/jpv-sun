@@ -14,19 +14,22 @@ ${COLUMNAS}
 #ALINEAR_DERECHA()Fecha: ${fecha}${CR}
 
 #if( ${tcm} )#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 ${SUBRAYADO})MN TARJETA DE CREDITO${LF}
-#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 0)TOTAL: ${tcmTotal}  #FIN_ESTILO()${CR}${LF}
+#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 0)TOTAL: ${tcmTotal}  ${COL_DET_2}${tcmTotalMonto}#FIN_ESTILO()${CR}${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)FACTURA${COL_DET_1}PLAN${COL_DET_2}IMPORTE
-#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tcmDet in ${pagosTcm} )${tcmDet.notaVenta.factura}${COL_DET_1}${tcmDet.idPlan}${COL_DET_2}${tcmDet.monto}${LF}#end
+#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tcmDet in ${pagosTcm} )${tcmDet.notaVenta.factura}${COL_DET_1}${tcmDet.idPlan}${COL_DET_2}${tcmDet.idRecibo}${LF}#end
+#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tcmDetCan in ${pagosTcmCan} )${tcmDetCan.factura}${COL_DET_1}${tcmDetCan.plan}${COL_DET_2}${tcmDetCan.importe}${LF}#end
 #end${LF}${LF}
 #if( ${tdm} )#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 ${SUBRAYADO})MN TARJETA DE DEBITO${LF}
-#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 0)TOTAL: ${tdmTotal}  #FIN_ESTILO()${CR}${LF}
+#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 0)TOTAL: ${tdmTotal}  ${COL_DET_2}${tdmTotalMonto}#FIN_ESTILO()${CR}${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)FACTURA${COL_DET_1}PLAN${COL_DET_2}IMPORTE
-#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tdmDet in ${pagosTdm} )${tdmDet.notaVenta.factura}${COL_DET_1}${tdmDet.idPlan}${COL_DET_2}${tdmDet.monto}${LF}#end
+#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tdmDet in ${pagosTdm} )${tdmDet.notaVenta.factura}${COL_DET_1}${tdmDet.idPlan}${COL_DET_2}${tdmDet.idRecibo}${LF}#end
+#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tdmDetCan in ${pagosTdmCan} )${tdmDetCan.factura}${COL_DET_1}${tdmDetCan.plan}${COL_DET_2}${tdmDetCan.importe}${LF}#end
 #end${LF}${LF}
 #if( ${tcd} )#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 ${SUBRAYADO})US TARJETA DE CREDITO${LF}
-#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 0)TOTAL: ${tcdTotal}  #FIN_ESTILO()${CR}${LF}
+#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_A} ${NEGRITA} 0 0 0)TOTAL: ${tcdTotal}  ${COL_DET_2}${tcdTotalMonto}#FIN_ESTILO()${CR}${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)FACTURA${COL_DET_1}PLAN${COL_DET_2}IMPORTE
-#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tcdDet in ${pagosTcd} )${tcdDet.notaVenta.factura}${COL_DET_1}${tcdDet.idPlan}${COL_DET_2}${tcdDet.monto}${LF}#end
+#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tcdDet in ${pagosTcd} )${tcdDet.notaVenta.factura}${COL_DET_1}${tcdDet.idPlan}${COL_DET_2}${tcdDet.idRecibo}${LF}#end
+#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $tcdDetCan in ${pagosTcdCan} )${tcdDetCan.factura}${COL_DET_1}${tcdDetCan.plan}${COL_DET_2}${tcdDetCan.importe}${LF}#end
 #end${LF}${LF}
 #AVANZAR_LINEAS(4)
 #CORTE()
