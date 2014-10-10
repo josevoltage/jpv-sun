@@ -737,9 +737,9 @@ class TicketServiceImpl implements TicketService {
 
             } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("") &&
                     StringUtils.trimToEmpty(resumen.plan).equalsIgnoreCase("C")){
-              resumenTerminaleTcmTpvCan.idTerminal = resumen.tipo
+              resumenTerminaleTcmTpvCan.idTerminal = resumen.plan
               resumenTerminaleTcmTpvCan.plan = '0'
-              resumenTerminaleTcmTpvCan.importe = resumenTerminaleTcmTpvCan.importe.add(resumen.importe)
+              resumenTerminaleTcmTpvCan.importe = resumenTerminaleTcmTpvCan.importe.subtract(resumen.importe)
               resumenTerminaleTcmTpvCan.formaPago.descripcion = formatter.format( resumenTerminaleTcmTpvCan.importe )
             }
           }
