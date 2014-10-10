@@ -606,6 +606,27 @@ class TicketServiceImpl implements TicketService {
 
       List<ResumenDiario> resumenTerminales = new ArrayList<ResumenDiario>()
       List<ResumenDiario> resumenTerminalesTpv = new ArrayList<ResumenDiario>()
+      ResumenDiario resumenTerminaleTcmTpv = new ResumenDiario()
+      resumenTerminaleTcmTpv.importe = BigDecimal.ZERO
+      resumenTerminaleTcmTpv.formaPago = new FormaPago()
+      ResumenDiario resumenTerminaleTdmTpv = new ResumenDiario()
+      resumenTerminaleTdmTpv.importe = BigDecimal.ZERO
+      resumenTerminaleTdmTpv.formaPago = new FormaPago()
+      ResumenDiario resumenTerminaleTcdTpv = new ResumenDiario()
+      resumenTerminaleTcdTpv.importe = BigDecimal.ZERO
+      resumenTerminaleTcdTpv.formaPago = new FormaPago()
+      Double montoTcdTpv = 0.00
+
+        ResumenDiario resumenTerminaleTcmTpvCan = new ResumenDiario()
+        resumenTerminaleTcmTpvCan.importe = BigDecimal.ZERO
+        resumenTerminaleTcmTpvCan.formaPago = new FormaPago()
+        ResumenDiario resumenTerminaleTdmTpvCan = new ResumenDiario()
+        resumenTerminaleTdmTpvCan.importe = BigDecimal.ZERO
+        resumenTerminaleTdmTpvCan.formaPago = new FormaPago()
+        ResumenDiario resumenTerminaleTcdTpvCan = new ResumenDiario()
+        resumenTerminaleTcdTpvCan.importe = BigDecimal.ZERO
+        resumenTerminaleTcdTpvCan.formaPago = new FormaPago()
+        Double montoTcdTpvCan = 0.00
       List<ResumenDiario> resumenTerminalesTpvCan = new ArrayList<ResumenDiario>()
       String terminal
 
@@ -626,7 +647,6 @@ class TicketServiceImpl implements TicketService {
         resumen.formaPago.descripcion = String.format('%10s', formatter.format( resumen.importe ) )
         if( resumen.importe.compareTo(BigDecimal.ZERO) > 0 ){
           if( StringUtils.trimToEmpty(resumen.idTerminal).length() <= 0 ){
-            resumen.idTerminal = resumen.tipo
             resumenTerminalesTpv.add( resumen )
           } else {
             resumenTerminales.add( resumen )
@@ -636,6 +656,12 @@ class TicketServiceImpl implements TicketService {
         Collections.sort( resumenesDiario )
         ResumenDiario current = null
         BigDecimal montoDolares
+        Collections.sort(resumenesDiario, new Comparator<ResumenDiario>() {
+            @Override
+            int compare(ResumenDiario o1, ResumenDiario o2) {
+                return o1.tipo.compareTo(o2.tipo)
+            }
+        })
         for ( ResumenDiario resumen : resumenesDiario ) {
           if ( ( current == null ) || ( !current.idTerminal.equalsIgnoreCase( resumen.idTerminal ) ) ) {
             current = new ResumenDiario()
@@ -661,6 +687,9 @@ class TicketServiceImpl implements TicketService {
                 current.plan = '0'
               }
             }
+            if( StringUtils.trimToEmpty(current.idTerminal).length() <= 0 ){
+
+            }
           } else {
               current.importe = current.importe.add( resumen.importe )
               current.plan = '0'
@@ -679,19 +708,56 @@ class TicketServiceImpl implements TicketService {
           current.formaPago.descripcion = String.format('%10s', formatter.format( current.importe ) )
           if( current.importe.compareTo(BigDecimal.ZERO) == 0 ){
             if( StringUtils.trimToEmpty(current.idTerminal).length() <= 0 ){
-              current.idTerminal = resumen.tipo
-              resumenTerminalesTpv.remove( current )
+
             } else {
               resumenTerminales.remove( current )
             }
           }
-            if( StringUtils.trimToEmpty(current.idTerminal).length() <= 0 ){
-                current.idTerminal = resumen.tipo
-                ResumenDiario tmp = findOrCreateTrans( resumenTerminalesTpv, current )
+          if(StringUtils.trimToEmpty(resumen.idTerminal).length() <= 0){
+            if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("TCM") ){
+              resumenTerminaleTcmTpv.idTerminal = resumen.tipo
+              resumenTerminaleTcmTpv.plan = '0'
+              resumenTerminaleTcmTpv.importe = resumenTerminaleTcmTpv.importe.add(resumen.importe)
+              resumenTerminaleTcmTpv.formaPago.descripcion = formatter.format( resumenTerminaleTcmTpv.importe )
+            } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("TDM")){
+              resumenTerminaleTdmTpv.idTerminal = resumen.tipo
+              resumenTerminaleTdmTpv.plan = '0'
+              resumenTerminaleTdmTpv.importe = resumenTerminaleTdmTpv.importe.add(resumen.importe)
+              resumenTerminaleTdmTpv.formaPago.descripcion = formatter.format( resumenTerminaleTdmTpv.importe )
+            } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("TCD")){
+              resumenTerminaleTcdTpv.idTerminal = resumen.tipo
+                if( resumenTerminaleTcdTpv.plan.isNumber() ){
+                  try{
+                    montoTcdTpv = montoTcdTpv+NumberFormat.getInstance().parse( resumenTerminaleTcdTpv.plan ).doubleValue()
+                  } catch ( NumberFormatException e ){ println e }
+                }
+                resumenTerminaleTcdTpv.plan = formatter.format( montoTcdTpv )
+                resumenTerminaleTcdTpv.importe = resumenTerminaleTcdTpv.importe.add(resumen.importe)
+                resumenTerminaleTcdTpv.formaPago.descripcion = formatter.format( resumenTerminaleTcdTpv.importe )
+
+            } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("") &&
+                    StringUtils.trimToEmpty(resumen.plan).equalsIgnoreCase("C")){
+              resumenTerminaleTcmTpvCan.idTerminal = resumen.tipo
+              resumenTerminaleTcmTpvCan.plan = '0'
+              resumenTerminaleTcmTpvCan.importe = resumenTerminaleTcmTpvCan.importe.add(resumen.importe)
+              resumenTerminaleTcmTpvCan.formaPago.descripcion = formatter.format( resumenTerminaleTcmTpvCan.importe )
             }
+          }
         }
       }
-
+      if( StringUtils.trimToEmpty(resumenTerminaleTcmTpv.idTerminal).length() > 0 ){
+        resumenTerminalesTpv.add(resumenTerminaleTcmTpv)
+      }
+      if( StringUtils.trimToEmpty(resumenTerminaleTdmTpv.idTerminal).length() > 0 ){
+        resumenTerminalesTpv.add(resumenTerminaleTdmTpv)
+      }
+      if( StringUtils.trimToEmpty(resumenTerminaleTcdTpv.idTerminal).length() > 0 ){
+        resumenTerminalesTpv.add(resumenTerminaleTcdTpv)
+      }
+      if( resumenTerminaleTcmTpvCan.importe.compareTo(BigDecimal.ZERO) > 0 ||
+              resumenTerminaleTcmTpvCan.importe.compareTo(BigDecimal.ZERO) < 0){
+        resumenTerminalesTpvCan.add(resumenTerminaleTcmTpvCan)
+      }
       List<Pago> vales = pagoRepository.findBy_Fecha( fechaCierre )
       for( Pago pago : vales ){
         pago.referenciaPago = formatter.format( pago.monto )
@@ -1954,7 +2020,8 @@ class TicketServiceImpl implements TicketService {
           arqc: arqc,
           cliente: cliente,
           importe: formatter.format(pago.monto),
-          reimpresion: reimpresion
+          reimpresion: reimpresion,
+          moneda: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? "USD" : "MXN"
       ]
       imprimeTicket( 'template/ticket-tpv.vm', datos )
     } else {
@@ -2121,7 +2188,8 @@ class TicketServiceImpl implements TicketService {
                   aid: aid,
                   arqc: arqc,
                   cliente: cliente,
-                  importe: String.format("-%s",formatter.format(pago.monto))
+                  importe: String.format("-%s",formatter.format(pago.monto)),
+                  moneda: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? "USD" : "MXN"
           ]
           imprimeTicket( 'template/ticket-tpv-can.vm', datos )
       } else {
@@ -2135,7 +2203,6 @@ class TicketServiceImpl implements TicketService {
     ResumenDiario found = null
     for ( ResumenDiario resumenDiario : lstResumenesDiarios ) {
       if ( resumenDiario.idTerminal.equals( pResumenDiario.idTerminal ) ) {
-        resumenDiario.importe = resumenDiario.importe.add(pResumenDiario.importe)
         found = resumenDiario
         break
       }

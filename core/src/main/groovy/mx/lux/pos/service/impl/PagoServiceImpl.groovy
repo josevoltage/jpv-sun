@@ -156,15 +156,9 @@ class PagoServiceImpl implements PagoService {
       if ( execute == 0 && StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ){
           pago.idFactura = idOrder
           pago.referenciaPago = ctx.GetString( "trn_card_number" )
-          pago.monto = BigDecimal.ZERO
-          try{
-            pago.monto = NumberFormat.getInstance().parse(ctx.GetString( "trn_amount" ).replace(",",""))
-          } catch ( NumberFormatException e ){ println e }
-
           pago.clave = ctx.GetString( "trn_card_number" )
           pago.referenciaClave = ctx.GetString( "trn_auth_code" )
           pago.idTerminal = ctx.GetString("trn_pro_name")+"|"+ctx.GetString("trn_id")+"|"+ctx.GetString("trn_aid")+"|"+ctx.GetString("trn_arqc ")+"|"+ctx.GetString("trn_cardholder_name")
-          pago.idPlan = ctx.GetInteger( "trn_qty_pay" )
           String tipo = ""
           if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("1")){
             if( pago.idFPago.startsWith(TAG_TD) ){
@@ -175,6 +169,14 @@ class PagoServiceImpl implements PagoService {
                   pago.idFPago = "TDM"
             }
           }
+          try{
+              if( pago.idFPago.equalsIgnoreCase("TCD")){
+                pago.idPlan = NumberFormat.getInstance().parse(ctx.GetString( "trn_amount" ).replace(",",""))
+              } else {
+                pago.monto = NumberFormat.getInstance().parse(ctx.GetString( "trn_amount" ).replace(",",""))
+                pago.idPlan = ctx.GetInteger( "trn_qty_pay" )
+              }
+          } catch ( NumberFormatException e ){ println e }
           ctx.TCP_Close();
       } else {
           println( "ERROR AL VALIDAR PAGO" ) ;

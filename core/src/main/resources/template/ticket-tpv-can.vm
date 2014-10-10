@@ -23,7 +23,7 @@ ${COLUMNAS}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)${tipo} ${producto}
 #if(${meses})#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)${plan} MESES SIN INTERESES#end${CR}${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)     AUT:${numAutorizacion}${COL_DET_2}OPER:${operacion}${LF}
-#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} ${DOBLE_ALTURA} 0 0)Importe: #altnull(${importe})${CR}${LF}
+#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} ${DOBLE_ALTURA} 0 0)Importe ${moneda}: #altnull(${importe})${CR}${LF}
 ${LF}
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)FIRMA:________________________
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)${cliente}${LF}
