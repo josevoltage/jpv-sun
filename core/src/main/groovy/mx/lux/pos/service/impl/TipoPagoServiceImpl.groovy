@@ -69,35 +69,14 @@ class TipoPagoServiceImpl implements TipoPagoService {
       tiposPagoTmp = resultados.findAll { TipoPago tipoPago ->
         valores.contains( tipoPago?.id?.trim() )
       }
-      tiposPago.addAll(tiposPagoTmp)
       if( Registry.activeTpv ){
+        tiposPago.addAll(tiposPagoTmp)
+      } else {
         for(TipoPago tipoPago : tiposPagoTmp){
-          if(StringUtils.trimToEmpty(tipoPago.id).startsWith("TC") ||
-                  StringUtils.trimToEmpty(tipoPago.id).startsWith("TD")){
-            TipoPago tipoPagoTpv = new TipoPago()
-            tipoPagoTpv.id = tipoPago.id+"TPV"
-            tipoPagoTpv.descripcion = "[TPV]"+tipoPago.descripcion
-            tipoPagoTpv.tipoSoi = tipoPago.tipoSoi
-            tipoPagoTpv.tipoCon = tipoPago.tipoCon
-            tipoPagoTpv.f1 = tipoPago.f1
-            tipoPagoTpv.f2 = tipoPago.f2
-            tipoPagoTpv.f3 = tipoPago.f3
-            tipoPagoTpv.f4 = tipoPago.f4
-            tipoPagoTpv.f5 = tipoPago.f5
-            tiposPago.add(tipoPagoTpv)
+          if( !tipoPago.descripcion.contains("TPV")){
+            tiposPago.add(tipoPago)
           }
         }
-        TipoPago tipoPagoTpv = new TipoPago()
-        tipoPagoTpv.id = "TAE TPV"
-        tipoPagoTpv.descripcion = "[TPV] AMERICAN EXPRESS"
-        tipoPagoTpv.tipoSoi = "TAE TPV"
-        tipoPagoTpv.tipoCon = "R"
-        tipoPagoTpv.f1 = ""
-        tipoPagoTpv.f2 = ""
-        tipoPagoTpv.f3 = "Id."
-        tipoPagoTpv.f4 = ""
-        tipoPagoTpv.f5 = "Plan"
-        tiposPago.add(tipoPagoTpv)
       }
       log.debug( "tipos de pago obtenidos: ${tiposPago*.id}" )
     }

@@ -203,31 +203,31 @@ class PaymentDialog extends JDialog implements KeyListener{
         } else {
           tmpPayment.paymentTypeId = paymentType?.id
           if ( StringUtils.isNotBlank( paymentType?.f1 ) ) {
-            if( paymentType?.id?.contains("TPV") ){
+            /*if( paymentType?.id?.contains("TPV") ){
               if(!activeTpv){
                 mediumLabel.visible = true
                 mediumLabel.text = paymentType.f1
                 medium.visible = true
               }
-            } else {
+            } else {*/
               mediumLabel.visible = true
               mediumLabel.text = paymentType.f1
               medium.visible = true
-            }
+            //}
 
           }
           if ( StringUtils.isNotBlank( paymentType?.f2 ) ) {
-            if( paymentType?.id?.contains("TPV") ){
+            /*if( paymentType?.id?.contains("TPV") ){
               if(!activeTpv){
                 codeLabel.visible = true
                 codeLabel.text = paymentType.f2
                 code.visible = true
               }
-            } else {
+            } else {*/
               codeLabel.visible = true
               codeLabel.text = paymentType.f2
               code.visible = true
-            }
+            //}
           }
           if ( StringUtils.isNotBlank( paymentType?.f3 ) ) {
             issuerLabel.visible = true
@@ -235,22 +235,22 @@ class PaymentDialog extends JDialog implements KeyListener{
             issuer.visible = true
           }
           if ( StringUtils.isNotBlank( paymentType?.f4 ) ) {
-            if( paymentType?.id?.contains("TPV") ){
+            /*if( paymentType?.id?.contains("TPV") ){
               if(!activeTpv){
                 terminalLabel.visible = true
                 terminalLabel.text = paymentType.f4
                 terminal.visible = true
               }
-            } else {
+            } else {*/
               terminalLabel.visible = true
               terminalLabel.text = paymentType.f4
               terminal.visible = true
-            }
+            //}
           }
           if ( StringUtils.isNotBlank( paymentType?.f5 ) ) {
             planLabel.visible = true
             planLabel.text = paymentType.f5
-            if( activeTpv && paymentType?.id?.contains("TPV") ){
+            if( activeTpv && paymentType?.description?.contains("TPV") ){
               dollarsReceived.visible = true
               plan.visible = false
               mediumLabel.visible = false
@@ -259,7 +259,7 @@ class PaymentDialog extends JDialog implements KeyListener{
               plan.visible = true
             }
           }
-          if( PaymentController.findTypePaymentsDollar(StringUtils.trimToEmpty(paymentType?.id.replace("TPV",""))) ){
+          if( PaymentController.findTypePaymentsDollar(StringUtils.trimToEmpty(paymentType?.id?.replace("TPV",""))) ){
             dollarsReceivedLabel.visible = true
             dollarsReceivedLabel.text = DOLARES
             dollarsReceived.visible = true
@@ -382,7 +382,8 @@ class PaymentDialog extends JDialog implements KeyListener{
     JButton source = ev.source as JButton
     source.enabled = false
     if ( isValid( order ) ) {
-        if ( activeTpv && tmpPayment?.paymentTypeId?.contains( 'TPV' ) ){
+        //if ( false ){
+        if ( activeTpv && tmpPayment?.paymentType?.contains( 'TPV' ) ){
             if( dollarsReceived.visible ){
               Integer meses = 1
               try{

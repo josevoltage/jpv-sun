@@ -560,6 +560,19 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       } else {
         parcialidad = StringUtils.defaultIfBlank( pago.parcialidad?.trim(), '' )
       }
+      String idTerminal = ""
+      if( pago.idTerminal.contains("|") ){
+        String[] data = pago.idTerminal.split(/\|/)
+        if( StringUtils.trimToEmpty(pago.idPlan).length() > 0 && !StringUtils.trimToEmpty(pago.idPlan).equalsIgnoreCase("1") &&
+                !StringUtils.trimToEmpty(pago.idTerminal).contains("BANAMEX") ){
+          idTerminal = data[0].replace("MASTERCARD","")
+          idTerminal = idTerminal.replace("VISA","")
+        } else {
+          idTerminal = "BMX"
+        }
+      } else {
+        idTerminal = StringUtils.trimToEmpty( pago.idTerminal?.trim() )
+      }
       [
           id_factura: pago.notaVenta.id,
           tipo_pago: pago.tipoPago == 'a' ? 'A' : '',
@@ -573,7 +586,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
           clave_p: StringUtils.defaultIfBlank( pago.clave?.trim(), '' ),
           referencia_clave: StringUtils.defaultIfBlank( pago.referenciaClave?.trim(), '' ),
           id_banco_emi: StringUtils.defaultIfBlank( pago.idBancoEmisor?.trim(), '' ),
-          id_terminal: pago?.idTerminal?.contains("|") ? "" : StringUtils.defaultIfBlank( pago.idTerminal?.trim(), '' ),
+          id_terminal: StringUtils.trimToEmpty(idTerminal),
           id_plan: StringUtils.defaultIfBlank( pago.idPlan?.trim(), '' ),
           id_pago: pago.id != null ? pago.id.toString() : ''
       ]

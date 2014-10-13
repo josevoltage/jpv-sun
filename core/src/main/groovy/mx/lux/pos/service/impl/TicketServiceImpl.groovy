@@ -726,7 +726,8 @@ class TicketServiceImpl implements TicketService {
               resumenTerminaleTdmTpv.formaPago.descripcion = formatter.format( resumenTerminaleTdmTpv.importe )
             } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("TCD")){
               resumenTerminaleTcdTpv.idTerminal = resumen.tipo
-                if( resumenTerminaleTcdTpv.plan.isNumber() ){
+                if( StringUtils.trimToEmpty(resumenTerminaleTcdTpv.plan).length() > 0 &&
+                        resumenTerminaleTcdTpv.plan.isNumber() ){
                   try{
                     montoTcdTpv = montoTcdTpv+NumberFormat.getInstance().parse( resumenTerminaleTcdTpv.plan ).doubleValue()
                   } catch ( NumberFormatException e ){ println e }
@@ -2039,38 +2040,27 @@ class TicketServiceImpl implements TicketService {
     QPago qPago = QPago.pago
     List<Pago> lstPagos = pagoRepository.findAll( qPago.fecha.between(fechaInicio,fechaFin) ) as List<Pago>
     List<Modificacion> lstModificacion = modificacionRepository.findByFechaBetween(fechaInicio,fechaFin) as List<Modificacion>
+    Collections.sort(lstModificacion, new Comparator<Modificacion>() {
+        @Override
+        int compare(Modificacion o1, Modificacion o2) {
+            return o1.idFactura.compareTo(o2.idFactura)
+        }
+    })
     List<Pago> selected = new ArrayList<Pago>()
     for ( Pago p : lstPagos ) {
-      if ( p.idTerminal.contains("|") && ('TCM'.equals( p.formaPago?.id ) || 'TCD'.equals( p.formaPago?.id ) || 'TDM'.equals( p.formaPago?.id )
-              || 'TDD'.equals( p.formaPago?.id )) ) {
+      if ( p.idTerminal.contains("|") ) {
         if( !StringUtils.trimToEmpty(p.notaVenta.factura).isEmpty() ){
           selected.add( p )
         }
       }
     }
-    List<Pago> pagosTcm = new ArrayList<>()
-    List<Pago> pagosTdm = new ArrayList<>()
-    List<Pago> pagosTcd = new ArrayList<>()
-    BigDecimal pagosTcmMonto = BigDecimal.ZERO
-    BigDecimal pagosTdmMonto = BigDecimal.ZERO
-    BigDecimal pagosTcdMonto = BigDecimal.ZERO
-    def pagosTcmCan = [ ]
-    def pagosTdmCan = [ ]
-    def pagosTcdCan = [ ]
+    List<Pago> pagos = new ArrayList<>()
+    BigDecimal pagosMonto = BigDecimal.ZERO
+    def pagosCan = [ ]
     for(Pago pago : selected){
-      if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TDM) ){
-        pago.idRecibo = formatter.format(pago.monto)
-        pagosTdm.add(pago)
-        pagosTdmMonto = pagosTdmMonto.add(pago.monto)
-      } else if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCM) ){
-        pago.idRecibo = formatter.format(pago.monto)
-        pagosTcm.add(pago)
-        pagosTcmMonto = pagosTcmMonto.add(pago.monto)
-      } else if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ){
-        pago.idRecibo = formatter.format(pago.monto)
-        pagosTcd.add(pago)
-        pagosTcdMonto = pagosTcdMonto.add(pago.monto)
-      }
+      pago.idRecibo = String.format('%1$#10s', formatter.format(pago.monto) );
+      pagos.add(pago)
+      pagosMonto = pagosMonto.add(pago.monto)
     }
     for(Modificacion modificacion : lstModificacion){
       for(Pago pago : modificacion.notaVenta.pagos){
@@ -2080,51 +2070,30 @@ class TicketServiceImpl implements TicketService {
         } else {
           status = "D"
         }
-        if( pago.idTerminal.contains("|") && StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TDM) ){
+        if( pago.idTerminal.contains("|") ){
           def data = [
             factura: StringUtils.trimToEmpty(modificacion.notaVenta.factura),
             plan: StringUtils.trimToEmpty(pago.idPlan),
-            importe: "(${StringUtils.trimToEmpty(formatter.format(pago.monto))})${status}"
+            importe: String.format('%1$#10s', "(${StringUtils.trimToEmpty(formatter.format(pago.monto))})${status}")
           ]
-          pagosTdmCan.add(data)
-          pagosTdmMonto = pagosTdmMonto.subtract(pago.monto)
-        } else if( pago.idTerminal.contains("|") && StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCM) ){
-          def data = [
-            factura: StringUtils.trimToEmpty(modificacion.notaVenta.factura),
-            plan: StringUtils.trimToEmpty(pago.idPlan),
-            importe: "(${StringUtils.trimToEmpty(formatter.format(pago.monto))})${status}"
-          ]
-          pagosTcmCan.add(data)
-          pagosTcmMonto = pagosTcmMonto.subtract(pago.monto)
-        } else if( pago.idTerminal.contains("|") && StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ){
-          def data = [
-            factura: StringUtils.trimToEmpty(modificacion.notaVenta.factura),
-            plan: StringUtils.trimToEmpty(pago.idPlan),
-            importe: "(${StringUtils.trimToEmpty(formatter.format(pago.monto))})${status}"
-          ]
-          pagosTcdCan.add(data)
-          pagosTcdMonto = pagosTcdMonto.subtract(pago.monto)
+          pagosCan.add(data)
+          pagosMonto = pagosMonto.subtract(pago.monto)
         }
       }
     }
+    Collections.sort(pagos, new Comparator<Pago>() {
+        @Override
+        int compare(Pago o1, Pago o2) {
+            return o1.notaVenta.factura.compareTo(o2.notaVenta.factura)
+        }
+    })
     if(selected.size() > 0 || lstModificacion.size() > 0){
       def datos = [
             fecha: fechaCierre.format("dd/MM/yyyy"),
-            pagosTdm: pagosTdm,
-            pagosTcm: pagosTcm,
-            pagosTcd: pagosTcd,
-            pagosTdmCan: pagosTdmCan,
-            pagosTcmCan: pagosTcmCan,
-            pagosTcdCan: pagosTcdCan,
-            tdm: pagosTdm.size() > 0,
-            tcm: pagosTcm.size() > 0,
-            tcd: pagosTcd.size() > 0,
-            tdmTotal: pagosTdm.size(),
-            tcmTotal: pagosTcm.size(),
-            tcdTotal: pagosTcd.size(),
-            tdmTotalMonto: formatter.format(pagosTdmMonto),
-            tcmTotalMonto: formatter.format(pagosTcmMonto),
-            tcdTotalMonto: formatter.format(pagosTcdMonto),
+            pagos: pagos,
+            pagosCan: pagosCan,
+            total: pagos.size()+pagosCan.size(),
+            totalMonto: formatter.format(pagosMonto),
       ]
       imprimeTicket( 'template/ticket-resumen-tarjetas.vm', datos )
     } else {
