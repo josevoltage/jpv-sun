@@ -2074,12 +2074,11 @@ class TicketServiceImpl implements TicketService {
     }
     for(Modificacion modificacion : lstModificacion){
       for(Pago pago : modificacion.notaVenta.pagos){
-        List<Devolucion> lstDev = devolucionRepository.findByIdPago( pago.id )
         String status = ""
-        if( lstDev.size() > 0 ){
-          status = "D"
-        } else {
+        if( StringUtils.trimToEmpty(modificacion.fecha.format("dd/MM/yyyy")).equalsIgnoreCase(StringUtils.trimToEmpty(modificacion.notaVenta.fechaHoraFactura.format("dd/MM/yyyy"))) ){
           status = "C"
+        } else {
+          status = "D"
         }
         if( pago.idTerminal.contains("|") && StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TDM) ){
           def data = [

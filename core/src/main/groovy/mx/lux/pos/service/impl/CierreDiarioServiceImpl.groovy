@@ -573,7 +573,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
           clave_p: StringUtils.defaultIfBlank( pago.clave?.trim(), '' ),
           referencia_clave: StringUtils.defaultIfBlank( pago.referenciaClave?.trim(), '' ),
           id_banco_emi: StringUtils.defaultIfBlank( pago.idBancoEmisor?.trim(), '' ),
-          id_terminal: StringUtils.defaultIfBlank( pago.idTerminal?.trim(), '' ),
+          id_terminal: pago?.idTerminal?.contains("|") ? "" : StringUtils.defaultIfBlank( pago.idTerminal?.trim(), '' ),
           id_plan: StringUtils.defaultIfBlank( pago.idPlan?.trim(), '' ),
           id_pago: pago.id != null ? pago.id.toString() : ''
       ]
