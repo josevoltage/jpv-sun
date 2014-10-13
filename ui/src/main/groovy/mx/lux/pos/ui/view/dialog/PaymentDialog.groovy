@@ -250,7 +250,7 @@ class PaymentDialog extends JDialog implements KeyListener{
           if ( StringUtils.isNotBlank( paymentType?.f5 ) ) {
             planLabel.visible = true
             planLabel.text = paymentType.f5
-            if( activeTpv && paymentType?.id?.contains("TPV") && (paymentType?.id?.contains("TC") || paymentType?.id?.contains("TD"))){
+            if( activeTpv && paymentType?.id?.contains("TPV") ){
               dollarsReceived.visible = true
               plan.visible = false
               mediumLabel.visible = false

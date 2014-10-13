@@ -38,6 +38,7 @@ class PagoServiceImpl implements PagoService {
 
   private String TAG_TC = "TC"
   private String TAG_TD = "TD"
+  private String TAG_TAE = "TAE"
 
   @Override
   Pago obtenerPago( Integer id ) {
@@ -161,13 +162,17 @@ class PagoServiceImpl implements PagoService {
           pago.idTerminal = ctx.GetString("trn_pro_name")+"|"+ctx.GetString("trn_id")+"|"+ctx.GetString("trn_aid")+"|"+ctx.GetString("trn_arqc ")+"|"+ctx.GetString("trn_cardholder_name")
           String tipo = ""
           if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("1")){
-            if( pago.idFPago.startsWith(TAG_TD) ){
+            if( pago.idFPago.startsWith(TAG_TD) || pago.idFPago.startsWith(TAG_TAE) ){
               pago.idFPago = "TCM"
             }
           } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("2")){
-            if( pago.idFPago.startsWith(TAG_TC) ){
+            if( pago.idFPago.startsWith(TAG_TC) || pago.idFPago.startsWith(TAG_TAE) ){
                   pago.idFPago = "TDM"
             }
+          } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("0")){
+              if( pago.idFPago.startsWith(TAG_TD) || pago.idFPago.startsWith(TAG_TC) ){
+                pago.idFPago = "TAE"
+              }
           }
           try{
               if( pago.idFPago.equalsIgnoreCase("TCD")){

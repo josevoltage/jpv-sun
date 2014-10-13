@@ -87,6 +87,17 @@ class TipoPagoServiceImpl implements TipoPagoService {
             tiposPago.add(tipoPagoTpv)
           }
         }
+        TipoPago tipoPagoTpv = new TipoPago()
+        tipoPagoTpv.id = "TAE TPV"
+        tipoPagoTpv.descripcion = "[TPV] AMERICAN EXPRESS"
+        tipoPagoTpv.tipoSoi = "TAE TPV"
+        tipoPagoTpv.tipoCon = "R"
+        tipoPagoTpv.f1 = ""
+        tipoPagoTpv.f2 = ""
+        tipoPagoTpv.f3 = "Id."
+        tipoPagoTpv.f4 = ""
+        tipoPagoTpv.f5 = "Plan"
+        tiposPago.add(tipoPagoTpv)
       }
       log.debug( "tipos de pago obtenidos: ${tiposPago*.id}" )
     }
