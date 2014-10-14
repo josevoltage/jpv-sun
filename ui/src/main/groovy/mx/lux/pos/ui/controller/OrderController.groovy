@@ -603,8 +603,7 @@ class OrderController {
     NotaVenta nota = notaVentaService.obtenerNotaVenta( StringUtils.trimToEmpty(orderId) )
     if(nota != null){
       for(Pago pago : nota.pagos){
-        if( StringUtils.trimToEmpty(pago.idTerminal).contains("|") &&
-                (pago.idFPago.startsWith(TAG_TARJETA_CREDITO) || pago.idFPago.startsWith(TAG_TARJETA_DEBITO)) ){
+        if( StringUtils.trimToEmpty(pago.idTerminal).contains("|") ){
           lstPagosTarj.add(pago)
         }
       }

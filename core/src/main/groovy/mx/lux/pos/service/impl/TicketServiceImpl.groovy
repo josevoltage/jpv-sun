@@ -57,7 +57,7 @@ class TicketServiceImpl implements TicketService {
   private static final String TAG_FORMA_PAGO_TD = "TD";
   private static final String TAG_FORMA_PAGO_TCM = "TCM";
   private static final String TAG_FORMA_PAGO_TDM = "TDM";
-  private static final String TAG_FORMA_PAGO_TCD = "TCD";
+  private static final String TAG_FORMA_PAGO_TCD = "UV";
   //private static final String TAG_TRANSACCION_ENTRADA_TIENDA = 'ENTRADA_TIENDA'
   //private static final String TAG_TRANSACCION_SALIDA_TIENDA = 'SALIDA_TIENDA'
 
@@ -1975,7 +1975,8 @@ class TicketServiceImpl implements TicketService {
     AddressAdapter companyAddress = Registry.companyAddress
     Boolean meses = false
     Integer months = 0
-    if(StringUtils.trimToEmpty(pago.idPlan).length() > 0 && StringUtils.trimToEmpty(pago.idPlan).isNumber()){
+    if(StringUtils.trimToEmpty(pago.idPlan).length() > 0 && StringUtils.trimToEmpty(pago.idPlan).isNumber() &&
+            !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD)){
       try{
         months = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).intValue()
       } catch ( NumberFormatException e ){ println e }
@@ -2000,6 +2001,12 @@ class TicketServiceImpl implements TicketService {
       arqc = data[3]
       cliente = data[4]
     }
+    Double importe = pago.monto.doubleValue()
+    if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ){
+      try{
+        importe = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).doubleValue()
+      } catch ( NumberFormatException e ) { println e }
+    }
     if(pago != null){
       def datos = [
           fecha: fecha,
@@ -2020,7 +2027,7 @@ class TicketServiceImpl implements TicketService {
           aid: aid,
           arqc: arqc,
           cliente: cliente,
-          importe: formatter.format(pago.monto),
+          importe: formatter.format(importe),
           reimpresion: reimpresion,
           moneda: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? "USD" : "MXN"
       ]
@@ -2110,7 +2117,8 @@ class TicketServiceImpl implements TicketService {
       Boolean meses = false
       Integer months = 0
       Pago pago = pagoRepository.findOne(idPago)
-      if(StringUtils.trimToEmpty(pago.idPlan).length() > 0 && StringUtils.trimToEmpty(pago.idPlan).isNumber()){
+      if(StringUtils.trimToEmpty(pago.idPlan).length() > 0 && StringUtils.trimToEmpty(pago.idPlan).isNumber() &&
+              !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD)){
         try{
           months = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).intValue()
         } catch ( NumberFormatException e ){ println e }
@@ -2135,6 +2143,12 @@ class TicketServiceImpl implements TicketService {
           arqc = data[3]
           cliente = data[4]
       }
+      Double importe = pago.monto.doubleValue()
+      if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ){
+          try{
+              importe = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).doubleValue()
+          } catch ( NumberFormatException e ) { println e }
+      }
       if(pago != null){
           def datos = [
                   fecha: fecha,
@@ -2156,7 +2170,7 @@ class TicketServiceImpl implements TicketService {
                   aid: aid,
                   arqc: arqc,
                   cliente: cliente,
-                  importe: String.format("-%s",formatter.format(pago.monto)),
+                  importe: String.format("-%s",formatter.format(importe)),
                   moneda: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? "USD" : "MXN"
           ]
           imprimeTicket( 'template/ticket-tpv-can.vm', datos )

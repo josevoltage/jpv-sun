@@ -77,8 +77,7 @@ class ReprintVoucherDialog extends JDialog {
     Order order = OrderController.findOrderByTicket( ticket )
     Boolean hasPayCard = false
     for(Payment pago : order?.payments){
-      if( StringUtils.trimToEmpty(pago.terminalId).contains("|") &&
-                (pago.paymentTypeId.startsWith(TAG_TARJETA_CREDITO) || pago.paymentTypeId.startsWith(TAG_TARJETA_DEBITO)) ){
+      if( StringUtils.trimToEmpty(pago.terminalId).contains("|") ){
         hasPayCard = true
       }
     }

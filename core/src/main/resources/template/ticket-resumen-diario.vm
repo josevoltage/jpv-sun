@@ -100,6 +100,8 @@ ${COLUMNA_1}Importe en pesos(MXN)${COLUMNA_5}${importe_dolares_pesos}
 #foreach( $resumen_terminal_tpv in $resumen_terminales_tpv )
 #RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_1}${resumen_terminal_tpv.idTerminal}${COLUMNA_3}#if( $resumen_terminal_tpv.plan != '0' )  ${resumen_terminal_tpv.plan} USD#end${COLUMNA_5}${resumen_terminal_tpv.formaPago.descripcion}
 #end
+#end${LF}
+#if( $resumen_terminales_tpv_can )#NEGRITA()#DOBLE_ALTURA()#DOBLE_ANCHURA()#FUENTE_B()#DO()CANCELACIONES TPV${LF}
 #foreach( $resumen_terminal_tpv_can in $resumen_terminales_tpv_can )
 #RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_1}${resumen_terminal_tpv_can.idTerminal}${COLUMNA_3}#if( $resumen_terminal_tpv_can.plan != '0' )  ${resumen_terminal_tpv_can.plan} USD#end${COLUMNA_5}${resumen_terminal_tpv_can.formaPago.descripcion}
 #end

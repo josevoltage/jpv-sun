@@ -36,9 +36,9 @@ class PagoServiceImpl implements PagoService {
   @Resource
   private TicketService ticketService
 
-  private String TAG_TC = "TC"
-  private String TAG_TD = "TD"
-  private String TAG_TAE = "TAE"
+  private String TAG_TC = "TV"
+  private String TAG_TD = "DV"
+  private String TAG_TAE = "AV"
 
   @Override
   Pago obtenerPago( Integer id ) {
@@ -126,7 +126,7 @@ class PagoServiceImpl implements PagoService {
       ctx.SetString( "trn_usr_id", user )
       ctx.SetString( "trn_password", pass )
       ctx.SetString( "dcs_reply_get", "localhost" )
-      if( StringUtils.trimToEmpty(pago.idFPago).contains("TCD") ){
+      if( StringUtils.trimToEmpty(pago.idFPago).contains("UV") ){
         Double montoDolares = 0.00
         try{
           montoDolares = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).doubleValue()
@@ -136,7 +136,7 @@ class PagoServiceImpl implements PagoService {
         ctx.SetFloat( "trn_amount", pago.monto.doubleValue() )
       }
 
-      if( StringUtils.trimToEmpty(pago.idFPago).startsWith("TD") || StringUtils.trimToEmpty(pago.idFPago).contains("TCD") ){
+      if( StringUtils.trimToEmpty(pago.idFPago).startsWith("DV") || StringUtils.trimToEmpty(pago.idFPago).contains("UV") ){
         ctx.SetInteger( "trn_qty_pay", 1 )
       } else {
         Integer plan = 1
@@ -163,19 +163,19 @@ class PagoServiceImpl implements PagoService {
           String tipo = ""
           if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("1")){
             if( pago.idFPago.startsWith(TAG_TD) || pago.idFPago.startsWith(TAG_TAE) ){
-              pago.idFPago = "TCM"
+              pago.idFPago = "TV"
             }
           } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("2")){
             if( pago.idFPago.startsWith(TAG_TC) || pago.idFPago.startsWith(TAG_TAE) ){
-                  pago.idFPago = "TDM"
+                  pago.idFPago = "DV"
             }
           } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("0")){
               if( pago.idFPago.startsWith(TAG_TD) || pago.idFPago.startsWith(TAG_TC) ){
-                pago.idFPago = "TAE"
+                pago.idFPago = "AV"
               }
           }
           try{
-              if( pago.idFPago.equalsIgnoreCase("TCD")){
+              if( pago.idFPago.equalsIgnoreCase("UV")){
                 pago.idPlan = NumberFormat.getInstance().parse(ctx.GetString( "trn_amount" ).replace(",",""))
               } else {
                 pago.monto = NumberFormat.getInstance().parse(ctx.GetString( "trn_amount" ).replace(",",""))

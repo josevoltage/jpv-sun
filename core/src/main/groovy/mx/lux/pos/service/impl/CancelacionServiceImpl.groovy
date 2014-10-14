@@ -428,8 +428,7 @@ class CancelacionServiceImpl implements CancelacionService {
   String cancelaVoucherTpv( Integer idPago ){
     String transaccion = ""
     Pago pago = pagoRepository.findOne(idPago)
-    if( pago != null && pago.idTerminal.contains("|") &&
-            (pago.idFPago.startsWith(TAG_TC) || pago.idFPago.startsWith(TAG_TD)) ){
+    if( pago != null && pago.idTerminal.contains("|") ){
       String host = Registry.hostTpv
       Integer puerto = Registry.portTpv
       Integer timeout = Registry.timeoutTpv
