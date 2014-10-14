@@ -53,7 +53,7 @@ class TicketServiceImpl implements TicketService {
   private static final String TAG_TRANSACCION_ENTRADA = 'E'
   private static final String TAG_TRANSACCION_SALIDA = 'S'
   private static final String TAG_FORMA_PAGO_USD = "EFD";
-  private static final String TAG_FORMA_PAGO_TC = "TC";
+  private static final String TAG_FORMA_PAGO_TC = "TV";
   private static final String TAG_FORMA_PAGO_TD = "TD";
   private static final String TAG_FORMA_PAGO_TCM = "TCM";
   private static final String TAG_FORMA_PAGO_TDM = "TDM";

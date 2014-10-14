@@ -473,7 +473,8 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     if ( SwingUtilities.isLeftMouseButton( ev ) ) {
       if ( ev.clickCount == 2 ) {
         Payment pay = ev.source.selectedElement
-        if(Registry.activeTpv && (pay.paymentTypeId.startsWith(TAG_TC) || pay.paymentTypeId.startsWith(TAG_TD)) ){
+        if(Registry.activeTpv && (pay.paymentTypeId.startsWith("TV") || pay.paymentTypeId.startsWith("DV") ||
+                pay.paymentTypeId.startsWith("UV") || pay.paymentTypeId.startsWith("AV")) ){
 
         } else {
           new PaymentDialog( ev.component, order, ev.source.selectedElement ).show()
