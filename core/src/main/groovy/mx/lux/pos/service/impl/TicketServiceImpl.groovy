@@ -1988,7 +1988,8 @@ class TicketServiceImpl implements TicketService {
     String hora= pago.fecha.format("HH:mm")
     String idSucursal = parametroRepository.findOne( TipoParametro.ID_SUCURSAL.value )?.valor
     Sucursal sucursal = sucursalRepository.findOne( idSucursal?.toInteger() )
-    String[] data = pago.idTerminal.split(/\|/)
+    String dataTmp = pago.idTerminal.replace("||","| |")
+    String[] data = dataTmp.split(/\|/)
     String producto = ""
     String operacion = ""
     String aid = ""

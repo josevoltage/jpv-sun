@@ -28,19 +28,33 @@ class TipoPagoServiceImpl implements TipoPagoService {
   private ParametroRepository parametroRepository
 
   private List<TipoPago> listarTiposPagoRegistrados( ) {
-    List<TipoPago> resultados = tipoPagoRepository.findAll() ?: [ ]
+    List<TipoPago> resultados = new ArrayList<>()
+    List<TipoPago> resultadosTmp = tipoPagoRepository.findAll( ) ?: [ ]
+    Collections.sort(resultadosTmp, new Comparator<TipoPago>() {
+        @Override
+        int compare(TipoPago o1, TipoPago o2) {
+            return o1.tipoCon.compareTo(o2.tipoCon)
+        }
+    })
     resultados.retainAll { TipoPago tipoPago ->
       StringUtils.isNotBlank( tipoPago?.id )
     }
-    Collections.sort(resultados, new Comparator<TipoPago>() {
-        @Override
-        int compare(TipoPago o1, TipoPago o2) {
-            return o1.descripcion.compareToIgnoreCase(o2.descripcion)
-        }
-    })
-    return resultados.sort { TipoPago tipoPago ->
-      tipoPago.tipoCon
+    for(TipoPago tipoPago : resultadosTmp){
+      if(tipoPago.id.contains("EFM")){
+        resultados.add( tipoPago )
+      }
     }
+    for(TipoPago tipoPago : resultadosTmp){
+      if(tipoPago.descripcion.contains("[")){
+        resultados.add( tipoPago )
+      }
+    }
+    for(TipoPago tipoPago : resultadosTmp){
+      if(!tipoPago.id.contains("EFM") && !tipoPago.descripcion.contains("[")){
+        resultados.add( tipoPago )
+      }
+    }
+    return resultados
   }
 
   @Override
