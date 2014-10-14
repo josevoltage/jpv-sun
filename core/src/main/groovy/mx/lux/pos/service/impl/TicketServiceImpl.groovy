@@ -714,22 +714,22 @@ class TicketServiceImpl implements TicketService {
             }
           }
           if(StringUtils.trimToEmpty(resumen.idTerminal).length() <= 0){
-            if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("TCM") ){
+            if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("TV") ){
               resumenTerminaleTcmTpv.idTerminal = resumen.tipo
               resumenTerminaleTcmTpv.plan = '0'
               resumenTerminaleTcmTpv.importe = resumenTerminaleTcmTpv.importe.add(resumen.importe)
               resumenTerminaleTcmTpv.formaPago.descripcion = formatter.format( resumenTerminaleTcmTpv.importe )
-            } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("TDM")){
+            } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("DV")){
               resumenTerminaleTdmTpv.idTerminal = resumen.tipo
               resumenTerminaleTdmTpv.plan = '0'
               resumenTerminaleTdmTpv.importe = resumenTerminaleTdmTpv.importe.add(resumen.importe)
               resumenTerminaleTdmTpv.formaPago.descripcion = formatter.format( resumenTerminaleTdmTpv.importe )
-            } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("TCD")){
+            } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("UV")){
               resumenTerminaleTcdTpv.idTerminal = resumen.tipo
-                if( StringUtils.trimToEmpty(resumenTerminaleTcdTpv.plan).length() > 0 &&
-                        resumenTerminaleTcdTpv.plan.isNumber() ){
+                if( StringUtils.trimToEmpty(resumen.plan).length() > 0 &&
+                        resumen.plan.isNumber() ){
                   try{
-                    montoTcdTpv = montoTcdTpv+NumberFormat.getInstance().parse( resumenTerminaleTcdTpv.plan ).doubleValue()
+                    montoTcdTpv = montoTcdTpv+NumberFormat.getInstance().parse( resumen.plan ).doubleValue()
                   } catch ( NumberFormatException e ){ println e }
                 }
                 resumenTerminaleTcdTpv.plan = formatter.format( montoTcdTpv )
@@ -2069,6 +2069,9 @@ class TicketServiceImpl implements TicketService {
     def pagosCan = [ ]
     for(Pago pago : selected){
       pago.idRecibo = String.format('%1$#15s', formatter.format(pago.monto) );
+      if(StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("UV") || StringUtils.trimToEmpty(pago.idPlan).equalsIgnoreCase("1")){
+        pago.idPlan = ""
+      }
       pagos.add(pago)
       pagosMonto = pagosMonto.add(pago.monto)
     }

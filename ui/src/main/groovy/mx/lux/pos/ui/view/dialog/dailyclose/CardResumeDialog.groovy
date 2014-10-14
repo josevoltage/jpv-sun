@@ -8,6 +8,7 @@ import mx.lux.pos.ui.model.Payment
 import mx.lux.pos.ui.model.Session
 import mx.lux.pos.ui.model.SessionItem
 import net.miginfocom.swing.MigLayout
+import org.apache.commons.lang.StringUtils
 
 import javax.swing.*
 import java.awt.event.ActionEvent
@@ -55,7 +56,7 @@ class CardResumeDialog extends JDialog {
         table( selectionMode: ListSelectionModel.SINGLE_SELECTION ) {
           paymentsModel = tableModel( list: payments ) {
             closureColumn( header: 'Ticket', read: {Payment tmp -> tmp?.factura} )
-            closureColumn( header: 'Plan', read: {Payment tmp -> tmp?.planId} )
+            closureColumn( header: 'Plan', read: {Payment tmp -> (!StringUtils.trimToEmpty(tmp?.planId).equalsIgnoreCase("1") && !tmp?.paymentTypeId?.equalsIgnoreCase("UV")) ? tmp?.planId : ""} )
             closureColumn( header: 'Importe', read: {Payment tmp -> tmp?.amount} )
           } as DefaultTableModel
         }
