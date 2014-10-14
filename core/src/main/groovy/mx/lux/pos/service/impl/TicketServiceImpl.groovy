@@ -2007,6 +2007,7 @@ class TicketServiceImpl implements TicketService {
         importe = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).doubleValue()
       } catch ( NumberFormatException e ) { println e }
     }
+    String ticket = StringUtils.trimToEmpty((Registry.currentSite+2000).toString())+"-"+StringUtils.trimToEmpty(pago.notaVenta.factura)
     if(pago != null){
       def datos = [
           fecha: fecha,
@@ -2020,6 +2021,7 @@ class TicketServiceImpl implements TicketService {
           producto: producto,
           meses: meses,
           tipo: StringUtils.trimToEmpty(pago.idFPago).startsWith(TAG_FORMA_PAGO_TC) ? "CREDITO" : "DEBITO",
+          ticket: ticket,
           plan: months,
           estatus: "APROBADA",
           numAutorizacion: pago.referenciaClave,
@@ -2065,7 +2067,7 @@ class TicketServiceImpl implements TicketService {
     BigDecimal pagosMonto = BigDecimal.ZERO
     def pagosCan = [ ]
     for(Pago pago : selected){
-      pago.idRecibo = String.format('%1$#10s', formatter.format(pago.monto) );
+      pago.idRecibo = String.format('%1$#15s', formatter.format(pago.monto) );
       pagos.add(pago)
       pagosMonto = pagosMonto.add(pago.monto)
     }
@@ -2081,7 +2083,7 @@ class TicketServiceImpl implements TicketService {
           def data = [
             factura: StringUtils.trimToEmpty(modificacion.notaVenta.factura),
             plan: StringUtils.trimToEmpty(pago.idPlan),
-            importe: String.format('%1$#10s', "(${StringUtils.trimToEmpty(formatter.format(pago.monto))})${status}")
+            importe: String.format('%1$#15s', "(${StringUtils.trimToEmpty(formatter.format(pago.monto))})${status}")
           ]
           pagosCan.add(data)
           pagosMonto = pagosMonto.subtract(pago.monto)

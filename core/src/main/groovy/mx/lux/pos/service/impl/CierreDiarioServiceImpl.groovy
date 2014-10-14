@@ -34,6 +34,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   private static final String PAIS_DEFAULT = 'MEXICO'
   private static final String FMT_ARCHIVE_FILENAME = '%d.%s'
   private static final String FMT_FILE_PATTERN = '*%s.*'
+  private static final String TAG_TARJETA_AMERICAN_E = 'AV'
   private static final Double VALOR_CERO = 0.005
 
   @Resource
@@ -563,10 +564,17 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       String idTerminal = ""
       if( pago.idTerminal.contains("|") ){
         String[] data = pago.idTerminal.split(/\|/)
-        if( StringUtils.trimToEmpty(pago.idPlan).length() > 0 && !StringUtils.trimToEmpty(pago.idPlan).equalsIgnoreCase("1") &&
-                !StringUtils.trimToEmpty(pago.idTerminal).contains("BANAMEX") ){
-          idTerminal = data[0].replace("MASTERCARD","")
-          idTerminal = idTerminal.replace("VISA","")
+        if(!StringUtils.trimToEmpty(pago.idTerminal).contains("BANAMEX")){
+          if( !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_TARJETA_AMERICAN_E)){
+            if( StringUtils.trimToEmpty(pago.idPlan).length() > 0 && !StringUtils.trimToEmpty(pago.idPlan).equalsIgnoreCase("1") ){
+              idTerminal = data[0].replace("MASTERCARD","")
+              idTerminal = idTerminal.replace("VISA","")
+            } else {
+              idTerminal = "BMX"
+            }
+          } else {
+            idTerminal = "AMX"
+          }
         } else {
           idTerminal = "BMX"
         }
