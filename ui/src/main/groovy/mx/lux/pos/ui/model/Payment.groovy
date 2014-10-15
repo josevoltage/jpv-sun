@@ -4,6 +4,7 @@ import groovy.beans.Bindable
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import mx.lux.pos.model.Pago
+import org.apache.commons.lang.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
 
 @Bindable
@@ -25,6 +26,7 @@ class Payment {
   String issuerBankId
   String refundMethod
   String factura
+  String sOrder
   BigDecimal amount
   BigDecimal refund
   BigDecimal refundable
@@ -61,7 +63,8 @@ class Payment {
           factura: pago.notaVenta?.factura,
           amount: pago.monto,
           refundable: pago.porDevolver,
-          date: pago.fecha
+          date: pago.fecha,
+          sOrder: StringUtils.trimToEmpty(pago?.notaVenta?.sFactura)
       )
       return payment
     }

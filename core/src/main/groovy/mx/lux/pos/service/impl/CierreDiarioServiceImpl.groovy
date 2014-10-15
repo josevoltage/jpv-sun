@@ -1510,13 +1510,22 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   @Override
   List<Pago> buscarPagosTpvPorFechaCierrePorFactura( Date fechaCierre, String ticket ){
     List<Pago> pagos = new ArrayList<>()
+    List<Pago> pagosCan = new ArrayList<>()
+    List<Modificacion> lstMod = new ArrayList<>()
     QPago qPago = QPago.pago
+    QModificacion qModificacion = QModificacion.modificacion
     Date fechaInicio = DateUtils.truncate( fechaCierre, Calendar.DAY_OF_MONTH );
     Date fechaFin = new Date( DateUtils.ceiling( fechaCierre, Calendar.DAY_OF_MONTH ).getTime() - 1 );
     if( StringUtils.trimToEmpty(ticket).length() > 0 ){
       pagos = pagoRepository.findAll( qPago.idFactura.eq(ticket).and(qPago.fecha.between(fechaInicio,fechaFin)) ) as List<Pago>
+      lstMod = modificacionRepository.findAll( qModificacion.notaVenta.factura.eq(ticket).
+              and(qModificacion.fecha.between(fechaInicio,fechaFin)).and(qModificacion.tipo.eq("can"))) as List<Modificacion>
     } else {
       pagos = pagoRepository.findAll( qPago.fecha.between(fechaInicio,fechaFin) ) as List<Pago>
+      lstMod = modificacionRepository.findAll( qModificacion.fecha.between(fechaInicio,fechaFin).and(qModificacion.tipo.eq("can"))) as List<Modificacion>
+    }
+    for(Modificacion mod : lstMod){
+          pagosCan.addAll( mod.notaVenta.pagos )
     }
     List<Pago> selected = new ArrayList<Pago>()
     for ( Pago p : pagos ) {
@@ -1525,6 +1534,25 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
                   selected.add( p )
               }
           }
+    }
+
+    Collections.sort(pagosCan, new Comparator<Pago>() {
+        @Override
+        int compare(Pago o1, Pago o2) {
+            return o1.notaVenta.factura.compareTo(o2.notaVenta.factura)
+        }
+    })
+    for ( Pago pCan : pagosCan ) {
+      if ( pCan.idTerminal.contains("|") ) {
+        if( !StringUtils.trimToEmpty(pCan.notaVenta.factura).isEmpty() ){
+          Pago pago = new Pago()
+          pago.id = pCan.id+1000
+          pago.idFactura = pCan.idFactura
+          pago.notaVenta = pCan.notaVenta
+          pago.monto = pCan.monto.multiply(new BigDecimal(-1))
+          selected.add( pago )
+        }
+      }
     }
     return selected
   }

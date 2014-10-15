@@ -202,7 +202,6 @@ class OrderController {
   static Order addPaymentToOrder( String orderId, Payment payment ) {
     log.info( "agregando pago monto: ${payment?.amount}, tipo: ${payment?.paymentTypeId} a orden id: ${orderId}" )
     if ( StringUtils.isNotBlank( orderId ) && StringUtils.isNotBlank( payment?.paymentTypeId ) && payment?.amount ) {
-
       User user = Session.get( SessionItem.USER ) as User
       println "Banco Emisor:: ${payment.issuerBankId}"
       String idfPayment = StringUtils.trimToEmpty(payment.paymentTypeId)

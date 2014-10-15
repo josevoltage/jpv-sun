@@ -25,6 +25,8 @@ class CardResumeDialog extends JDialog {
   private DefaultTableModel paymentsModel
   private Branch branch
 
+  private String TAG_CANCELADA = "T"
+
     CardResumeDialog( Date date ) {
     this.date = date
     sb = new SwingBuilder()
@@ -57,7 +59,7 @@ class CardResumeDialog extends JDialog {
           paymentsModel = tableModel( list: payments ) {
             closureColumn( header: 'Ticket', read: {Payment tmp -> tmp?.factura} )
             closureColumn( header: 'Plan', read: {Payment tmp -> (!StringUtils.trimToEmpty(tmp?.planId).equalsIgnoreCase("1") && !tmp?.paymentTypeId?.equalsIgnoreCase("UV")) ? tmp?.planId : ""} )
-            closureColumn( header: 'Importe', read: {Payment tmp -> tmp?.amount} )
+            closureColumn( header: 'Importe', read: {Payment tmp -> tmp?.amount.compareTo(BigDecimal.ZERO) <= 0 ? "("+tmp?.amount.abs()+")": tmp?.amount} )
           } as DefaultTableModel
         }
       }
