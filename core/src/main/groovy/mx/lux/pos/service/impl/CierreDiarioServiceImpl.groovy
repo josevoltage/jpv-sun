@@ -881,7 +881,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
     List<ResumenDiario> atCloseDate = resumenDiarioRepository.findByFechaCierre( fechaCierre )
     List<ResumenDiario> selected = new ArrayList<ResumenDiario>()
     for ( ResumenDiario resumen : atCloseDate ) {
-      if( StringUtils.trimToEmpty(resumen.tipo).length() > 0 && StringUtils.trimToEmpty(resumen.idTerminal).length() > 0 ){
+      if( StringUtils.trimToEmpty(resumen.idTerminal).length() > 0 ){
         if ( 'TODAS'.equals( termUC ) || termUC.length() == 0
                 || termUC.equalsIgnoreCase( StringUtils.trimToEmpty( resumen.idTerminal ).toUpperCase() ) ) {
           selected.add( resumen )

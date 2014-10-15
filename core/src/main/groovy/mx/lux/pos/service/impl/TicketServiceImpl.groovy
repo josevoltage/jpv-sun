@@ -737,7 +737,7 @@ class TicketServiceImpl implements TicketService {
                 resumenTerminaleTcdTpv.formaPago.descripcion = formatter.format( resumenTerminaleTcdTpv.importe )
 
             } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("") &&
-                    StringUtils.trimToEmpty(resumen.plan).equalsIgnoreCase("C")){
+                    (StringUtils.trimToEmpty(resumen.plan).equalsIgnoreCase("C") || StringUtils.trimToEmpty(resumen.plan).equalsIgnoreCase("D"))){
               resumenTerminaleTcmTpvCan.idTerminal = resumen.plan
               resumenTerminaleTcmTpvCan.plan = '0'
               resumenTerminaleTcmTpvCan.importe = resumenTerminaleTcmTpvCan.importe.subtract(resumen.importe)
