@@ -602,7 +602,7 @@ class OrderController {
     NotaVenta nota = notaVentaService.obtenerNotaVenta( StringUtils.trimToEmpty(orderId) )
     if(nota != null){
       for(Pago pago : nota.pagos){
-        if( StringUtils.trimToEmpty(pago.idTerminal).contains("|") ){
+        if( !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("TR") && StringUtils.trimToEmpty(pago.idTerminal).contains("|") ){
           lstPagosTarj.add(pago)
         }
       }
