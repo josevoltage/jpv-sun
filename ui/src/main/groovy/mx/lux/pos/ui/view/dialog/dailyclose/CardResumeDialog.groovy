@@ -38,7 +38,7 @@ class CardResumeDialog extends JDialog {
 
   private void buildUI( ) {
     sb.dialog( this,
-        title: 'Resumen de Tarjetas',
+        title: 'Resumen TPV',
         resizable: false,
         pack: true,
         modal: true,
