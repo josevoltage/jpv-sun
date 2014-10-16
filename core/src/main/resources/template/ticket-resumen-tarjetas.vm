@@ -9,7 +9,7 @@
 #define($COL_DEV)${ESC}${writer.write(36)}${writer.write(30)}${writer.write(0)}#end
 ## Inicia ticket
 ${COLUMNAS}
-#LINEA_SEPARACION()
+#LINEA_SEPARACION()${LF}
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_A} 0 ${DOBLE_ALTURA} ${DOBLE_ANCHURA} 0)RESUMEN TPV
 #LINEA_SEPARACION()
 #ALINEAR_DERECHA()Fecha: ${fecha}${CR}

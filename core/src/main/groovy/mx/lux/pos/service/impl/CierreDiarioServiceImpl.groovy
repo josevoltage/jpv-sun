@@ -35,6 +35,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   private static final String FMT_ARCHIVE_FILENAME = '%d.%s'
   private static final String FMT_FILE_PATTERN = '*%s.*'
   private static final String TAG_TARJETA_AMERICAN_E = 'AV'
+  private static final String TAG_TARJETA_DOLARES = 'UV'
   private static final Double VALOR_CERO = 0.005
 
   @Resource
@@ -564,7 +565,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       String idTerminal = ""
       if( pago.idTerminal.contains("|") ){
         String[] data = pago.idTerminal.split(/\|/)
-        if(!StringUtils.trimToEmpty(pago.idTerminal).contains("BANAMEX")){
+        if(!StringUtils.trimToEmpty(pago.idTerminal).contains("BANAMEX") || !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_TARJETA_DOLARES)){
           if( !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_TARJETA_AMERICAN_E)){
             if( StringUtils.trimToEmpty(pago.idPlan).length() > 0 && !StringUtils.trimToEmpty(pago.idPlan).equalsIgnoreCase("1") ){
               idTerminal = data[0].replace("MASTERCARD","")

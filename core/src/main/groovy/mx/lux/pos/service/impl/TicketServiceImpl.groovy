@@ -720,12 +720,12 @@ class TicketServiceImpl implements TicketService {
               resumenTerminaleTcmTpv.idTerminal = resumen.tipo
               resumenTerminaleTcmTpv.plan = '0'
               resumenTerminaleTcmTpv.importe = resumenTerminaleTcmTpv.importe.add(resumen.importe)
-              resumenTerminaleTcmTpv.formaPago.descripcion = formatter.format( resumenTerminaleTcmTpv.importe )
+              resumenTerminaleTcmTpv.formaPago.descripcion = String.format('%10s', formatter.format( resumenTerminaleTcmTpv.importe ))
             } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("DV")){
               resumenTerminaleTdmTpv.idTerminal = resumen.tipo
               resumenTerminaleTdmTpv.plan = '0'
               resumenTerminaleTdmTpv.importe = resumenTerminaleTdmTpv.importe.add(resumen.importe)
-              resumenTerminaleTdmTpv.formaPago.descripcion = formatter.format( resumenTerminaleTdmTpv.importe )
+              resumenTerminaleTdmTpv.formaPago.descripcion = String.format('%10s', formatter.format( resumenTerminaleTdmTpv.importe ))
             } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("UV")){
               resumenTerminaleTcdTpv.idTerminal = resumen.tipo
                 if( StringUtils.trimToEmpty(resumen.plan).length() > 0 &&
@@ -734,22 +734,22 @@ class TicketServiceImpl implements TicketService {
                     montoTcdTpv = montoTcdTpv+NumberFormat.getInstance().parse( resumen.plan ).doubleValue()
                   } catch ( NumberFormatException e ){ println e }
                 }
-                resumenTerminaleTcdTpv.plan = formatter.format( montoTcdTpv )
+                resumenTerminaleTcdTpv.plan = String.format('%10s', formatter.format( montoTcdTpv ))
                 resumenTerminaleTcdTpv.importe = resumenTerminaleTcdTpv.importe.add(resumen.importe)
-                resumenTerminaleTcdTpv.formaPago.descripcion = formatter.format( resumenTerminaleTcdTpv.importe )
+                resumenTerminaleTcdTpv.formaPago.descripcion = String.format('%10s', formatter.format( resumenTerminaleTcdTpv.importe ))
 
             } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("") &&
                     (StringUtils.trimToEmpty(resumen.plan).equalsIgnoreCase("C"))){
               resumenTerminaleTcmTpvCan.idTerminal = resumen.plan
               resumenTerminaleTcmTpvCan.plan = '0'
               resumenTerminaleTcmTpvCan.importe = resumenTerminaleTcmTpvCan.importe.subtract(resumen.importe)
-              resumenTerminaleTcmTpvCan.formaPago.descripcion = formatter.format( resumenTerminaleTcmTpvCan.importe )
+              resumenTerminaleTcmTpvCan.formaPago.descripcion = String.format('%10s', formatter.format( resumenTerminaleTcmTpvCan.importe ))
             } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("") &&
                     StringUtils.trimToEmpty(resumen.plan).equalsIgnoreCase("D")){
                 resumenTerminaleTcmTpvDev.idTerminal = resumen.plan
                 resumenTerminaleTcmTpvDev.plan = '0'
                 resumenTerminaleTcmTpvDev.importe = resumenTerminaleTcmTpvDev.importe.subtract(resumen.importe)
-                resumenTerminaleTcmTpvDev.formaPago.descripcion = formatter.format( resumenTerminaleTcmTpvDev.importe )
+                resumenTerminaleTcmTpvDev.formaPago.descripcion = String.format('%10s', formatter.format( resumenTerminaleTcmTpvDev.importe ))
             }
           }
         }
@@ -2099,6 +2099,9 @@ class TicketServiceImpl implements TicketService {
           status = "D"
         }
         if( pago.idTerminal.contains("|") ){
+          if(StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("UV") || StringUtils.trimToEmpty(pago.idPlan).equalsIgnoreCase("1")){
+            pago.idPlan = ""
+          }
           def data = [
             factura: StringUtils.trimToEmpty(modificacion.notaVenta.factura),
             plan: StringUtils.trimToEmpty(pago.idPlan),
