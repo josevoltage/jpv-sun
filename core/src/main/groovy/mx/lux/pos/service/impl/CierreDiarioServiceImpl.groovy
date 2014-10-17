@@ -565,7 +565,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       String idTerminal = ""
       if( pago.idTerminal.contains("|") ){
         String[] data = pago.idTerminal.split(/\|/)
-        if(!StringUtils.trimToEmpty(pago.idTerminal).contains("BANAMEX") || !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_TARJETA_DOLARES)){
+        if(!StringUtils.trimToEmpty(pago.idTerminal).contains("BANAMEX") && !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_TARJETA_DOLARES)){
           if( !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_TARJETA_AMERICAN_E)){
             if( StringUtils.trimToEmpty(pago.idPlan).length() > 0 && !StringUtils.trimToEmpty(pago.idPlan).equalsIgnoreCase("1") ){
               idTerminal = data[0].replace("MASTERCARD","")
