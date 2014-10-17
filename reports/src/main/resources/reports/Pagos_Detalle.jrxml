@@ -15,7 +15,7 @@
 	<detail>
 		<band height="61" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="a27a0a59-9478-4670-8fa0-f0761f8bfeb6" x="100" y="0" width="208" height="14"/>
+				<reportElement uuid="a27a0a59-9478-4670-8fa0-f0761f8bfeb6" x="100" y="0" width="512" height="14"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
