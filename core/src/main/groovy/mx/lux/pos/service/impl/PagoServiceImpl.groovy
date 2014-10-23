@@ -155,12 +155,19 @@ class PagoServiceImpl implements PagoService {
       int execute = ctx.Execute()
       println "Respuesta de la ejecucion: "+execute
       if ( execute == 0 && StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ){
-          println "Identificador de ingreso tarjeta: "+ctx.GetString('trn_input_mode')
+          String lecturaTar = ""
           pago.idFactura = idOrder
           pago.referenciaPago = ctx.GetString( "trn_card_number" )
           pago.clave = ctx.GetString( "trn_card_number" )
           pago.referenciaClave = ctx.GetString( "trn_auth_code" )
-          pago.idTerminal = ctx.GetString("trn_pro_name")+"|"+ctx.GetString("trn_id")+"|"+ctx.GetString("trn_aid")+"|"+ctx.GetString("trn_arqc ")+"|"+ctx.GetString("trn_cardholder_name")+"|"+ctx.GetString("trn_pro_id")+"|"
+          if( StringUtils.trimToEmpty(ctx.GetString('trn_input_mode')).equalsIgnoreCase("7") ){
+            lecturaTar = "CHIP"
+          } else if( StringUtils.trimToEmpty(ctx.GetString('trn_input_mode')).equalsIgnoreCase("2") ){
+              lecturaTar = "DIGITADA"
+          } else {
+            lecturaTar = "BANDA"
+          }
+          pago.idTerminal = ctx.GetString("trn_pro_name")+"|"+ctx.GetString("trn_id")+"|"+ctx.GetString("trn_aid")+"|"+ctx.GetString("trn_arqc ")+"|"+ctx.GetString("trn_cardholder_name")+"|"+lecturaTar+"|"
           String tipo = ""
           if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("1")){
             if( pago.idFPago.startsWith(TAG_TD) || pago.idFPago.startsWith(TAG_TAE) ){
