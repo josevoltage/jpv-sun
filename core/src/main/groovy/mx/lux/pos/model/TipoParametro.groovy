@@ -75,7 +75,7 @@ enum TipoParametro {
   URL_RECIBE_LISTA_PRECIOS( 'url_recibe_lista_precios', '' ),
   VENTA_NEGATIVA_AUTORIZACION( 'venta_negativo_aut', 'S' ),
   ALMACENES('almacenes','1,41,42'),
-
+  TPV_AFILIACION('tpv_afiliacion',''),
   URL_SALIDA_ALMACEN('url_salida_almacen',''),
   URL_ENTRADA_ALMACEN('url_entrada_sucursal',''),
   URL_CONFIRMA_ENTRADA('url_confirma_entrada',''),

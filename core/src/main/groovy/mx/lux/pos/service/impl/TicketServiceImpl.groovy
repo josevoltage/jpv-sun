@@ -2010,12 +2010,14 @@ class TicketServiceImpl implements TicketService {
     String aid = ""
     String arqc = ""
     String cliente = ""
-    if( data.length >= 5 ){
+    String lecturaTar = ""
+    if( data.length >= 6 ){
       producto = data[0]
       operacion = data[1]
       aid = data[2]
       arqc = data[3]
       cliente = data[4]
+      lecturaTar = data[5]
     }
     Double importe = pago.monto.doubleValue()
     if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ){
@@ -2029,7 +2031,7 @@ class TicketServiceImpl implements TicketService {
           fecha: fecha,
           hora: hora,
           copia: copia,
-          nombreEmpresa: companyAddress.shortName,
+          nombreEmpresa: StringUtils.trimToEmpty(sucursal?.nombre),
           direccionEmpresa1: StringUtils.trimToEmpty(sucursal?.direccion),
           direccionEmpresa2: StringUtils.trimToEmpty(sucursal?.colonia),
           direccionEmpresa3: StringUtils.trimToEmpty(sucursal?.idLocalidad),
@@ -2047,7 +2049,9 @@ class TicketServiceImpl implements TicketService {
           cliente: cliente,
           importe: formatter.format(importe),
           reimpresion: reimpresion,
-          moneda: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? "USD" : "MXN"
+          moneda: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? "USD" : "MXN",
+          afiliacion: StringUtils.trimToEmpty(Registry.noAfiliacion),
+          lecturaTar: lecturaTar
       ]
       imprimeTicket( 'template/ticket-tpv.vm', datos )
     } else {
@@ -2160,12 +2164,14 @@ class TicketServiceImpl implements TicketService {
       String aid = ""
       String arqc = ""
       String cliente = ""
-      if( data.length >= 5 ){
+      String lecturaTar = ""
+      if( data.length >= 6 ){
           producto = data[0]
           operacion = data[1]
           aid = data[2]
           arqc = data[3]
           cliente = data[4]
+          lecturaTar = data[5]
       }
       Double importe = pago.monto.doubleValue()
       if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ){
@@ -2179,7 +2185,7 @@ class TicketServiceImpl implements TicketService {
                   hora: hora,
                   copia: copia,
                   transaccion: transaccion,
-                  nombreEmpresa: companyAddress.shortName,
+                  nombreEmpresa: StringUtils.trimToEmpty(sucursal?.nombre),
                   direccionEmpresa1: StringUtils.trimToEmpty(sucursal?.direccion),
                   direccionEmpresa2: StringUtils.trimToEmpty(sucursal?.colonia),
                   direccionEmpresa3: StringUtils.trimToEmpty(sucursal?.idLocalidad),
@@ -2195,7 +2201,9 @@ class TicketServiceImpl implements TicketService {
                   arqc: arqc,
                   cliente: cliente,
                   importe: String.format("-%s",formatter.format(importe)),
-                  moneda: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? "USD" : "MXN"
+                  moneda: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? "USD" : "MXN",
+                  afiliacion: StringUtils.trimToEmpty(Registry.noAfiliacion),
+                  lecturaTar: lecturaTar
           ]
           imprimeTicket( 'template/ticket-tpv-can.vm', datos )
       } else {

@@ -14,14 +14,16 @@ ${COLUMNAS}
 
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)${direccionEmpresa1}
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)${direccionEmpresa2}
-#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)${direccionEmpresa3}${CR}${LF}
+#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)${direccionEmpresa3}
+#ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)Negocio: ${afiliacion}${CR}${LF}
 #ALINEAR_IZQUIERDA()FECHA: #altnull(${fecha})${CR}
 #ALINEAR_IZQUIERDA()HORA: #altnull(${hora})${LF}
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} ${DOBLE_ALTURA} 0 0)#altnull(${transaccion})${CR}${LF}
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} ${DOBLE_ALTURA} 0 0)#altnull(${copia})${CR}${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)TARJETA: ${tarjeta}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)${tipo} ${producto}
-#if(${meses})#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)${plan} MESES SIN INTERESES#end${CR}${LF}
+#if(${meses})#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)${plan} MESES SIN INTERESES#end
+#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)${lecturaTar}${CR}${LF}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)     AUT:${numAutorizacion}${COL_DET_2}OPER:${operacion}${LF}
 #ALINEAR_CENTRO()#SET_STYLE(${FUENTE_B} ${NEGRITA} ${DOBLE_ALTURA} 0 0)Importe ${moneda}: #altnull(${importe})${CR}${LF}
 ${LF}

@@ -416,9 +416,13 @@ class Registry {
       return  asString(TipoParametro.URL_CONFIRMA_ENTRADA)
   }
 
-    static String getAlmacenes() {
-        return  asString(TipoParametro.ALMACENES)
-    }
+  static String getAlmacenes() {
+    return  asString(TipoParametro.ALMACENES)
+  }
+
+  static String getNoAfiliacion() {
+    return  asString(TipoParametro.TPV_AFILIACION)
+  }
 
   static String getURL( String pAckType ) {
     String url = ''
