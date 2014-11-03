@@ -442,6 +442,12 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     } else if ( SwingUtilities.isRightMouseButton( ev ) && ev.source.selectedElement != null ) {
       OrderItem orderItem = ev.source.selectedElement
       List<IPromotionAvailable> lstPromosArt = lstPromotionsAvalibles( orderItem )
+      Collections.sort(lstPromosArt, new Comparator<IPromotionAvailable>() {
+          @Override
+          int compare(IPromotionAvailable o1, IPromotionAvailable o2) {
+              return o1.promotion.idPromotion.compareTo(o2.promotion.idPromotion)
+          }
+      })
       PromotionSelectionDialog promotionSelectionDialog = new PromotionSelectionDialog( lstPromosArt, orderItem.item.id )
       promotionSelectionDialog.show()
       if( promotionSelectionDialog.promotionSelected != null ){

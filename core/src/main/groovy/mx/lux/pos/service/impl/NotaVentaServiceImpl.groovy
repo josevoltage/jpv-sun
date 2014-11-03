@@ -480,6 +480,7 @@ class NotaVentaServiceImpl implements NotaVentaService {
         String ubicacionsDestination = Registry.processedFilesPath
         File source = new File( ubicacionSource )
         File destination = new File( ubicacionsDestination )
+        List<File> lstFiles = new ArrayList<>();
         if ( source.exists() && destination.exists() ) {
             source.eachFile() { file ->
                 if ( file.getName().startsWith( "ST" ) ) {
@@ -500,7 +501,25 @@ class NotaVentaServiceImpl implements NotaVentaService {
                     } catch ( Exception ex ) { System.out.println( ex ) }
 
                     def newFile = new File( destination, file.name )
-                    def moved = file.renameTo( newFile )
+                    if(newFile.exists()) {
+                        newFile.delete()
+                    }
+                    //def moved = file.renameTo( newFile )
+                    try {
+                        FileInputStream inFile = new FileInputStream(file);
+                        FileOutputStream outFile = new FileOutputStream(newFile);
+                        Integer c;
+                        lstFiles.add(file)
+                        while( (c = inFile.read() ) != -1)
+                            outFile.write(c);
+                        inFile.close();
+                        outFile.close();
+                    } catch(IOException e) {
+                        System.out.println( e )
+                    }
+                    for(File files : lstFiles){
+                        files.delete()
+                    }
                 }
             }
         }

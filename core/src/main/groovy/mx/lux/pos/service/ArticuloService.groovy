@@ -70,4 +70,6 @@ interface ArticuloService {
 
   Boolean generarArchivoDiferencias( )
 
+  Articulo buscaArticulo( Integer id )
+
 }
