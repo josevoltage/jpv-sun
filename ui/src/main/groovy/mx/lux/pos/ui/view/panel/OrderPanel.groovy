@@ -693,6 +693,44 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           }
       }
     }
+
+    if( order.items.size() > 0 && promotionSelectedList.size() > 0 ){
+      Boolean validCombo = false
+      for(def promotionSelectedList : this.promotionSelectedList){
+        if( promotionSelectedList instanceof PromotionAvailable && promotionSelectedList.promotion instanceof  PromotionCombo ){
+          if( order.items.size() <= 1 ){
+            sb.optionPane(
+               message: "La promocion es un combo, es necesario tener 2 articulos validos",
+               messageType: JOptionPane.ERROR_MESSAGE
+            ).createDialog( this, 'No se puede registrar la venta' )
+               .show()
+            return false
+          } else {
+            List<PromotionAvailable> lstPromos = new ArrayList<>()
+            for(PromotionAvailable prom : promotionList){
+              if( prom.promotion instanceof  PromotionCombo ){
+                if( prom.promotion.base.entity.idPromocion == promotionSelectedList.promotion.base.entity.idPromocion){
+                  lstPromos.add( prom )
+                }
+              }
+            }
+            for(PromotionAvailable promApply : lstPromos){
+              if( promApply.enabledByList.size() > 1 ){
+                validCombo = true
+              }
+            }
+            if( !validCombo ){
+              sb.optionPane(
+                 message: "La promocion es un combo, es necesario tener 2 articulos validos",
+                 messageType: JOptionPane.ERROR_MESSAGE
+              ).createDialog( this, 'No se puede registrar la venta' )
+                .show()
+              return false
+            }
+          }
+        }
+      }
+    }
     return true
   }
 
