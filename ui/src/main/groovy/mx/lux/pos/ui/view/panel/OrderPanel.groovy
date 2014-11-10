@@ -700,7 +700,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         if( promotionSelectedList instanceof PromotionAvailable && promotionSelectedList.promotion instanceof  PromotionCombo ){
           if( order.items.size() <= 1 ){
             sb.optionPane(
-               message: "La promocion es un combo, es necesario tener 2 articulos validos",
+               message: "La promoción aplica en la compra de más de un armazón.",
                messageType: JOptionPane.ERROR_MESSAGE
             ).createDialog( this, 'No se puede registrar la venta' )
                .show()
