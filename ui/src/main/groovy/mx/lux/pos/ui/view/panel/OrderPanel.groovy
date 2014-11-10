@@ -721,7 +721,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             }
             if( !validCombo ){
               sb.optionPane(
-                 message: "La promocion es un combo, es necesario tener 2 articulos validos",
+                 message: "La promoción aplica en la compra de más de un armazón.",
                  messageType: JOptionPane.ERROR_MESSAGE
               ).createDialog( this, 'No se puede registrar la venta' )
                 .show()
