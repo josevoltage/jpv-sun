@@ -5,6 +5,7 @@ import mx.lux.pos.model.ArticuloSombra
 import mx.lux.pos.model.Diferencia
 import mx.lux.pos.model.Generico
 import mx.lux.pos.model.InventarioFisico
+import mx.lux.pos.model.MontoGarantia
 
 interface ArticuloService {
 
@@ -72,4 +73,5 @@ interface ArticuloService {
 
   Articulo buscaArticulo( Integer id )
 
+  MontoGarantia obtenerMontoGarantia( BigDecimal precioArt )
 }

@@ -56,6 +56,8 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private static final String TXT_QUITAR_PAGOS = 'Error al cerrar sesion.'
   private static final String MSJ_CAMBIAR_VENDEDOR = 'Esta seguro que desea salir de esta sesion.'
   private static final String TXT_CAMBIAR_VENDEDOR = 'Cerrar Sesion'
+  private static final String TAG_GENERICO_SEGUROS = 'J'
+  private static final String TAG_GENERICO_ARMAZON = 'A'
 
   private Logger logger = LoggerFactory.getLogger(this.getClass())
   private SwingBuilder sb
@@ -731,6 +733,44 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         }
       }
     }
+
+   List<Integer> lstIdGar = new ArrayList<>()
+   List<Integer> lstIdArm = new ArrayList<>()
+   for(OrderItem orderItem : order.items){
+     if( StringUtils.trimToEmpty(orderItem.item.type).equalsIgnoreCase(TAG_GENERICO_SEGUROS) ){
+       lstIdGar.add(orderItem.item.id)
+     } else if( StringUtils.trimToEmpty(orderItem.item.type).equalsIgnoreCase(TAG_GENERICO_ARMAZON) ){
+       lstIdArm.add(orderItem.item.id)
+     }
+   }
+   if( lstIdGar.size() > 0 ){
+     if( lstIdArm.size() == 1 ){
+       if( lstIdGar.size() == 1 ){
+         BigDecimal amount = BigDecimal.ZERO
+         for(OrderItem orderItem : order.items){
+           if( orderItem.item.id == lstIdArm.first() ){
+             amount = orderItem.item.price
+           }
+         }
+         if( !ItemController.warrantyValid( amount, lstIdGar.first() ) ){
+           sb.optionPane(
+              message: "Garantia Invalida.",
+              messageType: JOptionPane.ERROR_MESSAGE
+           ).createDialog( this, 'No se puede registrar la venta' )
+             .show()
+           return false
+         }
+       } else {
+         sb.optionPane(
+            message: "Seleccione solo una garantia.",
+            messageType: JOptionPane.ERROR_MESSAGE
+         ).createDialog( this, 'No se puede registrar la venta' )
+           .show()
+         return false
+       }
+       order.items.first().item.price
+     }
+   }
     return true
   }
 

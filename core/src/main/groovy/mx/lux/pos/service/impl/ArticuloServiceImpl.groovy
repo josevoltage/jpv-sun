@@ -5,6 +5,7 @@ import com.mysema.query.types.Predicate
 import groovy.util.logging.Slf4j
 import mx.lux.pos.repository.ArticuloRepository
 import mx.lux.pos.repository.DiferenciaRepository
+import mx.lux.pos.repository.MontoGarantiaRepository
 import mx.lux.pos.repository.PrecioRepository
 import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.ArticuloService
@@ -33,6 +34,9 @@ class ArticuloServiceImpl implements ArticuloService {
 
   @Resource
   private ArticuloRepository articuloRepository
+
+  @Resource
+  private MontoGarantiaRepository montoGarantiaRepository
 
   @Resource
   private PrecioRepository precioRepository
@@ -667,6 +671,14 @@ class ArticuloServiceImpl implements ArticuloService {
   @Override
   Articulo buscaArticulo( Integer id ){
     return articuloRepository.findOne( id )
+  }
+
+
+  @Override
+  MontoGarantia obtenerMontoGarantia( BigDecimal precioArt ){
+    QMontoGarantia qMontoGarantia = QMontoGarantia.montoGarantia1
+    return montoGarantiaRepository.findOne( (qMontoGarantia.montoMinimo.eq(precioArt).or(qMontoGarantia.montoMinimo.loe(precioArt))).
+            and(qMontoGarantia.montoMaximo.eq(precioArt).or(qMontoGarantia.montoMaximo.goe(precioArt))) )
   }
 
 

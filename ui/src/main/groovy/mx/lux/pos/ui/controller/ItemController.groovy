@@ -3,6 +3,7 @@ package mx.lux.pos.ui.controller
 import groovy.util.logging.Slf4j
 import mx.lux.pos.model.Articulo
 import mx.lux.pos.model.InventarioFisico
+import mx.lux.pos.model.MontoGarantia
 import mx.lux.pos.service.ArticuloService
 import mx.lux.pos.service.TicketService
 import mx.lux.pos.ui.model.Differences
@@ -271,6 +272,22 @@ class ItemController {
       JOptionPane.showMessageDialog( new JDialog(), MSJ_INV_FISICO_NO_INICIALIZADO, TXT_DIFERENCIAS, JOptionPane.INFORMATION_MESSAGE )
     }
     return inicializado
+  }
+
+
+
+  static Boolean warrantyValid( BigDecimal priceItem, Integer idWarranty ){
+    Boolean valid = false
+    Articulo warranty = articuloService.obtenerArticulo( idWarranty, true )
+    if( warranty != null ){
+      MontoGarantia montoGarantia = articuloService.obtenerMontoGarantia( warranty.precio )
+      if( montoGarantia != null && (montoGarantia.montoMinimo.compareTo(priceItem) <= 0
+              && montoGarantia.montoMaximo.compareTo(priceItem) >= 0 ) ){
+        valid = true
+      }
+    }
+
+    return valid
   }
 
 
