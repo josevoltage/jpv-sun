@@ -700,12 +700,12 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         if( promotionSelectedList instanceof PromotionAvailable && promotionSelectedList.promotion instanceof  PromotionCombo ){
           if( order.items.size() <= 1 ){
             sb.optionPane(
-               message: "La promoción aplica en la compra de más de un armazón.",
+               message: "La promocion aplica en la compra de mas de un articulo.",
                messageType: JOptionPane.ERROR_MESSAGE
             ).createDialog( this, 'No se puede registrar la venta' )
                .show()
             return false
-          } else {
+          } /*else {
             List<PromotionAvailable> lstPromos = new ArrayList<>()
             for(PromotionAvailable prom : promotionList){
               if( prom.promotion instanceof  PromotionCombo ){
@@ -727,7 +727,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 .show()
               return false
             }
-          }
+          }*/
         }
       }
     }
