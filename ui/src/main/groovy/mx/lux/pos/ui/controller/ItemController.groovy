@@ -276,18 +276,23 @@ class ItemController {
 
 
 
-  static Boolean warrantyValid( BigDecimal priceItem, Integer idWarranty ){
-    Boolean valid = false
+  static BigDecimal warrantyValid( BigDecimal priceItem, Integer idWarranty ){
+    BigDecimal warrantyAmount = BigDecimal.ZERO
     Articulo warranty = articuloService.obtenerArticulo( idWarranty, true )
     if( warranty != null ){
       MontoGarantia montoGarantia = articuloService.obtenerMontoGarantia( warranty.precio )
       if( montoGarantia != null && (montoGarantia.montoMinimo.compareTo(priceItem) <= 0
               && montoGarantia.montoMaximo.compareTo(priceItem) >= 0 ) ){
-        valid = true
+        warrantyAmount = montoGarantia.montoGarantia
       }
     }
+    return warrantyAmount
+  }
 
-    return valid
+
+
+  static void printWarranty( BigDecimal montoGar ){
+    //ticketService
   }
 
 

@@ -677,8 +677,7 @@ class ArticuloServiceImpl implements ArticuloService {
   @Override
   MontoGarantia obtenerMontoGarantia( BigDecimal precioArt ){
     QMontoGarantia qMontoGarantia = QMontoGarantia.montoGarantia1
-    return montoGarantiaRepository.findOne( (qMontoGarantia.montoMinimo.eq(precioArt).or(qMontoGarantia.montoMinimo.loe(precioArt))).
-            and(qMontoGarantia.montoMaximo.eq(precioArt).or(qMontoGarantia.montoMaximo.goe(precioArt))) )
+    return montoGarantiaRepository.findOne( qMontoGarantia.montoGarantia.eq(precioArt) )
   }
 
 

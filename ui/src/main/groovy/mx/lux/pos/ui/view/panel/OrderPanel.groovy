@@ -598,6 +598,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
     private void saveOrder (){
+      if( validWarranty( ) ){
         Order newOrder = OrderController.placeOrder( order )
         //CustomerController.saveOrderCountries( order.country )
         this.promotionDriver.requestPromotionSave()
@@ -612,6 +613,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             ).createDialog( this, 'No se puede registrar la venta' )
                     .show()
         }
+      }
     }
 
   private boolean isValidOrder( ) {
@@ -702,12 +704,12 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         if( promotionSelectedList instanceof PromotionAvailable && promotionSelectedList.promotion instanceof  PromotionCombo ){
           if( order.items.size() <= 1 ){
             sb.optionPane(
-               message: "La promoción aplica en la compra de más de un armazón.",
+               message: "La promocion aplica en la compra de mas de un articulo.",
                messageType: JOptionPane.ERROR_MESSAGE
             ).createDialog( this, 'No se puede registrar la venta' )
                .show()
             return false
-          } else {
+          } /*else {
             List<PromotionAvailable> lstPromos = new ArrayList<>()
             for(PromotionAvailable prom : promotionList){
               if( prom.promotion instanceof  PromotionCombo ){
@@ -729,48 +731,10 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 .show()
               return false
             }
-          }
+          }*/
         }
       }
     }
-
-   List<Integer> lstIdGar = new ArrayList<>()
-   List<Integer> lstIdArm = new ArrayList<>()
-   for(OrderItem orderItem : order.items){
-     if( StringUtils.trimToEmpty(orderItem.item.type).equalsIgnoreCase(TAG_GENERICO_SEGUROS) ){
-       lstIdGar.add(orderItem.item.id)
-     } else if( StringUtils.trimToEmpty(orderItem.item.type).equalsIgnoreCase(TAG_GENERICO_ARMAZON) ){
-       lstIdArm.add(orderItem.item.id)
-     }
-   }
-   if( lstIdGar.size() > 0 ){
-     if( lstIdArm.size() == 1 ){
-       if( lstIdGar.size() == 1 ){
-         BigDecimal amount = BigDecimal.ZERO
-         for(OrderItem orderItem : order.items){
-           if( orderItem.item.id == lstIdArm.first() ){
-             amount = orderItem.item.price
-           }
-         }
-         if( !ItemController.warrantyValid( amount, lstIdGar.first() ) ){
-           sb.optionPane(
-              message: "Garantia Invalida.",
-              messageType: JOptionPane.ERROR_MESSAGE
-           ).createDialog( this, 'No se puede registrar la venta' )
-             .show()
-           return false
-         }
-       } else {
-         sb.optionPane(
-            message: "Seleccione solo una garantia.",
-            messageType: JOptionPane.ERROR_MESSAGE
-         ).createDialog( this, 'No se puede registrar la venta' )
-           .show()
-         return false
-       }
-       order.items.first().item.price
-     }
-   }
     return true
   }
 
@@ -898,6 +862,50 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         }
       }
     return lstPromosArt
+  }
+
+
+  private Boolean validWarranty( ){
+    List<Integer> lstIdGar = new ArrayList<>()
+    List<Integer> lstIdArm = new ArrayList<>()
+    for(OrderItem orderItem : order.items){
+      if( StringUtils.trimToEmpty(orderItem.item.type).equalsIgnoreCase(TAG_GENERICO_SEGUROS) ){
+        lstIdGar.add(orderItem.item.id)
+      } else if( StringUtils.trimToEmpty(orderItem.item.type).equalsIgnoreCase(TAG_GENERICO_ARMAZON) ){
+        lstIdArm.add(orderItem.item.id)
+      }
+    }
+    if( lstIdGar.size() > 0 ){
+      if( lstIdArm.size() == 1 ){
+        if( lstIdGar.size() == 1 ){
+          BigDecimal amount = BigDecimal.ZERO
+          for(OrderItem orderItem : order.items){
+            if( orderItem.item.id == lstIdArm.first() ){
+              amount = orderItem.item.price
+            }
+          }
+          BigDecimal warrantyAmount = ItemController.warrantyValid( amount, lstIdGar.first() )
+          if( warrantyAmount.compareTo(BigDecimal.ZERO) > 0 ){
+            ItemController.printWarranty( )
+          } else {
+            sb.optionPane(
+               message: "Garantia Invalida.",
+               messageType: JOptionPane.ERROR_MESSAGE
+            ).createDialog( this, 'No se puede registrar la venta' )
+              .show()
+            return false
+          }
+        } else {
+          sb.optionPane(
+             message: "Seleccione solo una garantia.",
+             messageType: JOptionPane.ERROR_MESSAGE
+          ).createDialog( this, 'No se puede registrar la venta' )
+          .show()
+          return false
+        }
+        order.items.first().item.price
+      }
+    }
   }
 
 
