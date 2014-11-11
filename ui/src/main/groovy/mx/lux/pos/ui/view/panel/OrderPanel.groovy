@@ -705,29 +705,47 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             ).createDialog( this, 'No se puede registrar la venta' )
                .show()
             return false
-          } /*else {
-            List<PromotionAvailable> lstPromos = new ArrayList<>()
-            for(PromotionAvailable prom : promotionList){
-              if( prom.promotion instanceof  PromotionCombo ){
-                if( prom.promotion.base.entity.idPromocion == promotionSelectedList.promotion.base.entity.idPromocion){
-                  lstPromos.add( prom )
+          } else {
+            String generico = promotionSelectedList.promotion.base.entity.idGenerico.contains("*") ? promotionSelectedList.promotion.base.entity.idGenericoC : promotionSelectedList.promotion.base.entity.idGenerico
+            String genericoC = promotionSelectedList.promotion.base.entity.idGenericoC.contains("*") ? promotionSelectedList.promotion.base.entity.idGenerico : promotionSelectedList.promotion.base.entity.idGenericoC
+            if( StringUtils.trimToEmpty(generico).equalsIgnoreCase(StringUtils.trimToEmpty(genericoC)) ){
+              Integer count = 0
+              for(OrderItem orderItem : order.items){
+                if( StringUtils.trimToEmpty(orderItem.item.type).
+                        equalsIgnoreCase(StringUtils.trimToEmpty(generico)) ){
+                  count = count+1
                 }
               }
-            }
-            for(PromotionAvailable promApply : lstPromos){
-              if( promApply.enabledByList.size() > 1 ){
-                validCombo = true
+              if( count <= 1 ){
+                sb.optionPane(
+                   message: "La promocion aplica en la compra de mas de un articulo.",
+                   messageType: JOptionPane.ERROR_MESSAGE
+                ).createDialog( this, 'No se puede registrar la venta' )
+                  .show()
+                return false
+              }
+            } else {
+              Boolean genItem1 = false
+              Boolean genItem2 = false
+              for(OrderItem orderItem : order.items){
+                if( StringUtils.trimToEmpty(orderItem.item.type).
+                            equalsIgnoreCase(StringUtils.trimToEmpty(generico)) ){
+                  genItem1 = true
+                } else if( StringUtils.trimToEmpty(orderItem.item.type).
+                        equalsIgnoreCase(StringUtils.trimToEmpty(genericoC)) ){
+                    genItem2 = true
+                }
+              }
+              if( !genItem1 || !genItem2 ){
+                sb.optionPane(
+                   message: "La promocion aplica en la compra de mas de un articulo.",
+                   messageType: JOptionPane.ERROR_MESSAGE
+                ).createDialog( this, 'No se puede registrar la venta' )
+                  .show()
+                return false
               }
             }
-            if( !validCombo ){
-              sb.optionPane(
-                 message: "La promoción aplica en la compra de más de un armazón.",
-                 messageType: JOptionPane.ERROR_MESSAGE
-              ).createDialog( this, 'No se puede registrar la venta' )
-                .show()
-              return false
-            }
-          }*/
+          }
         }
       }
     }
