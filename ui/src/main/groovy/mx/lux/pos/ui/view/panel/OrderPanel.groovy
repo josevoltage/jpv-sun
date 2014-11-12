@@ -3,6 +3,7 @@ package mx.lux.pos.ui.view.panel
 import groovy.model.DefaultTableModel
 import groovy.swing.SwingBuilder
 import mx.lux.pos.model.IPromotionAvailable
+import mx.lux.pos.model.IngresoPorDia
 import mx.lux.pos.model.PromotionApplied
 import mx.lux.pos.model.PromotionAvailable
 import mx.lux.pos.model.PromotionCombo
@@ -16,6 +17,7 @@ import mx.lux.pos.ui.view.driver.PromotionDriver
 import mx.lux.pos.ui.view.renderer.MoneyCellRenderer
 import net.miginfocom.swing.MigLayout
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.time.DateUtils
 
 import java.awt.BorderLayout
 import java.awt.Component
@@ -709,29 +711,47 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             ).createDialog( this, 'No se puede registrar la venta' )
                .show()
             return false
-          } /*else {
-            List<PromotionAvailable> lstPromos = new ArrayList<>()
-            for(PromotionAvailable prom : promotionList){
-              if( prom.promotion instanceof  PromotionCombo ){
-                if( prom.promotion.base.entity.idPromocion == promotionSelectedList.promotion.base.entity.idPromocion){
-                  lstPromos.add( prom )
+          } else {
+            String generico = promotionSelectedList.promotion.base.entity.idGenerico.contains("*") ? promotionSelectedList.promotion.base.entity.idGenericoC : promotionSelectedList.promotion.base.entity.idGenerico
+            String genericoC = promotionSelectedList.promotion.base.entity.idGenericoC.contains("*") ? promotionSelectedList.promotion.base.entity.idGenerico : promotionSelectedList.promotion.base.entity.idGenericoC
+            if( StringUtils.trimToEmpty(generico).equalsIgnoreCase(StringUtils.trimToEmpty(genericoC)) ){
+              Integer count = 0
+              for(OrderItem orderItem : order.items){
+                if( StringUtils.trimToEmpty(orderItem.item.type).
+                        equalsIgnoreCase(StringUtils.trimToEmpty(generico)) ){
+                  count = count+1
                 }
               }
-            }
-            for(PromotionAvailable promApply : lstPromos){
-              if( promApply.enabledByList.size() > 1 ){
-                validCombo = true
+              if( count <= 1 ){
+                sb.optionPane(
+                   message: "La promocion aplica en la compra de mas de un articulo.",
+                   messageType: JOptionPane.ERROR_MESSAGE
+                ).createDialog( this, 'No se puede registrar la venta' )
+                  .show()
+                return false
+              }
+            } else {
+              Boolean genItem1 = false
+              Boolean genItem2 = false
+              for(OrderItem orderItem : order.items){
+                if( StringUtils.trimToEmpty(orderItem.item.type).
+                            equalsIgnoreCase(StringUtils.trimToEmpty(generico)) ){
+                  genItem1 = true
+                } else if( StringUtils.trimToEmpty(orderItem.item.type).
+                        equalsIgnoreCase(StringUtils.trimToEmpty(genericoC)) ){
+                    genItem2 = true
+                }
+              }
+              if( !genItem1 || !genItem2 ){
+                sb.optionPane(
+                   message: "La promocion aplica en la compra de mas de un articulo.",
+                   messageType: JOptionPane.ERROR_MESSAGE
+                ).createDialog( this, 'No se puede registrar la venta' )
+                  .show()
+                return false
               }
             }
-            if( !validCombo ){
-              sb.optionPane(
-                 message: "La promoción aplica en la compra de más de un armazón.",
-                 messageType: JOptionPane.ERROR_MESSAGE
-              ).createDialog( this, 'No se puede registrar la venta' )
-                .show()
-              return false
-            }
-          }*/
+          }
         }
       }
     }
@@ -758,6 +778,18 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       this.promotionSelectedList.remove( pPromotion )
       this.promotionDriver.requestCancelPromotion( pPromotion )
       this.promotionListSelected.remove( pPromotion )
+      /*if(pPromotion instanceof PromotionAvailable){
+        List<IPromotionAvailable> promotionListTmp = new ArrayList<>()
+        promotionListTmp.addAll( promotionList )
+        promotionList.clear()
+        for(IPromotionAvailable prom : promotionListTmp){
+          if( prom.promotion instanceof PromotionSingle ){
+            FindOrCreate( promotionList, prom.promotion.entity.idPromocion, prom )
+          } else if( prom.promotion instanceof PromotionCombo ){
+            FindOrCreate( promotionList, prom.promotion.base.entity.idPromocion, prom )
+          }
+        }
+      }*/
     }
   }
 
@@ -830,6 +862,17 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
   private List<IPromotionAvailable> lstPromotionsAvalibles ( OrderItem orderItem ){
+      /*List<IPromotionAvailable> promotionListTmp = new ArrayList<>()
+      promotionListTmp.addAll( promotionList )
+      promotionList.clear()
+      for(IPromotionAvailable prom : promotionListTmp){
+        if( prom.promotion instanceof PromotionSingle ){
+          FindOrCreate( promotionList, prom.promotion.entity.idPromocion, prom )
+        } else if( prom.promotion instanceof PromotionCombo ){
+          FindOrCreate( promotionList, prom.promotion.base.entity.idPromocion, prom )
+        }
+      }*/
+
       List<IPromotionAvailable> lstPromosArt = new ArrayList<>()
       for(IPromotionAvailable promo : promotionList){
         if( promo instanceof PromotionAvailable ){
@@ -906,6 +949,28 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         order.items.first().item.price
       }
     }
+  }
+
+  public static IPromotionAvailable FindOrCreate( List<IPromotionAvailable> lstPromos, Integer idPromo, IPromotionAvailable promotionAvailable ) {
+        IPromotionAvailable found = null;
+        for ( IPromotionAvailable prom : lstPromos ) {
+            if(prom.promotion instanceof PromotionSingle){
+              if( prom.promotion.entity.idPromocion == idPromo ){
+                found = prom;
+                break;
+              }
+            } else if(prom.promotion instanceof PromotionCombo){
+              if( prom.promotion.base.entity.idPromocion == idPromo ){
+                  found = prom;
+                  break;
+              }
+            }
+        }
+        if ( found == null ) {
+            found = promotionAvailable
+            lstPromos.add( found );
+        }
+        return found;
   }
 
 
