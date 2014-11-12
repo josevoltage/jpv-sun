@@ -3,6 +3,7 @@ package mx.lux.pos.ui.view.panel
 import groovy.model.DefaultTableModel
 import groovy.swing.SwingBuilder
 import mx.lux.pos.model.IPromotionAvailable
+import mx.lux.pos.model.IngresoPorDia
 import mx.lux.pos.model.PromotionApplied
 import mx.lux.pos.model.PromotionAvailable
 import mx.lux.pos.model.PromotionCombo
@@ -16,6 +17,7 @@ import mx.lux.pos.ui.view.driver.PromotionDriver
 import mx.lux.pos.ui.view.renderer.MoneyCellRenderer
 import net.miginfocom.swing.MigLayout
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.time.DateUtils
 
 import java.awt.BorderLayout
 import java.awt.Component
@@ -772,6 +774,18 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       this.promotionSelectedList.remove( pPromotion )
       this.promotionDriver.requestCancelPromotion( pPromotion )
       this.promotionListSelected.remove( pPromotion )
+      if(pPromotion instanceof PromotionAvailable){
+        List<IPromotionAvailable> promotionListTmp = new ArrayList<>()
+        promotionListTmp.addAll( promotionList )
+        promotionList.clear()
+        for(IPromotionAvailable prom : promotionListTmp){
+          if( prom.promotion instanceof PromotionSingle ){
+            FindOrCreate( promotionList, prom.promotion.entity.idPromocion, prom )
+          } else if( prom.promotion instanceof PromotionCombo ){
+            FindOrCreate( promotionList, prom.promotion.base.entity.idPromocion, prom )
+          }
+        }
+      }
     }
   }
 
@@ -844,6 +858,17 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
   private List<IPromotionAvailable> lstPromotionsAvalibles ( OrderItem orderItem ){
+      List<IPromotionAvailable> promotionListTmp = new ArrayList<>()
+      promotionListTmp.addAll( promotionList )
+      promotionList.clear()
+      for(IPromotionAvailable prom : promotionListTmp){
+        if( prom.promotion instanceof PromotionSingle ){
+          FindOrCreate( promotionList, prom.promotion.entity.idPromocion, prom )
+        } else if( prom.promotion instanceof PromotionCombo ){
+          FindOrCreate( promotionList, prom.promotion.base.entity.idPromocion, prom )
+        }
+      }
+
       List<IPromotionAvailable> lstPromosArt = new ArrayList<>()
       for(IPromotionAvailable promo : promotionList){
         if( promo instanceof PromotionAvailable ){
@@ -876,6 +901,30 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         }
       }
     return lstPromosArt
+  }
+
+
+
+  public static IPromotionAvailable FindOrCreate( List<IPromotionAvailable> lstPromos, Integer idPromo, IPromotionAvailable promotionAvailable ) {
+        IPromotionAvailable found = null;
+        for ( IPromotionAvailable prom : lstPromos ) {
+            if(prom.promotion instanceof PromotionSingle){
+              if( prom.promotion.entity.idPromocion == idPromo ){
+                found = prom;
+                break;
+              }
+            } else if(prom.promotion instanceof PromotionCombo){
+              if( prom.promotion.base.entity.idPromocion == idPromo ){
+                  found = prom;
+                  break;
+              }
+            }
+        }
+        if ( found == null ) {
+            found = promotionAvailable
+            lstPromos.add( found );
+        }
+        return found;
   }
 
 
