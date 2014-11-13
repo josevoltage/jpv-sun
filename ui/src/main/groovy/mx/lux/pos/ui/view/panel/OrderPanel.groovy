@@ -932,6 +932,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           if( warrantyAmount.compareTo(BigDecimal.ZERO) > 0 ){
             ItemController.printWarranty( amount, lstIdArm.first() )
             valid = true
+            lstIdGar.clear()
           } else {
             sb.optionPane(
                message: "Garantia Invalida.",
