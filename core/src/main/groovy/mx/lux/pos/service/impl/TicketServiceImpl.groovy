@@ -979,21 +979,17 @@ class TicketServiceImpl implements TicketService {
         return buf.toString( );
     }
 
-    protected  String claveAleatoria(Integer sucursal, Integer folio) {
-        String folioAux = "" + folio.intValue();
-        String sucursalAux = "" + sucursal.intValue()
-        String abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        if (folioAux.size() < 4) {
-            folioAux = folioAux?.padLeft( 4, '0' )
-        }
-        else {
-            folioAux = folioAux.substring(0,4);
-        }
-        String resultado = sucursalAux?.padLeft( 3, '0' ) + folioAux
-
-
-        for (int i = 0; i < resultado.size(); i++) {
+    protected static  String claveAleatoria(Integer fecha, Integer monto) {
+      String folioAux = "" + monto.intValue();
+      String sucursalAux = "" + fecha.intValue()
+      String abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      if (folioAux.size() < 5) {
+        folioAux = folioAux?.padLeft( 5, '0' )
+      } else {
+        folioAux = folioAux.substring(0,5);
+      }
+      String resultado = sucursalAux?.padLeft( 6, '0' ) + folioAux
+      for (int i = 0; i < resultado.size(); i++) {
             int numAleatorio = (int) (Math.random() * abc.size());
             if (resultado.charAt(i) == '0') {
                 resultado = replaceCharAt(resultado, i, abc.charAt(numAleatorio))
@@ -1004,10 +1000,8 @@ class TicketServiceImpl implements TicketService {
                 char diff = Character.forDigit(numero, 10);
                 resultado = replaceCharAt(resultado, i, diff)
             }
-
-
-        }
-        return resultado;
+      }
+      return resultado;
     }
 
   void imprimeTransInv( TransInv pTrans, Boolean pNewTransaction ) {
@@ -1864,6 +1858,37 @@ class TicketServiceImpl implements TicketService {
           log.debug( String.format( 'No existe registro de incidencias' ) )
       }
   }
+
+
+
+  void imprimeGarantia( BigDecimal montoGarantia, Integer idArticulo ){
+    log.debug( "imprimeGarantia( )" )
+    DateFormat df = new SimpleDateFormat( "dd-MM-yy" )
+    Articulo articulo = articuloRepository.findOne( idArticulo )
+    Sucursal site = ServiceFactory.sites.obtenSucursalActual()
+    AddressAdapter companyAddress = Registry.companyAddress
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(new Date());
+    calendar.add(Calendar.YEAR, 1);
+    String date = df.format(calendar.getTime())
+    Integer fecha = 0
+    try{
+      fecha = NumberFormat.getInstance().parse(date.replace("-",""))
+    } catch ( NumberFormatException e ){ println e }
+    Integer porcGar = Registry.percentageWarranty
+    BigDecimal porcentaje = montoGarantia.multiply(porcGar/100)
+    Integer monto = porcentaje.intValue()
+    String clave = claveAleatoria( fecha, monto )
+    def data = [
+        date: df.format( calendar.getTime() ),
+        thisSite: site,
+        compania: companyAddress,
+        codaleatorio: clave,
+        articulo: articulo != null ? StringUtils.trimToEmpty(articulo.articulo) : ""
+    ]
+    imprimeTicket( "template/ticket-garantia.vm", data )
+  }
+
 
 
 }

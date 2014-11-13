@@ -2,9 +2,11 @@ package mx.lux.pos.ui.controller
 
 import groovy.util.logging.Slf4j
 import mx.lux.pos.model.Articulo
+import mx.lux.pos.model.DetalleNotaVenta
 import mx.lux.pos.model.InventarioFisico
 import mx.lux.pos.model.MontoGarantia
 import mx.lux.pos.service.ArticuloService
+import mx.lux.pos.service.DetalleNotaVentaService
 import mx.lux.pos.service.TicketService
 import mx.lux.pos.ui.model.Differences
 import mx.lux.pos.ui.model.Item
@@ -38,11 +40,13 @@ class ItemController {
 
   private static ArticuloService articuloService
   private static TicketService ticketService
+  private static DetalleNotaVentaService detalleNotaVentaService
 
   @Autowired
-  public ItemController( ArticuloService articuloService, TicketService ticketService ) {
+  public ItemController( ArticuloService articuloService, TicketService ticketService, DetalleNotaVentaService detalleNotaVentaService ) {
     this.articuloService = articuloService
     this.ticketService = ticketService
+    this.detalleNotaVentaService = detalleNotaVentaService
   }
 
   static Item findItem( Integer id ) {
@@ -291,8 +295,8 @@ class ItemController {
 
 
 
-  static void printWarranty( BigDecimal montoGar ){
-    //ticketService
+  static void printWarranty( BigDecimal amount, Integer idItem ){
+    ticketService.imprimeGarantia( amount, idItem )
   }
 
 

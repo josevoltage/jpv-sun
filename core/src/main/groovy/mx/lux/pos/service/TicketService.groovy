@@ -41,4 +41,6 @@ interface TicketService {
   void imprimeDiferencias(  )
 
   void imprimeIncidencias( Incidencia incidencia )
+
+  void imprimeGarantia( BigDecimal montoGarantia, Integer idArticulo )
 }

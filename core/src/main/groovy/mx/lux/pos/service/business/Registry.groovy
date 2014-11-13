@@ -182,6 +182,10 @@ class Registry {
     return asInteger( TipoParametro.ID_SUCURSAL )
   }
 
+  static Integer getPercentageWarranty( ) {
+    return asInteger( TipoParametro.PORCENTAJE_GARANTIA )
+  }
+
   static Boolean isUsdDisplayEnabled( ) {
     return isTrue( TipoParametro.DESPLIEGA_USD )
   }

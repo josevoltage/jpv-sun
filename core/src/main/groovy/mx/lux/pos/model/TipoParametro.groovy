@@ -44,6 +44,7 @@ enum TipoParametro {
   PIDE_FACTURA( 'pide_factura', '' ),
   PLAN_NORMAL_TARJETA_CREDITO( 'plan_normal_tarjeta_credito', 'NORMAL TARJETA DE CREDITO' ),
   PORCENTAJE_ANTICIPO( 'porcentaje_anticipo', '100.0' ),
+  PORCENTAJE_GARANTIA( 'porcentaje_garantia', '75' ),
   RUTA_CIERRE( 'ruta_cierre', 'C:/Documents and Settings/mensajero/cierre' ),
   RUTA_COMPROBANTES( 'ruta_comprobantes', 'C:/Documents and Settings/mensajero/facturas' ),
   RUTA_INVENTARIO( 'ruta_inv_tr', 'C:/Documents and Settings/mensajero/inventario' ),

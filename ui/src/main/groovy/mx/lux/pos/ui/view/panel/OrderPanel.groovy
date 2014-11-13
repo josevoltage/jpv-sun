@@ -778,18 +778,18 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       this.promotionSelectedList.remove( pPromotion )
       this.promotionDriver.requestCancelPromotion( pPromotion )
       this.promotionListSelected.remove( pPromotion )
-      /*if(pPromotion instanceof PromotionAvailable){
+      if(pPromotion instanceof PromotionAvailable){
         List<IPromotionAvailable> promotionListTmp = new ArrayList<>()
         promotionListTmp.addAll( promotionList )
         promotionList.clear()
         for(IPromotionAvailable prom : promotionListTmp){
           if( prom.promotion instanceof PromotionSingle ){
-            FindOrCreate( promotionList, prom.promotion.entity.idPromocion, prom )
+            FindOrCreate( promotionList, prom.promotion.entity.idPromocion, prom.appliesToList.first().orderDetail.sku, prom )
           } else if( prom.promotion instanceof PromotionCombo ){
-            FindOrCreate( promotionList, prom.promotion.base.entity.idPromocion, prom )
+            FindOrCreate( promotionList, prom.promotion.base.entity.idPromocion, prom.appliesToList.first().orderDetail.sku, prom )
           }
         }
-      }*/
+      }
     }
   }
 
@@ -862,16 +862,16 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
   private List<IPromotionAvailable> lstPromotionsAvalibles ( OrderItem orderItem ){
-      /*List<IPromotionAvailable> promotionListTmp = new ArrayList<>()
+      List<IPromotionAvailable> promotionListTmp = new ArrayList<>()
       promotionListTmp.addAll( promotionList )
       promotionList.clear()
       for(IPromotionAvailable prom : promotionListTmp){
         if( prom.promotion instanceof PromotionSingle ){
-          FindOrCreate( promotionList, prom.promotion.entity.idPromocion, prom )
+          FindOrCreate( promotionList, prom.promotion.entity.idPromocion, prom.appliesToList.first().orderDetail.sku, prom )
         } else if( prom.promotion instanceof PromotionCombo ){
-          FindOrCreate( promotionList, prom.promotion.base.entity.idPromocion, prom )
+          FindOrCreate( promotionList, prom.promotion.base.entity.idPromocion, prom.appliesToList.first().orderDetail.sku, prom )
         }
-      }*/
+      }
 
       List<IPromotionAvailable> lstPromosArt = new ArrayList<>()
       for(IPromotionAvailable promo : promotionList){
@@ -909,6 +909,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
 
 
   private Boolean validWarranty( ){
+    Boolean valid = false
     List<Integer> lstIdGar = new ArrayList<>()
     List<Integer> lstIdArm = new ArrayList<>()
     for(OrderItem orderItem : order.items){
@@ -929,14 +930,14 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           }
           BigDecimal warrantyAmount = ItemController.warrantyValid( amount, lstIdGar.first() )
           if( warrantyAmount.compareTo(BigDecimal.ZERO) > 0 ){
-            ItemController.printWarranty( )
+            ItemController.printWarranty( amount, lstIdArm.first() )
+            valid = true
           } else {
             sb.optionPane(
                message: "Garantia Invalida.",
                messageType: JOptionPane.ERROR_MESSAGE
             ).createDialog( this, 'No se puede registrar la venta' )
               .show()
-            return false
           }
         } else {
           sb.optionPane(
@@ -944,23 +945,85 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
              messageType: JOptionPane.ERROR_MESSAGE
           ).createDialog( this, 'No se puede registrar la venta' )
           .show()
-          return false
         }
-        order.items.first().item.price
+      } else {
+        if( lstIdArm.size() > 1 ){
+          if( lstIdGar.size() <= lstIdArm.size() ){
+            for(Integer idArm : lstIdArm){
+              List<Item> lstWarrantis = new ArrayList<>()
+              List<Integer> lstIdGarTmp = new ArrayList<>()
+              for( Integer id : lstIdGar ){
+                lstWarrantis.add(ItemController.findItem( id ))
+              }
+              Item itemWarranty = null
+              Boolean canceled = false
+              if( lstIdGar.size() > 0 ){
+                WarrantySelectionDialog dialog = new WarrantySelectionDialog( lstWarrantis, ItemController.findItem( idArm ) )
+                dialog.show()
+                itemWarranty = dialog.selectedWarranty
+                canceled = dialog.canceled
+              }
+              if( itemWarranty != null ){
+                if( lstIdGar.size() > 0 ){
+                  BigDecimal amount = BigDecimal.ZERO
+                  for(OrderItem orderItem : order.items){
+                        if( orderItem.item.id == idArm ){
+                            amount = orderItem.item.price
+                        }
+                  }
+                  BigDecimal warrantyAmount = ItemController.warrantyValid( amount, itemWarranty.id )
+                  if( warrantyAmount.compareTo(BigDecimal.ZERO) > 0 ){
+                    lstIdGar.clear()
+                    for( Integer id : lstIdGarTmp ){
+                      if( id != itemWarranty.id ){
+                        lstIdGar.add(id)
+                      }
+                    }
+                    ItemController.printWarranty( amount, idArm )
+                    valid = true
+                  } else {
+                        sb.optionPane(
+                                message: "Garantia Invalida.",
+                                messageType: JOptionPane.ERROR_MESSAGE
+                        ).createDialog( this, 'No se puede registrar la venta' )
+                                .show()
+                  }
+                }
+              } else {
+                if( canceled ){
+                  break
+                }
+              }
+            }
+          } else {
+            sb.optionPane(
+               message: "No puede regustrar mas garantias que armazones.",
+               messageType: JOptionPane.ERROR_MESSAGE
+            ).createDialog( this, 'No se puede registrar la venta' )
+              .show()
+          }
+        }
       }
     }
+    if( lstIdGar.size() > 0 ){
+      valid = false
+    }
+    return valid
   }
 
-  public static IPromotionAvailable FindOrCreate( List<IPromotionAvailable> lstPromos, Integer idPromo, IPromotionAvailable promotionAvailable ) {
+  public static IPromotionAvailable FindOrCreate( List<IPromotionAvailable> lstPromos, Integer idPromo, Integer idArt, IPromotionAvailable promotionAvailable ) {
         IPromotionAvailable found = null;
         for ( IPromotionAvailable prom : lstPromos ) {
+          if( promotionAvailable.enabledByList.size() > 1 ){
+            break
+          }
             if(prom.promotion instanceof PromotionSingle){
-              if( prom.promotion.entity.idPromocion == idPromo ){
+              if( prom.promotion.entity.idPromocion == idPromo && prom.appliesToList.first().orderDetail.sku == idArt ){
                 found = prom;
                 break;
               }
             } else if(prom.promotion instanceof PromotionCombo){
-              if( prom.promotion.base.entity.idPromocion == idPromo ){
+              if( prom.promotion.base.entity.idPromocion == idPromo && prom.appliesToList.first().orderDetail.sku == idArt ){
                   found = prom;
                   break;
               }
