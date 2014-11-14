@@ -967,9 +967,12 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
               for(Integer id : lstIdGar){
                 count = 0
                 MontoGarantia garantia = ItemController.findWarranty( ItemController.findItem( id ).listPrice )
-                for(Integer idArm : lstIdArm){
-                  Item item = ItemController.findItem( idArm )
-                  if(item.price.compareTo(garantia.montoMinimo) >= 0 && item.price.compareTo(garantia.montoMaximo) <= 0){
+                for(OrderItem item : order.items){
+                  Item it = item.item
+                  println it.price.compareTo(garantia.montoMinimo) >= 0
+                  println it.price.compareTo(garantia.montoMaximo) <= 0
+                  if(StringUtils.trimToEmpty(it.type).equalsIgnoreCase(TAG_GENERICO_ARMAZON) &&
+                          it.price.compareTo(garantia.montoMinimo) >= 0 && it.price.compareTo(garantia.montoMaximo) <= 0){
                     count = count+1
                   }
                 }
@@ -1030,18 +1033,20 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
               Integer idGarUsed = 0
               for(Integer id : lstIdGar){
                 idGarUsed = 0
-                for(Integer idArm : lstIdArm){
+                for(OrderItem idArm : order.items){
                   MontoGarantia garantia = ItemController.findWarranty( ItemController.findItem( id ).listPrice )
-                  Item item = ItemController.findItem( idArm )
+                  Item item = idArm.item
                    if(item.price.compareTo(garantia.montoMinimo) >= 0 && item.price.compareTo(garantia.montoMaximo) <= 0){
-                     ItemController.printWarranty( item.price, idArm )
+                     ItemController.printWarranty( item.price, item.id )
                      valid = true
                      idGarUsed = id
                      break
                    }
                 }
               }
-              lstIdGar.clear()
+              if( idGarUsed > 0 ){
+                lstIdGar.clear()
+              }
             }
           } else {
             sb.optionPane(
@@ -1055,6 +1060,8 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     }
     if( lstIdGar.size() > 0 ){
       valid = false
+    } else {
+      valid = true
     }
     return valid
   }
