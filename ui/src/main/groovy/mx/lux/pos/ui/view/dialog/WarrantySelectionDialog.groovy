@@ -18,6 +18,7 @@ class WarrantySelectionDialog extends JDialog {
 
   private DefaultTableModel warrantyModel
   private JTable tWarrantis
+  private JLabel lblWarning
 
   Item selection
   Boolean canceled
@@ -45,6 +46,7 @@ class WarrantySelectionDialog extends JDialog {
         borderLayout()
         panel( constraints: BorderLayout.CENTER, layout: new MigLayout( "wrap ", "[grow,fill]", "10[]10[]" ) ) {
           label( text: "Seleccione la garantia para el articulo ${armazon}" )
+          lblWarning = label( text: "Seleccione una garantia.", foreground: UI_Standards.WARNING_FOREGROUND, constraints: 'hidemode 3', visible: false )
           scrollPane( border: titledBorder( title: 'Garantias' ) ) {
             tWarrantis = table( selectionMode: ListSelectionModel.SINGLE_SELECTION ) {
               warrantyModel = tableModel( list: lstItems ) {
@@ -109,9 +111,10 @@ class WarrantySelectionDialog extends JDialog {
       selection = this.lstItems.getAt(index)
       dispose()
     } else {
-      sb.doLater {
+      lblWarning.visible = true
+      /*sb.doLater {
         dispose()
-      }
+      }*/
     }
 
   }

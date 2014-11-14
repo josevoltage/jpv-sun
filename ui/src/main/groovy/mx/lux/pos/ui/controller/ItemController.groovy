@@ -299,5 +299,9 @@ class ItemController {
     ticketService.imprimeGarantia( amount, idItem )
   }
 
+  static MontoGarantia findWarranty( BigDecimal warrantyAmount ){
+    return articuloService.obtenerMontoGarantia( warrantyAmount )
+  }
+
 
 }

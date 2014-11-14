@@ -4,6 +4,7 @@ import groovy.model.DefaultTableModel
 import groovy.swing.SwingBuilder
 import mx.lux.pos.model.IPromotionAvailable
 import mx.lux.pos.model.IngresoPorDia
+import mx.lux.pos.model.MontoGarantia
 import mx.lux.pos.model.PromotionApplied
 import mx.lux.pos.model.PromotionAvailable
 import mx.lux.pos.model.PromotionCombo
@@ -615,6 +616,12 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             ).createDialog( this, 'No se puede registrar la venta' )
                     .show()
         }
+      } else {
+        sb.optionPane(
+                  message: 'Error al asignar las garantias, Verifiquelas e intente nuevamente.',
+                  messageType: JOptionPane.ERROR_MESSAGE
+        ).createDialog( this, 'No se puede registrar la venta' )
+                .show()
       }
     }
 
@@ -914,9 +921,13 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     List<Integer> lstIdArm = new ArrayList<>()
     for(OrderItem orderItem : order.items){
       if( StringUtils.trimToEmpty(orderItem.item.type).equalsIgnoreCase(TAG_GENERICO_SEGUROS) ){
-        lstIdGar.add(orderItem.item.id)
+        for(int i=0;i<orderItem.quantity;i++){
+          lstIdGar.add(orderItem.item.id)
+        }
       } else if( StringUtils.trimToEmpty(orderItem.item.type).equalsIgnoreCase(TAG_GENERICO_ARMAZON) ){
-        lstIdArm.add(orderItem.item.id)
+        for(int i=0;i<orderItem.quantity;i++){
+          lstIdArm.add(orderItem.item.id)
+        }
       }
     }
     if( lstIdGar.size() > 0 ){
@@ -950,51 +961,87 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       } else {
         if( lstIdArm.size() > 1 ){
           if( lstIdGar.size() <= lstIdArm.size() ){
-            for(Integer idArm : lstIdArm){
-              List<Item> lstWarrantis = new ArrayList<>()
-              List<Integer> lstIdGarTmp = new ArrayList<>()
-              for( Integer id : lstIdGar ){
-                lstWarrantis.add(ItemController.findItem( id ))
-              }
-              Item itemWarranty = null
-              Boolean canceled = false
-              if( lstIdGar.size() > 0 ){
-                WarrantySelectionDialog dialog = new WarrantySelectionDialog( lstWarrantis, ItemController.findItem( idArm ) )
-                dialog.show()
-                itemWarranty = dialog.selectedWarranty
-                canceled = dialog.canceled
-              }
-              if( itemWarranty != null ){
-                if( lstIdGar.size() > 0 ){
-                  BigDecimal amount = BigDecimal.ZERO
-                  for(OrderItem orderItem : order.items){
-                        if( orderItem.item.id == idArm ){
-                            amount = orderItem.item.price
-                        }
+            Boolean artSameRange = false
+            if( lstIdArm.size() > lstIdGar.size() ){
+              Integer count = 0
+              for(Integer id : lstIdGar){
+                count = 0
+                MontoGarantia garantia = ItemController.findWarranty( ItemController.findItem( id ).listPrice )
+                for(Integer idArm : lstIdArm){
+                  Item item = ItemController.findItem( idArm )
+                  if(item.price.compareTo(garantia.montoMinimo) >= 0 && item.price.compareTo(garantia.montoMaximo) <= 0){
+                    count = count+1
                   }
-                  BigDecimal warrantyAmount = ItemController.warrantyValid( amount, itemWarranty.id )
-                  if( warrantyAmount.compareTo(BigDecimal.ZERO) > 0 ){
-                    lstIdGar.clear()
-                    for( Integer id : lstIdGarTmp ){
-                      if( id != itemWarranty.id ){
-                        lstIdGar.add(id)
-                      }
+                }
+                if( count > 1 ){
+                  artSameRange = true
+                }
+              }
+            }
+            if( artSameRange ){
+                for(Integer idArm : lstIdArm){
+                    List<Item> lstWarrantis = new ArrayList<>()
+                    List<Integer> lstIdGarTmp = new ArrayList<>()
+                    for( Integer id : lstIdGar ){
+                        lstWarrantis.add(ItemController.findItem( id ))
                     }
-                    ItemController.printWarranty( amount, idArm )
-                    valid = true
-                  } else {
-                        sb.optionPane(
-                                message: "Garantia Invalida.",
-                                messageType: JOptionPane.ERROR_MESSAGE
-                        ).createDialog( this, 'No se puede registrar la venta' )
-                                .show()
-                  }
+                    Item itemWarranty = null
+                    Boolean canceled = false
+                    if( lstIdGar.size() > 0 ){
+                        WarrantySelectionDialog dialog = new WarrantySelectionDialog( lstWarrantis, ItemController.findItem( idArm ) )
+                        dialog.show()
+                        itemWarranty = dialog.selectedWarranty
+                        canceled = dialog.canceled
+                    }
+                    if( itemWarranty != null ){
+                        if( lstIdGar.size() > 0 ){
+                            BigDecimal amount = BigDecimal.ZERO
+                            for(OrderItem orderItem : order.items){
+                                if( orderItem.item.id == idArm ){
+                                    amount = orderItem.item.price
+                                }
+                            }
+                            BigDecimal warrantyAmount = ItemController.warrantyValid( amount, itemWarranty.id )
+                            if( warrantyAmount.compareTo(BigDecimal.ZERO) > 0 ){
+                                lstIdGar.clear()
+                                for( Integer id : lstIdGarTmp ){
+                                    if( id != itemWarranty.id ){
+                                        lstIdGar.add(id)
+                                    }
+                                }
+                                ItemController.printWarranty( amount, idArm )
+                                valid = true
+                            } else {
+                                sb.optionPane(
+                                        message: "Garantia Invalida.",
+                                        messageType: JOptionPane.ERROR_MESSAGE
+                                ).createDialog( this, 'No se puede registrar la venta' )
+                                        .show()
+                            }
+                        }
+                    } else {
+                        if( canceled ){
+                            break
+                        }
+                    }
                 }
-              } else {
-                if( canceled ){
-                  break
+            } else {
+              List<Integer> lstIdGarTmp = new ArrayList<>()
+              Integer idGarUsed = 0
+              for(Integer id : lstIdGar){
+                idGarUsed = 0
+                for(Integer idArm : lstIdArm){
+                  MontoGarantia garantia = ItemController.findWarranty( ItemController.findItem( id ).listPrice )
+                  Item item = ItemController.findItem( idArm )
+                   if(item.price.compareTo(garantia.montoMinimo) >= 0 && item.price.compareTo(garantia.montoMaximo) <= 0){
+                     ItemController.printWarranty( item.price, idArm )
+                     valid = true
+                     idGarUsed = id
+                     break
+                   }
                 }
               }
+              lstIdGar.clear()
             }
           } else {
             sb.optionPane(
