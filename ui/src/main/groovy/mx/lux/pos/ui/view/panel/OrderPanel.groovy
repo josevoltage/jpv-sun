@@ -1031,17 +1031,37 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             } else {
               List<Integer> lstIdGarTmp = new ArrayList<>()
               Integer idGarUsed = 0
+              Integer idArmUsed = 0
+              List<OrderItem> lstItems = new ArrayList<>()
+              lstItems.addAll( order.items )
               for(Integer id : lstIdGar){
                 idGarUsed = 0
-                for(OrderItem idArm : order.items){
+                for(OrderItem idArm : lstItems ){
                   MontoGarantia garantia = ItemController.findWarranty( ItemController.findItem( id ).listPrice )
                   Item item = idArm.item
-                   if(item.price.compareTo(garantia.montoMinimo) >= 0 && item.price.compareTo(garantia.montoMaximo) <= 0){
+                   if( StringUtils.trimToEmpty(item.type).equalsIgnoreCase(TAG_GENERICO_ARMAZON) &&
+                           item.price.compareTo(garantia.montoMinimo) >= 0 && item.price.compareTo(garantia.montoMaximo) <= 0){
                      ItemController.printWarranty( item.price, item.id )
                      valid = true
                      idGarUsed = id
+                     idArmUsed = idArm.item.id
                      break
                    }
+                }
+                Integer count = 0
+                lstItems.clear()
+                for(OrderItem itemTmp : order.items){
+                  if( StringUtils.trimToEmpty(itemTmp.item.type).equalsIgnoreCase(TAG_GENERICO_ARMAZON) ){
+                    if( itemTmp.item.id != idArmUsed ){
+                      lstItems.add( itemTmp )
+                    } else {
+                      if( count == 0 ){
+                        count = count + 1
+                      } else {
+                        lstItems.add( itemTmp )
+                      }
+                    }
+                  }
                 }
               }
               if( idGarUsed > 0 ){
