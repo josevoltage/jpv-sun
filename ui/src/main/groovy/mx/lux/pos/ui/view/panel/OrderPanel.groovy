@@ -969,8 +969,6 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 MontoGarantia garantia = ItemController.findWarranty( ItemController.findItem( id ).listPrice )
                 for(OrderItem item : order.items){
                   Item it = item.item
-                  println it.price.compareTo(garantia.montoMinimo) >= 0
-                  println it.price.compareTo(garantia.montoMaximo) <= 0
                   if(StringUtils.trimToEmpty(it.type).equalsIgnoreCase(TAG_GENERICO_ARMAZON) &&
                           it.price.compareTo(garantia.montoMinimo) >= 0 && it.price.compareTo(garantia.montoMaximo) <= 0){
                     count = count+1
@@ -982,38 +980,42 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
               }
             }
             if( artSameRange ){
-                for(Integer idArm : lstIdArm){
-                    List<Item> lstWarrantis = new ArrayList<>()
-                    List<Integer> lstIdGarTmp = new ArrayList<>()
-                    for( Integer id : lstIdGar ){
-                        lstWarrantis.add(ItemController.findItem( id ))
+                List<Integer> lstIdGarTmp = new ArrayList<>()
+                lstIdGarTmp.addAll( lstIdGar )
+                Integer idGarUsed = 0
+                for(Integer idGar : lstIdGarTmp ){
+                    List<Item> lstFrames = new ArrayList<>()
+                    List<Integer> lstIdArmTmp = new ArrayList<>()
+                    for( Integer id : lstIdArm ){
+                        lstFrames.add(ItemController.findItem( id ))
                     }
-                    Item itemWarranty = null
+                    Item itemFrame = null
                     Boolean canceled = false
                     if( lstIdGar.size() > 0 ){
-                        WarrantySelectionDialog dialog = new WarrantySelectionDialog( lstWarrantis, ItemController.findItem( idArm ) )
+                        WarrantySelectionDialog dialog = new WarrantySelectionDialog( lstFrames, ItemController.findItem( idGar ) )
                         dialog.show()
-                        itemWarranty = dialog.selectedWarranty
+                        itemFrame = dialog.selectedFrame
                         canceled = dialog.canceled
                     }
-                    if( itemWarranty != null ){
+                    if( itemFrame != null ){
                         if( lstIdGar.size() > 0 ){
                             BigDecimal amount = BigDecimal.ZERO
                             for(OrderItem orderItem : order.items){
-                                if( orderItem.item.id == idArm ){
+                                if( orderItem.item.id == itemFrame.id ){
                                     amount = orderItem.item.price
                                 }
                             }
-                            BigDecimal warrantyAmount = ItemController.warrantyValid( amount, itemWarranty.id )
+                            BigDecimal warrantyAmount = ItemController.warrantyValid( amount, idGar )
                             if( warrantyAmount.compareTo(BigDecimal.ZERO) > 0 ){
-                                lstIdGar.clear()
-                                for( Integer id : lstIdGarTmp ){
-                                    if( id != itemWarranty.id ){
-                                        lstIdGar.add(id)
+                                lstIdArm.clear()
+                                for( Integer id : lstIdArmTmp ){
+                                    if( id != itemFrame.id ){
+                                        lstIdArm.add(id)
                                     }
                                 }
-                                ItemController.printWarranty( amount, idArm )
+                                ItemController.printWarranty( amount, itemFrame.id )
                                 valid = true
+                                idGarUsed = idGarUsed+1
                             } else {
                                 sb.optionPane(
                                         message: "Garantia Invalida.",
@@ -1027,6 +1029,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                             break
                         }
                     }
+                }
+                if( idGarUsed == lstIdGar.size() ){
+                  lstIdGar.clear()
                 }
             } else {
               List<Integer> lstIdGarTmp = new ArrayList<>()
