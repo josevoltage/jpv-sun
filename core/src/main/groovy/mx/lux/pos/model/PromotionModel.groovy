@@ -198,7 +198,7 @@ class PromotionModel {
     return ( this.orderDiscount != null )
   }
 
-  void setupOrderDiscount( String pCorporateKey, Double pDiscountPercent ) {
+  void setupOrderDiscount( String pCorporateKey, Double pDiscountPercent, Boolean warranty ) {
     String key = StringUtils.trimToEmpty( pCorporateKey )
     if ( key.length() == 0 ) {
       this.orderDiscount = PromotionDiscount.discountInstance
@@ -210,6 +210,11 @@ class PromotionModel {
       this.orderDiscount.order = this.order
       this.orderDiscount.discountPercent = pDiscountPercent
       this.orderDiscount.apply( true )
+    }
+    if( warranty ){
+      orderDiscount.discountType.idType = "GR"
+      orderDiscount.discountType.description = "GARANTIA"
+      orderDiscount.discountType.text = "Garantia"
     }
   }
 

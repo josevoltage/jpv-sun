@@ -8,7 +8,7 @@ import mx.lux.pos.ui.model.ICorporateKeyVerifier
 import mx.lux.pos.ui.model.IPromotionDrivenPanel
 import mx.lux.pos.ui.resources.ServiceManager
 import mx.lux.pos.ui.view.dialog.DiscountDialog
-import mx.lux.pos.ui.view.dialog.DiscountCouponDialog
+import mx.lux.pos.ui.view.dialog.WarrantyDiscountDialog
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -149,7 +149,7 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
           dlgDiscount.getDiscountPct() )
       )
       Double discount = dlgDiscount.getDiscountAmt() / view.order.total
-      if ( service.requestOrderDiscount( this.model, "", discount ) ) {
+      if ( service.requestOrderDiscount( this.model, "", discount, false ) ) {
         log.debug( this.model.orderDiscount.toString() )
         this.updatePromotionList()
         this.updatePromotionListMenu()
@@ -172,7 +172,7 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
       log.debug( String.format( "Corporate Discount Selected: %,.2f (%,.1f%%)", dlgDiscount.getDiscountAmt(),
           dlgDiscount.getDiscountPct() ) )
       Double discount = dlgDiscount.getDiscountAmt() / view.order.total
-      if ( service.requestOrderDiscount( this.model, dlgDiscount.corporateKey, discount ) ) {
+      if ( service.requestOrderDiscount( this.model, dlgDiscount.corporateKey, discount, false ) ) {
         log.debug( this.model.orderDiscount.toString() )
         this.updatePromotionList()
         view.refreshData()
@@ -185,16 +185,15 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
   }
 
   void requestCouponDiscount(){
-      DiscountCouponDialog couponDiscount = new DiscountCouponDialog(true)
-      couponDiscount.setOrderTotal( view.order.total )
-      couponDiscount.setVerifier( this )
-      couponDiscount.activate()
-      if ( couponDiscount.getDiscountSelected() ) {
-          Double discount = couponDiscount.getDiscountAmt() / view.order.total
-          Boolean apl = false
-          apl = model.setupOrderCouponDiscount(couponDiscount?.descuentoClave,discount )
-          PromotionCommit.writeOrder( model )
-          if ( apl  ) {
+    WarrantyDiscountDialog dlgDiscount = new WarrantyDiscountDialog( )
+    dlgDiscount.setOrderTotal( view.order.total )
+    dlgDiscount.setVerifier( this )
+    dlgDiscount.activate()
+      if ( dlgDiscount.getDiscountSelected() ) {
+        log.debug( "Garantia" )
+          Double discount = dlgDiscount.getDiscountAmt() / view.order.total
+          if ( service.requestOrderDiscount( this.model, dlgDiscount.corporateKey, discount, true ) ) {
+              log.debug( this.model.orderDiscount.toString() )
               this.updatePromotionList()
               view.refreshData()
           } else {
@@ -203,7 +202,6 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
               )
           }
       }
-
   }
 
   void requestPromotionSave( ) {

@@ -19,10 +19,10 @@ class PromotionEngine {
   // Internal Methods
 
   // Public Methods
-  Boolean applyOrderDiscount( PromotionModel pModel, String pCorporateKey, Double pDiscountPercent ) {
+  Boolean applyOrderDiscount( PromotionModel pModel, String pCorporateKey, Double pDiscountPercent, Boolean warranty ) {
     Boolean applied = false
     if ( !pModel.hasOrderDiscountApplied() ) {
-      pModel.setupOrderDiscount( StringUtils.trimToEmpty( pCorporateKey ), pDiscountPercent )
+      pModel.setupOrderDiscount( StringUtils.trimToEmpty( pCorporateKey ), pDiscountPercent, warranty )
       PromotionCommit.writeOrder( pModel )
       applied = true
     }

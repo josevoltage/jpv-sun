@@ -75,10 +75,10 @@ class PromotionServiceImpl implements PromotionService {
       return PromotionEngine.instance.cancelPromotionDiscount( pModel, pPromotion, true )
   }
 
-  Boolean requestOrderDiscount( PromotionModel pModel, String pCorporateKey, Double pDiscountPercent ) {
+  Boolean requestOrderDiscount( PromotionModel pModel, String pCorporateKey, Double pDiscountPercent, Boolean warranty ) {
     log.debug( String.format( "Request Order Discount (Key:%s, Discount:%,.1f%%)",
         pCorporateKey, ( pDiscountPercent * 100.0 ) ) )
-    return PromotionEngine.instance.applyOrderDiscount( pModel, pCorporateKey, pDiscountPercent )
+    return PromotionEngine.instance.applyOrderDiscount( pModel, pCorporateKey, pDiscountPercent, warranty )
   }
 
   void requestPersist( PromotionModel pModel ) {

@@ -873,9 +873,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       promotionListTmp.addAll( promotionList )
       promotionList.clear()
       for(IPromotionAvailable prom : promotionListTmp){
-        if( prom.promotion instanceof PromotionSingle ){
+        if( !prom instanceof PromotionDiscount && prom.promotion instanceof PromotionSingle ){
           FindOrCreate( promotionList, prom.promotion.entity.idPromocion, prom.appliesToList.first().orderDetail.sku, prom )
-        } else if( prom.promotion instanceof PromotionCombo ){
+        } else if( !prom instanceof PromotionDiscount && prom.promotion instanceof PromotionCombo ){
           FindOrCreate( promotionList, prom.promotion.base.entity.idPromocion, prom.appliesToList.first().orderDetail.sku, prom )
         }
       }

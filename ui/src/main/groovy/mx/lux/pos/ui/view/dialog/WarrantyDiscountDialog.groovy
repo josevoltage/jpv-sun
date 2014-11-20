@@ -6,15 +6,18 @@ import mx.lux.pos.ui.resources.UI_Standards
 import mx.lux.pos.ui.view.component.NumericTextField
 import mx.lux.pos.ui.view.component.PercentTextField
 import net.miginfocom.swing.MigLayout
+import org.apache.commons.lang.StringUtils
 
-import java.awt.BorderLayout
-import java.awt.Font
+import javax.swing.*
+import java.awt.*
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
-import javax.swing.*
+import java.text.NumberFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
 
-class DiscountDialog extends JDialog {
+class WarrantyDiscountDialog extends JDialog {
 
   private static final String TXT_DISCOUNT_TITLE = "Aplicar descuento en tienda"
   private static final String TXT_CORPORATE_TITLE = "Aplicar descuento corporativo"
@@ -26,11 +29,11 @@ class DiscountDialog extends JDialog {
   private static final String TXT_WARNING_MAX_AMOUNT = "Límite de descuento en tienda: %.1f%% (%,.2f)"
   private static final String TXT_VERIFY_PASS = ""
   private static final String TXT_VERIFY_FAILED = "Clave incorrecta"
-  
+
   private static final Double ZERO_TOLERANCE = 0.001
-  
+
   private SwingBuilder sb = new SwingBuilder( )
-  
+
   private Font bigLabel
   private Font bigInput
 
@@ -43,10 +46,10 @@ class DiscountDialog extends JDialog {
   private FocusListener trgDiscAmountLeave
   private FocusListener trgDiscPercentLeave
   private FocusListener trgCorporateKeyLeave
-  
+
   ICorporateKeyVerifier verifier
   Double orderTotal = 0
-  Double maximumDiscount = 0 
+  Double maximumDiscount = 0
   Boolean corporateEnabled = false
   BigDecimal discountAmt = 0
   Double discountPct = 0
@@ -54,8 +57,7 @@ class DiscountDialog extends JDialog {
   Boolean authorizationManager = false
   Boolean needAuthorization = false
 
-  DiscountDialog( Boolean pCorporate, Boolean authorizationManager, Boolean needAuthorization ) {
-    corporateEnabled = pCorporate
+    WarrantyDiscountDialog(  ) {
     this.needAuthorization = needAuthorization
     this.authorizationManager = authorizationManager
     init( )
@@ -73,7 +75,7 @@ class DiscountDialog extends JDialog {
   
   protected void buildUI( JComponent pParent) {
     sb.dialog( this,
-        title: ( corporateEnabled ? TXT_CORPORATE_TITLE : TXT_DISCOUNT_TITLE ) ,
+        title: ( "Garantia" ) ,
         location: [ 300, 300 ] ,
         resizable: false,
         modal: true,
@@ -84,32 +86,36 @@ class DiscountDialog extends JDialog {
           layout: new MigLayout( "wrap 2", "[]30[fill,grow,140!]", "[]10[]10[]"),
           border: BorderFactory.createEmptyBorder( 10, 20, 0, 20)
       ) {
-        label( text: TXT_PERCENT_LABEL, font: bigLabel ) 
-        textField( txtDiscountPercent, 
-            font: bigInput,
-            horizontalAlignment: JTextField.LEFT,
-            actionPerformed: { onDiscountPercentLeave( ) }
-        )
-        label( TXT_AMOUNT_LABEL, font: bigLabel )
-        textField( txtDiscountAmount, 
-            font: bigInput,
-            horizontalAlignment: JTextField.LEFT,
-            actionPerformed: { onDiscountAmountLeave( ) } 
-        )
-        if ( corporateEnabled ) {
-          label( TXT_CORPORATE_KEY_LABEL, font: bigLabel )
-          txtCorporateKey = textField( font: bigInput, 
+        label( TXT_CORPORATE_KEY_LABEL, font: bigLabel )
+        txtCorporateKey = textField( font: bigInput,
               horizontalAlignment: JTextField.LEFT,
               actionPerformed: { onCorporateKeyLeave( ) }
-          )
-        }
-        lblStatus = label( TXT_WARNING_MAX_AMOUNT, 
+        )
+        txtCorporateKey.addFocusListener( new FocusListener() {
+            @Override
+            void focusGained(FocusEvent e) {
+              verifyCorporateKey()
+            }
+
+            @Override
+            void focusLost(FocusEvent e) {
+              verifyCorporateKey()
+            }
+        })
+        label( TXT_AMOUNT_LABEL, font: bigLabel )
+        textField( txtDiscountAmount,
+            font: bigInput,
+            horizontalAlignment: JTextField.LEFT,
+            editable: false
+            //actionPerformed: { onDiscountAmountLeave( ) }
+        )
+        lblStatus = label( TXT_WARNING_MAX_AMOUNT,
             foreground: UI_Standards.WARNING_FOREGROUND,
             constraints: "span 2,center",
-            visible: true 
+            visible: false
         )
       }
-
+      
       panel( constraints: BorderLayout.PAGE_END,
           border: BorderFactory.createEmptyBorder( 0, 10, 10, 20 )
       ) {
@@ -135,22 +141,22 @@ class DiscountDialog extends JDialog {
   protected void setupTriggers( ) {
     trgDiscAmountLeave = new FocusAdapter( ) {
       public void focusLost( FocusEvent pEvent ) {
-        DiscountDialog.this.onDiscountAmountLeave()
+        WarrantyDiscountDialog.this.onDiscountAmountLeave()
       }
     }
     txtDiscountAmount.addFocusListener( trgDiscAmountLeave )
     
     trgDiscPercentLeave = new FocusAdapter( ) {
       public void focusLost( FocusEvent pEvent ) {
-        DiscountDialog.this.onDiscountPercentLeave()
+        WarrantyDiscountDialog.this.onDiscountPercentLeave()
       }
     }
     txtDiscountPercent.addFocusListener( trgDiscPercentLeave )
-    
+
     if ( corporateEnabled ) {
       trgCorporateKeyLeave = new FocusAdapter( ) {
         public void focusLost( FocusEvent pEvent ) {
-          DiscountDialog.this.onCorporateKeyLeave( )
+          WarrantyDiscountDialog.this.onCorporateKeyLeave( )
         }
       }
       txtCorporateKey.addFocusListener( trgCorporateKeyLeave )
@@ -161,7 +167,7 @@ class DiscountDialog extends JDialog {
 
   protected void verifyCorporateKey( ) {
     if ( txtCorporateKey.getText( ).length( ) > 0 ) {
-      if ( verifier.requestVerify( txtCorporateKey.getText( ), txtDiscountPercent.getValue( ) ) ) {
+      if ( requestVerify( ) ) {
         lblStatus.text = TXT_VERIFY_PASS
         lblStatus.foreground = UI_Standards.NORMAL_FOREGROUND
         btnOk.setEnabled( true )
@@ -197,9 +203,7 @@ class DiscountDialog extends JDialog {
   
   String getCorporateKey( ) {
     String key = ""
-    if ( this.corporateEnabled ) {
-      key = this.txtCorporateKey.text
-    }
+    key = StringUtils.trimToEmpty(this.txtCorporateKey.text).toUpperCase()
     return key  
   }
   
@@ -214,20 +218,10 @@ class DiscountDialog extends JDialog {
   }
   
   void onButtonOk() {
-    boolean authorized
-    if( needAuthorization ){
-        AuthorizationDialog authDialog = new AuthorizationDialog( this, "Descuento requiere autorizaci\u00f3n", authorizationManager )
-        authDialog.show()
-        authorized = authDialog.authorized
-    } else {
-        authorized = true
-    }
-      if( authorized ){
-          discountSelected = true
-          setDiscountAmt( txtDiscountAmount.getValue( ) )
-          setDiscountPct( txtDiscountPercent.getValue( ) )
-          setVisible( false )
-      }
+    discountSelected = true
+    setDiscountAmt( txtDiscountAmount.getValue( ) )
+    setDiscountPct( txtDiscountPercent.getValue( ) )
+    setVisible( false )
   }
 
   void onDiscountAmountLeave( ) {
@@ -254,4 +248,42 @@ class DiscountDialog extends JDialog {
     txtCorporateKey.setText( txtCorporateKey.getText( ).toUpperCase( ) )
     verifyCorporateKey( )
   }
+
+  Boolean requestVerify( ){
+    Boolean valid = false
+    SimpleDateFormat formatter = new SimpleDateFormat("ddMMyy");
+    String clave = ""
+    if( StringUtils.trimToEmpty(txtCorporateKey.text).length() >= 11 ){
+      for(int i=0;i<StringUtils.trimToEmpty(txtCorporateKey.text).length();i++){
+        if(StringUtils.trimToEmpty(txtCorporateKey.text.charAt(i).toString()).isNumber()){
+          Integer number = 0
+          try{
+            number = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(txtCorporateKey.text.charAt(i).toString()))
+          } catch ( NumberFormatException e ) { println e }
+          clave = clave+StringUtils.trimToEmpty((10-number).toString())
+        } else {
+          clave = clave+0
+        }
+      }
+      String dateStr = StringUtils.trimToEmpty(clave).substring(0,6)
+      String amountStr = StringUtils.trimToEmpty(clave).substring(6,11)
+      Date date = null
+      BigDecimal amount = BigDecimal.ZERO
+      try{
+        date = formatter.parse(dateStr)
+        amount = NumberFormat.getInstance().parse(amountStr)
+      } catch ( ParseException e) {
+        e.printStackTrace()
+      } catch ( NumberFormatException e) {
+          e.printStackTrace()
+      }
+      if( date.compareTo(new Date()) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0 ){
+        txtDiscountAmount.setText( StringUtils.trimToEmpty(amount.doubleValue().toString()) )
+        valid = true
+      }
+    }
+    return valid
+  }
+
+
 }
