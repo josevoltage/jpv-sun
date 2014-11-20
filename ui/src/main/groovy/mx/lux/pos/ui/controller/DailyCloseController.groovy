@@ -151,7 +151,7 @@ class DailyCloseController {
           }
           payments = new ArrayList<Pago>()
       }
-      OrderController.correctionTransactions()
+      OrderController.correctionTransactions( true )
       cierreDiarioService.cargarDatosCierreDiario( closeDate )
       cierreDiarioService.cerrarCierreDiario( closeDate, observations, cierre )
 	  User user = Session.get( SessionItem.USER ) as User

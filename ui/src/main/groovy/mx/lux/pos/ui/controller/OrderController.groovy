@@ -44,6 +44,8 @@ class OrderController {
 
   private static final String TAG_USD = "USD"
   private static final String TAG_TIPO_PAGO_NOTA_CREDITO = "NOT"
+  private static final String TAG_ID_GARANTIA = "GR"
+  private static final String TAG_GENERIC_J = "J"
 
   @Autowired
   public OrderController(
@@ -559,19 +561,33 @@ class OrderController {
 
 
 
-  static void correctionTransactions( ){
+  static void correctionTransactions( Boolean onlyToday ){
     List<NotaVenta> lstNotas = lstOrdersWithoutTrans( )
     for( NotaVenta notaVenta : lstNotas ){
-      if ( inventarioService.solicitarTransaccionVenta( notaVenta ) ) {
-        log.debug( "transaccion de inventario correcta" )
+      if( onlyToday ){
+        if( StringUtils.trimToEmpty(notaVenta.fechaHoraFactura.format("dd-MM-yyyy")).equalsIgnoreCase(StringUtils.trimToEmpty(new Date().format("dd-MM-yyyy"))) ){
+          if ( !inventarioService.solicitarTransaccionVenta( notaVenta ) ) {
+            log.warn( "no se pudo procesar la transaccion de inventario" )
+          }
+        }
       } else {
-        log.warn( "no se pudo procesar la transaccion de inventario" )
+        if ( !inventarioService.solicitarTransaccionVenta( notaVenta ) ) {
+          log.warn( "no se pudo procesar la transaccion de inventario" )
+        }
       }
     }
     List<NotaVenta> lstNotasCan = lstOrdersCancWithoutTrans( )
     for( NotaVenta notaVentaCan : lstNotasCan ){
-      if (!ServiceFactory.inventory.solicitarTransaccionDevolucion(notaVentaCan)) {
-        log.warn("no se registra el movimiento, error al registrar devolucion")
+      if( onlyToday ){
+        if( StringUtils.trimToEmpty(notaVentaCan.fechaHoraFactura.format("dd-MM-yyyy")).equalsIgnoreCase(StringUtils.trimToEmpty(new Date().format("dd-MM-yyyy"))) ){
+          if (!ServiceFactory.inventory.solicitarTransaccionDevolucion(notaVentaCan)) {
+            log.warn("no se registra el movimiento, error al registrar devolucion")
+          }
+        }
+      } else {
+        if (!ServiceFactory.inventory.solicitarTransaccionDevolucion(notaVentaCan)) {
+          log.warn("no se registra el movimiento, error al registrar devolucion")
+        }
       }
     }
   }
@@ -583,4 +599,22 @@ class OrderController {
   static List<NotaVenta> lstOrdersCancWithoutTrans(){
     return notaVentaService.obtenerNotasCanSinTransaccion()
   }
+
+  static Boolean validWarranty( List<IPromotionAvailable> lstPromotionsApplied, Item item ){
+    Boolean valid = true
+    Boolean hasWarrantyApplied = false
+    for(IPromotionAvailable prom : lstPromotionsApplied){
+      if( prom instanceof PromotionDiscount ){
+        if( StringUtils.trimToEmpty(prom.discountType.idType).equalsIgnoreCase(TAG_ID_GARANTIA) ){
+          hasWarrantyApplied = true
+        }
+      }
+    }
+    if( hasWarrantyApplied && StringUtils.trimToEmpty(item.type).equalsIgnoreCase(TAG_GENERIC_J) ){
+      valid = false
+    }
+    return valid
+  }
+
+
 }

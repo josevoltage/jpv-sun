@@ -449,7 +449,7 @@ class MainWindow extends JFrame implements KeyListener {
                 changeSellerMenuItem.visible = userLoggedIn
                 generateIn2MenuItem.visible = userLoggedIn
                 captureIncidentsMenuItem.visible = userLoggedIn
-                correctTransactionsMenuItem.visible = false
+                correctTransactionsMenuItem.visible = userLoggedIn
               }
           ) {
             changePasswordMenuItem = menuItem( text: 'Cambio de Password',
@@ -488,7 +488,7 @@ class MainWindow extends JFrame implements KeyListener {
                       List<NotaVenta> lstCanc = new ArrayList<>()
                       lstOrders.addAll( OrderController.lstOrdersWithoutTrans() )
                       lstCanc.addAll( OrderController.lstOrdersCancWithoutTrans() )
-                      OrderController.correctionTransactions()
+                      OrderController.correctionTransactions( false )
                       CorrectedOrdersDialog dialog = new CorrectedOrdersDialog( lstOrders, lstCanc )
                       dialog.show()
                     }

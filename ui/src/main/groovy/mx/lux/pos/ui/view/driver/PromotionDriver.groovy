@@ -4,12 +4,15 @@ import mx.lux.pos.model.IPromotionAvailable
 import mx.lux.pos.model.PromotionAvailable
 import mx.lux.pos.model.PromotionModel
 import mx.lux.pos.service.PromotionService
+import mx.lux.pos.service.business.Registry
 import mx.lux.pos.ui.model.ICorporateKeyVerifier
 import mx.lux.pos.ui.model.IPromotionDrivenPanel
+import mx.lux.pos.ui.model.OrderItem
 import mx.lux.pos.ui.resources.ServiceManager
 import mx.lux.pos.ui.view.dialog.DiscountDialog
 import mx.lux.pos.ui.view.dialog.WarrantyDiscountDialog
 import org.apache.commons.lang3.StringUtils
+import mx.lux.pos.ui.model.Item
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -185,22 +188,33 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
   }
 
   void requestCouponDiscount(){
+    Item item = null
+    for(OrderItem tmp : view.order.items){
+      if( StringUtils.trimToEmpty(tmp.item.type).equalsIgnoreCase("A") ){
+        item = tmp.item
+      }
+    }
     WarrantyDiscountDialog dlgDiscount = new WarrantyDiscountDialog( )
     dlgDiscount.setOrderTotal( view.order.total )
     dlgDiscount.setVerifier( this )
     dlgDiscount.activate()
-      if ( dlgDiscount.getDiscountSelected() ) {
+      if ( dlgDiscount.getDiscountSelected() && item != null ) {
         log.debug( "Garantia" )
-          Double discount = dlgDiscount.getDiscountAmt() / view.order.total
-          if ( service.requestOrderDiscount( this.model, dlgDiscount.corporateKey, discount, true ) ) {
-              log.debug( this.model.orderDiscount.toString() )
-              this.updatePromotionList()
-              view.refreshData()
-          } else {
-              JOptionPane.showMessageDialog( view as JComponent, MSG_POST_DISCOUNT_FAILED, TXT_POST_DISCOUNT_TITLE,
-                      JOptionPane.ERROR_MESSAGE
-              )
-          }
+        Double discount = 0.00
+        if( item.price.compareTo(dlgDiscount.discountAmt) < 0 ){
+          discount = (item.price.multiply(new BigDecimal(Registry.percentageWarranty/100))) / view.order.total
+        } else {
+          discount = dlgDiscount.getDiscountAmt() / view.order.total
+        }
+        if ( service.requestOrderDiscount( this.model, dlgDiscount.corporateKey, discount, true ) ) {
+          log.debug( this.model.orderDiscount.toString() )
+          this.updatePromotionList()
+          view.refreshData()
+        } else {
+          JOptionPane.showMessageDialog( view as JComponent, MSG_POST_DISCOUNT_FAILED, TXT_POST_DISCOUNT_TITLE,
+              JOptionPane.ERROR_MESSAGE
+          )
+        }
       }
   }
 

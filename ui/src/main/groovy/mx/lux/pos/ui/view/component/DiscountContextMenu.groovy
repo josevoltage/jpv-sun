@@ -2,7 +2,10 @@ package mx.lux.pos.ui.view.component
 
 import groovy.swing.SwingBuilder
 import mx.lux.pos.service.business.Registry
+import mx.lux.pos.ui.model.Item
+import mx.lux.pos.ui.model.OrderItem
 import mx.lux.pos.ui.view.driver.PromotionDriver
+import org.apache.commons.lang3.StringUtils
 
 import java.awt.event.MouseEvent
 import javax.swing.JMenuItem
@@ -42,7 +45,7 @@ class DiscountContextMenu extends JPopupMenu {
   void activate( MouseEvent pEvent ) {
     menuDiscount.setEnabled( driver.isDiscountEnabled( ) )
     menuCorporateDiscount.setEnabled( driver.isCorporateDiscountEnabled( ) )
-    menuCouponDiscount.setEnabled( driver.isCorporateDiscountEnabled( ) )
+    menuCouponDiscount.setEnabled( driver.isCorporateDiscountEnabled( ) && validToWarranty() )
     show( pEvent.getComponent(), pEvent.getX(), pEvent.getY() )
   } 
   
@@ -57,5 +60,21 @@ class DiscountContextMenu extends JPopupMenu {
 
   protected void onCouponDiscountSelected(){
     driver.requestCouponDiscount()
+  }
+
+  Boolean validToWarranty(){
+    Boolean valid = false
+    if( driver.view.promotionListSelected.size() <= 0 ){
+      Integer count = 0
+      for(OrderItem tmp : driver.view.order.items){
+        if( StringUtils.trimToEmpty(tmp.item.type).equalsIgnoreCase("A") ){
+          count = count+1
+        }
+      }
+      if( count == 1 ){
+        valid = true
+      }
+    }
+    return  valid
   }
 }
