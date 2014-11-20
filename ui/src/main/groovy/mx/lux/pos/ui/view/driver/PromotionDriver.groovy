@@ -8,6 +8,7 @@ import mx.lux.pos.ui.model.ICorporateKeyVerifier
 import mx.lux.pos.ui.model.IPromotionDrivenPanel
 import mx.lux.pos.ui.resources.ServiceManager
 import mx.lux.pos.ui.view.dialog.DiscountDialog
+import mx.lux.pos.ui.view.dialog.DiscountCouponDialog
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -181,6 +182,28 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
         )
       }
     }
+  }
+
+  void requestCouponDiscount(){
+      DiscountCouponDialog couponDiscount = new DiscountCouponDialog(true)
+      couponDiscount.setOrderTotal( view.order.total )
+      couponDiscount.setVerifier( this )
+      couponDiscount.activate()
+      if ( couponDiscount.getDiscountSelected() ) {
+          Double discount = couponDiscount.getDiscountAmt() / view.order.total
+          Boolean apl = false
+          apl = model.setupOrderCouponDiscount(couponDiscount?.descuentoClave,discount )
+          PromotionCommit.writeOrder( model )
+          if ( apl  ) {
+              this.updatePromotionList()
+              view.refreshData()
+          } else {
+              JOptionPane.showMessageDialog( view as JComponent, MSG_POST_DISCOUNT_FAILED, TXT_POST_DISCOUNT_TITLE,
+                      JOptionPane.ERROR_MESSAGE
+              )
+          }
+      }
+
   }
 
   void requestPromotionSave( ) {

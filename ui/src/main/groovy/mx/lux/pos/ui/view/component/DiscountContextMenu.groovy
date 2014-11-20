@@ -14,7 +14,8 @@ class DiscountContextMenu extends JPopupMenu {
   private PromotionDriver driver
   private JMenuItem menuDiscount
   private JMenuItem menuCorporateDiscount
-  
+  private JMenuItem menuCouponDiscount
+
   DiscountContextMenu( PromotionDriver pDriver ) {
     driver = pDriver
     buildUI( )
@@ -29,6 +30,10 @@ class DiscountContextMenu extends JPopupMenu {
       menuCorporateDiscount = menuItem( text: "Descuento Corporativo", 
         visible: true,
         actionPerformed: { onCorporateDiscountSelected( ) },
+      )
+      menuCouponDiscount = menuItem( text: "Garantia",
+        visible: true,
+        actionPerformed: { onCouponDiscountSelected( ) },
       )
     }
   }
@@ -49,5 +54,7 @@ class DiscountContextMenu extends JPopupMenu {
     driver.requestCorporateDiscount( false, false )
   }
 
-  
+  protected void onCouponDiscountSelected(){
+    driver.requestCouponDiscount()
+  }
 }
