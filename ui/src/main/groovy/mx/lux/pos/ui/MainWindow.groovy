@@ -449,7 +449,7 @@ class MainWindow extends JFrame implements KeyListener {
                 changeSellerMenuItem.visible = userLoggedIn
                 generateIn2MenuItem.visible = userLoggedIn
                 captureIncidentsMenuItem.visible = userLoggedIn
-                correctTransactionsMenuItem.visible = userLoggedIn
+                correctTransactionsMenuItem.visible = false
               }
           ) {
             changePasswordMenuItem = menuItem( text: 'Cambio de Password',
