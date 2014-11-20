@@ -1,6 +1,7 @@
 package mx.lux.pos.ui
 
 import groovy.swing.SwingBuilder
+import mx.lux.pos.model.NotaVenta
 import mx.lux.pos.service.PromotionService
 import mx.lux.pos.ui.model.Branch
 import mx.lux.pos.ui.model.Session
@@ -13,7 +14,9 @@ import mx.lux.pos.ui.view.dialog.CaptureIncidentsDialog
 import mx.lux.pos.ui.view.dialog.ChangePasswordDialog
 import mx.lux.pos.ui.view.dialog.ChangeSellerDialog
 import mx.lux.pos.ui.view.dialog.ChargeDialog
+import mx.lux.pos.ui.view.dialog.CorrectedOrdersDialog
 import mx.lux.pos.ui.view.dialog.PartClassDialog
+import mx.lux.pos.ui.view.dialog.SupportDialog
 import mx.lux.pos.ui.view.dialog.TransactionsDateSelectionDialog
 import mx.lux.pos.ui.view.dialog.TwoDatesSelectionDialog
 import mx.lux.pos.ui.view.dialog.WaitDialog
@@ -31,7 +34,7 @@ import mx.lux.pos.ui.view.panel.*
 
 import java.awt.*
 import javax.swing.*
-import mx.lux.pos.service.business.Registry
+import java.util.List
 import mx.lux.pos.model.TipoParametro
 
 class MainWindow extends JFrame implements KeyListener {
@@ -69,6 +72,7 @@ class MainWindow extends JFrame implements KeyListener {
   private JMenuItem invoiceMenuItem
   private JMenuItem sessionMenuItem
   private JMenuItem cancellationReportMenuItem
+  private JMenuItem correctTransactionsMenuItem
   private JMenuItem dailyCloseReportMenuItem
   private JMenuItem incomePerBranchReportMenuItem
   private JMenuItem sellerRevenueReportMenuItem
@@ -445,6 +449,7 @@ class MainWindow extends JFrame implements KeyListener {
                 changeSellerMenuItem.visible = userLoggedIn
                 generateIn2MenuItem.visible = userLoggedIn
                 captureIncidentsMenuItem.visible = userLoggedIn
+                correctTransactionsMenuItem.visible = userLoggedIn
               }
           ) {
             changePasswordMenuItem = menuItem( text: 'Cambio de Password',
@@ -470,6 +475,23 @@ class MainWindow extends JFrame implements KeyListener {
                         CaptureIncidentsDialog dialog = new CaptureIncidentsDialog()
                         dialog.show()
                       }
+                  }
+            )
+            correctTransactionsMenuItem = menuItem( text: 'Aplicar Transacciones de Inventario',
+                  actionPerformed: {
+                    boolean authorized = false
+                    SupportDialog authDialog = new SupportDialog( this, "Operaci\u00f3n requiere contrase\u00f1a", true )
+                    authDialog.show()
+                    authorized = authDialog.authorized
+                    if( authorized ){
+                      List<NotaVenta> lstOrders = new ArrayList<>()
+                      List<NotaVenta> lstCanc = new ArrayList<>()
+                      lstOrders.addAll( OrderController.lstOrdersWithoutTrans() )
+                      lstCanc.addAll( OrderController.lstOrdersCancWithoutTrans() )
+                      OrderController.correctionTransactions()
+                      CorrectedOrdersDialog dialog = new CorrectedOrdersDialog( lstOrders, lstCanc )
+                      dialog.show()
+                    }
                   }
             )
             generateIn2MenuItem = menuItem( text: 'Genera IN2',

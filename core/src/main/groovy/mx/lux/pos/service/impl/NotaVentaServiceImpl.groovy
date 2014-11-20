@@ -505,4 +505,18 @@ class NotaVentaServiceImpl implements NotaVentaService {
             }
         }
     }
+
+
+  @Override
+  List<NotaVenta> obtenerNotasSinTransaccion( ){
+    return notaVentaRepository.findOrdersWithoutTrans()
+  }
+
+
+  @Override
+  List<NotaVenta> obtenerNotasCanSinTransaccion( ){
+    return notaVentaRepository.findOrdersCanWithoutTrans()
+  }
+
+
 }

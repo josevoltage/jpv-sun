@@ -1,6 +1,7 @@
 package mx.lux.pos.ui.controller
 
 import groovy.util.logging.Slf4j
+import mx.lux.pos.service.impl.ServiceFactory
 import mx.lux.pos.ui.MainWindow
 import mx.lux.pos.ui.resources.ServiceManager
 import mx.lux.pos.ui.view.dialog.ManualPriceDialog
@@ -557,4 +558,29 @@ class OrderController {
   }
 
 
+
+  static void correctionTransactions( ){
+    List<NotaVenta> lstNotas = lstOrdersWithoutTrans( )
+    for( NotaVenta notaVenta : lstNotas ){
+      if ( inventarioService.solicitarTransaccionVenta( notaVenta ) ) {
+        log.debug( "transaccion de inventario correcta" )
+      } else {
+        log.warn( "no se pudo procesar la transaccion de inventario" )
+      }
+    }
+    List<NotaVenta> lstNotasCan = lstOrdersCancWithoutTrans( )
+    for( NotaVenta notaVentaCan : lstNotasCan ){
+      if (!ServiceFactory.inventory.solicitarTransaccionDevolucion(notaVentaCan)) {
+        log.warn("no se registra el movimiento, error al registrar devolucion")
+      }
+    }
+  }
+
+  static List<NotaVenta> lstOrdersWithoutTrans(){
+    return notaVentaService.obtenerNotasSinTransaccion()
+  }
+
+  static List<NotaVenta> lstOrdersCancWithoutTrans(){
+    return notaVentaService.obtenerNotasCanSinTransaccion()
+  }
 }

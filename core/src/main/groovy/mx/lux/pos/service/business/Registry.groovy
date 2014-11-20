@@ -211,6 +211,10 @@ class Registry {
     return asString( TipoParametro.RUTA_POR_RECIBIR )
   }
 
+  static String getSupportPass( ) {
+    return asString( TipoParametro.CONTRASENA_SOPORTE )
+  }
+
   static String getPartMasterFile( ) {
     return getInputFilePath() + File.separator + getProductsFilePattern()
   }

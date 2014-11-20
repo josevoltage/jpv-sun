@@ -40,4 +40,7 @@ interface NotaVentaService {
 
   void actualizaSubtipoAutomaticamente( )
 
+  List<NotaVenta> obtenerNotasSinTransaccion( )
+
+  List<NotaVenta> obtenerNotasCanSinTransaccion( )
 }
