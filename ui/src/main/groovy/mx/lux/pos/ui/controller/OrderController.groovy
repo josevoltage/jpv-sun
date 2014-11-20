@@ -1,6 +1,7 @@
 package mx.lux.pos.ui.controller
 
 import groovy.util.logging.Slf4j
+import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.impl.ServiceFactory
 import mx.lux.pos.ui.MainWindow
 import mx.lux.pos.ui.resources.ServiceManager
@@ -561,10 +562,10 @@ class OrderController {
 
 
 
-  static void correctionTransactions( Boolean onlyToday ){
+  static void correctionTransactions( Boolean onlyToday, Date closeDate ){
     List<NotaVenta> lstNotas = lstOrdersWithoutTrans( )
     for( NotaVenta notaVenta : lstNotas ){
-      if( onlyToday ){
+      if( onlyToday && closeDate != null ){
         if( StringUtils.trimToEmpty(notaVenta.fechaHoraFactura.format("dd-MM-yyyy")).equalsIgnoreCase(StringUtils.trimToEmpty(new Date().format("dd-MM-yyyy"))) ){
           if ( !inventarioService.solicitarTransaccionVenta( notaVenta ) ) {
             log.warn( "no se pudo procesar la transaccion de inventario" )
@@ -578,7 +579,7 @@ class OrderController {
     }
     List<NotaVenta> lstNotasCan = lstOrdersCancWithoutTrans( )
     for( NotaVenta notaVentaCan : lstNotasCan ){
-      if( onlyToday ){
+      if( onlyToday && closeDate != null ){
         if( StringUtils.trimToEmpty(notaVentaCan.fechaHoraFactura.format("dd-MM-yyyy")).equalsIgnoreCase(StringUtils.trimToEmpty(new Date().format("dd-MM-yyyy"))) ){
           if (!ServiceFactory.inventory.solicitarTransaccionDevolucion(notaVentaCan)) {
             log.warn("no se registra el movimiento, error al registrar devolucion")
@@ -614,6 +615,11 @@ class OrderController {
       valid = false
     }
     return valid
+  }
+
+
+  static Boolean keyFree( String key ){
+    return RepositoryFactory.discounts.findByClave( key ).size() <= 0
   }
 
 

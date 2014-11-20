@@ -488,7 +488,7 @@ class MainWindow extends JFrame implements KeyListener {
                       List<NotaVenta> lstCanc = new ArrayList<>()
                       lstOrders.addAll( OrderController.lstOrdersWithoutTrans() )
                       lstCanc.addAll( OrderController.lstOrdersCancWithoutTrans() )
-                      OrderController.correctionTransactions( false )
+                      OrderController.correctionTransactions( false, null )
                       CorrectedOrdersDialog dialog = new CorrectedOrdersDialog( lstOrders, lstCanc )
                       dialog.show()
                     }

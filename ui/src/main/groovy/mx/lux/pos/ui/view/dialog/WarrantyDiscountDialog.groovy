@@ -1,6 +1,7 @@
 package mx.lux.pos.ui.view.dialog
 
 import groovy.swing.SwingBuilder
+import mx.lux.pos.ui.controller.OrderController
 import mx.lux.pos.ui.model.ICorporateKeyVerifier
 import mx.lux.pos.ui.resources.UI_Standards
 import mx.lux.pos.ui.view.component.NumericTextField
@@ -277,7 +278,8 @@ class WarrantyDiscountDialog extends JDialog {
       } catch ( NumberFormatException e) {
           e.printStackTrace()
       }
-      if( date.compareTo(new Date()) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0 ){
+      if( date.compareTo(new Date()) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0 &&
+              OrderController.keyFree(StringUtils.trimToEmpty(txtCorporateKey.text).toUpperCase()) ){
         txtDiscountAmount.setText( StringUtils.trimToEmpty(amount.doubleValue().toString()) )
         valid = true
       }
