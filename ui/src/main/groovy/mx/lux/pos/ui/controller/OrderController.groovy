@@ -566,7 +566,7 @@ class OrderController {
     List<NotaVenta> lstNotas = lstOrdersWithoutTrans( )
     for( NotaVenta notaVenta : lstNotas ){
       if( onlyToday && closeDate != null ){
-        if( StringUtils.trimToEmpty(notaVenta.fechaHoraFactura.format("dd-MM-yyyy")).equalsIgnoreCase(StringUtils.trimToEmpty(new Date().format("dd-MM-yyyy"))) ){
+        if( StringUtils.trimToEmpty(notaVenta.fechaHoraFactura.format("dd-MM-yyyy")).equalsIgnoreCase(StringUtils.trimToEmpty(closeDate.format("dd-MM-yyyy"))) ){
           if ( !inventarioService.solicitarTransaccionVenta( notaVenta ) ) {
             log.warn( "no se pudo procesar la transaccion de inventario" )
           }
@@ -580,7 +580,7 @@ class OrderController {
     List<NotaVenta> lstNotasCan = lstOrdersCancWithoutTrans( )
     for( NotaVenta notaVentaCan : lstNotasCan ){
       if( onlyToday && closeDate != null ){
-        if( StringUtils.trimToEmpty(notaVentaCan.fechaHoraFactura.format("dd-MM-yyyy")).equalsIgnoreCase(StringUtils.trimToEmpty(new Date().format("dd-MM-yyyy"))) ){
+        if( StringUtils.trimToEmpty(notaVentaCan.fechaHoraFactura.format("dd-MM-yyyy")).equalsIgnoreCase(StringUtils.trimToEmpty(closeDate.format("dd-MM-yyyy"))) ){
           if (!ServiceFactory.inventory.solicitarTransaccionDevolucion(notaVentaCan)) {
             log.warn("no se registra el movimiento, error al registrar devolucion")
           }
