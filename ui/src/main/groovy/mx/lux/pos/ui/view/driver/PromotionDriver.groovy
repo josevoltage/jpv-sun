@@ -194,7 +194,7 @@ class PromotionDriver implements TableModelListener, ICorporateKeyVerifier {
         item = tmp.item
       }
     }
-    WarrantyDiscountDialog dlgDiscount = new WarrantyDiscountDialog( )
+    WarrantyDiscountDialog dlgDiscount = new WarrantyDiscountDialog( item )
     dlgDiscount.setOrderTotal( view.order.total )
     dlgDiscount.setVerifier( this )
     dlgDiscount.activate()

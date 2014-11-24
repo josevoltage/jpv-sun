@@ -92,6 +92,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private String autorizacion
   private OperationType currentOperationType
 
+  private String MSJ_ERROR_WARRANTY = ""
+  private String TXT_ERROR_WARRANTY = ""
+
   DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
 
   OrderPanel( ) {
@@ -382,23 +385,23 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
                 if( question == 0){
                   Item item = results.first()
-                  if( OrderController.validWarranty( promotionListSelected, item ) ){
+                  //if( OrderController.validWarranty( promotionListSelected, item ) ){
                     validarVentaNegativa( item )
-                  } else {
+                  /*} else {
                     optionPane( message: "No se puede agregar la garantia", optionType: JOptionPane.DEFAULT_OPTION )
                           .createDialog( new JTextField(), "Error Garantia" )
                           .show()
-                  }
+                  }*/
                 }
               } else {
                 Item item = results.first()
-                if( OrderController.validWarranty( promotionListSelected, item ) ){
+                //if( OrderController.validWarranty( promotionListSelected, item ) ){
                 validarVentaNegativa( item )
-                } else {
+                /*} else {
                     optionPane( message: "No se puede agregar la garantia", optionType: JOptionPane.DEFAULT_OPTION )
                             .createDialog( new JTextField(), "Error Garantia" )
                             .show()
-                }
+                }*/
               }
           } else {
             SuggestedItemsDialog dialog = new SuggestedItemsDialog( itemSearch, input, results )
@@ -409,22 +412,22 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 Integer question =JOptionPane.showConfirmDialog( new JDialog(), MSG_NO_STOCK, TXT_NO_STOCK,
                         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
                 if( question == 0){
-                  if( OrderController.validWarranty( promotionListSelected, item ) ){
+                  //if( OrderController.validWarranty( promotionListSelected, item ) ){
                     validarVentaNegativa( item )
-                  } else {
+                  /*} else {
                       optionPane( message: "No se puede agregar la garantia", optionType: JOptionPane.DEFAULT_OPTION )
                               .createDialog( new JTextField(), "Error Garantia" )
                               .show()
-                  }
+                  }*/
                 }
               } else {
-                if( OrderController.validWarranty( promotionListSelected, item ) ){
+                //if( OrderController.validWarranty( promotionListSelected, item ) ){
                   validarVentaNegativa( item )
-                } else {
+                /*} else {
                     optionPane( message: "No se puede agregar la garantia", optionType: JOptionPane.DEFAULT_OPTION )
                             .createDialog( new JTextField(), "Error Garantia" )
                             .show()
-                }
+                }*/
               }
             }
           }
@@ -641,10 +644,14 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                     .show()
         }
       } else {
+        TXT_ERROR_WARRANTY = "No se puede registrar la venta"
+        if( MSJ_ERROR_WARRANTY.length() <= 0 ){
+          MSJ_ERROR_WARRANTY = "Error al asignar las garantias, Verifiquelas e intente nuevamente."
+        }
         sb.optionPane(
-                  message: 'Error al asignar las garantias, Verifiquelas e intente nuevamente.',
+                  message: MSJ_ERROR_WARRANTY,
                   messageType: JOptionPane.ERROR_MESSAGE
-        ).createDialog( this, 'No se puede registrar la venta' )
+        ).createDialog( this, TXT_ERROR_WARRANTY )
                 .show()
       }
     }
@@ -943,6 +950,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
 
   private Boolean validWarranty( ){
     Boolean valid = false
+    Boolean applyValid = false
     List<Integer> lstIdGar = new ArrayList<>()
     List<Integer> lstIdArm = new ArrayList<>()
     for(OrderItem orderItem : order.items){
@@ -956,7 +964,13 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         }
       }
     }
+
+    Item itemGar = ItemController.findItem(lstIdGar.first())
+    if( OrderController.validWarranty( promotionListSelected, itemGar ) ){
+      applyValid = true
+    }
     if( lstIdGar.size() > 0 ){
+      if( applyValid ){
       if( lstIdArm.size() == 1 ){
         if( lstIdGar.size() == 1 ){
           BigDecimal amount = BigDecimal.ZERO
@@ -971,18 +985,10 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             valid = true
             lstIdGar.clear()
           } else {
-            sb.optionPane(
-               message: "Garantia Invalida.",
-               messageType: JOptionPane.ERROR_MESSAGE
-            ).createDialog( this, 'No se puede registrar la venta' )
-              .show()
+            MSJ_ERROR_WARRANTY = "Garantia Invalida."
           }
         } else {
-          sb.optionPane(
-             message: "Seleccione solo una garantia.",
-             messageType: JOptionPane.ERROR_MESSAGE
-          ).createDialog( this, 'No se puede registrar la venta' )
-          .show()
+          MSJ_ERROR_WARRANTY = "Seleccione solo una garantia."
         }
       } else {
         if( lstIdArm.size() > 1 ){
@@ -1043,11 +1049,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                                 valid = true
                                 idGarUsed = idGarUsed+1
                             } else {
-                                sb.optionPane(
-                                        message: "Garantia Invalida.",
-                                        messageType: JOptionPane.ERROR_MESSAGE
-                                ).createDialog( this, 'No se puede registrar la venta' )
-                                        .show()
+                              MSJ_ERROR_WARRANTY = "Garantia Invalida."
                             }
                         }
                     } else {
@@ -1113,6 +1115,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       valid = false
     } else {
       valid = true
+    }
     }
     return valid
   }

@@ -1,11 +1,13 @@
 package mx.lux.pos.ui.view.dialog
 
 import groovy.swing.SwingBuilder
+import mx.lux.pos.service.business.Registry
 import mx.lux.pos.ui.controller.OrderController
 import mx.lux.pos.ui.model.ICorporateKeyVerifier
 import mx.lux.pos.ui.resources.UI_Standards
 import mx.lux.pos.ui.view.component.NumericTextField
 import mx.lux.pos.ui.view.component.PercentTextField
+import mx.lux.pos.ui.model.Item
 import net.miginfocom.swing.MigLayout
 import org.apache.commons.lang.StringUtils
 
@@ -57,10 +59,12 @@ class WarrantyDiscountDialog extends JDialog {
   Boolean discountSelected
   Boolean authorizationManager = false
   Boolean needAuthorization = false
+  Item item
 
-    WarrantyDiscountDialog(  ) {
+    WarrantyDiscountDialog( Item item ) {
     this.needAuthorization = needAuthorization
     this.authorizationManager = authorizationManager
+    this.item = item
     init( )
     buildUI( )
     setupTriggers( )
@@ -280,7 +284,11 @@ class WarrantyDiscountDialog extends JDialog {
       }
       if( date.compareTo(new Date()) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0 &&
               OrderController.keyFree(StringUtils.trimToEmpty(txtCorporateKey.text).toUpperCase()) ){
-        txtDiscountAmount.setText( StringUtils.trimToEmpty(amount.doubleValue().toString()) )
+        if( item != null && item.price.compareTo(amount) < 0 ){
+          txtDiscountAmount.setText( StringUtils.trimToEmpty((item.price.multiply(new BigDecimal(Registry.percentageWarranty/100))).toString()) )
+        } else {
+          txtDiscountAmount.setText( StringUtils.trimToEmpty(amount.doubleValue().toString()) )
+        }
         valid = true
       }
     }
