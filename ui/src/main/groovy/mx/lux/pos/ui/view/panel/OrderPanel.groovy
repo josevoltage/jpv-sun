@@ -592,6 +592,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     JButton source = ev.source as JButton
     source.enabled = false
     if( OrderController.validDate() ){
+      if( validWarranty( ) ){
           if ( isValidOrder() ) {
             if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.WALKIN.value) ||
                     operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.DOMESTIC.value) ){
@@ -620,6 +621,17 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 }
             }
         }
+      } else {
+        TXT_ERROR_WARRANTY = "No se puede registrar la venta"
+        if( MSJ_ERROR_WARRANTY.length() <= 0 ){
+          MSJ_ERROR_WARRANTY = "Error al asignar las garantias, Verifiquelas e intente nuevamente."
+        }
+        sb.optionPane(
+           message: MSJ_ERROR_WARRANTY,
+           messageType: JOptionPane.ERROR_MESSAGE
+        ).createDialog( this, TXT_ERROR_WARRANTY )
+          .show()
+      }
     } else {
         sb.optionPane( message: MSJ_FECHA_INCORRECTA, messageType: JOptionPane.ERROR_MESSAGE, )
                 .createDialog( this, TXT_FECHA_INCORRECTA_TITULO )
@@ -629,7 +641,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
     private void saveOrder (){
-      if( validWarranty( ) ){
+      //if( validWarranty( ) ){
         Order newOrder = OrderController.placeOrder( order )
         //CustomerController.saveOrderCountries( order.country )
         this.promotionDriver.requestPromotionSave()
@@ -648,7 +660,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             ).createDialog( this, 'No se puede registrar la venta' )
                     .show()
         }
-      } else {
+      /*} else {
         TXT_ERROR_WARRANTY = "No se puede registrar la venta"
         if( MSJ_ERROR_WARRANTY.length() <= 0 ){
           MSJ_ERROR_WARRANTY = "Error al asignar las garantias, Verifiquelas e intente nuevamente."
@@ -658,7 +670,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                   messageType: JOptionPane.ERROR_MESSAGE
         ).createDialog( this, TXT_ERROR_WARRANTY )
                 .show()
-      }
+      }*/
     }
 
   private boolean isValidOrder( ) {
@@ -1030,7 +1042,15 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                     List<Item> lstFrames = new ArrayList<>()
                     List<Integer> lstIdArmTmp = new ArrayList<>()
                     for( Integer id : lstIdArm ){
+                      Item i = null
+                      for(OrderItem orderItem1 : order.items){
+                        if( orderItem1.item.id == id ){
+                          i = orderItem1.item
+                        }
+                      }
+                      if( ItemController.warrantyValid( i.price, idGar ) ){
                         lstFrames.add(ItemController.findItem( id ))
+                      }
                     }
                     Item itemFrame = null
                     Boolean canceled = false
