@@ -532,20 +532,28 @@ class ArticuloServiceImpl implements ArticuloService {
                 String idSucursal = String.format("%02d", Registry.currentSite)
                 if( archivoName[0].equalsIgnoreCase( idSucursal ) ){
                     file.eachLine { String line ->
+                      if( StringUtils.trimToEmpty(line).length() > 0 ){
                         InventarioFisico inventarioFisico = new InventarioFisico()
                         String[] registro = line.split(/\|/)
                         Integer cantidad = 1
                         Integer idArticulo = 0
-                        try{
+                        if( StringUtils.trimToEmpty(registro[1].toString()).length() >= 6 ){
+                          try{
                             //cantidad = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[0]))
                             idArticulo = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[1]).substring(0,6))
-                        } catch ( NumberFormatException e ) { println e }
+                          } catch ( NumberFormatException e ) { println e }
+                        } else {
+                          println "Articulo menor a 6 digitos: "+registro[1]
+                        }
                         Articulo articulo = articuloRepository.findOne( idArticulo )
                         if( articulo != null ){
                             inventarioFisico.idArticulo = articulo.id
                             inventarioFisico.cantidadFisico = cantidad
                             lstInventarioFisico.add( inventarioFisico )
                         }
+                      } else {
+                        println "Registro vacio"
+                      }
                     }
                 }
                 File newFile = new File( destination, file.name )
