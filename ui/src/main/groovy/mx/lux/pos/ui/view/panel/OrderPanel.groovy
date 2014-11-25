@@ -77,6 +77,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private List<IPromotionAvailable> promotionListSelected
   private List<IPromotionAvailable> promotionSelectedList
   private List<String> lstPromotioSelected
+  private List<Warranty> lstWarranty = new ArrayList<>()
   private DefaultTableModel itemsModel
   private DefaultTableModel paymentsModel
   private DefaultTableModel promotionModel
@@ -634,6 +635,10 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         this.promotionDriver.requestPromotionSave()
         if ( StringUtils.isNotBlank( newOrder?.id ) ) {
             OrderController.printOrder( newOrder.id )
+            for(Warranty warranty : lstWarranty){
+              ItemController.printWarranty( warranty.amount, warranty.idItem)
+            }
+            lstWarranty.clear()
             reviewForTransfers( newOrder.id )
             this.reset( )
         } else {
@@ -949,7 +954,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
 
 
   private Boolean validWarranty( ){
-    Boolean valid = false
+    Boolean valid = true
     Boolean applyValid = false
     List<Integer> lstIdGar = new ArrayList<>()
     List<Integer> lstIdArm = new ArrayList<>()
@@ -965,11 +970,11 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       }
     }
 
-    Item itemGar = ItemController.findItem(lstIdGar.first())
-    if( OrderController.validWarranty( promotionListSelected, itemGar ) ){
-      applyValid = true
-    }
     if( lstIdGar.size() > 0 ){
+      Item itemGar = ItemController.findItem(lstIdGar.first())
+      if( OrderController.validWarranty( promotionListSelected, itemGar ) ){
+        applyValid = true
+      }
       if( applyValid ){
       if( lstIdArm.size() == 1 ){
         if( lstIdGar.size() == 1 ){
@@ -981,14 +986,20 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           }
           BigDecimal warrantyAmount = ItemController.warrantyValid( amount, lstIdGar.first() )
           if( warrantyAmount.compareTo(BigDecimal.ZERO) > 0 ){
-            ItemController.printWarranty( amount, lstIdArm.first() )
-            valid = true
+            Warranty warranty = new Warranty()
+            warranty.amount = amount
+            warranty.idItem = lstIdArm.first()
+            lstWarranty.add( warranty )
+            //ItemController.printWarranty( amount, lstIdArm.first() )
+            //valid = true
             lstIdGar.clear()
           } else {
             MSJ_ERROR_WARRANTY = "Garantia Invalida."
+            valid = false
           }
         } else {
           MSJ_ERROR_WARRANTY = "Seleccione solo una garantia."
+          valid = false
         }
       } else {
         if( lstIdArm.size() > 1 ){
@@ -1045,11 +1056,16 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                                         lstIdArm.add(id)
                                     }
                                 }
-                                ItemController.printWarranty( amount, itemFrame.id )
-                                valid = true
+                                Warranty warranty = new Warranty()
+                                warranty.amount = amount
+                                warranty.idItem = itemFrame.id
+                                lstWarranty.add( warranty )
+                                //ItemController.printWarranty( amount, itemFrame.id )
+                                //valid = true
                                 idGarUsed = idGarUsed+1
                             } else {
                               MSJ_ERROR_WARRANTY = "Garantia Invalida."
+                              valid = false
                             }
                         }
                     } else {
@@ -1067,20 +1083,34 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
               Integer idArmUsed = 0
               List<OrderItem> lstItems = new ArrayList<>()
               lstItems.addAll( order.items )
+              Boolean validTmp = true
               for(Integer id : lstIdGar){
                 idGarUsed = 0
+                if( validTmp ){
                 for(OrderItem idArm : lstItems ){
                   MontoGarantia garantia = ItemController.findWarranty( ItemController.findItem( id ).listPrice )
                   Item item = idArm.item
                    if( StringUtils.trimToEmpty(item.type).equalsIgnoreCase(TAG_GENERICO_ARMAZON) &&
                            item.price.compareTo(garantia.montoMinimo) >= 0 && item.price.compareTo(garantia.montoMaximo) <= 0){
-                     ItemController.printWarranty( item.price, item.id )
-                     valid = true
+                     Warranty warranty = new Warranty()
+                     warranty.amount = item.price
+                     warranty.idItem = item.id
+                     lstWarranty.add( warranty )
+                     //ItemController.printWarranty( item.price, item.id )
+                     //valid = true
                      idGarUsed = id
                      idArmUsed = idArm.item.id
                      break
+                   } else {
+                     validTmp = false
+                     //break
                    }
                 }
+
+              } else {
+                lstWarranty.clear()
+                //break
+              }
                 Integer count = 0
                 lstItems.clear()
                 for(OrderItem itemTmp : order.items){

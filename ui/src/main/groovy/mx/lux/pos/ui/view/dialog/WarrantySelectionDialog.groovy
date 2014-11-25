@@ -58,7 +58,7 @@ class WarrantySelectionDialog extends JDialog {
   // UI Layout Definition
   void buildUI( ) {
     sb.dialog( this,
-        title: "Seleccionar Armazon",
+        title: "Seleccionar armazon para garantia",
         resizable: true,
         pack: true,
         modal: true,
