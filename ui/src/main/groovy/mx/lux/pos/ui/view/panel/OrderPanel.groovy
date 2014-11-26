@@ -92,6 +92,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private DiscountContextMenu discountMenu
   private String autorizacion
   private OperationType currentOperationType
+  private Boolean canceledWarranty
 
   private String MSJ_ERROR_WARRANTY = ""
   private String TXT_ERROR_WARRANTY = ""
@@ -622,15 +623,17 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             }
         }
       } else {
-        TXT_ERROR_WARRANTY = "No se puede registrar la venta"
-        if( MSJ_ERROR_WARRANTY.length() <= 0 ){
-          MSJ_ERROR_WARRANTY = "Error al asignar las garantias, Verifiquelas e intente nuevamente."
+        if( !canceledWarranty ){
+          TXT_ERROR_WARRANTY = "No se puede registrar la venta"
+          if( MSJ_ERROR_WARRANTY.length() <= 0 ){
+            MSJ_ERROR_WARRANTY = "Error al asignar las garantias, Verifiquelas e intente nuevamente."
+          }
+          sb.optionPane(
+             message: MSJ_ERROR_WARRANTY,
+             messageType: JOptionPane.ERROR_MESSAGE
+          ).createDialog( this, TXT_ERROR_WARRANTY )
+            .show()
         }
-        sb.optionPane(
-           message: MSJ_ERROR_WARRANTY,
-           messageType: JOptionPane.ERROR_MESSAGE
-        ).createDialog( this, TXT_ERROR_WARRANTY )
-          .show()
       }
     } else {
         sb.optionPane( message: MSJ_FECHA_INCORRECTA, messageType: JOptionPane.ERROR_MESSAGE, )
@@ -966,6 +969,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
 
 
   private Boolean validWarranty( ){
+    canceledWarranty = false
     Boolean valid = true
     Boolean applyValid = false
     List<Integer> lstIdGar = new ArrayList<>()
@@ -1041,6 +1045,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 for(Integer idGar : lstIdGarTmp ){
                     List<Item> lstFrames = new ArrayList<>()
                     List<Integer> lstIdArmTmp = new ArrayList<>()
+                    lstIdArmTmp.addAll( lstIdArm )
                     for( Integer id : lstIdArm ){
                       Item i = null
                       for(OrderItem orderItem1 : order.items){
@@ -1049,16 +1054,44 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                         }
                       }
                       if( ItemController.warrantyValid( i.price, idGar ) ){
-                        lstFrames.add(ItemController.findItem( id ))
+                        lstFrames.add(i)
                       }
                     }
                     Item itemFrame = null
                     Boolean canceled = false
-                    if( lstIdGar.size() > 0 ){
+                    if( lstIdGar.size() > 0 && lstFrames.size() > 1 ){
                         WarrantySelectionDialog dialog = new WarrantySelectionDialog( lstFrames, ItemController.findItem( idGar ) )
                         dialog.show()
                         itemFrame = dialog.selectedFrame
                         canceled = dialog.canceled
+                    } else if( lstFrames.size() == 1 ){
+                      if( lstIdGar.size() > 0 ){
+                            BigDecimal amount = BigDecimal.ZERO
+                            for(OrderItem orderItem : order.items){
+                                if( orderItem.item.id == lstFrames.first().id ){
+                                    amount = orderItem.item.price
+                                }
+                            }
+                            BigDecimal warrantyAmount = ItemController.warrantyValid( amount, idGar )
+                            if( warrantyAmount.compareTo(BigDecimal.ZERO) > 0 ){
+                                lstIdArm.clear()
+                                for( Integer id : lstIdArmTmp ){
+                                    if( id != lstFrames.first().id ){
+                                        lstIdArm.add(id)
+                                    }
+                                }
+                                Warranty warranty = new Warranty()
+                                warranty.amount = amount
+                                warranty.idItem = lstFrames.first().id
+                                lstWarranty.add( warranty )
+                                //ItemController.printWarranty( amount, itemFrame.id )
+                                //valid = true
+                                idGarUsed = idGarUsed+1
+                            } else {
+                                MSJ_ERROR_WARRANTY = "Garantia Invalida."
+                                valid = false
+                            }
+                      }
                     }
                     if( itemFrame != null ){
                         if( lstIdGar.size() > 0 ){
@@ -1089,9 +1122,10 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                             }
                         }
                     } else {
-                        if( canceled ){
-                            break
-                        }
+                      if( canceled ){
+                        canceledWarranty = true
+                        break
+                      }
                     }
                 }
                 if( idGarUsed == lstIdGar.size() ){
