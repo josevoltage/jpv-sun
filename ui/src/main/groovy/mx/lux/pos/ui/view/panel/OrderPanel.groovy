@@ -387,23 +387,11 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
                 if( question == 0){
                   Item item = results.first()
-                  //if( OrderController.validWarranty( promotionListSelected, item ) ){
-                    validarVentaNegativa( item )
-                  /*} else {
-                    optionPane( message: "No se puede agregar la garantia", optionType: JOptionPane.DEFAULT_OPTION )
-                          .createDialog( new JTextField(), "Error Garantia" )
-                          .show()
-                  }*/
+                  validarVentaNegativa( item )
                 }
               } else {
                 Item item = results.first()
-                //if( OrderController.validWarranty( promotionListSelected, item ) ){
                 validarVentaNegativa( item )
-                /*} else {
-                    optionPane( message: "No se puede agregar la garantia", optionType: JOptionPane.DEFAULT_OPTION )
-                            .createDialog( new JTextField(), "Error Garantia" )
-                            .show()
-                }*/
               }
           } else {
             SuggestedItemsDialog dialog = new SuggestedItemsDialog( itemSearch, input, results )
@@ -414,22 +402,10 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 Integer question =JOptionPane.showConfirmDialog( new JDialog(), MSG_NO_STOCK, TXT_NO_STOCK,
                         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE )
                 if( question == 0){
-                  //if( OrderController.validWarranty( promotionListSelected, item ) ){
-                    validarVentaNegativa( item )
-                  /*} else {
-                      optionPane( message: "No se puede agregar la garantia", optionType: JOptionPane.DEFAULT_OPTION )
-                              .createDialog( new JTextField(), "Error Garantia" )
-                              .show()
-                  }*/
+                  validarVentaNegativa( item )
                 }
               } else {
-                //if( OrderController.validWarranty( promotionListSelected, item ) ){
-                  validarVentaNegativa( item )
-                /*} else {
-                    optionPane( message: "No se puede agregar la garantia", optionType: JOptionPane.DEFAULT_OPTION )
-                            .createDialog( new JTextField(), "Error Garantia" )
-                            .show()
-                }*/
+                validarVentaNegativa( item )
               }
             }
           }
