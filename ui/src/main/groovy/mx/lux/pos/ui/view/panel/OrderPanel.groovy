@@ -599,6 +599,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             }
         }
       } else {
+        lstWarranty.clear()
         if( !canceledWarranty ){
           TXT_ERROR_WARRANTY = "No se puede registrar la venta"
           if( MSJ_ERROR_WARRANTY.length() <= 0 ){
