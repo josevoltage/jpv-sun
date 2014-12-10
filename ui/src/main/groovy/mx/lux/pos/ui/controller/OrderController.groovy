@@ -47,6 +47,8 @@ class OrderController {
   private static final String TAG_TIPO_PAGO_NOTA_CREDITO = "NOT"
   private static final String TAG_ID_GARANTIA = "GR"
   private static final String TAG_GENERIC_J = "J"
+  private static final String TAG_TARJETA_CREDITO = "TC"
+  private static final String TAG_TARJETA_DEBITO = "TD"
 
   @Autowired
   public OrderController(
@@ -204,15 +206,19 @@ class OrderController {
   static Order addPaymentToOrder( String orderId, Payment payment ) {
     log.info( "agregando pago monto: ${payment?.amount}, tipo: ${payment?.paymentTypeId} a orden id: ${orderId}" )
     if ( StringUtils.isNotBlank( orderId ) && StringUtils.isNotBlank( payment?.paymentTypeId ) && payment?.amount ) {
-
       User user = Session.get( SessionItem.USER ) as User
       println "Banco Emisor:: ${payment.issuerBankId}"
+      String idfPayment = StringUtils.trimToEmpty(payment.paymentTypeId)
+      if( payment.paymentTypeId.contains("TPV") ){
+        idfPayment = payment.paymentTypeId.replace("TPV","")
+        idfPayment = StringUtils.trimToEmpty(idfPayment)
+      }
       Pago pago = new Pago(
-          idFormaPago: payment.paymentTypeId,
+          idFormaPago: idfPayment,
           referenciaPago: payment.paymentReference,
           monto: payment.amount,
           idEmpleado: user?.username,
-          idFPago: payment.paymentTypeId,
+          idFPago: idfPayment,
           clave: payment.paymentReference,
           referenciaClave: payment.codeReference,
           idBancoEmisor: payment.issuerBankId,
@@ -558,6 +564,59 @@ class OrderController {
       }
     }
     return validaPromo
+  }
+
+  static Payment readCard( String idOrder, Payment tmpPayment ){
+    Payment payment = null
+    Pago pago = new Pago()
+    pago.idFPago = tmpPayment.paymentTypeId
+    pago.idTerminal = ""
+    pago.idBancoEmisor = tmpPayment.issuerBankId
+    pago.monto = tmpPayment.amount
+    pago.idPlan = tmpPayment.planId
+    pago.plan = new mx.lux.pos.model.Plan()
+    pago.plan.id = StringUtils.trimToEmpty(tmpPayment.planId)
+    pago.plan.descripcion = tmpPayment.plan
+    pago = pagoService.leerTarjeta( idOrder, pago )
+    if( pago != null ){
+      payment = new Payment(
+         order: pago.idFactura,
+         paymentReference: pago.referenciaPago,
+         codeReference: pago.referenciaClave,
+         username: pago.idEmpleado,
+         paymentType: pago.eTipoPago?.descripcion,
+         paymentTypeId: pago.idFPago,
+         terminal: pago.terminal?.descripcion,
+         terminalId: pago.idTerminal,
+         plan: pago.plan?.descripcion,
+         planId: pago.idPlan,
+         issuerBankId: pago.idBancoEmisor,
+         factura: pago.notaVenta?.factura,
+         amount: pago.monto,
+         refundable: pago.porDevolver,
+         date: pago.fecha
+        )
+    }
+    return payment
+  }
+
+
+  static void printVoucherTpv( String orderId, Boolean reprint ) {
+    List<Pago> lstPagosTarj = new ArrayList<>()
+    NotaVenta nota = notaVentaService.obtenerNotaVenta( StringUtils.trimToEmpty(orderId) )
+    if(nota != null){
+      for(Pago pago : nota.pagos){
+        if( !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("TR") && StringUtils.trimToEmpty(pago.idTerminal).contains("|") ){
+          lstPagosTarj.add(pago)
+        }
+      }
+    }
+    if(Registry.activeTpv && lstPagosTarj.size() > 0){
+      for(Pago pay : lstPagosTarj){
+        ticketService.imprimeVoucherTpv( pay, "ORIGINAL", reprint )
+        ticketService.imprimeVoucherTpv( pay, "COPIA CLIENTE", reprint )
+      }
+    }
   }
 
 

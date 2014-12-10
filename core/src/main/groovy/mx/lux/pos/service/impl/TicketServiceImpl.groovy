@@ -53,6 +53,11 @@ class TicketServiceImpl implements TicketService {
   private static final String TAG_TRANSACCION_ENTRADA = 'E'
   private static final String TAG_TRANSACCION_SALIDA = 'S'
   private static final String TAG_FORMA_PAGO_USD = "EFD";
+  private static final String TAG_FORMA_PAGO_TC = "TV";
+  private static final String TAG_FORMA_PAGO_TD = "TD";
+  private static final String TAG_FORMA_PAGO_TCM = "TCM";
+  private static final String TAG_FORMA_PAGO_TDM = "TDM";
+  private static final String TAG_FORMA_PAGO_TCD = "UV";
   //private static final String TAG_TRANSACCION_ENTRADA_TIENDA = 'ENTRADA_TIENDA'
   //private static final String TAG_TRANSACCION_SALIDA_TIENDA = 'SALIDA_TIENDA'
 
@@ -591,8 +596,41 @@ class TicketServiceImpl implements TicketService {
       BigDecimal diferenciaEfectivoUS = totalDepositosUS - efectivoNetoUS
 
       List<ResumenDiario> resumenesDiario = resumenDiarioRepository.findByFechaCierre( fechaCierre )
+      /*List<ResumenDiario> resumenesDiario = new ArrayList<>()
+
+      for(ResumenDiario res : resumenesDiarioTmp){
+        if(StringUtils.trimToEmpty(res.tipo).length() > 0 && StringUtils.trimToEmpty(res.idTerminal).length() > 0){
+          resumenesDiario.add( res )
+        }
+      }*/
 
       List<ResumenDiario> resumenTerminales = new ArrayList<ResumenDiario>()
+      List<ResumenDiario> resumenTerminalesTpv = new ArrayList<ResumenDiario>()
+      ResumenDiario resumenTerminaleTcmTpv = new ResumenDiario()
+      resumenTerminaleTcmTpv.importe = BigDecimal.ZERO
+      resumenTerminaleTcmTpv.formaPago = new FormaPago()
+      ResumenDiario resumenTerminaleTdmTpv = new ResumenDiario()
+      resumenTerminaleTdmTpv.importe = BigDecimal.ZERO
+      resumenTerminaleTdmTpv.formaPago = new FormaPago()
+      ResumenDiario resumenTerminaleTcdTpv = new ResumenDiario()
+      resumenTerminaleTcdTpv.importe = BigDecimal.ZERO
+      resumenTerminaleTcdTpv.formaPago = new FormaPago()
+      Double montoTcdTpv = 0.00
+
+        ResumenDiario resumenTerminaleTcmTpvCan = new ResumenDiario()
+        resumenTerminaleTcmTpvCan.importe = BigDecimal.ZERO
+        resumenTerminaleTcmTpvCan.formaPago = new FormaPago()
+        ResumenDiario resumenTerminaleTcmTpvDev = new ResumenDiario()
+        resumenTerminaleTcmTpvDev.importe = BigDecimal.ZERO
+        resumenTerminaleTcmTpvDev.formaPago = new FormaPago()
+        ResumenDiario resumenTerminaleTdmTpvCan = new ResumenDiario()
+        resumenTerminaleTdmTpvCan.importe = BigDecimal.ZERO
+        resumenTerminaleTdmTpvCan.formaPago = new FormaPago()
+        ResumenDiario resumenTerminaleTcdTpvCan = new ResumenDiario()
+        resumenTerminaleTcdTpvCan.importe = BigDecimal.ZERO
+        resumenTerminaleTcdTpvCan.formaPago = new FormaPago()
+        Double montoTcdTpvCan = 0.00
+      List<ResumenDiario> resumenTerminalesTpvCan = new ArrayList<ResumenDiario>()
       String terminal
 
       if ( resumenesDiario.size() == 1 ) {
@@ -609,20 +647,29 @@ class TicketServiceImpl implements TicketService {
           }
         }
         resumen.formaPago = new FormaPago()
-        resumen.formaPago.descripcion = String.format('%10s', formatter.format( resumen.importe ) )
+        //resumen.formaPago.descripcion = String.format('%10s', formatter.format( resumen.importe ) )
         if( resumen.importe.compareTo(BigDecimal.ZERO) > 0 ){
-          resumenTerminales.add( resumen )
+          if( StringUtils.trimToEmpty(resumen.idTerminal).length() <= 0 ){
+            resumenTerminalesTpv.add( resumen )
+          } else {
+            resumenTerminales.add( resumen )
+          }
         }
       } else {
         Collections.sort( resumenesDiario )
         ResumenDiario current = null
         BigDecimal montoDolares
+        Collections.sort(resumenesDiario, new Comparator<ResumenDiario>() {
+            @Override
+            int compare(ResumenDiario o1, ResumenDiario o2) {
+                return o1.tipo.compareTo(o2.tipo)
+            }
+        })
         for ( ResumenDiario resumen : resumenesDiario ) {
           if ( ( current == null ) || ( !current.idTerminal.equalsIgnoreCase( resumen.idTerminal ) ) ) {
             current = new ResumenDiario()
             current.idTerminal = resumen.idTerminal.toUpperCase()
             current.importe = BigDecimal.ZERO
-            resumenTerminales.add( current )
             montoDolares = BigDecimal.ZERO
           }
           if ( resumen.plan?.equals( TAG_CANCELADO ) || resumen.plan?.equals( TAG_DEVUELTO ) ) {
@@ -635,6 +682,9 @@ class TicketServiceImpl implements TicketService {
               } else {
                 current.plan = '0'
               }
+            }
+            if( StringUtils.trimToEmpty(current.idTerminal).length() <= 0 ){
+
             }
           } else {
               current.importe = current.importe.add( resumen.importe )
@@ -650,14 +700,80 @@ class TicketServiceImpl implements TicketService {
                 }*/
               }
           }
+          if( StringUtils.trimToEmpty(current.idTerminal).length() <= 0 ){
+
+          } else {
+            //resumenTerminales.add( current )
+            findOrCreateRD( resumenTerminales, current )
+          }
           current.formaPago = new FormaPago()
-          current.formaPago.descripcion = String.format('%10s', formatter.format( current.importe ) )
+          //current.formaPago.descripcion = String.format('%10s', formatter.format( current.importe ) )
           if( current.importe.compareTo(BigDecimal.ZERO) == 0 ){
-            resumenTerminales.remove( current )
+            if( StringUtils.trimToEmpty(current.idTerminal).length() <= 0 ){
+
+            } else {
+              resumenTerminales.remove( current )
+            }
+          }
+          if(StringUtils.trimToEmpty(resumen.idTerminal).length() <= 0){
+            if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("TV") ){
+              resumenTerminaleTcmTpv.idTerminal = resumen.tipo
+              resumenTerminaleTcmTpv.plan = '0'
+              resumenTerminaleTcmTpv.importe = resumenTerminaleTcmTpv.importe.add(resumen.importe)
+              resumenTerminaleTcmTpv.formaPago.descripcion = String.format('%10s', formatter.format( resumenTerminaleTcmTpv.importe ))
+            } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("DV")){
+              resumenTerminaleTdmTpv.idTerminal = resumen.tipo
+              resumenTerminaleTdmTpv.plan = '0'
+              resumenTerminaleTdmTpv.importe = resumenTerminaleTdmTpv.importe.add(resumen.importe)
+              resumenTerminaleTdmTpv.formaPago.descripcion = String.format('%10s', formatter.format( resumenTerminaleTdmTpv.importe ))
+            } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("UV")){
+              resumenTerminaleTcdTpv.idTerminal = resumen.tipo
+                if( StringUtils.trimToEmpty(resumen.plan).length() > 0 &&
+                        resumen.plan.isNumber() ){
+                  try{
+                    montoTcdTpv = montoTcdTpv+NumberFormat.getInstance().parse( resumen.plan ).doubleValue()
+                  } catch ( NumberFormatException e ){ println e }
+                }
+                resumenTerminaleTcdTpv.plan = String.format('%10s', formatter.format( montoTcdTpv ))
+                resumenTerminaleTcdTpv.importe = resumenTerminaleTcdTpv.importe.add(resumen.importe)
+                resumenTerminaleTcdTpv.formaPago.descripcion = String.format('%10s', formatter.format( resumenTerminaleTcdTpv.importe ))
+
+            } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("") &&
+                    (StringUtils.trimToEmpty(resumen.plan).equalsIgnoreCase("C"))){
+              resumenTerminaleTcmTpvCan.idTerminal = resumen.plan
+              resumenTerminaleTcmTpvCan.plan = '0'
+              resumenTerminaleTcmTpvCan.importe = resumenTerminaleTcmTpvCan.importe.subtract(resumen.importe)
+              resumenTerminaleTcmTpvCan.formaPago.descripcion = String.format('%10s', formatter.format( resumenTerminaleTcmTpvCan.importe ))
+            } else if(StringUtils.trimToEmpty(resumen.tipo).equalsIgnoreCase("") &&
+                    StringUtils.trimToEmpty(resumen.plan).equalsIgnoreCase("D")){
+                resumenTerminaleTcmTpvDev.idTerminal = resumen.plan
+                resumenTerminaleTcmTpvDev.plan = '0'
+                resumenTerminaleTcmTpvDev.importe = resumenTerminaleTcmTpvDev.importe.subtract(resumen.importe)
+                resumenTerminaleTcmTpvDev.formaPago.descripcion = String.format('%10s', formatter.format( resumenTerminaleTcmTpvDev.importe ))
+            }
           }
         }
       }
-
+      for(ResumenDiario res : resumenTerminales){
+        res.formaPago.descripcion = String.format('%10s', formatter.format( res.importe ) )
+      }
+      if( StringUtils.trimToEmpty(resumenTerminaleTcmTpv.idTerminal).length() > 0 ){
+        resumenTerminalesTpv.add(resumenTerminaleTcmTpv)
+      }
+      if( StringUtils.trimToEmpty(resumenTerminaleTdmTpv.idTerminal).length() > 0 ){
+        resumenTerminalesTpv.add(resumenTerminaleTdmTpv)
+      }
+      if( StringUtils.trimToEmpty(resumenTerminaleTcdTpv.idTerminal).length() > 0 ){
+        resumenTerminalesTpv.add(resumenTerminaleTcdTpv)
+      }
+      if( resumenTerminaleTcmTpvCan.importe.compareTo(BigDecimal.ZERO) > 0 ||
+              resumenTerminaleTcmTpvCan.importe.compareTo(BigDecimal.ZERO) < 0){
+        resumenTerminalesTpvCan.add(resumenTerminaleTcmTpvCan)
+      }
+      if( resumenTerminaleTcmTpvCan.importe.compareTo(BigDecimal.ZERO) > 0 ||
+            resumenTerminaleTcmTpvCan.importe.compareTo(BigDecimal.ZERO) < 0){
+        resumenTerminalesTpvCan.add(resumenTerminaleTcmTpvDev)
+      }
       List<Pago> vales = pagoRepository.findBy_Fecha( fechaCierre )
       for( Pago pago : vales ){
         pago.referenciaPago = formatter.format( pago.monto )
@@ -867,6 +983,8 @@ class TicketServiceImpl implements TicketService {
           faltanteUS: diferenciaEfectivoUS < 0 ? String.format('%10s', formatter.format( diferenciaEfectivoUS ) ) : null,
           sobranteUS: diferenciaEfectivoUS > 0 ? String.format('%10s', formatter.format( diferenciaEfectivoUS ) ) : null,
           resumen_terminales: resumenTerminales.size() > 0 ? resumenTerminales : null,
+          resumen_terminales_tpv: resumenTerminalesTpv.size() > 0 ? resumenTerminalesTpv : null,
+          resumen_terminales_tpv_can: resumenTerminalesTpvCan.size() > 0 ? resumenTerminalesTpvCan : null,
           numero_vales: vales.size(),
           monto_vales: montoVales.compareTo(BigDecimal.ZERO) == 0 ? '-' : String.format('%10s', formatter.format( montoVales ) ),
           vales: vales.size() > 0 ? vales : null,
@@ -1890,5 +2008,249 @@ class TicketServiceImpl implements TicketService {
   }
 
 
+  void imprimeVoucherTpv( Pago pago, String copia, Boolean reimpresion ){
+    log.debug( "imprimeVoucherTpv( )" )
+    NumberFormat formatter = NumberFormat.getCurrencyInstance( Locale.US )
+    AddressAdapter companyAddress = Registry.companyAddress
+    Boolean meses = false
+    Integer months = 0
+    if(StringUtils.trimToEmpty(pago.idPlan).length() > 0 && StringUtils.trimToEmpty(pago.idPlan).isNumber() &&
+            !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD)){
+      try{
+        months = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).intValue()
+      } catch ( NumberFormatException e ){ println e }
+      if( months > 1 ){
+        meses = true
+      }
+    }
+    String fecha = pago.fecha.format("dd-MM-yyyy")
+    String hora= pago.fecha.format("HH:mm")
+    String idSucursal = parametroRepository.findOne( TipoParametro.ID_SUCURSAL.value )?.valor
+    Sucursal sucursal = sucursalRepository.findOne( idSucursal?.toInteger() )
+    String dataTmp = pago.idTerminal.replace("||","| |")
+    String[] data = dataTmp.split(/\|/)
+    String producto = ""
+    String operacion = ""
+    String aid = ""
+    String arqc = ""
+    String cliente = ""
+    String lecturaTar = ""
+    if( data.length >= 6 ){
+      producto = data[0]
+      operacion = data[1]
+      aid = data[2]
+      arqc = data[3]
+      cliente = data[4]
+      lecturaTar = data[5]
+    }
+    Double importe = pago.monto.doubleValue()
+    if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ){
+      try{
+        importe = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).doubleValue()
+      } catch ( NumberFormatException e ) { println e }
+    }
+    String ticket = StringUtils.trimToEmpty((Registry.currentSite+2000).toString())+"-"+StringUtils.trimToEmpty(pago.notaVenta.factura)
+    if(pago != null){
+      def datos = [
+          fecha: fecha,
+          hora: hora,
+          copia: copia,
+          nombreEmpresa: StringUtils.trimToEmpty(sucursal?.nombre),
+          direccionEmpresa1: StringUtils.trimToEmpty(sucursal?.direccion),
+          direccionEmpresa2: StringUtils.trimToEmpty(sucursal?.colonia),
+          direccionEmpresa3: StringUtils.trimToEmpty(sucursal?.idLocalidad),
+          tarjeta: pago.referenciaPago,
+          producto: producto,
+          meses: meses,
+          tipo: StringUtils.trimToEmpty(pago.idFPago).startsWith(TAG_FORMA_PAGO_TC) ? "CREDITO" : "DEBITO",
+          ticket: ticket,
+          plan: months,
+          estatus: "APROBADA",
+          numAutorizacion: pago.referenciaClave,
+          operacion: operacion,
+          aid: aid,
+          arqc: arqc,
+          cliente: cliente,
+          importe: formatter.format(importe),
+          reimpresion: reimpresion,
+          moneda: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? "USD" : "MXN",
+          afiliacion: StringUtils.trimToEmpty(Registry.noAfiliacion),
+          lecturaTar: lecturaTar
+      ]
+      imprimeTicket( 'template/ticket-tpv.vm', datos )
+    } else {
+      log.debug( String.format( 'No existe registro de tarjeta' ) )
+    }
+  }
 
+
+
+  void imprimeResumenTarjetas( Date fechaCierre ){
+    log.debug( "imprimeVoucherTpv( )" )
+    NumberFormat formatter = NumberFormat.getCurrencyInstance( Locale.US )
+    Date fechaInicio = DateUtils.truncate( fechaCierre, Calendar.DAY_OF_MONTH );
+    Date fechaFin = new Date( DateUtils.ceiling( fechaCierre, Calendar.DAY_OF_MONTH ).getTime() - 1 );
+    QPago qPago = QPago.pago
+    List<Pago> lstPagos = pagoRepository.findAll( qPago.fecha.between(fechaInicio,fechaFin) ) as List<Pago>
+    List<Modificacion> lstModificacion = modificacionRepository.findByFechaBetween(fechaInicio,fechaFin) as List<Modificacion>
+    Collections.sort(lstModificacion, new Comparator<Modificacion>() {
+        @Override
+        int compare(Modificacion o1, Modificacion o2) {
+            return o1.idFactura.compareTo(o2.idFactura)
+        }
+    })
+    List<Pago> selected = new ArrayList<Pago>()
+    for ( Pago p : lstPagos ) {
+      if ( p.idTerminal.contains("|") ) {
+        if( !StringUtils.trimToEmpty(p.notaVenta.factura).isEmpty() ){
+          selected.add( p )
+        }
+      }
+    }
+    List<Pago> pagos = new ArrayList<>()
+    BigDecimal pagosMonto = BigDecimal.ZERO
+    def pagosCan = [ ]
+    for(Pago pago : selected){
+      pago.idRecibo = String.format('%1$#15s', formatter.format(pago.monto) );
+      if(StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("UV") || StringUtils.trimToEmpty(pago.idPlan).equalsIgnoreCase("1")){
+        pago.idPlan = ""
+      }
+      pagos.add(pago)
+      pagosMonto = pagosMonto.add(pago.monto)
+    }
+    for(Modificacion modificacion : lstModificacion){
+      for(Pago pago : modificacion.notaVenta.pagos){
+        String status = ""
+        if( StringUtils.trimToEmpty(modificacion.fecha.format("dd/MM/yyyy")).equalsIgnoreCase(StringUtils.trimToEmpty(modificacion.notaVenta.fechaHoraFactura.format("dd/MM/yyyy"))) ){
+          status = "C"
+        } else {
+          status = "D"
+        }
+        if( pago.idTerminal.contains("|") ){
+          if(StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("UV") || StringUtils.trimToEmpty(pago.idPlan).equalsIgnoreCase("1")){
+            pago.idPlan = ""
+          }
+          def data = [
+            factura: StringUtils.trimToEmpty(modificacion.notaVenta.factura),
+            plan: StringUtils.trimToEmpty(pago.idPlan),
+            importe: String.format('%1$#15s', "(${StringUtils.trimToEmpty(formatter.format(pago.monto))})${status}")
+          ]
+          pagosCan.add(data)
+          pagosMonto = pagosMonto.subtract(pago.monto)
+        }
+      }
+    }
+    Collections.sort(pagos, new Comparator<Pago>() {
+        @Override
+        int compare(Pago o1, Pago o2) {
+            return o1.notaVenta.factura.compareTo(o2.notaVenta.factura)
+        }
+    })
+    if(selected.size() > 0 || lstModificacion.size() > 0){
+      def datos = [
+            fecha: fechaCierre.format("dd/MM/yyyy"),
+            pagos: pagos,
+            pagosCan: pagosCan,
+            total: pagos.size()+pagosCan.size(),
+            totalMonto: formatter.format(pagosMonto),
+      ]
+      imprimeTicket( 'template/ticket-resumen-tarjetas.vm', datos )
+    } else {
+      log.debug( String.format( 'No existen pagos con tarjeta por tpv' ) )
+    }
+  }
+
+
+
+  void imprimeVoucherCancelacionTpv( Integer idPago, String copia, String transaccion ){
+      log.debug( "imprimeVoucherCancelacionTpv( )" )
+      NumberFormat formatter = NumberFormat.getCurrencyInstance( Locale.US )
+      AddressAdapter companyAddress = Registry.companyAddress
+      Boolean meses = false
+      Integer months = 0
+      Pago pago = pagoRepository.findOne(idPago)
+      if(StringUtils.trimToEmpty(pago.idPlan).length() > 0 && StringUtils.trimToEmpty(pago.idPlan).isNumber() &&
+              !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD)){
+        try{
+          months = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).intValue()
+        } catch ( NumberFormatException e ){ println e }
+      }
+      if( months > 1 ){
+          meses = true
+      }
+      String fecha = pago.fecha.format("dd-MM-yyyy")
+      String hora= pago.fecha.format("HH:mm")
+      String idSucursal = parametroRepository.findOne( TipoParametro.ID_SUCURSAL.value )?.valor
+      Sucursal sucursal = sucursalRepository.findOne( idSucursal?.toInteger() )
+      String[] data = pago.idTerminal.split(/\|/)
+      String producto = ""
+      String operacion = ""
+      String aid = ""
+      String arqc = ""
+      String cliente = ""
+      String lecturaTar = ""
+      if( data.length >= 6 ){
+          producto = data[0]
+          operacion = data[1]
+          aid = data[2]
+          arqc = data[3]
+          cliente = data[4]
+          lecturaTar = data[5]
+      }
+      Double importe = pago.monto.doubleValue()
+      if( StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ){
+          try{
+              importe = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).doubleValue()
+          } catch ( NumberFormatException e ) { println e }
+      }
+      if(pago != null){
+          def datos = [
+                  fecha: fecha,
+                  hora: hora,
+                  copia: copia,
+                  transaccion: transaccion,
+                  nombreEmpresa: StringUtils.trimToEmpty(sucursal?.nombre),
+                  direccionEmpresa1: StringUtils.trimToEmpty(sucursal?.direccion),
+                  direccionEmpresa2: StringUtils.trimToEmpty(sucursal?.colonia),
+                  direccionEmpresa3: StringUtils.trimToEmpty(sucursal?.idLocalidad),
+                  tarjeta: pago.referenciaPago,
+                  producto: producto,
+                  meses: meses,
+                  tipo: StringUtils.trimToEmpty(pago.idFPago).startsWith(TAG_FORMA_PAGO_TC) ? "CREDITO" : "DEBITO",
+                  plan: months,
+                  estatus: "APROBADA",
+                  numAutorizacion: pago.referenciaClave,
+                  operacion: operacion,
+                  aid: aid,
+                  arqc: arqc,
+                  cliente: cliente,
+                  importe: String.format("-%s",formatter.format(importe)),
+                  moneda: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? "USD" : "MXN",
+                  afiliacion: StringUtils.trimToEmpty(Registry.noAfiliacion),
+                  lecturaTar: lecturaTar
+          ]
+          imprimeTicket( 'template/ticket-tpv-can.vm', datos )
+      } else {
+          log.debug( String.format( 'No existe registro de tarjeta' ) )
+      }
+  }
+
+
+
+  private static ResumenDiario findOrCreateRD( List<ResumenDiario> lstResumenesDiarios, ResumenDiario pResumenDiario ) {
+    ResumenDiario found = null
+    for ( ResumenDiario resumenDiario : lstResumenesDiarios ) {
+      if ( resumenDiario.idTerminal.equals( pResumenDiario.idTerminal ) ) {
+        found = resumenDiario
+        resumenDiario.importe = resumenDiario.importe.add(pResumenDiario.importe)
+        break
+      }
+    }
+    if ( found == null ) {
+      found = pResumenDiario
+      lstResumenesDiarios.add( found )
+    }
+    return found
+  }
 }
+

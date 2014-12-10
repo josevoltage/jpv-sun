@@ -52,4 +52,6 @@ public interface CierreDiarioService {
   void closeDaysBeforeNov( )
 
   void generaIN2( Date fechaCierre )
+
+  List<Pago> buscarPagosTpvPorFechaCierrePorFactura( Date fechaCierre, String ticket )
 }

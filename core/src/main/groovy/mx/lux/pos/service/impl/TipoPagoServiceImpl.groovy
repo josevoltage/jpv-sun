@@ -6,6 +6,7 @@ import mx.lux.pos.model.TipoParametro
 import mx.lux.pos.repository.ParametroRepository
 import mx.lux.pos.repository.TipoPagoRepository
 import mx.lux.pos.service.TipoPagoService
+import mx.lux.pos.service.business.Registry
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,13 +28,33 @@ class TipoPagoServiceImpl implements TipoPagoService {
   private ParametroRepository parametroRepository
 
   private List<TipoPago> listarTiposPagoRegistrados( ) {
-    List<TipoPago> resultados = tipoPagoRepository.findAll() ?: [ ]
+    List<TipoPago> resultados = new ArrayList<>()
+    List<TipoPago> resultadosTmp = tipoPagoRepository.findAll( ) ?: [ ]
+    Collections.sort(resultadosTmp, new Comparator<TipoPago>() {
+        @Override
+        int compare(TipoPago o1, TipoPago o2) {
+            return o1.tipoCon.compareTo(o2.tipoCon)
+        }
+    })
     resultados.retainAll { TipoPago tipoPago ->
       StringUtils.isNotBlank( tipoPago?.id )
     }
-    return resultados.sort { TipoPago tipoPago ->
-      tipoPago.descripcion
+    for(TipoPago tipoPago : resultadosTmp){
+      if(tipoPago.id.contains("EFM")){
+        resultados.add( tipoPago )
+      }
     }
+    for(TipoPago tipoPago : resultadosTmp){
+      if(tipoPago.descripcion.contains("[")){
+        resultados.add( tipoPago )
+      }
+    }
+    for(TipoPago tipoPago : resultadosTmp){
+      if(!tipoPago.id.contains("EFM") && !tipoPago.descripcion.contains("[")){
+        resultados.add( tipoPago )
+      }
+    }
+    return resultados
   }
 
   @Override
@@ -52,14 +73,24 @@ class TipoPagoServiceImpl implements TipoPagoService {
   List<TipoPago> listarTiposPagoActivos( ) {
     log.info( "listando tipos de pago activos" )
     List<TipoPago> tiposPago = [ ]
+    List<TipoPago> tiposPagoTmp = [ ]
     Parametro parametro = parametroRepository.findOne( TipoParametro.TIPO_PAGO.value )
     String[] valores = parametro?.valores
     log.debug( "obteniendo parametro de formas de pago activas id: ${parametro?.id} valores: ${valores}" )
     if ( valores.any() ) {
       List<TipoPago> resultados = listarTiposPagoRegistrados()
       log.debug( "tipos de pago existentes: ${resultados*.id}" )
-      tiposPago = resultados.findAll { TipoPago tipoPago ->
+      tiposPagoTmp = resultados.findAll { TipoPago tipoPago ->
         valores.contains( tipoPago?.id?.trim() )
+      }
+      if( Registry.activeTpv ){
+        tiposPago.addAll(tiposPagoTmp)
+      } else {
+        for(TipoPago tipoPago : tiposPagoTmp){
+          if( !tipoPago.descripcion.contains("TPV")){
+            tiposPago.add(tipoPago)
+          }
+        }
       }
       log.debug( "tipos de pago obtenidos: ${tiposPago*.id}" )
     }

@@ -34,6 +34,8 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   private static final String PAIS_DEFAULT = 'MEXICO'
   private static final String FMT_ARCHIVE_FILENAME = '%d.%s'
   private static final String FMT_FILE_PATTERN = '*%s.*'
+  private static final String TAG_TARJETA_AMERICAN_E = 'AV'
+  private static final String TAG_TARJETA_DOLARES = 'UV'
   private static final Double VALOR_CERO = 0.005
 
   @Resource
@@ -560,6 +562,26 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       } else {
         parcialidad = StringUtils.defaultIfBlank( pago.parcialidad?.trim(), '' )
       }
+      String idTerminal = ""
+      if( pago.idTerminal.contains("|") ){
+        String[] data = pago.idTerminal.split(/\|/)
+        if(!StringUtils.trimToEmpty(pago.idTerminal).contains("BANAMEX") && !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_TARJETA_DOLARES)){
+          if( !StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_TARJETA_AMERICAN_E)){
+            if( StringUtils.trimToEmpty(pago.idPlan).length() > 0 && !StringUtils.trimToEmpty(pago.idPlan).equalsIgnoreCase("1") ){
+              idTerminal = data[0].replace("MASTERCARD","")
+              idTerminal = idTerminal.replace("VISA","")
+            } else {
+              idTerminal = "BMX"
+            }
+          } else {
+            idTerminal = "AMX"
+          }
+        } else {
+          idTerminal = "BMX"
+        }
+      } else {
+        idTerminal = StringUtils.trimToEmpty( pago.idTerminal?.trim() )
+      }
       [
           id_factura: pago.notaVenta.id,
           tipo_pago: pago.tipoPago == 'a' ? 'A' : '',
@@ -573,7 +595,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
           clave_p: StringUtils.defaultIfBlank( pago.clave?.trim(), '' ),
           referencia_clave: StringUtils.defaultIfBlank( pago.referenciaClave?.trim(), '' ),
           id_banco_emi: StringUtils.defaultIfBlank( pago.idBancoEmisor?.trim(), '' ),
-          id_terminal: StringUtils.defaultIfBlank( pago.idTerminal?.trim(), '' ),
+          id_terminal: StringUtils.trimToEmpty(idTerminal),
           id_plan: StringUtils.defaultIfBlank( pago.idPlan?.trim(), '' ),
           id_pago: pago.id != null ? pago.id.toString() : ''
       ]
@@ -839,8 +861,8 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
     List<Pago> pagos = pagoRepository.findBy_Fecha_IdFactura_DescripcionTerminal( fechaCierre, terminal, plan ) ?: [ ]
     List<Pago> selected = new ArrayList<Pago>()
     for ( Pago p : pagos ) {
-      if ( 'TCM'.equals( p.formaPago?.id ) || 'TCD'.equals( p.formaPago?.id ) || 'TDM'.equals( p.formaPago?.id )
-          || 'TDD'.equals( p.formaPago?.id ) ) {
+      if ( !p.idTerminal.contains("|") && ('TCM'.equals( p.formaPago?.id ) || 'TCD'.equals( p.formaPago?.id ) || 'TDM'.equals( p.formaPago?.id )
+          || 'TDD'.equals( p.formaPago?.id )) ) {
         if( !StringUtils.trimToEmpty(p.notaVenta.factura).isEmpty() ){
           selected.add( p )
         }
@@ -860,9 +882,11 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
     List<ResumenDiario> atCloseDate = resumenDiarioRepository.findByFechaCierre( fechaCierre )
     List<ResumenDiario> selected = new ArrayList<ResumenDiario>()
     for ( ResumenDiario resumen : atCloseDate ) {
-      if ( 'TODAS'.equals( termUC ) || termUC.length() == 0
-          || termUC.equalsIgnoreCase( StringUtils.trimToEmpty( resumen.idTerminal ).toUpperCase() ) ) {
-        selected.add( resumen )
+      if( StringUtils.trimToEmpty(resumen.idTerminal).length() > 0 ){
+        if ( 'TODAS'.equals( termUC ) || termUC.length() == 0
+                || termUC.equalsIgnoreCase( StringUtils.trimToEmpty( resumen.idTerminal ).toUpperCase() ) ) {
+          selected.add( resumen )
+        }
       }
     }
     return selected
@@ -904,12 +928,17 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       Set<VoucherTmp> vouchers = [ ]
       Set<ResumenDiario> resumenes = [ ]
       Set<Terminal> terminales = terminalRepository.findByDescripcionNotNullOrderByDescripcionAsc() ?: [ ]
-      Set<String> terminalesId = terminales*.id
+      Set<String> terminalesId = new ArrayList<>()
+      for(Terminal term : terminales){
+        terminalesId.add(StringUtils.trimToEmpty(term.id))
+      }
       log.debug( "obteniendo terminales: ${terminalesId}" )
       Date fechaInicio = fecha.clearTime()
       Date fechaFin = new Date( fecha.next().time - 1 )
       log.debug( "buscando pagos del: ${fechaInicio.format( DATE_TIME_FORMAT )} al: ${fechaFin.format( DATE_TIME_FORMAT )}" )
-      Set<Pago> pagos = pagoRepository.findByFechaBetweenAndIdTerminalIn( fechaInicio, fechaFin, terminalesId ) ?: [ ]
+      //Set<Pago> pagos = pagoRepository.findByFechaBetweenAndIdTerminalIn( fechaInicio, fechaFin, terminalesId ) ?: [ ]
+      QPago qPago = QPago.pago
+      Set<Pago> pagos = pagoRepository.findAll( qPago.fecha.between(fechaInicio,fechaFin).and(qPago.terminal.id.in(terminalesId).or(qPago.idTerminal.contains("|"))) ) as Set<Pago> ?: [ ]
       procesarVouchersResumenesDePagos( pagos, vouchers, resumenes )
       log.debug( "buscando pagos externos del:${fechaInicio.format( DATE_TIME_FORMAT )} al: ${fechaFin.format( DATE_TIME_FORMAT )}" )
       Set<PagoExterno> pagosExternos = pagoExternoRepository.findByFechaBetweenAndIdTerminalIn( fechaInicio, fechaFin, terminalesId ) ?: [ ]
@@ -1478,4 +1507,56 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       }
     }
   }
+
+  @Override
+  List<Pago> buscarPagosTpvPorFechaCierrePorFactura( Date fechaCierre, String ticket ){
+    List<Pago> pagos = new ArrayList<>()
+    List<Pago> pagosCan = new ArrayList<>()
+    List<Modificacion> lstMod = new ArrayList<>()
+    QPago qPago = QPago.pago
+    QModificacion qModificacion = QModificacion.modificacion
+    Date fechaInicio = DateUtils.truncate( fechaCierre, Calendar.DAY_OF_MONTH );
+    Date fechaFin = new Date( DateUtils.ceiling( fechaCierre, Calendar.DAY_OF_MONTH ).getTime() - 1 );
+    if( StringUtils.trimToEmpty(ticket).length() > 0 ){
+      pagos = pagoRepository.findAll( qPago.idFactura.eq(ticket).and(qPago.fecha.between(fechaInicio,fechaFin)) ) as List<Pago>
+      lstMod = modificacionRepository.findAll( qModificacion.notaVenta.factura.eq(ticket).
+              and(qModificacion.fecha.between(fechaInicio,fechaFin)).and(qModificacion.tipo.eq("can"))) as List<Modificacion>
+    } else {
+      pagos = pagoRepository.findAll( qPago.fecha.between(fechaInicio,fechaFin) ) as List<Pago>
+      lstMod = modificacionRepository.findAll( qModificacion.fecha.between(fechaInicio,fechaFin).and(qModificacion.tipo.eq("can"))) as List<Modificacion>
+    }
+    for(Modificacion mod : lstMod){
+          pagosCan.addAll( mod.notaVenta.pagos )
+    }
+    List<Pago> selected = new ArrayList<Pago>()
+    for ( Pago p : pagos ) {
+          if ( p.idTerminal.contains("|") ) {
+              if( !StringUtils.trimToEmpty(p.notaVenta.factura).isEmpty() ){
+                  selected.add( p )
+              }
+          }
+    }
+
+    Collections.sort(pagosCan, new Comparator<Pago>() {
+        @Override
+        int compare(Pago o1, Pago o2) {
+            return o1.notaVenta.factura.compareTo(o2.notaVenta.factura)
+        }
+    })
+    for ( Pago pCan : pagosCan ) {
+      if ( pCan.idTerminal.contains("|") ) {
+        if( !StringUtils.trimToEmpty(pCan.notaVenta.factura).isEmpty() ){
+          Pago pago = new Pago()
+          pago.id = pCan.id+1000
+          pago.idFactura = pCan.idFactura
+          pago.notaVenta = pCan.notaVenta
+          pago.monto = pCan.monto.multiply(new BigDecimal(-1))
+          selected.add( pago )
+        }
+      }
+    }
+    return selected
+  }
+
+
 }

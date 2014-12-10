@@ -11,6 +11,7 @@ import mx.lux.pos.model.PromotionCombo
 import mx.lux.pos.model.PromotionDiscount
 import mx.lux.pos.model.PromotionSingle
 import mx.lux.pos.model.SalesWithNoInventory
+import mx.lux.pos.service.business.Registry
 import mx.lux.pos.ui.MainWindow
 import mx.lux.pos.ui.resources.UI_Standards
 import mx.lux.pos.ui.view.component.DiscountContextMenu
@@ -61,6 +62,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private static final String TXT_CAMBIAR_VENDEDOR = 'Cerrar Sesion'
   private static final String TAG_GENERICO_SEGUROS = 'J'
   private static final String TAG_GENERICO_ARMAZON = 'A'
+
+  private static final String TAG_TC = 'TC'
+  private static final String TAG_TD = 'TD'
 
   private Logger logger = LoggerFactory.getLogger(this.getClass())
   private SwingBuilder sb
@@ -468,8 +472,8 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     if ( SwingUtilities.isLeftMouseButton( ev ) ) {
       if ( ev.clickCount == 1 ) {
         if ( order.due ) {
-          new PaymentDialog( ev.component, order, null ).show()
-          updateOrder( order?.id )
+            new PaymentDialog( ev.component, order, null ).show()
+            updateOrder( order?.id )
         } else {
           sb.optionPane(
               message: 'No hay saldo para aplicar pago',
@@ -484,8 +488,14 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private def doShowPaymentClick = { MouseEvent ev ->
     if ( SwingUtilities.isLeftMouseButton( ev ) ) {
       if ( ev.clickCount == 2 ) {
-        new PaymentDialog( ev.component, order, ev.source.selectedElement ).show()
-        updateOrder( order?.id )
+        Payment pay = ev.source.selectedElement
+        if(Registry.activeTpv && (pay.paymentTypeId.startsWith("TV") || pay.paymentTypeId.startsWith("DV") ||
+                pay.paymentTypeId.startsWith("UV") || pay.paymentTypeId.startsWith("AV")) ){
+
+        } else {
+          new PaymentDialog( ev.component, order, ev.source.selectedElement ).show()
+          updateOrder( order?.id )
+        }
       }
     }
   }
@@ -631,6 +641,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
               ItemController.printWarranty( warranty.amount, warranty.idItem)
             }
             lstWarranty.clear()
+            OrderController.printVoucherTpv( newOrder.id, false )
             reviewForTransfers( newOrder.id )
             this.reset( )
         } else {

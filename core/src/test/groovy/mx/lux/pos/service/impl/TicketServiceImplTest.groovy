@@ -80,4 +80,7 @@ class TicketServiceImplTest extends Specification {
     'error.vm'          | [ '': null ]
     'template/error.vm' | [ '': null ]
   }
+
+
+
 }

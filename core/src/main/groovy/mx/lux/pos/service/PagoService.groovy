@@ -19,4 +19,6 @@ interface PagoService {
 
   Retorno actualizarRetorno( Retorno retorno )
 
+  Pago leerTarjeta( String idOrder, Pago pago )
+
 }

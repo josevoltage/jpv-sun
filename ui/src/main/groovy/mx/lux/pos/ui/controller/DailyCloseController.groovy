@@ -2,6 +2,7 @@ package mx.lux.pos.ui.controller
 
 import groovy.util.logging.Slf4j
 import mx.lux.pos.service.business.Registry
+import org.apache.commons.lang.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import mx.lux.pos.model.*
@@ -250,6 +251,25 @@ class DailyCloseController {
     }
     newTime = time*1000L
     return newTime
+  }
+
+
+  static List<Payment> findTpvPaymentsByDayByInvoice( Date date, String ticket ) {
+    List<Pago> resultados = new ArrayList<>()
+    NotaVenta nota = null
+    if( StringUtils.trimToEmpty(ticket).length() > 0 ){
+      nota = notaVentaService.obtenerNotaVentaPorFactura(StringUtils.trimToEmpty(ticket) )
+    }
+    String idFactura = nota != null ? StringUtils.trimToEmpty(nota.id) : ""
+    resultados = cierreDiarioService.buscarPagosTpvPorFechaCierrePorFactura( date, idFactura )
+    resultados.collect {
+      Payment.toPaymment( it )
+    }
+  }
+
+
+  static void printCardResume( Date fechaCierre ){
+    ticketService.imprimeResumenTarjetas( fechaCierre )
   }
 
 

@@ -17,6 +17,7 @@ import mx.lux.pos.ui.view.dialog.ChargeDialog
 import mx.lux.pos.ui.view.dialog.CorrectedOrdersDialog
 import mx.lux.pos.ui.view.dialog.PartClassDialog
 import mx.lux.pos.ui.view.dialog.SupportDialog
+import mx.lux.pos.ui.view.dialog.ReprintVoucherDialog
 import mx.lux.pos.ui.view.dialog.TransactionsDateSelectionDialog
 import mx.lux.pos.ui.view.dialog.TwoDatesSelectionDialog
 import mx.lux.pos.ui.view.dialog.WaitDialog
@@ -110,6 +111,7 @@ class MainWindow extends JFrame implements KeyListener {
   private JMenuItem diferencesInventoryFileMenuItem
   private JMenuItem captureIncidentsMenuItem
   private JMenu sendReceivedInventoryMenu
+  private JMenuItem reprintVoucherMenuItem
   private PromotionService promotionService
 
 
@@ -450,6 +452,7 @@ class MainWindow extends JFrame implements KeyListener {
                 generateIn2MenuItem.visible = userLoggedIn
                 captureIncidentsMenuItem.visible = userLoggedIn
                 correctTransactionsMenuItem.visible = userLoggedIn
+                reprintVoucherMenuItem.visible = userLoggedIn
               }
           ) {
             changePasswordMenuItem = menuItem( text: 'Cambio de Password',
@@ -515,6 +518,13 @@ class MainWindow extends JFrame implements KeyListener {
                   requestNewSalesDay()
                 }
             )
+            reprintVoucherMenuItem = menuItem( text: 'Reimprimir Voucher',
+                visible: true,
+                actionPerformed: {
+                  ReprintVoucherDialog dialog = new ReprintVoucherDialog()
+                  dialog.show()
+                }
+            )
             sessionMenuItem = menuItem( text: 'Cerrar Sesi\u00f3n',
                 visible: false,
                 actionPerformed: {
@@ -543,6 +553,8 @@ class MainWindow extends JFrame implements KeyListener {
   }
 
   public void keyReleased( KeyEvent e ) {
+
+
   }
 
   public void keyTyped( KeyEvent e ) {

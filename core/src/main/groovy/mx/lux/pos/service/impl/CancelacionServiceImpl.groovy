@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import subtech.GPAYAPI
 
 import javax.annotation.Resource
 
@@ -49,6 +50,10 @@ class CancelacionServiceImpl implements CancelacionService {
 
     @Resource
     private DevolucionRepository devolucionRepository
+
+
+    private String TAG_TC = "TC"
+    private String TAG_TD = "TD"
 
     @Override
     List<CausaCancelacion> listarCausasCancelacion() {
@@ -416,4 +421,54 @@ class CancelacionServiceImpl implements CancelacionService {
         log.debug("obtiene causa: ${causa?.descripcion}")
         return causa != null ? causa : null
     }
+
+
+
+  @Override
+  String cancelaVoucherTpv( Integer idPago ){
+    String transaccion = ""
+    Pago pago = pagoRepository.findOne(idPago)
+    if( pago != null && pago.idTerminal.contains("|") ){
+      String host = Registry.hostTpv
+      Integer puerto = Registry.portTpv
+      Integer timeout = Registry.timeoutTpv
+      String user = Registry.userTpv
+      String pass = Registry.passTpv
+      GPAYAPI ctx = new GPAYAPI();
+      ctx.SetAttribute( "HOST", host );
+      ctx.SetAttribute( "PORT", puerto )
+      ctx.SetAttribute( "TIMEOUT", timeout );
+      ctx.SetString( "trn_usr_id", user )
+      ctx.SetString( "trn_password", pass )
+      ctx.SetString( "dcs_reply_get", "localhost" )
+      String[] data = pago.idTerminal.split(/\|/)
+      String seg = ""
+      if(data.length >= 5){
+        seg = data[1]
+      }
+      if( StringUtils.trimToEmpty(pago.fecha.format("dd/MM/yyyy")).equalsIgnoreCase(new Date().format("dd/MM/yyyy"))){
+        ctx.SetString( "dcs_form", "T120S000" )
+        ctx.SetString( "trn_orig_id", seg )
+      } else {
+        ctx.SetString( "dcs_form", "T040S000" )
+        ctx.SetFloat( "trn_amount", pago.monto.doubleValue() )
+        ctx.SetString( "trn_orig_id", seg )
+        ctx.SetString("trn_auth_code", StringUtils.trimToEmpty(pago.referenciaClave))
+      }
+      Socket socket = ctx.TCP_Open();
+      int execute = ctx.Execute()
+      println "Respuesta de la ejecucion: "+execute
+      if ( execute == 0 && StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ){
+        if(ctx.GetString("dcs_form").equalsIgnoreCase("T120S000")){
+          transaccion = "CANCELACION"
+        } else if(ctx.GetString("dcs_form").equalsIgnoreCase("T040S000")){
+          transaccion = "DEVOLUCION"
+        }
+      }
+    }
+    return transaccion
+  }
+
+
+
 }
