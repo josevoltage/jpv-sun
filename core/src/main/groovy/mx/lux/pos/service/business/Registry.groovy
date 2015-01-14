@@ -432,6 +432,10 @@ class Registry {
     return  asString(TipoParametro.TPV_AFILIACION)
   }
 
+  static String getNoAfiliacionUsd() {
+    return  asString(TipoParametro.TPV_AFILIACION_USD)
+  }
+
   static String getURL( String pAckType ) {
     String url = ''
     String type = StringUtils.trimToEmpty( pAckType ).toUpperCase( )

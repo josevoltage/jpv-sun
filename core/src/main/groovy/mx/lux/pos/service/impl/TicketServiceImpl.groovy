@@ -2074,7 +2074,7 @@ class TicketServiceImpl implements TicketService {
           importe: formatter.format(importe),
           reimpresion: reimpresion,
           moneda: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? "USD" : "MXN",
-          afiliacion: StringUtils.trimToEmpty(Registry.noAfiliacion),
+          afiliacion: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? StringUtils.trimToEmpty(Registry.noAfiliacionUsd) : StringUtils.trimToEmpty(Registry.noAfiliacion),
           lecturaTar: lecturaTar
       ]
       imprimeTicket( 'template/ticket-tpv.vm', datos )
@@ -2226,7 +2226,7 @@ class TicketServiceImpl implements TicketService {
                   cliente: cliente,
                   importe: String.format("-%s",formatter.format(importe)),
                   moneda: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? "USD" : "MXN",
-                  afiliacion: StringUtils.trimToEmpty(Registry.noAfiliacion),
+                  afiliacion: StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase(TAG_FORMA_PAGO_TCD) ? StringUtils.trimToEmpty(Registry.noAfiliacionUsd) : StringUtils.trimToEmpty(Registry.noAfiliacion),
                   lecturaTar: lecturaTar
           ]
           imprimeTicket( 'template/ticket-tpv-can.vm', datos )
