@@ -36,7 +36,8 @@ ${COLUMNAS}
 #SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)${COL_DET_2}Descto:${COL_DET_3}#altnull(${descuento})${CR}
 #SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)${COL_DET_2}Total:${COL_DET_3}#altnull(${venta_neta})${CR}
 #ALINEAR_DERECHA()#SET_STYLE(${FUENTE_B} 0 0 0 0)#altnull(${texto_venta_neta})${CR}
-#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $pago in $pagos )${COL_DET_1}${pago.tipo_pago}${COL_DET_3}${pago.monto}${LF}#end${CR}
+#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $pago in $pagos )${COL_DET_1}${pago.tipo_pago}${COL_DET_3}${pago.monto}
+#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)#if( $tipoPagoUsd )${COL_DET_1}USD${COL_DET_3}${pago.dolares}#end${LF}#end${CR}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $comentario in $comentarios )${comentario}${LF}#end${CR}
 #if( $existPromo != '' )#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)                      PROMOCIONES:
 #foreach( $promocion in $promociones )          ${promocion}${LF}#end${CR}

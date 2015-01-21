@@ -250,6 +250,7 @@ class TicketServiceImpl implements TicketService {
         detalles.add( detalle )
       }
       Boolean pagoUsd = false;
+      Boolean tipoPagoUsd = false;
       def pagos = [ ]
       List<Pago> pagosLst = pagoRepository.findByIdFacturaOrderByFechaAsc( idNotaVenta )
       pagosLst?.each { Pago pmt ->
@@ -258,6 +259,9 @@ class TicketServiceImpl implements TicketService {
         Integer pos = ( ref.size() >= 4 ) ? ( ref.size() - 4 ) : 0
         String tipoPago
         boolean creditoEmp = pmt?.eTipoPago?.equals( Registry.getTipoPagoCreditoEmpleado() )
+        if(Registry.tipoPagoDolares.contains(StringUtils.trimToEmpty(pmt.idFPago))){
+          tipoPagoUsd = true
+        }
         if ( creditoEmp ) {
           tipoPago = pmt?.eTipoPago?.descripcion
         } else {
@@ -266,9 +270,16 @@ class TicketServiceImpl implements TicketService {
         if(pmt.idFPago.equalsIgnoreCase(TAG_FORMA_PAGO_USD)){
             pagoUsd = true
         }
+        BigDecimal usdAmount = BigDecimal.ZERO
+        try{
+          if( StringUtils.trimToEmpty(pmt.idPlan) ){
+            usdAmount = NumberFormat.getInstance().parse( StringUtils.trimToEmpty(pmt.idPlan) )
+          }
+        } catch ( NumberFormatException e ) { println e }
         def pago = [
             tipo_pago: tipoPago,
-            monto: formatter.format( monto )
+            monto: formatter.format( monto ),
+            dolares: tipoPagoUsd ? formatter.format( usdAmount ) : BigDecimal.ZERO
         ]
         pagos.add( pago )
 
@@ -347,6 +358,7 @@ class TicketServiceImpl implements TicketService {
             promociones.add( data )
           }
       }
+
       def items = [
           nombre_ticket: 'ticket-venta',
           nota_venta: notaVenta,
@@ -357,6 +369,8 @@ class TicketServiceImpl implements TicketService {
           descuento: formatter.format( subtotal.subtract( ventaNeta ) ),
           detalles: detalles,
           pagos: pagos,
+          pagoUsd: pagoUsd,
+          tipoPagoUsd: tipoPagoUsd,
           articulos: totalArticulos,
           cliente: notaVenta.cliente,
           empleado: empleado,
