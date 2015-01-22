@@ -272,7 +272,7 @@ class TicketServiceImpl implements TicketService {
         }
         BigDecimal usdAmount = BigDecimal.ZERO
         try{
-          if( StringUtils.trimToEmpty(pmt.idPlan) ){
+          if( StringUtils.trimToEmpty(pmt.idPlan) && tipoPagoUsd && pmt.idPlan.isNumber()){
             usdAmount = NumberFormat.getInstance().parse( StringUtils.trimToEmpty(pmt.idPlan) )
           }
         } catch ( NumberFormatException e ) { println e }
