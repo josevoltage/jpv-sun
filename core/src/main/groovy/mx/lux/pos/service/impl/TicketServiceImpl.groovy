@@ -784,8 +784,7 @@ class TicketServiceImpl implements TicketService {
               resumenTerminaleTcmTpvCan.importe.compareTo(BigDecimal.ZERO) < 0){
         resumenTerminalesTpvCan.add(resumenTerminaleTcmTpvCan)
       }
-      if( resumenTerminaleTcmTpvCan.importe.compareTo(BigDecimal.ZERO) > 0 ||
-            resumenTerminaleTcmTpvCan.importe.compareTo(BigDecimal.ZERO) < 0){
+      if( resumenTerminaleTcmTpvDev.importe.compareTo(BigDecimal.ZERO) > 0 ){
         resumenTerminalesTpvCan.add(resumenTerminaleTcmTpvDev)
       }
       List<Pago> vales = pagoRepository.findBy_Fecha( fechaCierre )

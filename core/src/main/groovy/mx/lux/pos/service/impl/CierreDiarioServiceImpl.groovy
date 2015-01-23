@@ -726,6 +726,26 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
     String nombreFichero = "3.${ sucursal.id }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZV"
     log.info( "Generando fichero ZV ${ nombreFichero }" )
     List<Devolucion> devoluciones = devolucionRepository.findBy_Fecha( fechaCierre )
+    for(Devolucion dev : devoluciones){
+      String idTerminal = ""
+      if( dev.pago.idTerminal.contains("|") ){
+        String[] data = dev.pago.idTerminal.split(/\|/)
+        if(!StringUtils.trimToEmpty(dev.pago.idTerminal).contains("BANAMEX") && !StringUtils.trimToEmpty(dev.pago.idFPago).equalsIgnoreCase(TAG_TARJETA_DOLARES)){
+          if( !StringUtils.trimToEmpty(dev.pago.idFPago).equalsIgnoreCase(TAG_TARJETA_AMERICAN_E)){
+            if( StringUtils.trimToEmpty(dev.pago.idPlan).length() > 0 && !StringUtils.trimToEmpty(dev.pago.idPlan).equalsIgnoreCase("1") ){
+              dev.pago.idTerminal = data[0].replace("MASTERCARD","")
+              dev.pago.idTerminal = dev.pago.idTerminal.replace("VISA","")
+            } else {
+              dev.pago.idTerminal = "BMX"
+            }
+          } else {
+            dev.pago.idTerminal = "AMX"
+          }
+        } else {
+          dev.pago.idTerminal = "BMX"
+        }
+      }
+    }
     def datos = [ sucursal: sucursal,
         fecha_ahora: CustomDateUtils.format( new Date(), 'dd-MM-yyyy' ),
         fecha_cierre: CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ),
