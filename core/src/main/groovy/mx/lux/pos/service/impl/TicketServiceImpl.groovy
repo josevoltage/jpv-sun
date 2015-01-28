@@ -928,7 +928,7 @@ class TicketServiceImpl implements TicketService {
             or(pay.idFPago.eq('VUS'))).and(pay.notaVenta.factura.isNotEmpty()).and(pay.notaVenta.factura.isNotNull()) ) as List<Pago>
       for(Pago pago : lstPagosVales){
           BigDecimal montoDolares = BigDecimal.ZERO
-          if( pago?.idPlan != null && pago?.idPlan.isNumber() ){
+          if( pago?.idPlan != null && StringUtils.trimToEmpty(pago?.idPlan).isNumber() ){
               Double dolares = 0.00
               try{
                 montoDolares = new BigDecimal( NumberFormat.getInstance().parse(pago?.idPlan).doubleValue() )

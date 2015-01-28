@@ -26,6 +26,7 @@ import java.text.NumberFormat
 class NotaVentaServiceImpl implements NotaVentaService {
 
   private static final String DATE_TIME_FORMAT = 'dd-MM-yyyy HH:mm:ss'
+  private static final String TAG_VACIO = '?'
 
   @Resource
   private NotaVentaRepository notaVentaRepository
@@ -493,7 +494,7 @@ class NotaVentaServiceImpl implements NotaVentaService {
                             } catch ( NumberFormatException e ){ println e }
                             Articulo articulo = articuloRepository.findOne( idArticulo )
                             if( articulo != null ){
-                                articulo.subtipo = data[1]
+                                articulo.subtipo = StringUtils.trimToEmpty(data[1]).equalsIgnoreCase(TAG_VACIO) ? "" : data[1]
                                 articuloRepository.save( articulo )
                                 articuloRepository.flush()
                             }
