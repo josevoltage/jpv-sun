@@ -118,6 +118,8 @@ class PagoServiceImpl implements PagoService {
     Integer timeout = Registry.timeoutTpv
     String user = Registry.userTpv
     String pass = Registry.passTpv
+    String pagoSelect = StringUtils.trimToEmpty(tmpPago.idFPago)
+    String pagoReturn = ""
     GPAYAPI ctx = new GPAYAPI();
       ctx.SetAttribute( "HOST", host );
       ctx.SetAttribute( "PORT", puerto )
@@ -170,14 +172,17 @@ class PagoServiceImpl implements PagoService {
           pago.idTerminal = ctx.GetString("trn_pro_name")+"|"+ctx.GetString("trn_id")+"|"+ctx.GetString("trn_aid")+"|"+ctx.GetString("trn_arqc ")+"|"+ctx.GetString("trn_cardholder_name")+"|"+lecturaTar+"|"
           String tipo = ""
           if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("1")){
+            pagoReturn = "TARJETA CREDITO"
             if( pago.idFPago.startsWith(TAG_TD) || pago.idFPago.startsWith(TAG_TAE) ){
               pago.idFPago = "TV"
             }
           } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("2")){
+            pagoReturn = "TARJETA DEBITO"
             if( pago.idFPago.startsWith(TAG_TC) || pago.idFPago.startsWith(TAG_TAE) ){
                   pago.idFPago = "DV"
             }
           } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("0")){
+              pagoReturn = "DESCONOCIDA"
               if( pago.idFPago.startsWith(TAG_TD) || pago.idFPago.startsWith(TAG_TC) ){
                 pago.idFPago = "AV"
               }
@@ -198,7 +203,17 @@ class PagoServiceImpl implements PagoService {
           ctx.TCP_Close();
           pago = null
       }
+
+      String ruta = "${Registry.processedFilesPath}/logTpv.txt"
+      File archivo = new File(ruta);
+      FileWriter escribir = new FileWriter(archivo,true);
+      if(!archivo.exists()) {
+        archivo.createNewFile()
+      }
+      escribir.write("IdFactura: ${pago.idFactura} Fecha:${new Date().format('dd-MM-yyyy HH:mm')} PagoSeleccionado:${pagoSelect} PagoRegresoTpv:${pagoReturn}")
+      escribir.close()
       ctx.ClearFields();
+
     return pago
   }
 
