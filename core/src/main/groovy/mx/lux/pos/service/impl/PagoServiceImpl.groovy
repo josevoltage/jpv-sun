@@ -210,7 +210,7 @@ class PagoServiceImpl implements PagoService {
       if(!archivo.exists()) {
         archivo.createNewFile()
       }
-      escribir.write("IdFactura: ${pago.idFactura} Fecha:${new Date().format('dd-MM-yyyy HH:mm')} PagoSeleccionado:${pagoSelect} PagoRegresoTpv:${pagoReturn}")
+      escribir.write("IdFactura: ${StringUtils.trimToEmpty(pago?.idFactura)} Fecha:${new Date().format('dd-MM-yyyy HH:mm')} PagoSeleccionado:${pagoSelect} PagoRegresoTpv:${pagoReturn}")
       escribir.close()
       ctx.ClearFields();
 
