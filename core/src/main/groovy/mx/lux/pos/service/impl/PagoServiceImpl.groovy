@@ -1,9 +1,14 @@
 package mx.lux.pos.service.impl
 
 import groovy.util.logging.Slf4j
+import mx.lux.pos.model.FormaPago
+import mx.lux.pos.model.LogTpv
+import mx.lux.pos.model.NotaVenta
 import mx.lux.pos.model.Pago
 import mx.lux.pos.model.QRetorno
 import mx.lux.pos.model.Retorno
+import mx.lux.pos.repository.FormaPagoRepository
+import mx.lux.pos.repository.LogTpvRepository
 import mx.lux.pos.repository.NotaVentaRepository
 import mx.lux.pos.repository.PagoRepository
 import mx.lux.pos.repository.RetornoRepository
@@ -32,6 +37,12 @@ class PagoServiceImpl implements PagoService {
 
   @Resource
   private RetornoRepository retornoRepository
+
+  @Resource
+  private LogTpvRepository logTpvRepository
+
+  @Resource
+  private FormaPagoRepository formaPagoRepository
 
   @Resource
   private TicketService ticketService
@@ -111,14 +122,15 @@ class PagoServiceImpl implements PagoService {
 
 
   @Override
-  Pago leerTarjeta( String idOrder, Pago tmpPago ){
+  Pago leerTarjeta( String idOrder, Pago tmpPago, String idEmployee ){
     Pago pago = tmpPago
     String host = Registry.hostTpv
     Integer puerto = Registry.portTpv
     Integer timeout = Registry.timeoutTpv
     String user = Registry.userTpv
     String pass = Registry.passTpv
-    String pagoSelect = StringUtils.trimToEmpty(tmpPago.idFPago)
+    FormaPago formaPago = formaPagoRepository.findOne( StringUtils.trimToEmpty(tmpPago.idFPago) )
+    String pagoSelect = formaPago != null ? formaPago.descripcion : StringUtils.trimToEmpty(tmpPago.idFPago)
     String pagoReturn = ""
     GPAYAPI ctx = new GPAYAPI();
       ctx.SetAttribute( "HOST", host );
@@ -204,7 +216,23 @@ class PagoServiceImpl implements PagoService {
           pago = null
       }
 
-      String ruta = "${Registry.processedFilesPath}/logTpv.txt"
+      Integer id = logTpvRepository.logTpvSequence
+      LogTpv logTpv = new LogTpv()
+      logTpv.id = id != null ? id+1 : 1
+      logTpv.idFactura = StringUtils.trimToEmpty(idOrder)
+      logTpv.fecha = new Date()
+      logTpv.pagoSeleccionado = pagoSelect
+      logTpv.pagoRecibido = pagoReturn
+      logTpv.cadena = StringUtils.trimToEmpty(pago.idTerminal)
+      logTpv.tarjeta = pago.clave
+      logTpv.autorizacion = pago.referenciaClave
+      logTpv.monto = pago.monto
+      logTpv.empleado = idEmployee
+      logTpv.plan = pago.idPlan
+      try{
+        logTpvRepository.saveAndFlush( logTpv )
+      } catch ( Exception e ){ println e }
+      /*String ruta = "${Registry.processedFilesPath}/logTpv.txt"
       File archivo = new File(ruta);
       FileWriter escribir = new FileWriter(archivo,true);
       if(!archivo.exists()) {
@@ -212,7 +240,7 @@ class PagoServiceImpl implements PagoService {
       }
       escribir.write("\nIdFactura: ${StringUtils.trimToEmpty(idOrder)} Fecha:${new Date().format('dd-MM-yyyy HH:mm')} PagoSeleccionado:${pagoSelect} PagoRegresoTpv:${pagoReturn}")
       escribir.close()
-      ctx.ClearFields();
+      ctx.ClearFields();*/
 
     return pago
   }
