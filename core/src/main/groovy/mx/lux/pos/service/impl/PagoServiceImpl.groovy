@@ -5,6 +5,7 @@ import mx.lux.pos.model.FormaPago
 import mx.lux.pos.model.LogTpv
 import mx.lux.pos.model.NotaVenta
 import mx.lux.pos.model.Pago
+import mx.lux.pos.model.QLogTpv
 import mx.lux.pos.model.QRetorno
 import mx.lux.pos.model.Retorno
 import mx.lux.pos.repository.FormaPagoRepository
@@ -228,6 +229,7 @@ class PagoServiceImpl implements PagoService {
       logTpv.autorizacion = pago.referenciaClave
       logTpv.monto = pago.monto
       logTpv.empleado = idEmployee
+      logTpv.reimpresion = '0'
       logTpv.plan = pago.idPlan
       try{
         logTpvRepository.saveAndFlush( logTpv )
@@ -243,6 +245,23 @@ class PagoServiceImpl implements PagoService {
       ctx.ClearFields();*/
 
     return pago
+  }
+
+
+
+  @Override
+  @Transactional
+  void actualizarLogTpv( Pago pago ){
+    QLogTpv qLogTpv = QLogTpv.logTpv
+    LogTpv logTpv = logTpvRepository.findOne( qLogTpv.idFactura.eq(pago.idFactura).and(qLogTpv.autorizacion.eq(pago.referenciaClave)) )
+    if( logTpv != null ){
+      Integer cantReimp = 0
+      try{
+        cantReimp = NumberFormat.getInstance().parse( StringUtils.trimToEmpty(logTpv.reimpresion) )
+      } catch ( NumberFormatException e ){ println "Error al convertir String a Integer "+e }
+      logTpv.reimpresion = StringUtils.trimToEmpty( (cantReimp+1).toString() )
+      logTpvRepository.saveAndFlush( logTpv )
+    }
   }
 
 

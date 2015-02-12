@@ -616,6 +616,7 @@ class OrderController {
       for(Pago pay : lstPagosTarj){
         ticketService.imprimeVoucherTpv( pay, "ORIGINAL", reprint )
         ticketService.imprimeVoucherTpv( pay, "COPIA CLIENTE", reprint )
+        pagoService.actualizarLogTpv( pay )
       }
     }
   }

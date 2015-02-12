@@ -21,4 +21,5 @@ interface PagoService {
 
   Pago leerTarjeta( String idOrder, Pago pago, String idEmployee )
 
+  void actualizarLogTpv( Pago pago )
 }
