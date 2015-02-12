@@ -2,6 +2,7 @@ package mx.lux.pos.ui.view.dialog.dailyclose
 
 import groovy.model.DefaultTableModel
 import groovy.swing.SwingBuilder
+import mx.lux.pos.service.business.Registry
 import mx.lux.pos.ui.controller.DailyCloseController
 import mx.lux.pos.ui.model.DailyClose
 import mx.lux.pos.ui.model.Deposit
@@ -37,6 +38,8 @@ class DailyCloseDepositsDialog extends JDialog {
   private JTextArea observations
   private DefaultTableModel depositsModel
   private List<Deposit> deposits
+
+  private Boolean activeTpv = Registry.activeTpv
 
   DailyCloseDepositsDialog( JPanel parent, DailyClose dailyClose ) {
     this.dailyClose = dailyClose
@@ -117,7 +120,7 @@ class DailyCloseDepositsDialog extends JDialog {
         button( text: 'Resumen diario', enabled: true, actionPerformed: printDailyDigest )
         button( text: 'Cierres de Term.', actionPerformed: closeTerminalsAction )
         button( text: 'Corregir Term.', enabled: dailyClose.isOpen(), actionPerformed: fixTerminalsAction )
-        button( text: 'Resumen TPV', actionPerformed: cardResumeAction )
+        button( text: 'Resumen TPV', actionPerformed: cardResumeAction, visible: activeTpv, constraints: 'hidemode 3' )
         button( text: 'Nuevo Deposito', enabled: dailyClose.isOpen(),
             actionPerformed: {
               new EditDepositDialog( this, closeDate, null, false ).show()
