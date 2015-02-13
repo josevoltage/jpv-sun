@@ -2255,7 +2255,7 @@ class TicketServiceImpl implements TicketService {
     for ( ResumenDiario resumenDiario : lstResumenesDiarios ) {
       if ( resumenDiario.idTerminal.equals( pResumenDiario.idTerminal ) ) {
         found = resumenDiario
-        //resumenDiario.importe = resumenDiario.importe.add(pResumenDiario.importe)
+        resumenDiario.importe = resumenDiario.importe.add(pResumenDiario.importe)
         break
       }
     }
