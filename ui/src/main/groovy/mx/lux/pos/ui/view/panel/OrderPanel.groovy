@@ -100,15 +100,17 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private String autorizacion
   private OperationType currentOperationType
   private Boolean canceledWarranty
+  private MainWindow mainWindow
 
   private String MSJ_ERROR_WARRANTY = ""
   private String TXT_ERROR_WARRANTY = ""
 
   DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
 
-  OrderPanel( ) {
+  OrderPanel( MainWindow mainWindow ) {
     sb = new SwingBuilder()
     order = new Order()
+    this.mainWindow = mainWindow
     customer = CustomerController.findDefaultCustomer()
     promotionList = new ArrayList<PromotionAvailable>()
     promotionListSelected = new ArrayList<>()
@@ -619,6 +621,13 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                     } else {
                       printButton.enabled = true
                       quoteButton.enabled = true
+                      closeButton.enabled = true
+                      operationType.enabled = true
+                      mainWindow.ordersMenu.enabled = true
+                      mainWindow.inventoryMenu.enabled = true
+                      mainWindow.sendReceivedInventoryMenu.enabled = true
+                      mainWindow.reportsMenu.enabled = true
+                      mainWindow.toolsMenu.enabled = true
                     }
                 }
             } else if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.DEFAULT.value) ){
@@ -631,11 +640,25 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 } else {
                     printButton.enabled = true
                     quoteButton.enabled = true
+                    closeButton.enabled = true
+                    operationType.enabled = true
+                    mainWindow.ordersMenu.enabled = true
+                    mainWindow.inventoryMenu.enabled = true
+                    mainWindow.sendReceivedInventoryMenu.enabled = true
+                    mainWindow.reportsMenu.enabled = true
+                    mainWindow.toolsMenu.enabled = true
                 }
             }
         } else {
           printButton.enabled = true
           quoteButton.enabled = true
+          closeButton.enabled = true
+          operationType.enabled = true
+          mainWindow.ordersMenu.enabled = true
+          mainWindow.inventoryMenu.enabled = true
+          mainWindow.sendReceivedInventoryMenu.enabled = true
+          mainWindow.reportsMenu.enabled = true
+          mainWindow.toolsMenu.enabled = true
         }
       } else {
         lstWarranty.clear()
@@ -652,6 +675,13 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         }
         printButton.enabled = true
         quoteButton.enabled = true
+        closeButton.enabled = true
+        operationType.enabled = true
+        mainWindow.ordersMenu.enabled = true
+        mainWindow.inventoryMenu.enabled = true
+        mainWindow.sendReceivedInventoryMenu.enabled = true
+        mainWindow.reportsMenu.enabled = true
+        mainWindow.toolsMenu.enabled = true
       }
     } else {
         sb.optionPane( message: MSJ_FECHA_INCORRECTA, messageType: JOptionPane.ERROR_MESSAGE, )
@@ -659,6 +689,13 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 .show()
       printButton.enabled = true
       quoteButton.enabled = true
+      closeButton.enabled = true
+      operationType.enabled = true
+      mainWindow.ordersMenu.enabled = true
+      mainWindow.inventoryMenu.enabled = true
+      mainWindow.sendReceivedInventoryMenu.enabled = true
+      mainWindow.reportsMenu.enabled = true
+      mainWindow.toolsMenu.enabled = true
     }
     //source.enabled = true
   }
@@ -928,8 +965,15 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     this.reset()
     printButton.enabled = true
     quoteButton.enabled = true
+    closeButton.enabled = true
     annuleButton.visible = false
     itemSearch.enabled = true
+    operationType.enabled = true
+    mainWindow.ordersMenu.enabled = true
+    mainWindow.inventoryMenu.enabled = true
+    mainWindow.sendReceivedInventoryMenu.enabled = true
+    mainWindow.reportsMenu.enabled = true
+    mainWindow.toolsMenu.enabled = true
   }
 
   private void reset() {
@@ -1270,31 +1314,67 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     if ( order.due ) {
       new PaymentDialog( this, order, null, order.due ).show()
       updateOrder( order?.id )
-      if( order.due.compareTo(BigDecimal.ZERO) <= 0 ){
-        saveOrder( )
-        printButton.enabled = true
-        quoteButton.enabled = true
-        annuleButton.visible = false
-        itemSearch.enabled = true
-      } else {
-        if( order.due.compareTo(order.total) == 0 ){
-          printButton.enabled = true
-          quoteButton.enabled = true
-          annuleButton.visible = false
-          itemSearch.enabled = true
-        } else {
-          printButton.enabled = false
-          quoteButton.enabled = false
-          annuleButton.visible = true
-          itemSearch.enabled = false
-        }
-      }
+      processPayment()
     } else {
       sb.optionPane(
          message: 'No hay saldo para aplicar pago',
          messageType: JOptionPane.ERROR_MESSAGE
       ).createDialog( this, 'Pago sin saldo' )
         .show()
+    }
+  }
+
+  void saveOrderAfterPay(){
+    saveOrder( )
+    printButton.enabled = true
+    quoteButton.enabled = true
+    closeButton.enabled = true
+    annuleButton.visible = false
+    itemSearch.enabled = true
+    operationType.enabled = true
+    mainWindow.ordersMenu.enabled = true
+    mainWindow.inventoryMenu.enabled = true
+    mainWindow.sendReceivedInventoryMenu.enabled = true
+    mainWindow.reportsMenu.enabled = true
+    mainWindow.toolsMenu.enabled = true
+  }
+
+
+  void processPayment( ){
+    if( order.due.compareTo(BigDecimal.ZERO) <= 0 ){
+      saveOrderAfterPay( )
+    } else {
+      if( order.due.compareTo(order.total) == 0 ){
+        printButton.enabled = true
+        quoteButton.enabled = true
+        closeButton.enabled = true
+        annuleButton.visible = false
+        itemSearch.enabled = true
+        operationType.enabled = true
+        mainWindow.ordersMenu.enabled = true
+        mainWindow.inventoryMenu.enabled = true
+        mainWindow.sendReceivedInventoryMenu.enabled = true
+        mainWindow.reportsMenu.enabled = true
+        mainWindow.toolsMenu.enabled = true
+      } else {
+        new PaymentDialog( this, order, null, order.due ).show()
+        updateOrder( order?.id )
+        if( order.due.compareTo(BigDecimal.ZERO) <= 0 ){
+          saveOrderAfterPay( )
+        } else {
+          printButton.enabled = false
+          quoteButton.enabled = false
+          closeButton.enabled = false
+          annuleButton.visible = true
+          itemSearch.enabled = false
+          operationType.enabled = false
+          mainWindow.ordersMenu.enabled = false
+          mainWindow.inventoryMenu.enabled = false
+          mainWindow.sendReceivedInventoryMenu.enabled = false
+          mainWindow.reportsMenu.enabled = false
+          mainWindow.toolsMenu.enabled = false
+        }
+      }
     }
   }
 

@@ -152,7 +152,7 @@ class MainWindow extends JFrame implements KeyListener {
                 visible: false,
                 actionPerformed: {
                   mainPanel.remove( orderPanel )
-                  orderPanel = new OrderPanel()
+                  orderPanel = new OrderPanel( this )
                   mainPanel.add( 'orderPanel', orderPanel )
                   mainPanel.layout.show( mainPanel, 'orderPanel' )
                 }
@@ -569,7 +569,7 @@ class MainWindow extends JFrame implements KeyListener {
   }
 
   private def doForwardToDefaultPanel = {
-    orderPanel = new OrderPanel()
+    orderPanel = new OrderPanel( this )
     mainPanel.add( 'orderPanel', orderPanel )
     mainPanel.layout.show( mainPanel, 'orderPanel' )
     User user = Session.get( SessionItem.USER ) as User
