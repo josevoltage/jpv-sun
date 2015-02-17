@@ -618,6 +618,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                         payDue( )
                     } else {
                       printButton.enabled = true
+                      quoteButton.enabled = true
                     }
                 }
             } else if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.DEFAULT.value) ){
@@ -629,10 +630,12 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                     payDue( )
                 } else {
                     printButton.enabled = true
+                    quoteButton.enabled = true
                 }
             }
         } else {
           printButton.enabled = true
+          quoteButton.enabled = true
         }
       } else {
         lstWarranty.clear()
@@ -648,12 +651,14 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             .show()
         }
         printButton.enabled = true
+        quoteButton.enabled = true
       }
     } else {
         sb.optionPane( message: MSJ_FECHA_INCORRECTA, messageType: JOptionPane.ERROR_MESSAGE, )
                 .createDialog( this, TXT_FECHA_INCORRECTA_TITULO )
                 .show()
       printButton.enabled = true
+      quoteButton.enabled = true
     }
     //source.enabled = true
   }
@@ -921,6 +926,10 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     OrderController.printVoucherTpv( order.id, false )
     CancellationController.annuleTpvPayments( StringUtils.trimToEmpty(order.id) )
     this.reset()
+    printButton.enabled = true
+    quoteButton.enabled = true
+    annuleButton.visible = false
+    itemSearch.enabled = true
   }
 
   private void reset() {
@@ -1264,15 +1273,18 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       if( order.due.compareTo(BigDecimal.ZERO) <= 0 ){
         saveOrder( )
         printButton.enabled = true
+        quoteButton.enabled = true
         annuleButton.visible = false
         itemSearch.enabled = true
       } else {
         if( order.due.compareTo(order.total) == 0 ){
           printButton.enabled = true
+          quoteButton.enabled = true
           annuleButton.visible = false
           itemSearch.enabled = true
         } else {
           printButton.enabled = false
+          quoteButton.enabled = false
           annuleButton.visible = true
           itemSearch.enabled = false
         }
