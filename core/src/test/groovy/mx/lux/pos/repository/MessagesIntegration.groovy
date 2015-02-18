@@ -19,17 +19,23 @@ class MessagesIntegration extends Specification {
 
   @Resource
   private MensajeService mensajeService
+
+  @Resource
+  private LogTpvRepository tpvSource
   
 
   def "test Listar Mensajes"(  ) {
     when:
-      def list = source.findAll(  )
+      /*def list = source.findAll(  )
       for ( Mensaje m in list ) {
         println m.dump()
-      }
+      }*/
+    def tpvId = tpvSource.logTpvSequence
+    println tpvId
       
     then:
-      list.size()== 10
+      //list.size()== 10
+      tpvId > 0
   }
 
   def "prueba de clase MessageManager"( ){

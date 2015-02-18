@@ -1,9 +1,15 @@
 package mx.lux.pos.service.impl
 
 import groovy.util.logging.Slf4j
+import mx.lux.pos.model.FormaPago
+import mx.lux.pos.model.LogTpv
+import mx.lux.pos.model.NotaVenta
 import mx.lux.pos.model.Pago
+import mx.lux.pos.model.QLogTpv
 import mx.lux.pos.model.QRetorno
 import mx.lux.pos.model.Retorno
+import mx.lux.pos.repository.FormaPagoRepository
+import mx.lux.pos.repository.LogTpvRepository
 import mx.lux.pos.repository.NotaVentaRepository
 import mx.lux.pos.repository.PagoRepository
 import mx.lux.pos.repository.RetornoRepository
@@ -32,6 +38,12 @@ class PagoServiceImpl implements PagoService {
 
   @Resource
   private RetornoRepository retornoRepository
+
+  @Resource
+  private LogTpvRepository logTpvRepository
+
+  @Resource
+  private FormaPagoRepository formaPagoRepository
 
   @Resource
   private TicketService ticketService
@@ -111,13 +123,16 @@ class PagoServiceImpl implements PagoService {
 
 
   @Override
-  Pago leerTarjeta( String idOrder, Pago tmpPago ){
+  Pago leerTarjeta( String idOrder, Pago tmpPago, String idEmployee ){
     Pago pago = tmpPago
     String host = Registry.hostTpv
     Integer puerto = Registry.portTpv
     Integer timeout = Registry.timeoutTpv
     String user = Registry.userTpv
     String pass = Registry.passTpv
+    FormaPago formaPago = formaPagoRepository.findOne( StringUtils.trimToEmpty(tmpPago.idFPago) )
+    String pagoSelect = formaPago != null ? formaPago.descripcion : StringUtils.trimToEmpty(tmpPago.idFPago)
+    String pagoReturn = ""
     GPAYAPI ctx = new GPAYAPI();
       ctx.SetAttribute( "HOST", host );
       ctx.SetAttribute( "PORT", puerto )
@@ -170,14 +185,17 @@ class PagoServiceImpl implements PagoService {
           pago.idTerminal = ctx.GetString("trn_pro_name")+"|"+ctx.GetString("trn_id")+"|"+ctx.GetString("trn_aid")+"|"+ctx.GetString("trn_arqc ")+"|"+ctx.GetString("trn_cardholder_name")+"|"+lecturaTar+"|"
           String tipo = ""
           if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("1")){
+            pagoReturn = "TARJETA CREDITO"
             if( pago.idFPago.startsWith(TAG_TD) || pago.idFPago.startsWith(TAG_TAE) ){
               pago.idFPago = "TV"
             }
           } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("2")){
+            pagoReturn = "TARJETA DEBITO"
             if( pago.idFPago.startsWith(TAG_TC) || pago.idFPago.startsWith(TAG_TAE) ){
                   pago.idFPago = "DV"
             }
           } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("0")){
+              pagoReturn = "DESCONOCIDA"
               if( pago.idFPago.startsWith(TAG_TD) || pago.idFPago.startsWith(TAG_TC) ){
                 //pago.idFPago = "AV"
               }
@@ -198,8 +216,52 @@ class PagoServiceImpl implements PagoService {
           ctx.TCP_Close();
           pago = null
       }
-      ctx.ClearFields();
+
+      Integer id = logTpvRepository.logTpvSequence
+      LogTpv logTpv = new LogTpv()
+      logTpv.id = id != null ? id+1 : 1
+      logTpv.idFactura = StringUtils.trimToEmpty(idOrder)
+      logTpv.fecha = new Date()
+      logTpv.pagoSeleccionado = pagoSelect
+      logTpv.pagoRecibido = pagoReturn
+      logTpv.cadena = StringUtils.trimToEmpty(pago.idTerminal)
+      logTpv.tarjeta = pago.clave
+      logTpv.autorizacion = pago.referenciaClave
+      logTpv.monto = pago.monto
+      logTpv.empleado = idEmployee
+      logTpv.reimpresion = '0'
+      logTpv.plan = pago.idPlan
+      try{
+        logTpvRepository.saveAndFlush( logTpv )
+      } catch ( Exception e ){ println e }
+      /*String ruta = "${Registry.processedFilesPath}/logTpv.txt"
+      File archivo = new File(ruta);
+      FileWriter escribir = new FileWriter(archivo,true);
+      if(!archivo.exists()) {
+        archivo.createNewFile()
+      }
+      escribir.write("\nIdFactura: ${StringUtils.trimToEmpty(idOrder)} Fecha:${new Date().format('dd-MM-yyyy HH:mm')} PagoSeleccionado:${pagoSelect} PagoRegresoTpv:${pagoReturn}")
+      escribir.close()
+      ctx.ClearFields();*/
+
     return pago
+  }
+
+
+
+  @Override
+  @Transactional
+  void actualizarLogTpv( Pago pago ){
+    QLogTpv qLogTpv = QLogTpv.logTpv
+    LogTpv logTpv = logTpvRepository.findOne( qLogTpv.idFactura.eq(pago.idFactura).and(qLogTpv.autorizacion.eq(pago.referenciaClave)) )
+    if( logTpv != null ){
+      Integer cantReimp = 0
+      try{
+        cantReimp = NumberFormat.getInstance().parse( StringUtils.trimToEmpty(logTpv.reimpresion) )
+      } catch ( NumberFormatException e ){ println "Error al convertir String a Integer "+e }
+      logTpv.reimpresion = StringUtils.trimToEmpty( (cantReimp+1).toString() )
+      logTpvRepository.saveAndFlush( logTpv )
+    }
   }
 
 

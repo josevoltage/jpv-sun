@@ -577,7 +577,8 @@ class OrderController {
     pago.plan = new mx.lux.pos.model.Plan()
     pago.plan.id = StringUtils.trimToEmpty(tmpPayment.planId)
     pago.plan.descripcion = tmpPayment.plan
-    pago = pagoService.leerTarjeta( idOrder, pago )
+    User user = Session.get( SessionItem.USER ) as User
+    pago = pagoService.leerTarjeta( idOrder, pago, user.username )
     if( pago != null ){
       payment = new Payment(
          order: pago.idFactura,
@@ -615,6 +616,7 @@ class OrderController {
       for(Pago pay : lstPagosTarj){
         ticketService.imprimeVoucherTpv( pay, "ORIGINAL", reprint )
         ticketService.imprimeVoucherTpv( pay, "COPIA CLIENTE", reprint )
+        pagoService.actualizarLogTpv( pay )
       }
     }
   }
