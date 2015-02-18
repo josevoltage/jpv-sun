@@ -81,6 +81,7 @@ class PaymentDialog extends JDialog implements KeyListener{
     tmpPayment.paymentType = tmpPayment.paymentType ?: defaultPaymentType?.description
     buildUI( parent )
     doBindings()
+    paymentType.selectedIndex = -1
   }
 
   private void buildUI( Component parent ) {
