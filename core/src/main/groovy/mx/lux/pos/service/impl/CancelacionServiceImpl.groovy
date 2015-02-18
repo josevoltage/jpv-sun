@@ -464,6 +464,7 @@ class CancelacionServiceImpl implements CancelacionService {
         } else if(ctx.GetString("dcs_form").equalsIgnoreCase("T040S000")){
           transaccion = "DEVOLUCION"
         }
+        println "Objeto Devuelto: "+ctx.dump()
       }
     }
     return transaccion
