@@ -54,6 +54,7 @@ class PaymentDialog extends JDialog implements KeyListener{
   private List<Terminal> terminals
   private List<Plan> plans
   private String folio = ''
+  private BigDecimal due
   private static final Integer ID_TERM_AMERICANEXP = 7;
   private static final String PLAN_TERM_AMERICANEXP = 'NORMAL AMERICAN EXPRESS';
   private static final String TAG_PAGO_MN_PESOS = 'MN EFECTIVO';
@@ -65,9 +66,10 @@ class PaymentDialog extends JDialog implements KeyListener{
 
   private static final String DOLARES = 'USD Recibidos'
 
-  PaymentDialog( Component parent, Order order, final Payment payment ) {
+  PaymentDialog( Component parent, Order order, final Payment payment, BigDecimal due ) {
     this.order = order
     this.payment = payment
+    this.due = due
     sb = new SwingBuilder()
     defaultPaymentType = PaymentController.findDefaultPaymentType()
     paymentTypes = PaymentController.findActivePaymentTypes()
@@ -97,6 +99,7 @@ class PaymentDialog extends JDialog implements KeyListener{
     ) {
       label( 'Importe' )
       amount = formattedTextField( font: new Font( '', Font.BOLD, 24 ),
+          text: formatter.format( due ),
           format: formatter,
           //inputVerifier: new NotEmptyVerifier(),
           horizontalAlignment: JTextField.RIGHT,

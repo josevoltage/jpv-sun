@@ -2,6 +2,7 @@ package mx.lux.pos.ui.controller
 
 import groovy.util.logging.Slf4j
 import mx.lux.pos.service.CancelacionService
+import mx.lux.pos.service.NotaVentaService
 import mx.lux.pos.service.PagoService
 import mx.lux.pos.service.TicketService
 import mx.lux.pos.service.business.Registry
@@ -19,11 +20,14 @@ class CancellationController {
   private static CancelacionService cancelacionService
   private static TicketService ticketService
   private static PagoService pagoService
+  private static NotaVentaService notaVentaService
 
-  @Autowired CancellationController( CancelacionService cancelacionService, TicketService ticketService, PagoService pagoService ) {
+  @Autowired CancellationController( CancelacionService cancelacionService, TicketService ticketService, PagoService pagoService,
+                                     NotaVentaService notaVentaService) {
     this.cancelacionService = cancelacionService
     this.ticketService = ticketService
     this.pagoService = pagoService
+    this.notaVentaService = notaVentaService
   }
 
   static List<String> findAllCancellationReasons( ) {
@@ -224,6 +228,25 @@ class CancellationController {
       log.info( 'obteniendo lista de causas de cancelacion' )
       CausaCancelacion result = cancelacionService.causaCancelacion( id )
       return result.descripcion
+  }
+
+
+
+  static void annuleTpvPayments( String idOrder ){
+    NotaVenta notaVenta = notaVentaService.obtenerNotaVenta( idOrder )
+    if( notaVenta != null ){
+      for(Pago pago : notaVenta.pagos){
+        if( Registry.activeTpv ){
+          String transaccion = cancelacionService.cancelaVoucherTpv( pago.id )
+          if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
+            for(int i=0;i<2;i++){
+              String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
+              ticketService.imprimeVoucherCancelacionTpv(pago.id, copia, transaccion)
+            }
+          }
+        }
+      }
+    }
   }
 
 

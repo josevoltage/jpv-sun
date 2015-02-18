@@ -179,7 +179,7 @@ class PagoServiceImpl implements PagoService {
             }
           } else if(StringUtils.trimToEmpty(ctx.GetString("trn_pre_type")).equalsIgnoreCase("0")){
               if( pago.idFPago.startsWith(TAG_TD) || pago.idFPago.startsWith(TAG_TC) ){
-                pago.idFPago = "AV"
+                //pago.idFPago = "AV"
               }
           }
           try{
