@@ -1235,7 +1235,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                      idArmUsed = idArm.item.id
                      break
                    } else {
-                     validTmp = false
+                     //validTmp = false
                      //break
                    }
                 }
