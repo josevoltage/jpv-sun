@@ -40,6 +40,9 @@ class CancelacionServiceImpl implements CancelacionService {
     private ModificacionRepository modificacionRepository
 
     @Resource
+    private LogTpvRepository logTpvRepository
+
+    @Resource
     private ModificacionEmpRepository modificacionEmpRepository
 
     @Resource
@@ -425,7 +428,7 @@ class CancelacionServiceImpl implements CancelacionService {
 
 
   @Override
-  String cancelaVoucherTpv( Integer idPago ){
+  String cancelaVoucherTpv( Integer idPago, String idEmpleado ){
     String transaccion = ""
     Pago pago = pagoRepository.findOne(idPago)
     if( pago != null && pago.idTerminal.contains("|") ){
@@ -464,7 +467,24 @@ class CancelacionServiceImpl implements CancelacionService {
         } else if(ctx.GetString("dcs_form").equalsIgnoreCase("T040S000")){
           transaccion = "DEVOLUCION"
         }
-        println "Objeto Devuelto: "+ctx.dump()
+
+        LogTpv logTpv = new LogTpv()
+        Integer id = logTpvRepository.logTpvSequence
+        logTpv.id = id != null ? id+1 : 1
+        logTpv.idFactura = StringUtils.trimToEmpty(pago.idFactura)
+        logTpv.fecha = new Date()
+        logTpv.pagoSeleccionado = StringUtils.trimToEmpty(pago.idFPago)
+        logTpv.pagoRecibido = StringUtils.trimToEmpty(pago.idFPago)
+        logTpv.cadena = StringUtils.trimToEmpty(pago.idTerminal)
+        logTpv.tarjeta = pago.clave
+        logTpv.autorizacion = pago.referenciaClave
+        logTpv.monto = pago.monto
+        logTpv.empleado = idEmpleado
+        logTpv.tipo = transaccion.substring(0,1)
+        logTpv.plan = pago.idPlan
+        try{
+          logTpvRepository.saveAndFlush( logTpv )
+        } catch ( Exception e ){ println e }
       }
     }
     return transaccion

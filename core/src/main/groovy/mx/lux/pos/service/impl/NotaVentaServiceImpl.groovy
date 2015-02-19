@@ -32,6 +32,9 @@ class NotaVentaServiceImpl implements NotaVentaService {
   private NotaVentaRepository notaVentaRepository
 
   @Resource
+  private LogTpvRepository logTpvRepository
+
+  @Resource
   private DetalleNotaVentaRepository detalleNotaVentaRepository
 
   @Resource
@@ -536,6 +539,34 @@ class NotaVentaServiceImpl implements NotaVentaService {
   @Override
   List<NotaVenta> obtenerNotasCanSinTransaccion( ){
     return notaVentaRepository.findOrdersCanWithoutTrans()
+  }
+
+
+
+  @Override
+  @Transactional
+  void guardaLogTpv( String idFactura, String idEmpleado ){
+    QLogTpv qLogTpv = QLogTpv.logTpv
+    List<LogTpv> logsTpv = logTpvRepository.findAll( qLogTpv.idFactura.eq(idFactura).and(qLogTpv.tipo.eq("V")) )
+    for(LogTpv log : logsTpv){
+      Integer id = logTpvRepository.logTpvSequence
+      LogTpv logTpv = new LogTpv()
+      logTpv.id = id != null ? id+1 : 1
+      logTpv.idFactura = StringUtils.trimToEmpty(idFactura)
+      logTpv.fecha = new Date()
+      logTpv.pagoSeleccionado = log.pagoSeleccionado
+      logTpv.pagoRecibido = log.pagoRecibido
+      logTpv.cadena = StringUtils.trimToEmpty(log.cadena)
+      logTpv.tarjeta = log.tarjeta
+      logTpv.autorizacion = log.autorizacion
+      logTpv.monto = log.monto
+      logTpv.empleado = idEmpleado
+      logTpv.tipo = 'R'
+      logTpv.plan = log.plan
+      try{
+        logTpvRepository.saveAndFlush( logTpv )
+      } catch ( Exception e ){ println e }
+    }
   }
 
 

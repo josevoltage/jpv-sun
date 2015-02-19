@@ -229,7 +229,7 @@ class PagoServiceImpl implements PagoService {
       logTpv.autorizacion = pago.referenciaClave
       logTpv.monto = pago.monto
       logTpv.empleado = idEmployee
-      logTpv.reimpresion = '0'
+      logTpv.tipo = 'V'
       logTpv.plan = pago.idPlan
       try{
         logTpvRepository.saveAndFlush( logTpv )

@@ -45,8 +45,8 @@ public class LogTpv implements Serializable {
     @Column( name = "monto" )
     private BigDecimal monto;
 
-    @Column( name = "reimpresion" )
-    private String reimpresion;
+    @Column( name = "tipo" )
+    private String tipo;
 
     @Column( name = "empleado" )
     private String empleado;
@@ -128,12 +128,12 @@ public class LogTpv implements Serializable {
         this.monto = monto;
     }
 
-    public String getReimpresion() {
-        return reimpresion;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setReimpresion(String reimpresion) {
-        this.reimpresion = reimpresion;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public String getEmpleado() {

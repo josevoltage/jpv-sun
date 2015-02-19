@@ -43,4 +43,6 @@ interface NotaVentaService {
   List<NotaVenta> obtenerNotasSinTransaccion( )
 
   List<NotaVenta> obtenerNotasCanSinTransaccion( )
+
+  void guardaLogTpv( String idFactura, String idEmpleado )
 }

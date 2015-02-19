@@ -684,4 +684,10 @@ class OrderController {
   }
 
 
+
+  static void saveLogTpv( String idOrder ){
+    User user = Session.get( SessionItem.USER ) as User
+    notaVentaService.guardaLogTpv( idOrder, user.username )
+  }
+
 }

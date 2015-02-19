@@ -89,7 +89,8 @@ class CancellationController {
           creditRefunds.remove( pagoId )
         }
         if( Registry.activeTpv ){
-          String transaccion = cancelacionService.cancelaVoucherTpv( pagoId )
+          User user = Session.get( SessionItem.USER ) as User
+          String transaccion = cancelacionService.cancelaVoucherTpv( pagoId, user.username )
           if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
             for(int i=0;i<2;i++){
               String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
@@ -237,7 +238,8 @@ class CancellationController {
     if( notaVenta != null ){
       for(Pago pago : notaVenta.pagos){
         if( Registry.activeTpv ){
-          String transaccion = cancelacionService.cancelaVoucherTpv( pago.id )
+          User user = Session.get( SessionItem.USER ) as User
+          String transaccion = cancelacionService.cancelaVoucherTpv( pago.id, user.username )
           if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
             for(int i=0;i<2;i++){
               String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
