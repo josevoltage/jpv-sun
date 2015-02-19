@@ -106,8 +106,8 @@ class CancellationDialog extends JDialog {
     return false
   }
 
-  private boolean cancelOrder( ) {
-    if ( CancellationController.cancelOrder( order.id, reasonField.selectedItem as String, commentsField.text ) ) {
+  private boolean cancelOrder( Boolean dev ) {
+    if ( CancellationController.cancelOrder( order.id, reasonField.selectedItem as String, commentsField.text, dev ) ) {
       CancellationController.printCancellationPlan( order.id )
       return true
     } else {
@@ -122,7 +122,7 @@ class CancellationDialog extends JDialog {
     JButton source = ev.source as JButton
     source.enabled = false
     if ( allowLateCancellation() ) {
-      if ( cancelOrder() ) {
+      if ( cancelOrder( false ) ) {
         dispose()
       }
     }
@@ -142,7 +142,7 @@ class CancellationDialog extends JDialog {
         authorized = authDialog.authorized
       }
       if ( authorized ) {
-        if ( cancelOrder() ) {
+        if ( cancelOrder( true ) ) {
           dispose()
           new RefundDialog( this, order.id ).show()
         }

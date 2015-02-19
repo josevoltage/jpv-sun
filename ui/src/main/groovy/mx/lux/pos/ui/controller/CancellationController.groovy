@@ -47,9 +47,27 @@ class CancellationController {
     return false
   }
 
-  static boolean cancelOrder( String orderId, String reason, String comments ) {
+  static boolean cancelOrder( String orderId, String reason, String comments, Boolean devolucion ) {
     log.info( "solicitando cancelacion de orden id: ${orderId}, causa: ${reason}" )
-    if ( StringUtils.isNotBlank( orderId ) && StringUtils.isNotBlank( reason ) ) {
+    Boolean devTpv = true
+    if( Registry.activeTpv && devolucion ){
+      User user = Session.get( SessionItem.USER ) as User
+      NotaVenta notaVenta = notaVentaService.obtenerNotaVenta( orderId )
+      if( notaVenta != null ){
+        for(Pago pago : notaVenta.pagos){
+          String transaccion = cancelacionService.cancelaVoucherTpv( pago.id, user.username )
+          if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
+            for(int i=0;i<2;i++){
+              String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
+              ticketService.imprimeVoucherCancelacionTpv(pago.id, copia, transaccion)
+            }
+          } else {
+            devTpv = false
+          }
+        }
+      }
+    }
+    if ( StringUtils.isNotBlank( orderId ) && StringUtils.isNotBlank( reason ) && devTpv ) {
       User user = Session.get( SessionItem.USER ) as User
       Modificacion modificacion = new Modificacion(
           idEmpleado: user?.username,
@@ -87,16 +105,6 @@ class CancellationController {
       creditRefunds?.each { Integer pagoId, String valor ->
         if ( StringUtils.isBlank( valor ) ) {
           creditRefunds.remove( pagoId )
-        }
-        if( Registry.activeTpv ){
-          User user = Session.get( SessionItem.USER ) as User
-          String transaccion = cancelacionService.cancelaVoucherTpv( pagoId, user.username )
-          if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
-            for(int i=0;i<2;i++){
-              String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
-              ticketService.imprimeVoucherCancelacionTpv(pagoId, copia, transaccion)
-            }
-          }
         }
       }
       List<Devolucion> results = cancelacionService.registrarDevolucionesDeNotaVenta( orderId, creditRefunds )
