@@ -477,10 +477,10 @@ class CancelacionServiceImpl implements CancelacionService {
       logTpv.pagoRecibido = StringUtils.trimToEmpty(pago.idFPago)
       logTpv.cadena = StringUtils.trimToEmpty(pago.idTerminal)
       logTpv.tarjeta = pago.clave
-      logTpv.autorizacion = pago.referenciaClave
+      logTpv.autorizacion = StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ? StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() : ""
       logTpv.monto = pago.monto
       logTpv.empleado = idEmpleado
-      logTpv.tipo = transaccion.substring(0,1)
+      logTpv.tipo = pago.fecha.format("dd/MM/yyyy").equalsIgnoreCase(new Date().format("dd/MM/yyyy")) ? "C" : "D"
       logTpv.plan = pago.idPlan
       try{
         logTpvRepository.saveAndFlush( logTpv )
