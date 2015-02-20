@@ -55,14 +55,16 @@ class CancellationController {
       NotaVenta notaVenta = notaVentaService.obtenerNotaVenta( orderId )
       if( notaVenta != null ){
         for(Pago pago : notaVenta.pagos){
-          String transaccion = cancelacionService.cancelaVoucherTpv( pago.id, user.username )
-          if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
-            for(int i=0;i<2;i++){
-              String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
-              ticketService.imprimeVoucherCancelacionTpv(pago.id, copia, transaccion)
+          if( pago != null && pago.idTerminal.contains("|") ){
+            String transaccion = cancelacionService.cancelaVoucherTpv( pago.id, user.username )
+            if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
+              for(int i=0;i<2;i++){
+                String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
+                ticketService.imprimeVoucherCancelacionTpv(pago.id, copia, transaccion)
+              }
+            } else {
+              devTpv = false
             }
-          } else {
-            devTpv = false
           }
         }
       }

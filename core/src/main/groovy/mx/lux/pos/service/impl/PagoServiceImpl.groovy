@@ -224,13 +224,13 @@ class PagoServiceImpl implements PagoService {
       logTpv.fecha = new Date()
       logTpv.pagoSeleccionado = pagoSelect
       logTpv.pagoRecibido = pagoReturn
-      logTpv.cadena = StringUtils.trimToEmpty(pago.idTerminal)
-      logTpv.tarjeta = pago.clave
-      logTpv.autorizacion = pago.referenciaClave
-      logTpv.monto = pago.monto
+      logTpv.cadena = StringUtils.trimToEmpty(pago?.idTerminal)
+      logTpv.tarjeta = StringUtils.trimToEmpty(pago?.clave)
+      logTpv.autorizacion = StringUtils.trimToEmpty(pago?.referenciaClave)
+      logTpv.monto = pago?.monto
       logTpv.empleado = idEmployee
       logTpv.tipo = 'V'
-      logTpv.plan = pago.idPlan
+      logTpv.plan = StringUtils.trimToEmpty(pago?.idPlan)
       try{
         logTpvRepository.saveAndFlush( logTpv )
       } catch ( Exception e ){ println e }
