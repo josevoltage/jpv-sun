@@ -449,12 +449,13 @@ class CancelacionServiceImpl implements CancelacionService {
       if(data.length >= 5){
         seg = data[1]
       }
+      Double montoDev = pago.porDevolver.doubleValue() <= 0.00 ? pago.monto.doubleValue() : pago.porDevolver.doubleValue()
       if( StringUtils.trimToEmpty(pago.fecha.format("dd/MM/yyyy")).equalsIgnoreCase(new Date().format("dd/MM/yyyy"))){
         ctx.SetString( "dcs_form", "T120S000" )
         ctx.SetString( "trn_orig_id", seg )
       } else {
         ctx.SetString( "dcs_form", "T040S000" )
-        ctx.SetFloat( "trn_amount", pago.monto.doubleValue() )
+        ctx.SetFloat( "trn_amount", montoDev )
         ctx.SetString( "trn_orig_id", seg )
         ctx.SetString("trn_auth_code", StringUtils.trimToEmpty(pago.referenciaClave))
       }

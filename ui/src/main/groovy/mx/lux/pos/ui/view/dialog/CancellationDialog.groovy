@@ -110,12 +110,12 @@ class CancellationDialog extends JDialog {
     if ( CancellationController.cancelOrder( order.id, reasonField.selectedItem as String, commentsField.text, dev ) ) {
       CancellationController.printCancellationPlan( order.id )
       return true
-    } else {
+    }/* else {
       sb.optionPane( message: "Ocurrio un error al cancelar", optionType: JOptionPane.DEFAULT_OPTION )
           .createDialog( this, "Error" )
           .show()
       return false
-    }
+    }*/
   }
 
   private def doTransfer = { ActionEvent ev ->
