@@ -488,7 +488,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         if ( order.due ) {
             /*new PaymentDialog( ev.component, order, null, order.due ).show()
             updateOrder( order?.id )*/
-          payDue( )
+          payDue( false )
         } else {
           sb.optionPane(
               message: 'No hay saldo para aplicar pago',
@@ -604,20 +604,20 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 String estadoCliente = CustomerController.stateCustomer( order )
                 order.country = "MEXICO,${estadoCliente }"
                 //saveOrder()
-                payDue( )
+                payDue( true )
             } else if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.FOREIGN.value) ){
                 String paisCliente = CustomerController.countryCustomer( order )
                 if( paisCliente.length() > 0 ){
                     order.country = paisCliente
                     //saveOrder()
-                    payDue( )
+                    payDue( true )
                 } else {
                     CountryCustomerDialog dialog = new CountryCustomerDialog( MainWindow.instance )
                     dialog.show()
                     if( dialog.button == true ){
                         order.country = dialog.pais
                         //saveOrder()
-                        payDue( )
+                        payDue( true )
                     } else {
                       printButton.enabled = true
                       quoteButton.enabled = true
@@ -636,7 +636,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 if( dialog.button == true ){
                     order.country = dialog.pais
                     //saveOrder()
-                    payDue( )
+                    payDue( true )
                 } else {
                     printButton.enabled = true
                     quoteButton.enabled = true
@@ -1310,11 +1310,11 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
 
 
 
-  void payDue( ){
+  void payDue( Boolean showPaymDial ){
     if ( order.due ) {
       new PaymentDialog( this, order, null, order.due ).show()
       updateOrder( order?.id )
-      processPayment()
+      processPayment( showPaymDial )
     } else {
       sb.optionPane(
          message: 'No hay saldo para aplicar pago',
@@ -1340,7 +1340,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
 
-  void processPayment( ){
+  void processPayment( Boolean showPaymDial ){
     if( order.due.compareTo(BigDecimal.ZERO) <= 0 ){
       saveOrderAfterPay( )
     } else {
@@ -1357,7 +1357,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         mainWindow.reportsMenu.enabled = true
         mainWindow.toolsMenu.enabled = true
       } else {
-        new PaymentDialog( this, order, null, order.due ).show()
+        if( showPaymDial ){
+          new PaymentDialog( this, order, null, order.due ).show()
+        }
         updateOrder( order?.id )
         if( order.due.compareTo(BigDecimal.ZERO) <= 0 ){
           saveOrderAfterPay( )
