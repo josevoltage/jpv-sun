@@ -2,6 +2,7 @@ package mx.lux.pos.ui.controller
 
 import groovy.util.logging.Slf4j
 import mx.lux.pos.service.CancelacionService
+import mx.lux.pos.service.NotaVentaService
 import mx.lux.pos.service.PagoService
 import mx.lux.pos.service.TicketService
 import mx.lux.pos.service.business.Registry
@@ -19,11 +20,14 @@ class CancellationController {
   private static CancelacionService cancelacionService
   private static TicketService ticketService
   private static PagoService pagoService
+  private static NotaVentaService notaVentaService
 
-  @Autowired CancellationController( CancelacionService cancelacionService, TicketService ticketService, PagoService pagoService ) {
+  @Autowired CancellationController( CancelacionService cancelacionService, TicketService ticketService, PagoService pagoService,
+                                     NotaVentaService notaVentaService) {
     this.cancelacionService = cancelacionService
     this.ticketService = ticketService
     this.pagoService = pagoService
+    this.notaVentaService = notaVentaService
   }
 
   static List<String> findAllCancellationReasons( ) {
@@ -43,9 +47,29 @@ class CancellationController {
     return false
   }
 
-  static boolean cancelOrder( String orderId, String reason, String comments ) {
+  static boolean cancelOrder( String orderId, String reason, String comments, Boolean devolucion ) {
     log.info( "solicitando cancelacion de orden id: ${orderId}, causa: ${reason}" )
-    if ( StringUtils.isNotBlank( orderId ) && StringUtils.isNotBlank( reason ) ) {
+    Boolean devTpv = true
+    if( Registry.activeTpv && devolucion ){
+      User user = Session.get( SessionItem.USER ) as User
+      NotaVenta notaVenta = notaVentaService.obtenerNotaVenta( orderId )
+      if( notaVenta != null ){
+        for(Pago pago : notaVenta.pagos){
+          if( pago != null && pago.idTerminal.contains("|") ){
+            String transaccion = cancelacionService.cancelaVoucherTpv( pago.id, user.username )
+            if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
+              for(int i=0;i<2;i++){
+                String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
+                ticketService.imprimeVoucherCancelacionTpv(pago.id, copia, transaccion)
+              }
+            } else {
+              devTpv = false
+            }
+          }
+        }
+      }
+    }
+    if ( StringUtils.isNotBlank( orderId ) && StringUtils.isNotBlank( reason ) && devTpv ) {
       User user = Session.get( SessionItem.USER ) as User
       Modificacion modificacion = new Modificacion(
           idEmpleado: user?.username,
@@ -83,15 +107,6 @@ class CancellationController {
       creditRefunds?.each { Integer pagoId, String valor ->
         if ( StringUtils.isBlank( valor ) ) {
           creditRefunds.remove( pagoId )
-        }
-        if( Registry.activeTpv ){
-          String transaccion = cancelacionService.cancelaVoucherTpv( pagoId )
-          if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
-            for(int i=0;i<2;i++){
-              String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
-              ticketService.imprimeVoucherCancelacionTpv(pagoId, copia, transaccion)
-            }
-          }
         }
       }
       List<Devolucion> results = cancelacionService.registrarDevolucionesDeNotaVenta( orderId, creditRefunds )
@@ -225,6 +240,53 @@ class CancellationController {
       CausaCancelacion result = cancelacionService.causaCancelacion( id )
       return result.descripcion
   }
+
+
+
+  static void annuleTpvPayments( String idOrder ){
+    NotaVenta notaVenta = notaVentaService.obtenerNotaVenta( idOrder )
+    if( notaVenta != null ){
+      for(Pago pago : notaVenta.pagos){
+        if( Registry.activeTpv ){
+          User user = Session.get( SessionItem.USER ) as User
+          String transaccion = cancelacionService.cancelaVoucherTpv( pago.id, user.username )
+          if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
+            for(int i=0;i<2;i++){
+              String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
+              ticketService.imprimeVoucherCancelacionTpv(pago.id, copia, transaccion)
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+
+  static Boolean cancelTpvPayment( String orderId ){
+    Boolean devTpv = true
+    if( Registry.activeTpv ){
+      User user = Session.get( SessionItem.USER ) as User
+      NotaVenta notaVenta = notaVentaService.obtenerNotaVenta( orderId )
+      if( notaVenta != null ){
+        for(Pago pago : notaVenta.pagos){
+          if( pago != null && pago.idTerminal.contains("|") ){
+            String transaccion = cancelacionService.cancelaVoucherTpv( pago.id, user.username )
+            if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
+              for(int i=0;i<2;i++){
+                String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
+                ticketService.imprimeVoucherCancelacionTpv(pago.id, copia, transaccion)
+              }
+            } else {
+              devTpv = false
+            }
+          }
+        }
+      }
+    }
+    return devTpv
+  }
+
 
 
 }

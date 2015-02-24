@@ -45,7 +45,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   static final String TXT_QUOTE_TITLE = 'Seleccionar cotización'
   private static final String TXT_BTN_CLOSE = 'Vendedor'
   private static final String TXT_BTN_QUOTE = 'Cotizar'
-  private static final String TXT_BTN_PRINT = 'Imprimir'
+  private static final String TXT_BTN_ANNULE = 'Anular Venta'
+  //private static final String TXT_BTN_PRINT = 'Imprimir'
+  private static final String TXT_BTN_PAY = 'Pagar'
   private static final String TXT_NO_ORDER_PRESENT = 'Se debe agregar al menos un artículo.'
   private static final String TXT_PAYMENTS_PRESENT = 'Elimine los pagosregistrados y reintente.'
   private static final String MSJ_VENTA_NEGATIVA = 'No se pueden agregar art\u00edculos sin existencia.'
@@ -74,6 +76,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private JButton customerName
   private JButton closeButton
   private JButton quoteButton
+  private JButton annuleButton
   private JButton printButton
   private JTextArea comments
   private JTextField itemSearch
@@ -97,15 +100,17 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private String autorizacion
   private OperationType currentOperationType
   private Boolean canceledWarranty
+  private MainWindow mainWindow
 
   private String MSJ_ERROR_WARRANTY = ""
   private String TXT_ERROR_WARRANTY = ""
 
   DateFormat df = new SimpleDateFormat( "dd/MM/yyyy" )
 
-  OrderPanel( ) {
+  OrderPanel( MainWindow mainWindow ) {
     sb = new SwingBuilder()
     order = new Order()
+    this.mainWindow = mainWindow
     customer = CustomerController.findDefaultCustomer()
     promotionList = new ArrayList<PromotionAvailable>()
     promotionListSelected = new ArrayList<>()
@@ -257,11 +262,17 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         }
         change = label( foreground: UI_Standards.WARNING_FOREGROUND, constraints: BorderLayout.CENTER )
         panel( constraints: BorderLayout.LINE_END, border: BorderFactory.createEmptyBorder( 0, 0, 0, 0 ) ) {
+          annuleButton = button( TXT_BTN_ANNULE,
+              preferredSize: UI_Standards.BIG_BUTTON_SIZE,
+              actionPerformed: { fireRequestAnnular() },
+              constraints: 'hidemode 3',
+              visible: false
+          )
           quoteButton = button( TXT_BTN_QUOTE,
               preferredSize: UI_Standards.BIG_BUTTON_SIZE,
               actionPerformed: { fireRequestQuote() }
           )
-          printButton = button( TXT_BTN_PRINT,
+          printButton = button( TXT_BTN_PAY,
               preferredSize: UI_Standards.BIG_BUTTON_SIZE,
               actionPerformed: doPrint
           )
@@ -293,6 +304,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   private void updateOrder( String pOrderId ) {
     Order tmp = OrderController.getOrder( pOrderId )
     if ( tmp?.id ) {
+      tmp.country = order?.country
       order = tmp
       doBindings()
     }
@@ -437,43 +449,46 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
   }
 
   private def doShowItemClick = { MouseEvent ev ->
-    if ( SwingUtilities.isLeftMouseButton( ev ) ) {
-      if ( ev.clickCount == 2 ) {
-        new ItemDialog( ev.component, order, ev.source.selectedElement ).show()
-        if( this.promotionSelectedList.size() > 0 ){
-            List<IPromotionAvailable> lstPromo = new ArrayList<IPromotionAvailable>()
-            lstPromo.addAll( promotionSelectedList )
-            for(IPromotionAvailable promotion : lstPromo){
-                onTogglePromotion( promotion, false )
+    if( !annuleButton.visible ){
+      if ( SwingUtilities.isLeftMouseButton( ev ) ) {
+            if ( ev.clickCount == 2 ) {
+                new ItemDialog( ev.component, order, ev.source.selectedElement ).show()
+                if( this.promotionSelectedList.size() > 0 ){
+                    List<IPromotionAvailable> lstPromo = new ArrayList<IPromotionAvailable>()
+                    lstPromo.addAll( promotionSelectedList )
+                    for(IPromotionAvailable promotion : lstPromo){
+                        onTogglePromotion( promotion, false )
+                    }
+                }
+                updateOrder( order?.id )
             }
-        }
-        updateOrder( order?.id )
-      }
-    } else if ( SwingUtilities.isRightMouseButton( ev ) && ev.source.selectedElement != null ) {
-      OrderItem orderItem = ev.source.selectedElement
-      List<IPromotionAvailable> lstPromosArt = lstPromotionsAvalibles( orderItem )
-      Collections.sort(lstPromosArt, new Comparator<IPromotionAvailable>() {
-          @Override
-          int compare(IPromotionAvailable o1, IPromotionAvailable o2) {
-              return o1.promotion.idPromotion.compareTo(o2.promotion.idPromotion)
-          }
-      })
-      PromotionSelectionDialog promotionSelectionDialog = new PromotionSelectionDialog( lstPromosArt, orderItem.item.id )
-      promotionSelectionDialog.show()
-      if( promotionSelectionDialog.promotionSelected != null ){
-        promotionListSelected.add( promotionSelectionDialog.promotionSelected )
-        onTogglePromotion( promotionSelectionDialog.promotionSelected, true )
-        doBindings()
+      } else if ( SwingUtilities.isRightMouseButton( ev ) && ev.source.selectedElement != null ) {
+            OrderItem orderItem = ev.source.selectedElement
+            List<IPromotionAvailable> lstPromosArt = lstPromotionsAvalibles( orderItem )
+            Collections.sort(lstPromosArt, new Comparator<IPromotionAvailable>() {
+                @Override
+                int compare(IPromotionAvailable o1, IPromotionAvailable o2) {
+                    return o1.promotion.idPromotion.compareTo(o2.promotion.idPromotion)
+                }
+            })
+            PromotionSelectionDialog promotionSelectionDialog = new PromotionSelectionDialog( lstPromosArt, orderItem.item.id )
+            promotionSelectionDialog.show()
+            if( promotionSelectionDialog.promotionSelected != null ){
+                promotionListSelected.add( promotionSelectionDialog.promotionSelected )
+                onTogglePromotion( promotionSelectionDialog.promotionSelected, true )
+                doBindings()
+            }
       }
     }
   }
 
   private def doNewPaymentClick = { MouseEvent ev ->
-    if ( SwingUtilities.isLeftMouseButton( ev ) ) {
+    if ( SwingUtilities.isLeftMouseButton( ev ) && order.payments.size() > 0 ) {
       if ( ev.clickCount == 1 ) {
         if ( order.due ) {
-            new PaymentDialog( ev.component, order, null ).show()
-            updateOrder( order?.id )
+            /*new PaymentDialog( ev.component, order, null, order.due ).show()
+            updateOrder( order?.id )*/
+          payDue( false )
         } else {
           sb.optionPane(
               message: 'No hay saldo para aplicar pago',
@@ -493,8 +508,11 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 pay.paymentTypeId.startsWith("UV") || pay.paymentTypeId.startsWith("AV")) ){
 
         } else {
-          new PaymentDialog( ev.component, order, ev.source.selectedElement ).show()
+          new PaymentDialog( ev.component, order, ev.source.selectedElement, BigDecimal.ZERO ).show()
           updateOrder( order?.id )
+          if( order?.payments.size() <= 0 ){
+            printButton.enabled = true
+          }
         }
       }
     }
@@ -585,18 +603,31 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                     operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.DOMESTIC.value) ){
                 String estadoCliente = CustomerController.stateCustomer( order )
                 order.country = "MEXICO,${estadoCliente }"
-                saveOrder()
+                //saveOrder()
+                payDue( true )
             } else if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.FOREIGN.value) ){
                 String paisCliente = CustomerController.countryCustomer( order )
                 if( paisCliente.length() > 0 ){
                     order.country = paisCliente
-                    saveOrder()
+                    //saveOrder()
+                    payDue( true )
                 } else {
                     CountryCustomerDialog dialog = new CountryCustomerDialog( MainWindow.instance )
                     dialog.show()
                     if( dialog.button == true ){
                         order.country = dialog.pais
-                        saveOrder()
+                        //saveOrder()
+                        payDue( true )
+                    } else {
+                      printButton.enabled = true
+                      quoteButton.enabled = true
+                      closeButton.enabled = true
+                      operationType.enabled = true
+                      mainWindow.ordersMenu.enabled = true
+                      mainWindow.inventoryMenu.enabled = true
+                      mainWindow.sendReceivedInventoryMenu.enabled = true
+                      mainWindow.reportsMenu.enabled = true
+                      mainWindow.toolsMenu.enabled = true
                     }
                 }
             } else if( operationType.selectedItem.toString().trim().equalsIgnoreCase(OperationType.DEFAULT.value) ){
@@ -604,9 +635,30 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 dialog.show()
                 if( dialog.button == true ){
                     order.country = dialog.pais
-                    saveOrder()
+                    //saveOrder()
+                    payDue( true )
+                } else {
+                    printButton.enabled = true
+                    quoteButton.enabled = true
+                    closeButton.enabled = true
+                    operationType.enabled = true
+                    mainWindow.ordersMenu.enabled = true
+                    mainWindow.inventoryMenu.enabled = true
+                    mainWindow.sendReceivedInventoryMenu.enabled = true
+                    mainWindow.reportsMenu.enabled = true
+                    mainWindow.toolsMenu.enabled = true
                 }
             }
+        } else {
+          printButton.enabled = true
+          quoteButton.enabled = true
+          closeButton.enabled = true
+          operationType.enabled = true
+          mainWindow.ordersMenu.enabled = true
+          mainWindow.inventoryMenu.enabled = true
+          mainWindow.sendReceivedInventoryMenu.enabled = true
+          mainWindow.reportsMenu.enabled = true
+          mainWindow.toolsMenu.enabled = true
         }
       } else {
         lstWarranty.clear()
@@ -621,13 +673,31 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           ).createDialog( this, TXT_ERROR_WARRANTY )
             .show()
         }
+        printButton.enabled = true
+        quoteButton.enabled = true
+        closeButton.enabled = true
+        operationType.enabled = true
+        mainWindow.ordersMenu.enabled = true
+        mainWindow.inventoryMenu.enabled = true
+        mainWindow.sendReceivedInventoryMenu.enabled = true
+        mainWindow.reportsMenu.enabled = true
+        mainWindow.toolsMenu.enabled = true
       }
     } else {
         sb.optionPane( message: MSJ_FECHA_INCORRECTA, messageType: JOptionPane.ERROR_MESSAGE, )
                 .createDialog( this, TXT_FECHA_INCORRECTA_TITULO )
                 .show()
+      printButton.enabled = true
+      quoteButton.enabled = true
+      closeButton.enabled = true
+      operationType.enabled = true
+      mainWindow.ordersMenu.enabled = true
+      mainWindow.inventoryMenu.enabled = true
+      mainWindow.sendReceivedInventoryMenu.enabled = true
+      mainWindow.reportsMenu.enabled = true
+      mainWindow.toolsMenu.enabled = true
     }
-    source.enabled = true
+    //source.enabled = true
   }
 
     private void saveOrder (){
@@ -673,14 +743,14 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           .show()
       return false
     }
-    if ( order.due > 0 ) {
+    /*if ( order.due > 0 ) {
       sb.optionPane(
           message: 'Se debe cubrir el total del saldo.',
           messageType: JOptionPane.ERROR_MESSAGE
       ).createDialog( this, 'No se puede registrar la venta' )
           .show()
       return false
-    }
+    }*/
     if ( order.due < 0 ) {
       sb.optionPane(
           message: 'Los pagos no deben ser mayores al total de la venta.',
@@ -808,7 +878,8 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     // rld Strange no mouse event triggers popup menu
     // change isPopupTrigger to MouseClicked and button = 3
     // if ( pEvent.isPopupTrigger() ) {
-    if ( SwingUtilities.isRightMouseButton( pEvent ) && ( pEvent.getID() == MouseEvent.MOUSE_CLICKED ) ) {
+    if ( SwingUtilities.isRightMouseButton( pEvent ) && ( pEvent.getID() == MouseEvent.MOUSE_CLICKED ) &&
+            !annuleButton.visible ) {
       if ( discountMenu == null ) {
         discountMenu = new DiscountContextMenu( this.promotionDriver )
       }
@@ -886,6 +957,25 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     }
   }
 
+
+
+  private void fireRequestAnnular( ) {
+    OrderController.printVoucherTpv( order.id, false )
+    CancellationController.annuleTpvPayments( StringUtils.trimToEmpty(order.id) )
+    this.reset()
+    printButton.enabled = true
+    quoteButton.enabled = true
+    closeButton.enabled = true
+    annuleButton.visible = false
+    itemSearch.enabled = true
+    operationType.enabled = true
+    mainWindow.ordersMenu.enabled = true
+    mainWindow.inventoryMenu.enabled = true
+    mainWindow.sendReceivedInventoryMenu.enabled = true
+    mainWindow.reportsMenu.enabled = true
+    mainWindow.toolsMenu.enabled = true
+  }
+
   private void reset() {
     order = new Order()
     customer = CustomerController.findDefaultCustomer()
@@ -895,6 +985,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     this.promotionSelectedList.clear()
     this.getPromotionDriver().init( this )
     doBindings()
+    annuleButton.visible = false
     operationType.setSelectedItem( OperationType.DEFAULT )
   }
 
@@ -1144,7 +1235,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                      idArmUsed = idArm.item.id
                      break
                    } else {
-                     validTmp = false
+                     //validTmp = false
                      //break
                    }
                 }
@@ -1215,6 +1306,78 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
             lstPromos.add( found );
         }
         return found;
+  }
+
+
+
+  void payDue( Boolean showPaymDial ){
+    if ( order.due ) {
+      new PaymentDialog( this, order, null, order.due ).show()
+      updateOrder( order?.id )
+      processPayment( showPaymDial )
+    } else {
+      sb.optionPane(
+         message: 'No hay saldo para aplicar pago',
+         messageType: JOptionPane.ERROR_MESSAGE
+      ).createDialog( this, 'Pago sin saldo' )
+        .show()
+    }
+  }
+
+  void saveOrderAfterPay(){
+    saveOrder( )
+    printButton.enabled = true
+    quoteButton.enabled = true
+    closeButton.enabled = true
+    annuleButton.visible = false
+    itemSearch.enabled = true
+    operationType.enabled = true
+    mainWindow.ordersMenu.enabled = true
+    mainWindow.inventoryMenu.enabled = true
+    mainWindow.sendReceivedInventoryMenu.enabled = true
+    mainWindow.reportsMenu.enabled = true
+    mainWindow.toolsMenu.enabled = true
+  }
+
+
+  void processPayment( Boolean showPaymDial ){
+    if( order.due.compareTo(BigDecimal.ZERO) <= 0 ){
+      saveOrderAfterPay( )
+    } else {
+      if( order.due.compareTo(order.total) == 0 ){
+        printButton.enabled = true
+        quoteButton.enabled = true
+        closeButton.enabled = true
+        annuleButton.visible = false
+        itemSearch.enabled = true
+        operationType.enabled = true
+        mainWindow.ordersMenu.enabled = true
+        mainWindow.inventoryMenu.enabled = true
+        mainWindow.sendReceivedInventoryMenu.enabled = true
+        mainWindow.reportsMenu.enabled = true
+        mainWindow.toolsMenu.enabled = true
+      } else {
+        if( showPaymDial ){
+          new PaymentDialog( this, order, null, order.due ).show()
+        }
+        updateOrder( order?.id )
+        if( order.due.compareTo(BigDecimal.ZERO) <= 0 ){
+          saveOrderAfterPay( )
+        } else {
+          printButton.enabled = false
+          quoteButton.enabled = false
+          closeButton.enabled = false
+          annuleButton.visible = true
+          itemSearch.enabled = false
+          operationType.enabled = false
+          mainWindow.ordersMenu.enabled = false
+          mainWindow.inventoryMenu.enabled = false
+          mainWindow.sendReceivedInventoryMenu.enabled = false
+          mainWindow.reportsMenu.enabled = false
+          mainWindow.toolsMenu.enabled = false
+        }
+      }
+    }
   }
 
 

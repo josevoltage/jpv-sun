@@ -676,7 +676,7 @@ class TicketServiceImpl implements TicketService {
         Collections.sort(resumenesDiario, new Comparator<ResumenDiario>() {
             @Override
             int compare(ResumenDiario o1, ResumenDiario o2) {
-                return o1.tipo.compareTo(o2.tipo)
+                return o1.idTerminal.compareTo(o2.idTerminal)
             }
         })
         for ( ResumenDiario resumen : resumenesDiario ) {
@@ -684,6 +684,7 @@ class TicketServiceImpl implements TicketService {
             current = new ResumenDiario()
             current.idTerminal = resumen.idTerminal.toUpperCase()
             current.importe = BigDecimal.ZERO
+            //current.plan = resumen.plan
             montoDolares = BigDecimal.ZERO
           }
           if ( resumen.plan?.equals( TAG_CANCELADO ) || resumen.plan?.equals( TAG_DEVUELTO ) ) {
@@ -2255,7 +2256,7 @@ class TicketServiceImpl implements TicketService {
     for ( ResumenDiario resumenDiario : lstResumenesDiarios ) {
       if ( resumenDiario.idTerminal.equals( pResumenDiario.idTerminal ) ) {
         found = resumenDiario
-        resumenDiario.importe = resumenDiario.importe.add(pResumenDiario.importe)
+        //resumenDiario.importe = resumenDiario.importe.add(pResumenDiario.importe)
         break
       }
     }

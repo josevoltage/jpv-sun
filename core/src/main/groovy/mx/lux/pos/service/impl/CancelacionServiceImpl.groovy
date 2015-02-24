@@ -40,6 +40,9 @@ class CancelacionServiceImpl implements CancelacionService {
     private ModificacionRepository modificacionRepository
 
     @Resource
+    private LogTpvRepository logTpvRepository
+
+    @Resource
     private ModificacionEmpRepository modificacionEmpRepository
 
     @Resource
@@ -425,7 +428,7 @@ class CancelacionServiceImpl implements CancelacionService {
 
 
   @Override
-  String cancelaVoucherTpv( Integer idPago ){
+  String cancelaVoucherTpv( Integer idPago, String idEmpleado ){
     String transaccion = ""
     Pago pago = pagoRepository.findOne(idPago)
     if( pago != null && pago.idTerminal.contains("|") ){
@@ -446,12 +449,13 @@ class CancelacionServiceImpl implements CancelacionService {
       if(data.length >= 5){
         seg = data[1]
       }
+      Double montoDev = pago.porDevolver.doubleValue() <= 0.00 ? pago.monto.doubleValue() : pago.porDevolver.doubleValue()
       if( StringUtils.trimToEmpty(pago.fecha.format("dd/MM/yyyy")).equalsIgnoreCase(new Date().format("dd/MM/yyyy"))){
         ctx.SetString( "dcs_form", "T120S000" )
         ctx.SetString( "trn_orig_id", seg )
       } else {
         ctx.SetString( "dcs_form", "T040S000" )
-        ctx.SetFloat( "trn_amount", pago.monto.doubleValue() )
+        ctx.SetFloat( "trn_amount", montoDev )
         ctx.SetString( "trn_orig_id", seg )
         ctx.SetString("trn_auth_code", StringUtils.trimToEmpty(pago.referenciaClave))
       }
@@ -465,6 +469,23 @@ class CancelacionServiceImpl implements CancelacionService {
           transaccion = "DEVOLUCION"
         }
       }
+      LogTpv logTpv = new LogTpv()
+      Integer id = logTpvRepository.logTpvSequence
+      logTpv.id = id != null ? id+1 : 1
+      logTpv.idFactura = StringUtils.trimToEmpty(pago.idFactura)
+      logTpv.fecha = new Date()
+      logTpv.pagoSeleccionado = StringUtils.trimToEmpty(pago.idFPago)
+      logTpv.pagoRecibido = StringUtils.trimToEmpty(pago.idFPago)
+      logTpv.cadena = StringUtils.trimToEmpty(pago.idTerminal)
+      logTpv.tarjeta = pago.clave
+      logTpv.autorizacion = StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ? StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() : ""
+      logTpv.monto = pago.monto
+      logTpv.empleado = idEmpleado
+      logTpv.tipo = pago.fecha.format("dd/MM/yyyy").equalsIgnoreCase(new Date().format("dd/MM/yyyy")) ? "C" : "D"
+      logTpv.plan = pago.idPlan
+      try{
+        logTpvRepository.saveAndFlush( logTpv )
+      } catch ( Exception e ){ println e }
     }
     return transaccion
   }

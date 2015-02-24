@@ -157,6 +157,7 @@ class RefundDialog extends JDialog {
       payments.each { Payment pmt ->
         creditRefunds.put( pmt?.id, pmt?.refundMethod )
       }
+      if( CancellationController.cancelTpvPayment( orderId ) ){
       if ( CancellationController.refundPaymentsCreditFromOrder( orderId, creditRefunds ) ) {
         CancellationController.printOrderCancellation( orderId )
         dispose()
@@ -166,6 +167,7 @@ class RefundDialog extends JDialog {
             messageType: JOptionPane.ERROR_MESSAGE
         ).createDialog( this, 'No se registran devoluciones' )
             .show()
+      }
       }
     }
     source.enabled = true

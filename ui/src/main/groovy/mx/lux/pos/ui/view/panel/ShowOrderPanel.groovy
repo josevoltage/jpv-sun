@@ -223,7 +223,7 @@ class ShowOrderPanel extends JPanel {
           String hoy = new Date().format( 'dd/MM/yyyy' )
           if( hoy.equalsIgnoreCase(fechaVenta) ){
             String causa = CancellationController.findCancellationReasonById( 16 )
-            CancellationController.cancelOrder( order.id, causa, '' )
+            CancellationController.cancelOrder( order.id, causa, '', true )
             CancellationController.printCancellationPlan( order.id )
 
             Map<Integer, String> creditRefunds = [ : ]
