@@ -147,8 +147,10 @@ class PagoServiceImpl implements PagoService {
           montoDolares = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).doubleValue()
         } catch( NumberFormatException e ){ println e }
         ctx.SetFloat( "trn_amount", montoDolares )
+        ctx.SetInteger( "trn_cur_id1", 840 )
       } else{
         ctx.SetFloat( "trn_amount", pago.monto.doubleValue() )
+        ctx.SetFloat( "trn_cur_id1", 484 )
       }
 
       if( StringUtils.trimToEmpty(pago.idFPago).startsWith("DV") || StringUtils.trimToEmpty(pago.idFPago).contains("UV") ){
@@ -167,6 +169,7 @@ class PagoServiceImpl implements PagoService {
       ctx.SetFloat( "trn_cashback_amount", 0.00 )
       Socket socket = ctx.TCP_Open();
 
+      println "Datos enviados: "+ctx.dump()
       int execute = ctx.Execute()
       println "Respuesta de la ejecucion: "+execute
       if ( execute == 0 && StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ){
