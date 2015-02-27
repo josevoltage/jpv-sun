@@ -57,6 +57,7 @@ class CancelacionServiceImpl implements CancelacionService {
 
     private String TAG_TC = "TC"
     private String TAG_TD = "TD"
+    private String TAG_UV = "UV"
 
     @Override
     List<CausaCancelacion> listarCausasCancelacion() {
@@ -449,7 +450,21 @@ class CancelacionServiceImpl implements CancelacionService {
       if(data.length >= 5){
         seg = data[1]
       }
-      Double montoDev = pago.porDevolver.doubleValue() <= 0.00 ? pago.monto.doubleValue() : pago.porDevolver.doubleValue()
+      if( StringUtils.trimToEmpty(pago.idFormaPago).equalsIgnoreCase(TAG_UV) ){
+        ctx.SetInteger( "trn_cur_id1", 840 )
+
+      } else {
+        ctx.SetInteger( "trn_cur_id1", 484 )
+      }
+      Double montoDev = 0.00
+      if( StringUtils.trimToEmpty(pago.idFormaPago).equalsIgnoreCase(TAG_UV) ){
+        try{
+          montoDev = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago?.idPlan)).doubleValue()
+        } catch ( NumberFormatException e ) { println e }
+      } else {
+        montoDev = pago.porDevolver.doubleValue() <= 0.00 ? pago.monto.doubleValue() : pago.porDevolver.doubleValue()
+      }
+
       if( StringUtils.trimToEmpty(pago.fecha.format("dd/MM/yyyy")).equalsIgnoreCase(new Date().format("dd/MM/yyyy"))){
         ctx.SetString( "dcs_form", "T120S000" )
         ctx.SetString( "trn_orig_id", seg )
@@ -459,6 +474,7 @@ class CancelacionServiceImpl implements CancelacionService {
         ctx.SetString( "trn_orig_id", seg )
         ctx.SetString("trn_auth_code", StringUtils.trimToEmpty(pago.referenciaClave))
       }
+      println ctx.dump()
       Socket socket = ctx.TCP_Open();
       int execute = ctx.Execute()
       println "Respuesta de la ejecucion: "+execute

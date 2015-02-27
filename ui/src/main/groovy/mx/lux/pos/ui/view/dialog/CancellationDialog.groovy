@@ -144,7 +144,7 @@ class CancellationDialog extends JDialog {
       if ( authorized ) {
         if ( cancelOrder( true ) ) {
           dispose()
-          new RefundDialog( this, order.id ).show()
+          new RefundDialog( this, order.id, false ).show()
         }
       }
     }

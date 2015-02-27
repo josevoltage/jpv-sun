@@ -28,10 +28,12 @@ class RefundDialog extends JDialog {
   private BigDecimal totalReturn
   private BigDecimal totalTransfer
   private List<String> refundMethods
+  private Boolean cancelledTpv
 
-  RefundDialog( Component parent, String orderId ) {
+  RefundDialog( Component parent, String orderId, Boolean cancelledTpv ) {
     this.orderId = orderId
     sb = new SwingBuilder()
+    this.cancelledTpv = cancelledTpv
     totalAmount = BigDecimal.ZERO
     totalPending = BigDecimal.ZERO
     totalReturn = BigDecimal.ZERO
@@ -157,7 +159,7 @@ class RefundDialog extends JDialog {
       payments.each { Payment pmt ->
         creditRefunds.put( pmt?.id, pmt?.refundMethod )
       }
-      if( CancellationController.cancelTpvPayment( orderId ) ){
+      if( CancellationController.cancelTpvPayment( orderId, cancelledTpv ) ){
       if ( CancellationController.refundPaymentsCreditFromOrder( orderId, creditRefunds ) ) {
         CancellationController.printOrderCancellation( orderId )
         dispose()

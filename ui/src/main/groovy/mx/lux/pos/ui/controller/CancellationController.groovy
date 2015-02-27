@@ -263,11 +263,11 @@ class CancellationController {
 
 
 
-  static Boolean cancelTpvPayment( String orderId ){
+  static Boolean cancelTpvPayment( String orderId, Boolean cancelled ){
     Boolean devTpv = true
-    if( Registry.activeTpv ){
+    NotaVenta notaVenta = notaVentaService.obtenerNotaVenta( orderId )
+    if( cancelled && Registry.activeTpv ){
       User user = Session.get( SessionItem.USER ) as User
-      NotaVenta notaVenta = notaVentaService.obtenerNotaVenta( orderId )
       if( notaVenta != null ){
         for(Pago pago : notaVenta.pagos){
           if( pago != null && pago.idTerminal.contains("|") ){

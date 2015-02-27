@@ -526,7 +526,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       }
       List<String> sources = CancellationController.findSourceOrdersWithCredit( newOrderId )
       if ( sources?.any() ) {
-        new RefundDialog( this, sources.first() ).show()
+        new RefundDialog( this, sources.first(), true ).show()
       } else {
         CancellationController.printCancellationsFromOrder( newOrderId )
       }

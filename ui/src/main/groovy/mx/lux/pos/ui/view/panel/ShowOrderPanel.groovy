@@ -268,7 +268,7 @@ class ShowOrderPanel extends JPanel {
     }
     CancellationController.resetValuesofCancellation( order.id )
     if ( authorized ) {
-      new RefundDialog( this, order.id ).show()
+      new RefundDialog( this, order.id, true ).show()
       CancellationController.refreshOrder( order )
       doBindings()
     }
