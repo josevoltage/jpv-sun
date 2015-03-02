@@ -89,7 +89,7 @@ class PromotionImportTask {
       source.eachFile() { file ->
         nameFile = new StringList( file.getName(), "_" )
         if ( file.getName().endsWith( "PR" ) ) {
-          grupos = leerFicheroPRGrupos( file )
+          grupos.addAll(leerFicheroPRGrupos( file ))
           println "Lineas de grupo:: ${grupos.size()}"
         }
       }
