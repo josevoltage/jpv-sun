@@ -1315,6 +1315,8 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
       new PaymentDialog( this, order, null, order.due ).show()
       updateOrder( order?.id )
       processPayment( showPaymDial )
+    } else if( order.due.doubleValue() <= 0.00 && order.items.size() > 0 ){
+      processPayment( showPaymDial )
     } else {
       sb.optionPane(
          message: 'No hay saldo para aplicar pago',
