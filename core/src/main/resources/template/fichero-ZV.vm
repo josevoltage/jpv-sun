@@ -2,5 +2,5 @@
 #macro(GET $dato)#if($dato)${dato}#end#end
 ${sucursal.id}|${fecha_cierre}|${numero_registros}|${CR}
 #foreach( $devolucion in $devoluciones )
-${foreach.count}|#GET(${devolucion.modificacion.idFactura})|#GET(${devolucion.idFormaPago})|#GET(${devolucion.monto})|#GET(${devolucion.id})|#GET(${devolucion.modificacion.notaVenta.factura})|#GET(${devolucion.id})|#GET(${devolucion.pago.idTerminal.trim()})|${CR}
+${foreach.count}|#GET(${devolucion.idFactura})|#GET(${devolucion.idFormaPago})|#GET(${devolucion.monto})|#GET(${devolucion.id})|#GET(${devolucion.factura})|#GET(${devolucion.idPago})|#GET(${devolucion.idTerminal.trim()})|#GET(${devolucion.montoUsd})|${CR}
 #end

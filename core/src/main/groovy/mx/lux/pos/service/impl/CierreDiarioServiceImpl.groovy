@@ -2,6 +2,7 @@ package mx.lux.pos.service.impl
 
 import groovy.util.logging.Slf4j
 import mx.lux.pos.service.CierreDiarioService
+import mx.lux.pos.service.MonedaExtranjeraService
 import mx.lux.pos.service.business.EliminarNotaVentaTask
 import mx.lux.pos.service.business.InventorySearch
 import mx.lux.pos.service.business.Registry
@@ -36,6 +37,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   private static final String FMT_FILE_PATTERN = '*%s.*'
   private static final String TAG_TARJETA_AMERICAN_E = 'AV'
   private static final String TAG_TARJETA_DOLARES = 'UV'
+  private static final String TAG_PAGOS_DOLARES = 'EFD,TCD,TDD,UV'
   private static final Double VALOR_CERO = 0.005
 
   @Resource
@@ -46,6 +48,9 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
 
   @Resource
   private NotaFacturaRepository notaFacturaRepository
+
+  @Resource
+  private MonedaExtranjeraService monedaExtranjeraService
 
   @Resource
   private CierreDiarioRepository cierreDiarioRepository
@@ -725,8 +730,16 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   private void generarFicheroZV( Date fechaCierre, Sucursal sucursal, String ubicacion ) {
     String nombreFichero = "3.${ sucursal.id }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZV"
     log.info( "Generando fichero ZV ${ nombreFichero }" )
+    Double rate = 1.0
+    MonedaDetalle fxrate = monedaExtranjeraService.findActiveRate( "USD" )
+    if ( fxrate != null ) {
+      rate = fxrate.tipoCambio.doubleValue()
+    }
     List<Devolucion> devoluciones = devolucionRepository.findBy_Fecha( fechaCierre )
-    for(Devolucion dev : devoluciones){
+    //List<Devolucion> lstDevoluciones = new ArrayList<>()
+    def lstDevoluciones = devoluciones.collect{ dev ->
+      //for(Devolucion devo : devoluciones){
+      //dev = devo
       String idTerminal = ""
       if( dev.pago.idTerminal.contains("|") ){
         String[] data = dev.pago.idTerminal.split(/\|/)
@@ -745,12 +758,22 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
           dev.pago.idTerminal = "BMX"
         }
       }
+      [
+          idFactura: StringUtils.trimToEmpty(dev?.modificacion?.idFactura),
+          idFormaPago: StringUtils.trimToEmpty(dev?.idFormaPago),
+          monto: dev?.monto,
+          id: dev?.id,
+          factura: StringUtils.trimToEmpty(dev?.modificacion?.notaVenta?.factura),
+          idPago: dev?.idPago,
+          idTerminal: StringUtils.trimToEmpty(dev?.pago?.idTerminal),
+          montoUsd: TAG_PAGOS_DOLARES.contains(StringUtils.trimToEmpty(dev.idFormaPago)) ? dev.monto.divide(rate).setScale(0,RoundingMode.CEILING) : 0.00
+      ]
     }
     def datos = [ sucursal: sucursal,
         fecha_ahora: CustomDateUtils.format( new Date(), 'dd-MM-yyyy' ),
         fecha_cierre: CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ),
-        numero_registros: devoluciones.size(),
-        devoluciones: devoluciones ]
+        numero_registros: lstDevoluciones.size(),
+        devoluciones: lstDevoluciones ]
     generarFichero( ubicacion, nombreFichero, 'fichero-ZV', datos )
   }
 
