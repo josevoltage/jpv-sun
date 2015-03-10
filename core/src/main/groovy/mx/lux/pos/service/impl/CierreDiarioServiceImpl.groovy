@@ -758,6 +758,19 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
           dev.pago.idTerminal = "BMX"
         }
       }
+      Double montoUsd = 0.00
+      Pago pago = pagoRepository.findOne( dev.idPago )
+      if( TAG_PAGOS_DOLARES.contains(StringUtils.trimToEmpty(dev.idFormaPago)) ){
+        if( pago != null ){
+          if( pago.monto.compareTo(dev.monto) == 0 ){
+            try{
+              montoUsd = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).doubleValue()
+            } catch ( NumberFormatException e ) { println e }
+          } else {
+            montoUsd = Math.round(dev.monto.doubleValue()/rate)
+          }
+        }
+      }
       [
           idFactura: StringUtils.trimToEmpty(dev?.modificacion?.idFactura),
           idFormaPago: StringUtils.trimToEmpty(dev?.idFormaPago),
@@ -766,7 +779,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
           factura: StringUtils.trimToEmpty(dev?.modificacion?.notaVenta?.factura),
           idPago: dev?.idPago,
           idTerminal: StringUtils.trimToEmpty(dev?.pago?.idTerminal),
-          montoUsd: TAG_PAGOS_DOLARES.contains(StringUtils.trimToEmpty(dev.idFormaPago)) ? dev.monto.divide(rate).setScale(0,RoundingMode.CEILING) : 0.00
+          montoUsd: montoUsd.intValue()
       ]
     }
     def datos = [ sucursal: sucursal,
