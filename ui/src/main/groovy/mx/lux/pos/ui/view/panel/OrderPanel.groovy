@@ -960,20 +960,21 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
 
 
   private void fireRequestAnnular( ) {
-    OrderController.printVoucherTpv( order.id, false )
-    CancellationController.annuleTpvPayments( StringUtils.trimToEmpty(order.id) )
-    this.reset()
-    printButton.enabled = true
-    quoteButton.enabled = true
-    closeButton.enabled = true
-    annuleButton.visible = false
-    itemSearch.enabled = true
-    operationType.enabled = true
-    mainWindow.ordersMenu.enabled = true
-    mainWindow.inventoryMenu.enabled = true
-    mainWindow.sendReceivedInventoryMenu.enabled = true
-    mainWindow.reportsMenu.enabled = true
-    mainWindow.toolsMenu.enabled = true
+    if( CancellationController.annuleTpvPayments( StringUtils.trimToEmpty(order.id) ) ){
+      OrderController.printVoucherTpv( order.id, false )
+      this.reset()
+      printButton.enabled = true
+      quoteButton.enabled = true
+      closeButton.enabled = true
+      annuleButton.visible = false
+      itemSearch.enabled = true
+      operationType.enabled = true
+      mainWindow.ordersMenu.enabled = true
+      mainWindow.inventoryMenu.enabled = true
+      mainWindow.sendReceivedInventoryMenu.enabled = true
+      mainWindow.reportsMenu.enabled = true
+      mainWindow.toolsMenu.enabled = true
+    }
   }
 
   private void reset() {

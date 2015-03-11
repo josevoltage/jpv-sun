@@ -243,7 +243,8 @@ class CancellationController {
 
 
 
-  static void annuleTpvPayments( String idOrder ){
+  static Boolean annuleTpvPayments( String idOrder ){
+    Boolean cancelled = false
     NotaVenta notaVenta = notaVentaService.obtenerNotaVenta( idOrder )
     if( notaVenta != null ){
       for(Pago pago : notaVenta.pagos){
@@ -251,6 +252,7 @@ class CancellationController {
           User user = Session.get( SessionItem.USER ) as User
           String transaccion = cancelacionService.cancelaVoucherTpv( pago.id, user.username )
           if( StringUtils.trimToEmpty(transaccion).length() > 0 ){
+            cancelled = true
             for(int i=0;i<2;i++){
               String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
               ticketService.imprimeVoucherCancelacionTpv(pago.id, copia, transaccion)
@@ -259,6 +261,7 @@ class CancellationController {
         }
       }
     }
+    return cancelled
   }
 
 
