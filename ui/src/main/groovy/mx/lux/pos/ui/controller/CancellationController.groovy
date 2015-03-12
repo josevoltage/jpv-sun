@@ -257,7 +257,14 @@ class CancellationController {
               String copia = i == 0 ? "COPIA CLIENTE" : "ORIGINAL"
               ticketService.imprimeVoucherCancelacionTpv(pago.id, copia, transaccion)
             }
+          } else if( !pago.idTerminal.contains("|") ) {
+            cancelled = true
+          } else {
+            cancelled = false
+            break
           }
+        } else {
+          cancelled = true
         }
       }
     }
