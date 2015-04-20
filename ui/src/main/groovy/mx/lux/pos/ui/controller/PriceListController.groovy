@@ -242,21 +242,21 @@ class PriceListController {
     items.collect {
       new Articulo(
           id: it?.id,
-          articulo: it?.name,
-          codigoColor: it?.color,
-          descripcionColor: it?.colorDesc,
-          descripcion: it?.reference,
-          idGenerico: it?.type,
-          idGenTipo: it?.genericType,
-          idGenSubtipo: it?.genericSubType,
+          articulo: StringUtils.trimToEmpty(it?.name),
+          codigoColor: StringUtils.trimToEmpty(it?.color),
+          descripcionColor: StringUtils.trimToEmpty(it?.colorDesc),
+          descripcion: StringUtils.trimToEmpty(it?.reference),
+          idGenerico: StringUtils.trimToEmpty(it?.type),
+          idGenTipo: StringUtils.trimToEmpty(it?.genericType),
+          idGenSubtipo: StringUtils.trimToEmpty(it?.genericSubType),
           precio: it.price,
-          idDisenoLente: it?.lensDesign,
-          operacion: it?.operation,
-          tipoPrecio: it?.priceType,
-          ubicacion: it?.location,
-          marca: it?.brand,
-          tipo: it?.typ,
-          subtipo: it?.subtype
+          idDisenoLente: StringUtils.trimToEmpty(it?.lensDesign),
+          operacion: StringUtils.trimToEmpty(it?.operation),
+          tipoPrecio: StringUtils.trimToEmpty(it?.priceType),
+          ubicacion: StringUtils.trimToEmpty(it?.location),
+          marca: StringUtils.trimToEmpty(it?.brand),
+          tipo: StringUtils.trimToEmpty(it?.typ),
+          subtipo: StringUtils.trimToEmpty(it?.subtype)
       )
     }
   }

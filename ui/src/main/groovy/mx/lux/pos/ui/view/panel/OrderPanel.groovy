@@ -391,6 +391,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
     Boolean newOrder = (StringUtils.trimToNull(StringUtils.trimToEmpty(order?.id)) == null)
     if ( StringUtils.isNotBlank( input ) ) {
       sb.doOutside {
+        DailyCloseController.openDay()
         List<Item> results = ItemController.findItemsByQuery( input )
         if ( ( results.size() == 0 ) && ( input.length() > 6 ) ) {
           input = input.substring( 0, 6 )

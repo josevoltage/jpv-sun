@@ -145,7 +145,7 @@ class PagoServiceImpl implements PagoService {
         Double montoDolares = 0.00
         try{
           montoDolares = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pago.idPlan)).doubleValue()
-        } catch( NumberFormatException e ){ println e }
+        } catch( NumberFormatException e ){ log.error( e.message ) }
         ctx.SetFloat( "trn_amount", montoDolares )
         ctx.SetInteger( "trn_cur_id1", 840 )
       } else{
@@ -161,7 +161,7 @@ class PagoServiceImpl implements PagoService {
         if(StringUtils.trimToEmpty(sub).isNumber() ){
           try{
             plan = NumberFormat.getInstance().parse( StringUtils.trimToEmpty(sub) )
-          } catch ( NumberFormatException e ) { println e }
+          } catch ( NumberFormatException e ) { log.error( e.message ) }
         }
         ctx.SetInteger( "trn_qty_pay", plan <= 0 ? 1 : plan )
       }
@@ -170,9 +170,12 @@ class PagoServiceImpl implements PagoService {
       Socket socket = ctx.TCP_Open();
 
       println "Datos enviados: "+ctx.dump()
+      log.debug( "Datos enviados: "+ctx.dump() )
       int execute = ctx.Execute()
       println "Respuesta de la ejecucion: "+execute
+      log.debug("Respuesta de la ejecucion: "+execute)
       if ( execute == 0 && StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ){
+          log.debug("Datos recibidos: "+ctx.dump())
           String lecturaTar = ""
           pago.idFactura = idOrder
           pago.referenciaPago = ctx.GetString( "trn_card_number" )
@@ -210,10 +213,11 @@ class PagoServiceImpl implements PagoService {
                 pago.monto = NumberFormat.getInstance().parse(ctx.GetString( "trn_amount" ).replace(",",""))
                 pago.idPlan = ctx.GetInteger( "trn_qty_pay" )
               }
-          } catch ( NumberFormatException e ){ println e }
+          } catch ( NumberFormatException e ){ log.error( e.message ) }
           ctx.TCP_Close();
       } else {
           println( "ERROR AL VALIDAR PAGO" ) ;
+          log.debug( "ERROR AL VALIDAR PAGO" )
           ctx.ClearAttributes()
           ctx.ClearFields()
           ctx.TCP_Close();
@@ -236,16 +240,7 @@ class PagoServiceImpl implements PagoService {
       logTpv.plan = StringUtils.trimToEmpty(pago?.idPlan)
       try{
         logTpvRepository.saveAndFlush( logTpv )
-      } catch ( Exception e ){ println e }
-      /*String ruta = "${Registry.processedFilesPath}/logTpv.txt"
-      File archivo = new File(ruta);
-      FileWriter escribir = new FileWriter(archivo,true);
-      if(!archivo.exists()) {
-        archivo.createNewFile()
-      }
-      escribir.write("\nIdFactura: ${StringUtils.trimToEmpty(idOrder)} Fecha:${new Date().format('dd-MM-yyyy HH:mm')} PagoSeleccionado:${pagoSelect} PagoRegresoTpv:${pagoReturn}")
-      escribir.close()
-      ctx.ClearFields();*/
+      } catch ( Exception e ){ log.error( e.message ) }
 
     return pago
   }
@@ -261,7 +256,7 @@ class PagoServiceImpl implements PagoService {
       Integer cantReimp = 0
       try{
         cantReimp = NumberFormat.getInstance().parse( StringUtils.trimToEmpty(logTpv.reimpresion) )
-      } catch ( NumberFormatException e ){ println "Error al convertir String a Integer "+e }
+      } catch ( NumberFormatException e ){ log.error( e.message ) }
       logTpv.reimpresion = StringUtils.trimToEmpty( (cantReimp+1).toString() )
       logTpvRepository.saveAndFlush( logTpv )
     }
