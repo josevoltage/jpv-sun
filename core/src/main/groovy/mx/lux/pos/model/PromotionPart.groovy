@@ -169,7 +169,7 @@ class PromotionPart {
   Boolean appliesToPart( Articulo pPart ) {
     Boolean applies = allGenre() || genre.equalsIgnoreCase( pPart.idGenerico )  || listGenres( pPart )
     if ( applies )
-      applies = allPart() || partList.contains( pPart.articulo.toUpperCase() )
+      applies = allPart() || partList.contains( StringUtils.trimToEmpty(pPart.id.toString()) ) || partList.contains( pPart.articulo.toUpperCase() )
     if ( applies )
       applies = allBrand() || brandList.contains( pPart.marca.toUpperCase() )
     if ( applies )
