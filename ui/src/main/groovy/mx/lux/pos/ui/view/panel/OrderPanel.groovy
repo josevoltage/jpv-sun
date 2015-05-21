@@ -1314,7 +1314,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
 
   void payDue( Boolean showPaymDial ){
     if ( order.due ) {
-      new PaymentDialog( this, order, null, order.due ).show()
+      new PaymentDialog( this, order, null, order.due, mainWindow ).show()
       updateOrder( order?.id )
       processPayment( showPaymDial )
     } else if( order.due.doubleValue() <= 0.00 && order.items.size() > 0 ){

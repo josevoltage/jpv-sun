@@ -2,6 +2,7 @@ package mx.lux.pos.ui.view.dialog
 
 import groovy.swing.SwingBuilder
 import mx.lux.pos.service.business.Registry
+import mx.lux.pos.ui.MainWindow
 import mx.lux.pos.ui.controller.OrderController
 import mx.lux.pos.ui.controller.PaymentController
 import mx.lux.pos.ui.view.verifier.IsSelectedVerifier
@@ -55,6 +56,7 @@ class PaymentDialog extends JDialog implements KeyListener{
   private List<Plan> plans
   private String folio = ''
   private BigDecimal due
+  private JFrame mainWindow
   private static final Integer ID_TERM_AMERICANEXP = 7;
   private static final String PLAN_TERM_AMERICANEXP = 'NORMAL AMERICAN EXPRESS';
   private static final String TAG_PAGO_MN_PESOS = 'MN EFECTIVO';
@@ -66,7 +68,8 @@ class PaymentDialog extends JDialog implements KeyListener{
 
   private static final String DOLARES = 'USD Recibidos'
 
-  PaymentDialog( Component parent, Order order, final Payment payment, BigDecimal due ) {
+  PaymentDialog( Component parent, Order order, final Payment payment, BigDecimal due, MainWindow mainWindow ) {
+    this.mainWindow = mainWindow
     this.order = order
     this.payment = payment
     this.due = due
@@ -391,7 +394,10 @@ class PaymentDialog extends JDialog implements KeyListener{
               tmpPayment.planId = StringUtils.trimToEmpty(String.format("%02d", meses ))
               tmpPayment.plan = StringUtils.trimToEmpty(String.format("%02d", meses ))
             }
+            mainWindow.setExtendedState(JFrame.ICONIFIED);
+            this.visible = false
             tmpPayment = OrderController.readCard( StringUtils.trimToEmpty(order.id), tmpPayment )
+            mainWindow.setExtendedState(JFrame.NORMAL);
             if(tmpPayment != null && StringUtils.trimToEmpty(tmpPayment.paymentTypeId).startsWith("TD")){
               tmpPayment.planId = ""
             }
