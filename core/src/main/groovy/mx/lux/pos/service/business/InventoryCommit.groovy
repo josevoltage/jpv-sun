@@ -37,7 +37,13 @@ class InventoryCommit {
     Integer trnbr = null
     log.debug( "[Service] Registrar Trans Inventario" )
     log.debug( "Antes de registrar ${ pTrMstr.toString() }" )
-    if ( pTrMstr.trDet.size() > 0 )
+    Boolean valid = true
+    if( StringUtils.trimToEmpty(pTrMstr.idTipoTrans).equalsIgnoreCase("ENTRADA_TIENDA") ){
+      if( ServiceFactory.inventory.transaccionCargada(StringUtils.trimToEmpty(pTrMstr.referencia)) ){
+        valid = false
+      }
+    }
+    if ( pTrMstr.trDet.size() > 0 && valid )
       try {
         // Fill auto data
         pTrMstr.folio = ServiceFactory.inventory.obtenerSiguienteFolio( pTrMstr.idTipoTrans )

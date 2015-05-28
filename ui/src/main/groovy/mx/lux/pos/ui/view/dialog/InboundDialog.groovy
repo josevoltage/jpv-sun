@@ -99,16 +99,15 @@ class InboundDialog extends JDialog {
     }
 
     protected void onButtonOk() {
-        if (txtClave.getText().trim().length() > 0) {
-            button = true
-            setVisible(false)
-        }
-        else {
-            JOptionPane.showMessageDialog this,
-                    "Debe de capturar una clave",
-                    "Intente de Nuevo",
-                    JOptionPane.ERROR_MESSAGE;
-        }
+      if (txtClave.getText().trim().length() > 0) {
+        button = true
+        setVisible(false)
+      } else {
+        JOptionPane.showMessageDialog this,
+            "Debe de capturar una clave",
+            "Intente de Nuevo",
+            JOptionPane.ERROR_MESSAGE;
+      }
     }
 
 

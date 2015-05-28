@@ -181,7 +181,9 @@ class InvTrView implements NavigationBarListener {
         if ( InvTrViewMode.QUERY.equals(data.viewMode) ) {
           controller.requestPrint( data.qryInvTr.idTipoTrans, data.qryInvTr.folio )
         } else {
+          panel.btnPrint.enabled = false
           controller.requestSaveAndPrint( this )
+          panel.btnPrint.enabled = true
         }
       }
     } else {
