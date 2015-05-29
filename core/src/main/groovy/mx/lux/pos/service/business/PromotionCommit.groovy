@@ -151,17 +151,15 @@ class PromotionCommit {
     GrupoArticulo currGroup = null
     for ( GrupoArticuloImportLine line : records ) {
       if ( ( currGroup == null ) || ( ! currGroup.equals( line.groupId ) ) ) {
-        List<GrupoArticuloDet> partList = parts.findByIdGrupo( line.groupId )
-        if ( partList.size() > 0 ) {
-          try {
-            for( GrupoArticuloDet grupoDet : partList ){
-              parts.delete( grupoDet.id )
-              parts.flush()
-            }
-          } catch ( Exception e ) {
-            log.error( e.getMessage(), e )
-          }
+        //List<GrupoArticuloDet> partList = parts.findByIdGrupo( line.groupId )
+        //if ( partList.size() > 0 ) {
+        try {
+          parts.deleteByIdGrupo( line.groupId )
+          parts.flush()
+        } catch ( Exception e ) {
+          log.error( e.getMessage(), e )
         }
+        //}
 
         currGroup = groups.findOne( line.groupId )
         if ( currGroup == null ) {
