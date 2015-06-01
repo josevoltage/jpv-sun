@@ -52,6 +52,8 @@ class ShowOrderPanel extends JPanel {
 
   private static final String MSJ_FECHA_INCORRECTA = 'Verifique la fecha de la computadora.'
   private static final String TXT_FECHA_INCORRECTA_TITULO = 'Error al crear orden'
+  private static final String MSJ_CANCELAR = '¿Esta seguro que desea cancelar la nota %s?'
+  private static final String TXT_CANCELAR = 'Cancelar Factura'
 
 
   ShowOrderPanel( ) {
@@ -222,25 +224,29 @@ class ShowOrderPanel extends JPanel {
           String fechaVenta = order.date.format( 'dd/MM/yyyy' )
           String hoy = new Date().format( 'dd/MM/yyyy' )
           if( hoy.equalsIgnoreCase(fechaVenta) ){
-            String causa = CancellationController.findCancellationReasonById( 16 )
-            CancellationController.cancelOrder( order.id, causa, '', true )
-            CancellationController.printCancellationPlan( order.id )
+            Integer question = JOptionPane.showConfirmDialog(new JDialog(), String.format(MSJ_CANCELAR, order.bill), TXT_CANCELAR,
+                  JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE)
+            if( question == 0 ){
+              String causa = CancellationController.findCancellationReasonById( 16 )
+              CancellationController.cancelOrder( order.id, causa, '', true )
+              CancellationController.printCancellationPlan( order.id )
 
-            Map<Integer, String> creditRefunds = [ : ]
-            order.payments.each { Payment pmt ->
+              Map<Integer, String> creditRefunds = [ : ]
+              order.payments.each { Payment pmt ->
                 creditRefunds.put( pmt?.id, 'ORIGINAL' )
-            }
-            if ( CancellationController.refundPaymentsCreditFromOrder( order.id, creditRefunds ) ) {
+              }
+              if ( CancellationController.refundPaymentsCreditFromOrder( order.id, creditRefunds ) ) {
                 CancellationController.printOrderCancellation( order.id )
-            } else {
+              } else {
                 sb.optionPane(
                         message: 'Ocurrio un error al registrar devoluciones',
                         messageType: JOptionPane.ERROR_MESSAGE
                 ).createDialog( this, 'No se registran devoluciones' )
                         .show()
+              }
+              CancellationController.refreshOrder( order )
+              doBindings()
             }
-            CancellationController.refreshOrder( order )
-            doBindings()
           } else {
             new CancellationDialog( this, order.id ).show()
             CancellationController.refreshOrder( order )
