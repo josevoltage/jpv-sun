@@ -201,18 +201,23 @@ class DailyCloseDepositsDialog extends JDialog {
     source.enabled = false
     //lblClosingDay.visible = true
     Boolean succesClose = false
-    WaitDialog dialog = new WaitDialog( "Cierre", "Cerrando dia. Espere un momento." )
-    sb.doOutside {
-      succesClose = DailyCloseController.closeDailyClose( closeDate, observations.text, true )
-      Long time = DailyCloseController.timeWait()
-      sleep( time )
-      dialog.dispose()
-    }
-    dialog.show()
-    if ( succesClose ) {
-      //sb.optionPane().showMessageDialog( null, 'Se ha cerrado correctamente', 'Ok', JOptionPane.INFORMATION_MESSAGE )
+    if( DailyCloseController.dayHasDeposit(closeDate) ){
+      WaitDialog dialog = new WaitDialog( "Cierre", "Cerrando dia. Espere un momento." )
+      sb.doOutside {
+        succesClose = DailyCloseController.closeDailyClose( closeDate, observations.text, true )
+        Long time = DailyCloseController.timeWait()
+        sleep( time )
+        dialog.dispose()
+      }
+      dialog.show()
+      if ( succesClose ) {
+        //sb.optionPane().showMessageDialog( null, 'Se ha cerrado correctamente', 'Ok', JOptionPane.INFORMATION_MESSAGE )
+      } else {
+        sb.optionPane().showMessageDialog( null, 'Error al cerrar', 'Error', JOptionPane.ERROR_MESSAGE )
+      }
     } else {
-      sb.optionPane().showMessageDialog( null, 'Error al cerrar', 'Error', JOptionPane.ERROR_MESSAGE )
+        sb.optionPane().showMessageDialog( null, 'Error al cerrar, no existen depositos', 'Error', JOptionPane.ERROR_MESSAGE )
+        source.enabled = true
     }
   }
 
