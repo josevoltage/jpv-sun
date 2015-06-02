@@ -509,7 +509,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 pay.paymentTypeId.startsWith("UV") || pay.paymentTypeId.startsWith("AV")) ){
 
         } else {
-          new PaymentDialog( ev.component, order, ev.source.selectedElement, BigDecimal.ZERO ).show()
+          new PaymentDialog( ev.component, order, ev.source.selectedElement, BigDecimal.ZERO, mainWindow ).show()
           updateOrder( order?.id )
           if( order?.payments.size() <= 0 ){
             printButton.enabled = true
@@ -1362,7 +1362,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         mainWindow.toolsMenu.enabled = true
       } else {
         if( showPaymDial ){
-          new PaymentDialog( this, order, null, order.due ).show()
+          new PaymentDialog( this, order, null, order.due, mainWindow ).show()
         }
         updateOrder( order?.id )
         if( order.due.compareTo(BigDecimal.ZERO) <= 0 ){

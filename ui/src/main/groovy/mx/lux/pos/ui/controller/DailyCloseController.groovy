@@ -277,7 +277,8 @@ class DailyCloseController {
   static Boolean dayHasDeposit( Date closeDate ){
     log.debug( 'dayHasDeposit( )' )
     CierreDiario cierreDiario = cierreDiarioService.buscarPorFecha( closeDate )
-    if( cierreDiario.efectivoNeto.compareTo(BigDecimal.ZERO) > 0 ){
+    BigDecimal usdAmount = cierreDiario.dolaresRecibidos.subtract(cierreDiario.dolaresDevoluciones)
+    if( cierreDiario.efectivoNeto.compareTo(BigDecimal.ZERO) > 0 || usdAmount.compareTo(BigDecimal.ZERO) > 0 ){
       List<Deposito> deposito = cierreDiarioService.buscarDepositosPorFecha( closeDate )
       return deposito.size() > 0
     } else {
