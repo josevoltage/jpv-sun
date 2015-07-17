@@ -174,6 +174,8 @@ class PagoServiceImpl implements PagoService {
       int execute = ctx.Execute()
       println "Respuesta de la ejecucion: "+execute
       log.debug("Respuesta de la ejecucion: "+execute)
+      println "Respuesta Banamex: "+StringUtils.trimToEmpty(ctx.GetString("trn_msg_host"))
+      log.debug("Respuesta Banamex: "+StringUtils.trimToEmpty(ctx.GetString("trn_msg_host")))
       if ( execute == 0 && StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ){
           log.debug("Datos recibidos: "+ctx.dump())
           String lecturaTar = ""
