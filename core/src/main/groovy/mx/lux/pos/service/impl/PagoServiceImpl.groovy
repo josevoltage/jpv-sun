@@ -130,6 +130,7 @@ class PagoServiceImpl implements PagoService {
     Integer timeout = Registry.timeoutTpv
     String user = Registry.userTpv
     String pass = Registry.passTpv
+    String msjTpv = ""
     FormaPago formaPago = formaPagoRepository.findOne( StringUtils.trimToEmpty(tmpPago.idFPago) )
     String pagoSelect = formaPago != null ? formaPago.descripcion : StringUtils.trimToEmpty(tmpPago.idFPago)
     String pagoReturn = ""
@@ -176,6 +177,7 @@ class PagoServiceImpl implements PagoService {
       log.debug("Respuesta de la ejecucion: "+execute)
       println "Respuesta Banamex: "+StringUtils.trimToEmpty(ctx.GetString("trn_msg_host"))
       log.debug("Respuesta Banamex: "+StringUtils.trimToEmpty(ctx.GetString("trn_msg_host")))
+      msjTpv = StringUtils.trimToEmpty( ctx.GetString("trn_msg_host") )
       if ( execute == 0 && StringUtils.trimToEmpty(ctx.GetString("trn_auth_code")).length() > 0 ){
           log.debug("Datos recibidos: "+ctx.dump())
           String lecturaTar = ""
@@ -240,6 +242,7 @@ class PagoServiceImpl implements PagoService {
       logTpv.empleado = idEmployee
       logTpv.tipo = 'V'
       logTpv.plan = StringUtils.trimToEmpty(pago?.idPlan)
+      logTpv.mensajeTpv = msjTpv
       try{
         logTpvRepository.saveAndFlush( logTpv )
       } catch ( Exception e ){ log.error( e.message ) }

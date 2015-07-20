@@ -54,6 +54,9 @@ public class LogTpv implements Serializable {
     @Column( name = "plan" )
     private String plan;
 
+    @Column( name = "mensaje_tpv" )
+    private String mensajeTpv;
+
 
 
     public Integer getId() {
@@ -150,5 +153,13 @@ public class LogTpv implements Serializable {
 
     public void setPlan(String plan) {
         this.plan = plan;
+    }
+
+    public String getMensajeTpv() {
+        return mensajeTpv;
+    }
+
+    public void setMensajeTpv(String mensajeTpv) {
+        this.mensajeTpv = mensajeTpv;
     }
 }
