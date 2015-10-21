@@ -125,6 +125,7 @@ class DailyClosePanel extends JPanel {
     if ( SwingUtilities.isLeftMouseButton( ev ) ) {
       DailyClose selection = ev.source.selectedElement as DailyClose
       if ( ev.clickCount == 2 && selection?.date ) {
+        DailyCloseController.validPendingClosedDays()
         boolean dataLoaded = DailyCloseController.loadDayData( selection )
         if ( dataLoaded ) {
           DailyClose updated = DailyCloseController.findByDate( selection?.date )

@@ -64,6 +64,8 @@ public class QCierreDiario extends EntityPathBase<CierreDiario> {
 
     public final NumberPath<java.math.BigDecimal> ventaNeta = createNumber("ventaNeta", java.math.BigDecimal.class);
 
+    public final BooleanPath verificado = createBoolean("verificado");
+
     public QCierreDiario(String variable) {
         super(CierreDiario.class, forVariable(variable));
     }

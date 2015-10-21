@@ -3,6 +3,7 @@ package mx.lux.pos.service.impl
 import groovy.util.logging.Slf4j
 import mx.lux.pos.service.CierreDiarioService
 import mx.lux.pos.service.MonedaExtranjeraService
+import mx.lux.pos.service.TicketService
 import mx.lux.pos.service.business.EliminarNotaVentaTask
 import mx.lux.pos.service.business.InventorySearch
 import mx.lux.pos.service.business.Registry
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.velocity.VelocityEngineUtils
 import org.springframework.util.Assert
 
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import javax.annotation.Resource
 
@@ -68,6 +70,9 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   private PagoExternoRepository pagoExternoRepository
 
   @Resource
+  private EmpleadoRepository empleadoRepository
+
+  @Resource
   private ResumenDiarioRepository resumenDiarioRepository
 
   @Resource
@@ -90,6 +95,9 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
 
   @Resource
   private PlanRepository planRepository
+
+  @Resource
+  private TicketService ticketService
 
   @Resource
   private AcuseRepository acuseRepository
@@ -145,8 +153,11 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
     CierreDiario cierreDiario = cierreDiarioRepository.findOne( new Date() )
     if ( cierreDiario?.fecha ) {
       return cierreDiario
+    } else {
+      cierreDiario = cierreDiarioRepository.save( new CierreDiario( fecha: new Date(), estado: 'a', verificado: false ) )
+      validPendingClosedDays()
     }
-    return cierreDiarioRepository.save( new CierreDiario( fecha: new Date(), estado: 'a' ) )
+    return cierreDiario
   }
 
   void eliminarVentasAbiertas( ) {
@@ -1612,6 +1623,94 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       }
     }
     return selected
+  }
+
+
+
+  Boolean rehacerArchivosCierrre( Date fecha ) throws ParseException {
+    Boolean rehacerArchivos = false;
+    CierreDiario cierreDiarioJava = cierreDiarioRepository.findByFecha( fecha );
+    if( StringUtils.trimToEmpty(cierreDiarioJava.getEstado()).equalsIgnoreCase("c") ){
+      Date fechaFin = new Date( DateUtils.ceiling(fecha, Calendar.DAY_OF_MONTH).getTime() - 1 );
+      Parametro parametro = parametroRepository.findOne(TipoParametro.CONV_NOMINA.getValue());
+      String convenios = parametro.getValor();
+      List<NotaVenta> notas = new ArrayList<NotaVenta>();
+      List<NotaVenta> notasTmp = notaVentaRepository.findByFechaHoraFacturaBetweenAndFacturaNotNull(fecha, fechaFin);
+      for(NotaVenta tmp : notasTmp){
+        if( StringUtils.trimToEmpty(tmp.getIdConvenio()).length() <= 0 && StringUtils.trimToEmpty(tmp.getFactura()).length() > 0 ){
+          notas.add(tmp);
+        }
+      }
+      log.debug( "notas obtenidas: "+notas.size() );
+      BigDecimal ventaBruta = BigDecimal.ZERO;
+      BigDecimal desc = BigDecimal.ZERO;
+      Integer cantDesc = 0;
+      for(NotaVenta nota : notas){
+        for(DetalleNotaVenta det : nota.getDetalles() ){
+          BigDecimal precio = det.getPrecioUnitLista().multiply( new BigDecimal(det.getCantidadFac()) );
+          ventaBruta = ventaBruta.add(precio);
+        }
+        List<OrdenPromDet> lstOrdenPromDet = ordenPromDetRepository.findByIdFactura( nota.getId() );
+        for( OrdenPromDet promo : lstOrdenPromDet ){
+          desc = desc.add( promo.getDescuentoMonto() );
+          cantDesc = cantDesc+1;
+        }
+        if( nota.getMontoDescuento().abs().compareTo(new BigDecimal(VALOR_CERO)) > 0 ){
+          desc = desc.add( nota.getMontoDescuento() );
+          cantDesc = cantDesc+1;
+        }
+      }
+      BigDecimal modificaciones = BigDecimal.ZERO;
+      BigDecimal cancelaciones = BigDecimal.ZERO;
+      Integer modificados = 0;
+      Integer cancelados = 0;
+      List<Modificacion> mods = modificacionRepository.findByFechaBetween(fecha, fechaFin);
+      for(Modificacion mod : mods){
+        ModificacionImp imp = mod?.modificacionImp
+        if ( imp != null && imp.getId() != null ) {
+          BigDecimal anterior = imp.getVentaAnterior();
+          BigDecimal nuevo = imp.getVentaNueva();
+          modificaciones = modificaciones.add(anterior.subtract(nuevo));
+          modificados = modificados+1;
+        } else if ( "can".equalsIgnoreCase( mod.getTipo() ) ) {
+          NotaVenta notaVentaJava = notaVentaRepository.findOne( mod.getIdFactura() );
+          cancelaciones = cancelaciones.add( notaVentaJava.getVentaNeta() );
+          cancelados = cancelados+1;
+        }
+      }
+      modificaciones = modificaciones.add(desc);
+      BigDecimal ventaNeta = ( ventaBruta.subtract(cancelaciones).subtract(modificaciones) );
+      if( ventaNeta.compareTo(cierreDiarioJava.getVentaNeta()) > 0 || ventaNeta.compareTo(cierreDiarioJava.getVentaNeta()) < 0 ){
+        rehacerArchivos = true;
+      }
+    }
+    return rehacerArchivos;
+  }
+
+
+  void marcarValidado( Date fecha ) throws ParseException {
+    CierreDiario cierreDiario = cierreDiarioRepository.findByFecha( fecha );
+    if( cierreDiario != null ){
+      cierreDiario.setVerificado( true );
+      cierreDiarioRepository.save( cierreDiario );
+    }
+  }
+
+
+
+  @Override
+  void validPendingClosedDays( ){
+    List<CierreDiario> lstCierresPendientes = cierreDiarioRepository.findCierresPendientesVerificar()
+    for(CierreDiario cierreDiarioJava : lstCierresPendientes){
+      if( rehacerArchivosCierrre( cierreDiarioJava.fecha ) ){
+        String parametroGerente = parametroRepository.findOne( TipoParametro.ID_GERENTE.value ).valor
+        Empleado employee = empleadoRepository.findById( StringUtils.trimToEmpty(parametroGerente) )
+        cargarDatosCierreDiario( cierreDiarioJava.fecha )
+        cerrarCierreDiario( cierreDiarioJava.fecha, StringUtils.trimToEmpty(cierreDiarioJava.observaciones), false )
+        ticketService.imprimeResumenDiario( cierreDiarioJava.fecha, employee )
+        marcarValidado( cierreDiarioJava.fecha );
+      }
+    }
   }
 
 

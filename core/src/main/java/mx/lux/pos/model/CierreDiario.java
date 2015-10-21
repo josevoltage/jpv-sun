@@ -100,6 +100,9 @@ public class CierreDiario implements Serializable {
     @Column( name = "cancelaciones_cantidad" )
     private Integer cantidadCancelaciones = 0;
 
+    @Column( name = "verificado" )
+    private Boolean verificado;
+
     @PostLoad
     private void onPostLoad() {
         estado = StringUtils.trimToEmpty( estado );
@@ -290,5 +293,13 @@ public class CierreDiario implements Serializable {
 
     public void setCantidadCancelaciones( Integer cantidadCancelaciones ) {
         this.cantidadCancelaciones = cantidadCancelaciones;
+    }
+
+    public Boolean getVerificado() {
+        return verificado;
+    }
+
+    public void setVerificado(Boolean verificado) {
+        this.verificado = verificado;
     }
 }
