@@ -155,7 +155,6 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
       return cierreDiario
     } else {
       cierreDiario = cierreDiarioRepository.save( new CierreDiario( fecha: new Date(), estado: 'a', verificado: false ) )
-      validPendingClosedDays()
     }
     return cierreDiario
   }
