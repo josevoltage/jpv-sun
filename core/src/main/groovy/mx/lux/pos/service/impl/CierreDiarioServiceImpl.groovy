@@ -182,12 +182,14 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
     SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
     eliminarVentasAbiertas()
     CierreDiario cierreDiario = cierreDiarioRepository.findOne( fechaCierre )
-    cierreDiario.estado = 'c'
-    Date fecha = new Date()
-    cierreDiario.fechaCierre = fecha
-    cierreDiario.horaCierre = fecha
-    cierreDiario.observaciones = observaciones
-    cierreDiarioRepository.save( cierreDiario )
+    if( cierre ){
+      cierreDiario.estado = 'c'
+      Date fecha = new Date()
+      cierreDiario.fechaCierre = fecha
+      cierreDiario.horaCierre = fecha
+      cierreDiario.observaciones = observaciones
+      cierreDiarioRepository.save( cierreDiario )
+    }
 
     Parametro parametro = parametroRepository.findOne( TipoParametro.ID_SUCURSAL.value )
     Sucursal sucursal = sucursalRepository.findOne( Integer.parseInt( parametro.getValor() ) )
@@ -1211,6 +1213,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   private Set<ResumenDiario> actualizarResumenes( Set<ResumenDiario> resumenes, Set<VoucherTmp> vouchers ) {
     log.info( "actualizando resumenes: ${resumenes*.idTerminal}" )
     resumenes?.each { ResumenDiario resumen ->
+      if( resumen.id != null ){
       String idTerminal = resumen?.idTerminal
       String tipo = resumen?.tipo?.trim()
       String plan = resumen?.plan?.trim()
@@ -1231,6 +1234,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
           break
         case 'D': resumen?.orden = '5'
           break
+      }
       }
     }
     return resumenes
