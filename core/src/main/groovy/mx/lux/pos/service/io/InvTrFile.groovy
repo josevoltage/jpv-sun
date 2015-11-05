@@ -1,5 +1,6 @@
 package mx.lux.pos.service.io
 
+import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.business.ResourceManager
 import mx.lux.pos.service.impl.ServiceFactory
 import mx.lux.pos.util.CustomDateUtils
@@ -12,10 +13,10 @@ import org.slf4j.LoggerFactory
 class InvTrFile {
 
   private static enum DetFld {
-    Site, TrType, TrNbr, LineNum, Sku, MovType, Qty
+    Article, Color, ModSend, Qty, Sku, MovType, Remarks
   }
   private static enum HdrFld {
-    Site, TrType, TrNbr, TrDate, SiteTo, Ref, LineNum, Remarks
+    TrNbr, LineNum
   }
   private static final String DELIMITER = "|"
   private static final String FMT_TR_DATE = "dd/MM/yyyy"
@@ -48,15 +49,16 @@ class InvTrFile {
 
   protected String formatDetail( TransInv pInvTr, Integer pLineNum, TransInvDetalle pTrDet ) {
     StringList det = new StringList()
+    Articulo articulo = RepositoryFactory.partMaster.findOne( pTrDet.sku )
     for ( DetFld fld : DetFld.values() ) {
       switch ( fld ) {
-        case DetFld.Site: det.add( String.format( "%04d", pInvTr.sucursal ) ); break
-        case DetFld.TrType: det.add( pInvTr.idTipoTrans ); break
-        case DetFld.TrNbr: det.addInteger( pInvTr.folio, "%08d" ); break
-        case DetFld.LineNum: det.addInteger( pLineNum ); break
+        case DetFld.Article: det.add( articulo != null ? StringUtils.trimToEmpty(articulo.articulo) : "" ); break
+        case DetFld.Color: det.add( articulo != null ? StringUtils.trimToEmpty(articulo.codigoColor) : "" ); break
+        case DetFld.ModSend: det.add( "ENTERO" ); break
+        case DetFld.Qty: det.addInteger( pTrDet.cantidad ); break
         case DetFld.Sku: det.addInteger( pTrDet.sku ); break
         case DetFld.MovType: det.add( pTrDet.tipoMov ); break
-        case DetFld.Qty: det.addInteger( pTrDet.cantidad ); break
+        case DetFld.Remarks: det.add( StringUtils.trimToEmpty(pInvTr.observaciones) ); break
       }
     }
     det.add( "" )
@@ -67,20 +69,8 @@ class InvTrFile {
     StringList hdr = new StringList()
     for ( HdrFld fld : HdrFld.values() ) {
       switch ( fld ) {
-        case HdrFld.Site: hdr.add( String.format( "%04d", pInvTr.sucursal ) ); break
-        case HdrFld.TrType: hdr.add( pInvTr.idTipoTrans ); break
-        case HdrFld.TrNbr: hdr.addInteger( pInvTr.folio, "%08d" ); break
-        case HdrFld.TrDate: hdr.addDate( pInvTr.fecha, FMT_TR_DATE ); break
+        case HdrFld.TrNbr: hdr.addInteger( pInvTr.folio, "%06d" ); break
         case HdrFld.LineNum: hdr.addInteger( pInvTr.trDet.size() ); break
-        case HdrFld.Remarks: hdr.add( pInvTr.observaciones ); break
-        case HdrFld.Ref: hdr.add( pInvTr.referencia ); break
-        case HdrFld.SiteTo:
-          if ( pInvTr.sucursalDestino != null ) {
-            hdr.add( String.format( "%04d", pInvTr.sucursalDestino ) )
-          } else {
-            hdr.add( " " )
-          }
-          break
       }
     }
     hdr.add( "" )
@@ -95,8 +85,9 @@ class InvTrFile {
   }
 
   protected File getInvTrFile( TransInv pInvTr ) {
-    String filename = String.format( "%s.%d.%04d.%s.inv", pInvTr.idTipoTrans, pInvTr.folio, pInvTr.sucursal,
-        CustomDateUtils.format( pInvTr.fecha, "dd-MM-yyyy" ) )
+    String filename = String.format( "2.%04d.%s.DA.%06d", pInvTr.sucursal, CustomDateUtils.format( pInvTr.fecha, "dd-MM-yyyy" ),
+            pInvTr.folio
+         )
     String absolutePath = String.format( "%s%s%s", this.location, File.separator, filename )
     return new File( absolutePath )
   }
