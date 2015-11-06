@@ -1709,11 +1709,19 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
     for(CierreDiario cierreDiarioJava : lstCierresPendientes){
       if( !cierreDiarioJava.fecha.format("dd/MM/yyyy").equalsIgnoreCase(new Date().format("dd/MM/yyyy")) ){
         if( rehacerArchivosCierrre( cierreDiarioJava.fecha ) ){
-          String parametroGerente = parametroRepository.findOne( TipoParametro.ID_GERENTE.value ).valor
-          Empleado employee = empleadoRepository.findById( StringUtils.trimToEmpty(parametroGerente) )
           cargarDatosCierreDiario( cierreDiarioJava.fecha )
           cerrarCierreDiario( cierreDiarioJava.fecha, StringUtils.trimToEmpty(cierreDiarioJava.observaciones), false )
-          ticketService.imprimeResumenDiario( cierreDiarioJava.fecha, employee )
+          String parametroGerente = parametroRepository.findOne( TipoParametro.ID_GERENTE.value ).valor
+          Empleado gerente = new Empleado()
+          if( parametroGerente.contains(',') ){
+            String[] ids = parametroGerente.split(",")
+            if( ids.length > 0 ){
+              gerente = empleadoRepository.findById( StringUtils.trimToEmpty(ids[0]) )
+            }
+          } else {
+            gerente = empleadoRepository.findById( parametroGerente )
+          }
+          ticketService.imprimeResumenDiario( cierreDiarioJava.fecha, gerente )
           marcarValidado( cierreDiarioJava.fecha );
         } else if( cierreDiarioJava.estado.equalsIgnoreCase("c")){
           marcarValidado( cierreDiarioJava.fecha );

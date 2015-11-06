@@ -601,7 +601,9 @@ class TicketServiceImpl implements TicketService {
         } else if( TAG_DEPOSITO_US.equalsIgnoreCase(deposito.tipoDeposito) ){
           totalDepositosUS = totalDepositosUS + deposito.monto
         }
-        deposito.empleado = new Empleado()
+        if( deposito.empleado == null ){
+          deposito.empleado = new Empleado()
+        }
         deposito.empleado.nombre = String.format('%10s', formatter.format( deposito.monto ) )
       }
       BigDecimal efectivoNetoMN = cierreDiario.efectivoRecibido + cierreDiario.efectivoExternos - cierreDiario.efectivoDevoluciones
