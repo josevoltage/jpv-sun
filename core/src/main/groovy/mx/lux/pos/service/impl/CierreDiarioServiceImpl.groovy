@@ -1690,28 +1690,34 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
     return rehacerArchivos;
   }
 
-
-  void marcarValidado( Date fecha ) throws ParseException {
+  @Override
+  @Transactional
+  void marcarValidado( Date fecha ) {
     CierreDiario cierreDiario = cierreDiarioRepository.findByFecha( fecha );
     if( cierreDiario != null ){
       cierreDiario.setVerificado( true );
       cierreDiarioRepository.save( cierreDiario );
+      cierreDiarioRepository.flush()
     }
   }
 
 
-
   @Override
+  @Transactional
   void validPendingClosedDays( ){
     List<CierreDiario> lstCierresPendientes = cierreDiarioRepository.findCierresPendientesVerificar()
     for(CierreDiario cierreDiarioJava : lstCierresPendientes){
-      if( rehacerArchivosCierrre( cierreDiarioJava.fecha ) ){
-        String parametroGerente = parametroRepository.findOne( TipoParametro.ID_GERENTE.value ).valor
-        Empleado employee = empleadoRepository.findById( StringUtils.trimToEmpty(parametroGerente) )
-        cargarDatosCierreDiario( cierreDiarioJava.fecha )
-        cerrarCierreDiario( cierreDiarioJava.fecha, StringUtils.trimToEmpty(cierreDiarioJava.observaciones), false )
-        ticketService.imprimeResumenDiario( cierreDiarioJava.fecha, employee )
-        marcarValidado( cierreDiarioJava.fecha );
+      if( !cierreDiarioJava.fecha.format("dd/MM/yyyy").equalsIgnoreCase(new Date().format("dd/MM/yyyy")) ){
+        if( rehacerArchivosCierrre( cierreDiarioJava.fecha ) ){
+          String parametroGerente = parametroRepository.findOne( TipoParametro.ID_GERENTE.value ).valor
+          Empleado employee = empleadoRepository.findById( StringUtils.trimToEmpty(parametroGerente) )
+          cargarDatosCierreDiario( cierreDiarioJava.fecha )
+          cerrarCierreDiario( cierreDiarioJava.fecha, StringUtils.trimToEmpty(cierreDiarioJava.observaciones), false )
+          ticketService.imprimeResumenDiario( cierreDiarioJava.fecha, employee )
+          marcarValidado( cierreDiarioJava.fecha );
+        } else if( cierreDiarioJava.estado.equalsIgnoreCase("c")){
+          marcarValidado( cierreDiarioJava.fecha );
+        }
       }
     }
   }
