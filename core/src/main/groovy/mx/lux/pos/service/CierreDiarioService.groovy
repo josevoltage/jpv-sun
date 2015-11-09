@@ -54,4 +54,8 @@ public interface CierreDiarioService {
   void generaIN2( Date fechaCierre )
 
   List<Pago> buscarPagosTpvPorFechaCierrePorFactura( Date fechaCierre, String ticket )
+
+  void validPendingClosedDays( )
+
+  void marcarValidado( Date fecha )
 }

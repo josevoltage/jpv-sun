@@ -585,6 +585,9 @@ class MainWindow extends JFrame implements KeyListener {
   private void initialize( ) {
     sb.doOutside {
       PriceListController.loadExpiredPriceList()
+      if( AccessController.iniciaSesionPrimeraVez() ){
+        DailyCloseController.validPendingClosedDays()
+      }
       DailyCloseController.openDay()
       IOController.getInstance().loadAdjustFile()
       IOController.getInstance().loadMessageTicketFile()

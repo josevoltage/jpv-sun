@@ -287,4 +287,7 @@ class DailyCloseController {
   }
 
 
+  static void validPendingClosedDays(){
+    cierreDiarioService.validPendingClosedDays()
+  }
 }
