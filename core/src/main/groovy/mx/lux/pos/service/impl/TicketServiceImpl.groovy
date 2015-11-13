@@ -601,7 +601,9 @@ class TicketServiceImpl implements TicketService {
         } else if( TAG_DEPOSITO_US.equalsIgnoreCase(deposito.tipoDeposito) ){
           totalDepositosUS = totalDepositosUS + deposito.monto
         }
-        deposito.empleado = new Empleado()
+        if( deposito.empleado == null ){
+          deposito.empleado = new Empleado()
+        }
         deposito.empleado.nombre = String.format('%10s', formatter.format( deposito.monto ) )
       }
       BigDecimal efectivoNetoMN = cierreDiario.efectivoRecibido + cierreDiario.efectivoExternos - cierreDiario.efectivoDevoluciones
@@ -953,12 +955,13 @@ class TicketServiceImpl implements TicketService {
 
       }
 
+      Sucursal sucursal = sucursalRepository.findOne(Registry.currentSite)
       def datos = [ nombre_ticket: 'ticket-resumen-diario',
           fecha_cierre: MyDateUtils.format( fechaCierre, 'dd-MM-yyyy' ),
           hora_cierre: cierreDiario.horaCierre != null ? String.format('%s %s', MyDateUtils.format( cierreDiario.fechaCierre, 'dd-MM-yyyy' ), MyDateUtils.format( cierreDiario.horaCierre, 'HH:mm:ss' ) ): '',
-          empleado: empleado.nombreCompleto(),
-          id_sucursal: empleado.sucursal.id,
-          nombre_sucursal: empleado.sucursal.nombre,
+          empleado: empleado != null ? empleado.nombreCompleto() : "",
+          id_sucursal: empleado != null ? empleado.sucursal.id : sucursal.id,
+          nombre_sucursal: empleado != null ? empleado.sucursal.nombre : sucursal.nombre,
           estado_cierre_diario: cierreDiario.estado,
           cantidad_ventas_brutas: cierreDiario.cantidadVentas == 0 ? '-' : cierreDiario.cantidadVentas,
           importe_ventas_brutas: cierreDiario.ventaBruta.compareTo(BigDecimal.ZERO) == 0 ? String.format('%10s', '-') : String.format('%10s', formatter.format( ventaBruta ) ),
