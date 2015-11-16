@@ -424,6 +424,10 @@ class Registry {
       return  asString(TipoParametro.URL_CONFIRMA_ENTRADA)
   }
 
+  static String getURLConfirmaEntradaAlmacenCentral() {
+    return  asString(TipoParametro.URL_CONFIRMA_ENTRADA_ALMACEN)
+  }
+
   static String getAlmacenes() {
     return  asString(TipoParametro.ALMACENES)
   }
@@ -447,6 +451,8 @@ class Registry {
         url = getURLSalidaAlmacen()
     }  else if ( AckType.ENTRADA_ALMACEN.equals(type) ) {
         url = getURLEntradaAlmacen()
+    }  else if ( "REM".equalsIgnoreCase(type) ) {
+        url = getURLConfirmaEntradaAlmacenCentral()
     }  else if ( AckType.CONFIRMACION_ENTRADA.equals(type) ) {
         url = getURLConfirmaEntradaAlmacen()
     }

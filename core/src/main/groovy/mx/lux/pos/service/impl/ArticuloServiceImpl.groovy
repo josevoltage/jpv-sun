@@ -203,7 +203,7 @@ class ArticuloServiceImpl implements ArticuloService {
         if ( part != null ) {
           shadow.updateArticulo( part )
         } else {
-          if ( shadow.isValidForNew() ) {
+          if ( false ) {//if ( shadow.isValidForNew() ) {
             part = shadow.createArticulo()
           }
         }

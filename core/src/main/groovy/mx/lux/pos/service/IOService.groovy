@@ -1,6 +1,7 @@
 package mx.lux.pos.service
 
 import mx.lux.pos.model.Acuse
+import mx.lux.pos.model.Remesas
 import mx.lux.pos.model.TransInv
 
 public interface IOService {
@@ -44,5 +45,9 @@ public interface IOService {
   void saveAcknowledgement(Acuse pAcknowledgement)
 
   void saveAcknowledgementTrans(TransInv pAcknowledgement)
+
+  void logRemittanceNotification( String idTipoTrans, Integer folio, String codigo )
+
+  Remesas updateRemesa( String idTipoTrans )
 
 }

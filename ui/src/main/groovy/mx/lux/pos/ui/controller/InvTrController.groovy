@@ -48,6 +48,7 @@ class InvTrController {
   private static final String MSJ_ARCHIVO_GENERADO = 'El archivo IN2 fue generado correctamente en %s'
   private static final String TXT_ARCHIVO_GENERADO = 'Archivo IN2'
   private static final String MSJ_ARCHIVO_NO_GENERADO = 'No se genero correctamente el archivo de inventario'
+  private static final String TAG_REMESA = 'ENTRADA'
 
  // private static SucursalService sucursalService
 
@@ -182,7 +183,10 @@ class InvTrController {
 
   protected String confirmaEntrada(InvTrViewMode viewMode, InvTrView pView){
       String url = Registry.getURLConfirmacion( viewMode.trType.idTipoTrans );
-      if ( StringUtils.trimToNull( url ) != null ) {
+      if( TAG_REMESA.equalsIgnoreCase(viewMode.trType.idTipoTrans.trim()) ){
+        ServiceManager.getIoServices().updateRemesa( viewMode.trType.idTipoTrans.trim() )
+        ServiceManager.getIoServices().logRemittanceNotification( viewMode.trType.idTipoTrans.trim(), viewMode.trType.ultimoFolio+1, pView.data.receiptDocument.code )
+      } else if ( StringUtils.trimToNull( url ) != null ) {
         String variable = pView.data.claveCodificada + ">" + pView.data.postTrType.ultimoFolio
         url += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', variable ), 'UTF-8' ) )
         String response = url.toURL().text
@@ -465,6 +469,7 @@ class InvTrController {
     log.debug( "[Controller] Save and Print" )
     InvTrRequest request = RequestAdapter.getRequest( pView.data )
     if ( request != null ) {
+     Boolean generateFile = true
         request.remarks = request.remarks.replaceAll("[^a-zA-Z0-9]+"," ");
       Integer trNbr = ServiceManager.getInventoryService().solicitarTransaccion( request )
       if ( trNbr != null && trNbr > -1 ) {
@@ -473,13 +478,18 @@ class InvTrController {
             File moved = new File( SettingsController.instance.processedPath, pView.data.inFile.name )
             if (InvTrViewMode.OUTBOUND.equals( pView.data.viewMode ) || InvTrViewMode.FILE_ADJUST.equals( pView.data.viewMode )) {
                 pView.data.inFile.delete();
-            }
-            else {
+            } else {
               List<File> lstFiles = new ArrayList<>();
               if(moved.exists()) {
                 moved.delete()
               }
               try {
+                Integer iLine = 0
+                pView.data.inFile.eachLine() {
+                  if( it.contains(",") ){
+                    generateFile = false
+                  }
+                }
                 FileInputStream inFile = new FileInputStream(pView.data.inFile);
                 FileOutputStream outFile = new FileOutputStream(moved);
                 Integer c;
@@ -507,7 +517,9 @@ class InvTrController {
             || InvTrViewMode.INBOUND.equals( viewMode )) {
           dispatchPrintTransaction( viewMode.trType.idTipoTrans, trNbr )
           if (InvTrViewMode.INBOUND.equals( viewMode )) {
-               String resultado = confirmaEntrada(viewMode, pView)
+            String resultado = confirmaEntrada(viewMode, pView)
+          } else if( InvTrViewMode.RECEIPT.equals( viewMode ) && generateFile){
+            String resultado = confirmaEntrada(viewMode, pView)
           }
           if( ServiceManager.getInventoryService().isReceiptDuplicate() ){
             dispatchPrintTransaction( viewMode.trType.idTipoTrans, trNbr )

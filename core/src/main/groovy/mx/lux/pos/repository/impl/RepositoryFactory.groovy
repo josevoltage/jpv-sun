@@ -39,6 +39,7 @@ class RepositoryFactory {
   private static CotizacionRepository quotes
   private static CotizaDetRepository quoteDetail
   private static TipoTransInvRepository typeTransaction
+  private static RemesasRepository pRemesasRepository
 
   @Autowired
   RepositoryFactory( ArticuloRepository pArticuloRepository,
@@ -71,7 +72,8 @@ class RepositoryFactory {
                      AcuseRepository pAcuseRepository,
                      ModificacionRepository pModificacionRepository,
         CotizacionRepository pCotizacionRepository, CotizaDetRepository pCotizaDetRepository,
-        TipoTransInvRepository pTypeTransaction
+        TipoTransInvRepository pTypeTransaction,
+        RemesasRepository remesasRepository
   ) {
     customerCatalog = pClienteRepository
     discounts = pDescuentoRepository
@@ -105,6 +107,7 @@ class RepositoryFactory {
     quotes = pCotizacionRepository
     quoteDetail = pCotizaDetRepository
     typeTransaction = pTypeTransaction
+    pRemesasRepository = remesasRepository
   }
 
   static ClienteRepository getCustomerCatalog( ) {
@@ -236,4 +239,8 @@ class RepositoryFactory {
       return typeTransaction
   }
 
+
+  static RemesasRepository getRemittanceRepository() {
+    return pRemesasRepository
+  }
 }

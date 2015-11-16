@@ -1721,8 +1721,8 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
           } else {
             gerente = empleadoRepository.findById( parametroGerente )
           }
-          ticketService.imprimeResumenDiario( cierreDiarioJava.fecha, gerente )
           marcarValidado( cierreDiarioJava.fecha );
+          ticketService.imprimeResumenDiario( cierreDiarioJava.fecha, gerente )
         } else if( cierreDiarioJava.estado.equalsIgnoreCase("c")){
           marcarValidado( cierreDiarioJava.fecha );
         }
