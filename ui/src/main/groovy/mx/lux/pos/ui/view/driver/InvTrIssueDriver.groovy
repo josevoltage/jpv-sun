@@ -152,7 +152,15 @@ class InvTrIssueDriver extends InvTrDriver {
     pView.panel.browserSku.fireTableDataChanged( )
     pView.panel.txtType.setText( String.format( '%d', quantity ) )
     if(quantity > 0 && pView.panel.newTransaction ){
-      pView.panel.comboSiteTo.setItems(InvTrController.instance.listaAlmacenes())
+      List<Sucursal> lstStorages = InvTrController.instance.listaAlmacenes()
+      for( Sucursal storage : lstStorages ){
+        String[] name = pView.panel.storage.split("]")
+        if( name.length > 1 ){
+          if( StringUtils.trimToEmpty(name[1]).equalsIgnoreCase(StringUtils.trimToEmpty(storage.nombre)) ){
+            pView.panel.comboSiteTo.setSelection( storage )
+          }
+        }
+      }
       /*pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
       if( pView.panel.comboSiteTo.selection == null ||  pView.panel.comboSiteTo.selection?.id == null ){
         pView.panel.comboSiteTo.text = pView.panel.TXT_SITE_TO_PROMPT
