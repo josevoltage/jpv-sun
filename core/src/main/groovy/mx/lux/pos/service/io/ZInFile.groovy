@@ -1,16 +1,19 @@
 package mx.lux.pos.service.io
 
 import mx.lux.pos.model.NotaVenta
+import mx.lux.pos.model.Sucursal
 import mx.lux.pos.model.TransInv
 import mx.lux.pos.model.TransInvDetalle
 import mx.lux.pos.repository.BancoRepository
 import mx.lux.pos.repository.NotaVentaRepository
+import mx.lux.pos.repository.SucursalRepository
 import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.NotaVentaService
 import mx.lux.pos.service.TicketService
 import mx.lux.pos.service.business.Registry
 import mx.lux.pos.util.CustomDateUtils
 import mx.lux.pos.util.StringList
+import org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -20,8 +23,8 @@ class ZInFile {
   private static final String DELIMITER = "|"
   private static final String DELIMITER_2 = "!"
   private static final String FMT_TR_DATE = "dd/MM/yyyy"
-  private static final String FILENAME = "2.%d.%s.IN"
-  private static final String FILENAME2 = "2.%d.%s.IN2"
+  private static final String FILENAME = "2.%s.%s.IN"
+  private static final String FILENAME2 = "2.%s.%s.IN2"
 
   private Logger logger = LoggerFactory.getLogger( this.getClass() )
   private String filename
@@ -31,10 +34,13 @@ class ZInFile {
 
   ZInFile( Date pDate, Boolean invMonth ) {
     this.fileDate = pDate
+    SucursalRepository sucRep = RepositoryFactory.siteRepository
+    Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+    String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
     if(invMonth){
-      filename = String.format( FILENAME2, Registry.getCurrentSite(), CustomDateUtils.format( pDate, "dd-MM-yyyy" ) )
+      filename = String.format( FILENAME2, centroCostos, CustomDateUtils.format( pDate, "dd-MM-yyyy" ) )
     } else {
-      filename = String.format( FILENAME, Registry.getCurrentSite(), CustomDateUtils.format( pDate, "dd-MM-yyyy" ) )
+      filename = String.format( FILENAME, centroCostos, CustomDateUtils.format( pDate, "dd-MM-yyyy" ) )
     }
   }
 
@@ -58,7 +64,10 @@ class ZInFile {
     list.add( pTrMstr.observaciones )
     list.add( pTrMstr.idEmpleado )
     if ( pTrMstr.sucursalDestino != null ) {
-      list.addInteger( pTrMstr.sucursalDestino, "%04d" )
+      SucursalRepository sucRep = RepositoryFactory.siteRepository
+      Sucursal sucursal = sucRep.findOne( pTrMstr.sucursalDestino )
+      String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(pTrMstr.sucursalDestino.toString())
+      list.add( centroCostos )
     } else {
       list.add( "" )
     }
@@ -71,8 +80,11 @@ class ZInFile {
   }
 
   protected String formatHeader( ) {
+    SucursalRepository sucRep = RepositoryFactory.siteRepository
+    Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+    String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
     StringList list = new StringList()
-    list.addInteger( Registry.getCurrentSite(), "%04d" )
+    list.add( centroCostos )
     list.addDate( this.fileDate, FMT_TR_DATE )
     nTrans = 0
     for ( TransInv tr : this.trInvList ) {

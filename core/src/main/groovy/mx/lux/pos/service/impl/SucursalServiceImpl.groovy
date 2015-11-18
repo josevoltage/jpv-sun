@@ -9,6 +9,7 @@ import mx.lux.pos.repository.ParametroRepository
 import mx.lux.pos.repository.SucursalRepository
 import mx.lux.pos.service.SucursalService
 import mx.lux.pos.service.business.Registry
+import org.apache.commons.lang.StringUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -65,12 +66,20 @@ class SucursalServiceImpl implements SucursalService {
   }
 
     List<Sucursal> listarAlmacenes( ) {
-        log.debug( "[Service] Listar almacenes" )
-        //List<Sucursal> lstAlmacenes = new ArrayList<>()
+      log.debug( "[Service] Listar almacenes" )
+      //List<Sucursal> lstAlmacenes = new ArrayList<>()
+      String almacenes = Registry.almacenes
+      String[] data = almacenes.split(",")
+      List<Sucursal> lstAlmacenes = new ArrayList<>()
+      for(String idAlm : data){
         QSucursal suc = QSucursal.sucursal
-        List<Sucursal> lstAlmacenes = sucursalRepository.findAll( suc.nombre.startsWith('ALM') )
-        Collections.sort( lstAlmacenes, sorter )
-        return lstAlmacenes
+        Sucursal almacen = sucursalRepository.findOne( suc.centroCostos.eq(StringUtils.trimToEmpty(idAlm)) )
+        if( almacen != null ){
+          lstAlmacenes.add( almacen )
+        }
+      }
+      Collections.sort( lstAlmacenes, sorter )
+      return lstAlmacenes
     }
 
     List<Sucursal> listarSoloSucursales( ) {

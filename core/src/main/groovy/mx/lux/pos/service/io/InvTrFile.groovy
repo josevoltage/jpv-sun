@@ -1,6 +1,8 @@
 package mx.lux.pos.service.io
 
+import mx.lux.pos.repository.SucursalRepository
 import mx.lux.pos.repository.impl.RepositoryFactory
+import mx.lux.pos.service.business.Registry
 import mx.lux.pos.service.business.ResourceManager
 import mx.lux.pos.service.impl.ServiceFactory
 import mx.lux.pos.util.CustomDateUtils
@@ -13,7 +15,7 @@ import org.slf4j.LoggerFactory
 class InvTrFile {
 
   private static enum DetFld {
-    Article, Color, ModSend, Qty, Sku, MovType, Remarks
+    Remarks, Article, Color, ModSend, Qty, Sku, MovType
   }
   private static enum HdrFld {
     TrNbr, LineNum
@@ -85,7 +87,10 @@ class InvTrFile {
   }
 
   protected File getInvTrFile( TransInv pInvTr ) {
-    String filename = String.format( "2.%04d.%s.DA.%06d", pInvTr.sucursal, CustomDateUtils.format( pInvTr.fecha, "dd-MM-yyyy" ),
+    SucursalRepository sucRep = RepositoryFactory.siteRepository
+    Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+    String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
+    String filename = String.format( "2.%s.%s.DA.%06d", centroCostos, CustomDateUtils.format( pInvTr.fecha, "dd-MM-yyyy" ),
             pInvTr.folio
          )
     String absolutePath = String.format( "%s%s%s", this.location, File.separator, filename )

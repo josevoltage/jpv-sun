@@ -152,7 +152,8 @@ class InvTrIssueDriver extends InvTrDriver {
     pView.panel.browserSku.fireTableDataChanged( )
     pView.panel.txtType.setText( String.format( '%d', quantity ) )
     if(quantity > 0 && pView.panel.newTransaction ){
-      pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
+      pView.panel.comboSiteTo.setItems(InvTrController.instance.listaAlmacenes())
+      /*pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
       if( pView.panel.comboSiteTo.selection == null ||  pView.panel.comboSiteTo.selection?.id == null ){
         pView.panel.comboSiteTo.text = pView.panel.TXT_SITE_TO_PROMPT
         if( pView.panel.comboSiteTo.selection == null ){
@@ -160,13 +161,15 @@ class InvTrIssueDriver extends InvTrDriver {
           suc.nombre = pView.panel.TXT_SITE_TO_PROMPT
           pView.panel.comboSiteTo.setSelection( suc )
         }
-      }
+      }*/
     } else if( quantity == 0 && pView.panel.newTransaction){
       pView.panel.comboSiteTo.setItems(InvTrController.instance.listaAlmacenes())
       pView.panel.comboSiteTo.setSelection( pView.data.postSiteTo != null ? pView.data.postSiteTo : pView.panel.site )
       if( pView.panel.comboSiteTo.selection == null || pView.panel.comboSiteTo.selection?.id == null){
         pView.panel.comboSiteTo.text = pView.panel.TXT_SITE_TO_PROMPT
       }
+    } else if( pView.data.siteList.size() > 0 ){
+      pView.panel.comboSiteTo.setSelection( pView.data.siteList.first() )
     }
     println pView.panel.comboSiteTo.selection
   }

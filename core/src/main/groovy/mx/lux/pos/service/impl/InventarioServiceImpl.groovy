@@ -304,13 +304,16 @@ class InventarioServiceImpl implements InventarioService {
 
 
     void generaArchivoAcuseAjuste( String folio ){
-      String fichero = "${Registry.archivePath}/${Registry.currentSite}_${folio}.reg"
+      SucursalRepository sucRep = RepositoryFactory.siteRepository
+      Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+      String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
+      String fichero = "${Registry.archivePath}/${centroCostos}_${folio}.reg"
       log.debug( "Generando Fichero: ${ fichero }" )
       File file = new File( fichero )
       log.debug( 'Creando Writer' )
       PrintStream strOut = new PrintStream( file )
       StringBuffer sb = new StringBuffer()
-      sb.append("${Registry.currentSite}|${folio}")
+      sb.append("${centroCostos}|${folio}")
       strOut.println sb.toString()
       strOut.close()
     }

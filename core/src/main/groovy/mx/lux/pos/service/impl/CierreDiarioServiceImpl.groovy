@@ -1,6 +1,7 @@
 package mx.lux.pos.service.impl
 
 import groovy.util.logging.Slf4j
+import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.CierreDiarioService
 import mx.lux.pos.service.MonedaExtranjeraService
 import mx.lux.pos.service.TicketService
@@ -35,7 +36,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   private static final String DATE_FORMAT = 'dd-MM-yyyy'
   private static final String DATE_TIME_FORMAT = 'dd-MM-yyyy HH:mm:ss'
   private static final String PAIS_DEFAULT = 'MEXICO'
-  private static final String FMT_ARCHIVE_FILENAME = '%d.%s'
+  private static final String FMT_ARCHIVE_FILENAME = '%s.%s'
   private static final String FMT_FILE_PATTERN = '*%s.*'
   private static final String TAG_TARJETA_AMERICAN_E = 'AV'
   private static final String TAG_TARJETA_DOLARES = 'UV'
@@ -329,7 +330,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
 
   // Fichero Detalle Venta ZD
   private void generarFicheroZD( Date fechaCierre, Sucursal sucursal, String ubicacion ) {
-    String nombreFichero = "2.${ sucursal.id }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZD"
+    String nombreFichero = "2.${StringUtils.trimToEmpty(sucursal.centroCostos) }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZD"
     log.info( "Generando fichero ZD ${ nombreFichero }" )
     List<NotaVenta> notasVenta = obtenerListaporFechaCierre( fechaCierre )
     log.debug( "Se han encontrado ${notasVenta.size()} Notas Venta" )
@@ -412,7 +413,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
 
   // Fichero Ordenes Venta ZO
   private void generarFicheroZO( Date fechaCierre, Sucursal sucursal, String ubicacion ) {
-    String nombreFichero = "2.${ sucursal.id }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZO"
+    String nombreFichero = "2.${StringUtils.trimToEmpty(sucursal.centroCostos) }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZO"
     log.info( "Generando fichero ZO ${ nombreFichero }" )
     log.debug( "Para el dia ${CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy HH:mm' )}" )
     List<NotaVenta> notasVentaTmp = obtenerListaporFechaCierre( fechaCierre )
@@ -551,7 +552,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
 
   // Fichero Detalle Pagos ZP
   private void generarFicheroZP( Date fechaCierre, Sucursal sucursal, String ubicacion ) {
-    String nombreFichero = "3.${ sucursal.id }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZP"
+    String nombreFichero = "3.${StringUtils.trimToEmpty(sucursal.centroCostos) }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZP"
     log.info( "Generando fichero ZP ${ nombreFichero }" )
     List<Pago> pagosTmp = pagoRepository.findBy_Fecha( fechaCierre )
     log.debug( "Se han encontrado ${pagosTmp.size()} pagos" )
@@ -629,7 +630,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
 
   // Fichero Detalle Modificaciones ZM
   private void generarFicheroZM( Date fechaCierre, Sucursal sucursal, String ubicacion ) {
-    String nombreFichero = "3.${ sucursal.id }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZM"
+    String nombreFichero = "3.${ sucursal.centroCostos }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZM"
     log.info( "Generando fichero ZM ${ nombreFichero }" )
     List<Modificacion> modificaciones = modificacionRepository.findBy_Fecha( fechaCierre )
     log.debug( "Se han encontrado ${ modificaciones.size() } modificaciones" )
@@ -726,7 +727,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
 
   // Fichero Detalle Depositos ZS
   private void generarFicheroZS( Date fechaCierre, Sucursal sucursal, String ubicacion ) {
-    String nombreFichero = "2.${ sucursal.id }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZS"
+    String nombreFichero = "2.${ sucursal.centroCostos }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZS"
     log.info( "Generando fichero ZS ${ nombreFichero }" )
     List<Deposito> depositos = depositoRepository.findBy_Fecha( fechaCierre )
     def datos = [ sucursal: sucursal,
@@ -740,7 +741,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
 
   // Fichero Detalle Devoluciones ZV
   private void generarFicheroZV( Date fechaCierre, Sucursal sucursal, String ubicacion ) {
-    String nombreFichero = "3.${ sucursal.id }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZV"
+    String nombreFichero = "3.${ sucursal.centroCostos }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZV"
     log.info( "Generando fichero ZV ${ nombreFichero }" )
     Double rate = 1.0
     MonedaDetalle fxrate = monedaExtranjeraService.findActiveRate( "USD" )
@@ -804,7 +805,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
 
   // Fichero Clientes CLI
   private void generarFicheroCLI( Date fechaCierre, Sucursal sucursal, String ubicacion ) {
-    String nombreFichero = "3.${ sucursal.id }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.CLI"
+    String nombreFichero = "3.${ sucursal.centroCostos }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.CLI"
 
     log.info( "Generando fichero CLI ${ nombreFichero }" )
     List<Cliente> clientes = clienteRepository.findByFechaAlta( fechaCierre )
@@ -818,7 +819,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
 
   // Fichero Facturas Fiscales ff
   private void generarFicheroff( Date fechaCierre, Sucursal sucursal, String ubicacion ) {
-    String nombreFichero = "3.${ sucursal.id }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ff"
+    String nombreFichero = "3.${ sucursal.centroCostos }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ff"
 
     log.info( "Generando fichero ff ${ nombreFichero }" )
     List<NotaFactura> facturas = notaFacturaRepository.findByFechaImpresion( fechaCierre )
@@ -833,7 +834,7 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
 
   // Fichero Promociones ZZ
   private void generarFicheroZZ( Date fechaCierre, Sucursal sucursal, String ubicacion ) {
-    String nombreFichero = "3.${ sucursal.id }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZZ"
+    String nombreFichero = "3.${ sucursal.centroCostos }.${ CustomDateUtils.format( fechaCierre, 'dd-MM-yyyy' ) }.ZZ"
     log.info( "Generando fichero ZZ ${ nombreFichero }" )
     List<OrdenPromDet> promociones = ordenPromDetRepository.findByFechaMod( fechaCierre )
     def datos = [ sucursal: sucursal,
@@ -1488,9 +1489,12 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   void archivarCierre( Date pForDate, Boolean pDeleteAfter ) {
     String strDate = CustomDateUtils.format( DateUtils.truncate( pForDate, Calendar.DATE), DATE_FORMAT)
     log.debug (String.format( 'CierreDiarioService.archivarCierre( %s )', strDate) )
+    SucursalRepository sucRep = RepositoryFactory.siteRepository
+    Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+    String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
     ArchiveTask task = new ArchiveTask(  )
     task.baseDir = Registry.dailyClosePath
-    task.archiveFile = String.format( FMT_ARCHIVE_FILENAME, Registry.currentSite, strDate )
+    task.archiveFile = String.format( FMT_ARCHIVE_FILENAME, centroCostos, strDate )
     task.filePattern = String.format( FMT_FILE_PATTERN, strDate )
     task.run()
     sleep 20000

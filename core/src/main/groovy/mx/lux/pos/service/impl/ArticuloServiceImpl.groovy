@@ -7,6 +7,7 @@ import mx.lux.pos.repository.ArticuloRepository
 import mx.lux.pos.repository.DiferenciaRepository
 import mx.lux.pos.repository.MontoGarantiaRepository
 import mx.lux.pos.repository.PrecioRepository
+import mx.lux.pos.repository.SucursalRepository
 import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.ArticuloService
 import mx.lux.pos.service.business.Registry
@@ -651,7 +652,10 @@ class ArticuloServiceImpl implements ArticuloService {
   Boolean generarArchivoDiferencias( ){
     log.debug( "Generando archivo de diferencias" )
     Boolean generated = false
-    File file = new File( "${Registry.diferencesPath}/${String.format("%02d",Registry.currentSite)}_${new Date().format("ddMMyy")}_dif.TXT" )
+    SucursalRepository sucRep = RepositoryFactory.siteRepository
+    Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+    String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
+    File file = new File( "${Registry.diferencesPath}/${StringUtils.trimToEmpty(centroCostos)}_${new Date().format("ddMMyy")}_dif.TXT" )
     QDiferencia qDiferencia = QDiferencia.diferencia
       List<Diferencia> lstDiferencias = diferenciaRepository.findAll( qDiferencia.diferencias.isNotNull().
             and(qDiferencia.diferencias.goe(1).or(qDiferencia.diferencias.loe(-1))), qDiferencia.id.asc() )

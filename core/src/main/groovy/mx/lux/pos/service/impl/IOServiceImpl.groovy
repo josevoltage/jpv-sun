@@ -308,13 +308,16 @@ class IOServiceImpl implements IOService {
         logger.error( e.getMessage() )
       }
 
+      SucursalRepository sucRep = RepositoryFactory.siteRepository
+      Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+      String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
       Integer idSuc = Registry.currentSite
       ParametroRepository repoParam = RepositoryFactory.registry
       String rutaPorEnviar = Registry.archivePath.trim()
-      File file = new File( "${rutaPorEnviar}/4.${idSuc}.REM.${transInv.referencia}.ACU" )
+      File file = new File( "${rutaPorEnviar}/4.${centroCostos}.REM.${transInv.referencia}.ACU" )
       PrintStream strOut = new PrintStream( file )
       StringBuffer sb = new StringBuffer()
-      sb.append("${idSuc}|REM|${StringUtils.trimToEmpty(transInv.referencia).substring(0,6)}|")
+      sb.append("${centroCostos}|REM|${StringUtils.trimToEmpty(transInv.referencia).substring(0,6)}|")
       sb.append( "\n" )
       sb.append("${transInv.fecha.format('dd/MM/yyyy')}|${new Date().format('HH:mm')}|${letra}${StringUtils.trimToEmpty(transInv.referencia).substring(0,6)}|${sistema.trim()}|")
       strOut.println sb.toString()

@@ -1,6 +1,6 @@
 #define($CR)${writer.write(13)}#end
 #macro(GET $dato)#if($dato)${dato}#end#end
-${sucursal.id}|${fecha_cierre}|${numero_registros}|${CR}
+${sucursal.centroCostos}|${fecha_cierre}|${numero_registros}|${CR}
 #foreach( $devolucion in $devoluciones )
 ${foreach.count}|#GET(${devolucion.idFactura})|#GET(${devolucion.idFormaPago})|#GET(${devolucion.monto})|#GET(${devolucion.id})|#GET(${devolucion.factura})|#GET(${devolucion.idPago})|#GET(${devolucion.idTerminal.trim()})|#GET(${devolucion.montoUsd})|${CR}
 #end
