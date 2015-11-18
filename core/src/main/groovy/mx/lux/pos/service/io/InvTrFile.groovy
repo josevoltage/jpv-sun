@@ -93,7 +93,7 @@ class InvTrFile {
   }
 
   protected String getLocation( ) {
-    return ResourceManager.getLocation( TipoParametro.RUTA_INVENTARIO ).absolutePath
+    return ResourceManager.getLocation( TipoParametro.RUTA_POR_ENVIAR ).absolutePath
   }
 
   TransInv parse( List<String> pInputLines ) {
