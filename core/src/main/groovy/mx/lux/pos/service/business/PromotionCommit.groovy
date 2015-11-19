@@ -3,8 +3,10 @@ package mx.lux.pos.service.business
 import mx.lux.pos.repository.GrupoArticuloDetRepository
 import mx.lux.pos.repository.GrupoArticuloRepository
 import mx.lux.pos.repository.PromocionRepository
+import mx.lux.pos.repository.SucursalRepository
 import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.io.PromotionsAdapter
+import org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -197,14 +199,17 @@ class PromotionCommit {
 
 
   static void makeFilePromotion( Promocion promocion, Boolean updatePromo ){
-      String fichero = "${Registry.archivePath}/${Registry.currentSite}.${promocion.idPromocion}.${new Date().format("yyyy-MM-dd")}.cargapr"
+      SucursalRepository sucRep = RepositoryFactory.siteRepository
+      Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+      String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
+      String fichero = "${Registry.archivePath}/${centroCostos}.${promocion.idPromocion}.${new Date().format("yyyy-MM-dd")}.cargapr"
       log.debug( "Generando Fichero: ${ fichero }" )
       File file = new File( fichero )
       if ( file.exists() ) { file.delete() }
       log.debug( 'Creando archivo de carga de promocion' )
       PrintStream strOut = new PrintStream( file )
       StringBuffer sb = new StringBuffer()
-      sb.append("${String.format("%04d",Registry.currentSite)}|${promocion.idPromocion}|${new Date().format("dd-MM-yyyy")}|${updatePromo ? 'E' : 'A'}|")
+      sb.append("${StringUtils.trimToEmpty(centroCostos)}|${promocion.idPromocion}|${new Date().format("dd-MM-yyyy")}|${updatePromo ? 'E' : 'A'}|")
       strOut.println sb.toString()
       strOut.close()
   }

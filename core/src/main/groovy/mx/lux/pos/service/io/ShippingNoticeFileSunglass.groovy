@@ -1,10 +1,13 @@
 package mx.lux.pos.service.io
 
+import mx.lux.pos.repository.SucursalRepository
+import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.business.Registry
 import mx.lux.pos.service.impl.ServiceFactory
 import mx.lux.pos.util.StringList
 import mx.lux.pos.util.SunglassUtils
 import mx.lux.pos.model.*
+import org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -91,7 +94,10 @@ class ShippingNoticeFileSunglass extends ShippingNoticeFile {
           break
         case HdrFld.SiteTo:
           if ( pIssueTr.sucursalDestino != null ) {
-            hdr.add( SunglassUtils.formatSite( pIssueTr.sucursalDestino ) )
+            SucursalRepository sucRep = RepositoryFactory.siteRepository
+            Sucursal sucursal = sucRep.findOne( pIssueTr.sucursalDestino )
+            String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(pIssueTr.sucursalDestino.toString())
+            hdr.add( centroCostos )
           } else {
             hdr.add( " " )
           }

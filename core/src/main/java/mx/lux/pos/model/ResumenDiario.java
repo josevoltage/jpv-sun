@@ -160,7 +160,7 @@ public class ResumenDiario implements Serializable, Comparable<ResumenDiario> {
     }
 
     public String getIdTerminal() {
-        return idTerminal;
+        return StringUtils.trimToEmpty(idTerminal);
     }
 
     public void setIdTerminal( String idTerminal ) {
@@ -177,6 +177,7 @@ public class ResumenDiario implements Serializable, Comparable<ResumenDiario> {
 
     // Identidades
     public int compareTo( ResumenDiario rd ){
-        return this.getIdTerminal().compareToIgnoreCase(rd.getIdTerminal());
+      String thisIdTerm = this.idTerminal != null ? StringUtils.trimToEmpty(this.idTerminal) : "";
+        return thisIdTerm.compareToIgnoreCase(rd.getIdTerminal() != null ? StringUtils.trimToEmpty(rd.getIdTerminal()) : "");
     }
 }

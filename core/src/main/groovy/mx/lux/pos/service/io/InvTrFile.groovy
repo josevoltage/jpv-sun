@@ -1,5 +1,8 @@
 package mx.lux.pos.service.io
 
+import mx.lux.pos.repository.SucursalRepository
+import mx.lux.pos.repository.impl.RepositoryFactory
+import mx.lux.pos.service.business.Registry
 import mx.lux.pos.service.business.ResourceManager
 import mx.lux.pos.service.impl.ServiceFactory
 import mx.lux.pos.util.CustomDateUtils

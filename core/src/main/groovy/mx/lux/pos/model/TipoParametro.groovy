@@ -82,6 +82,7 @@ enum TipoParametro {
   URL_SALIDA_ALMACEN('url_salida_almacen',''),
   URL_ENTRADA_ALMACEN('url_entrada_sucursal',''),
   URL_CONFIRMA_ENTRADA('url_confirma_entrada',''),
+  URL_CONFIRMA_ENTRADA_ALMACEN('url_confirma_entrada_almacen',''),
   ACTIVE_TPV( 'tpv_activo', 'si' ),
   ACTIVE_STORE_DISCOUNT( 'desc_tienda_activo', 'no' ),
   HOST_TPV( 'tpv_host', 'localhost' ),

@@ -2,6 +2,7 @@ package mx.lux.pos.service.impl
 
 import groovy.sql.Sql
 import groovy.util.logging.Slf4j
+import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.ListaPreciosService
 import mx.lux.pos.service.business.Registry
 import org.apache.commons.lang3.StringUtils
@@ -69,14 +70,17 @@ class ListaPreciosServiceImpl implements ListaPreciosService {
     if ( StringUtils.isNotBlank( listaPrecios?.id ) && StringUtils.isNotBlank( listaPrecios?.filename ) ) {
       listaPrecios = listaPreciosRepository.save( listaPrecios )
       if ( listaPrecios?.id ) {
-        String fichero = "${Registry.archivePath}/${Registry.currentSite}.${listaPrecios.id}.${new Date().format("yyyy-MM-dd")}.recibelp "
+        SucursalRepository sucRep = RepositoryFactory.siteRepository
+        Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+        String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
+        String fichero = "${Registry.archivePath}/${centroCostos}.${listaPrecios.id}.${new Date().format("yyyy-MM-dd")}.recibelp "
         log.debug( "Generando Fichero: ${ fichero }" )
         File file = new File( fichero )
         if ( file.exists() ) { file.delete() }
         log.debug( 'Creando Writer' )
         PrintStream strOut = new PrintStream( file )
         StringBuffer sb = new StringBuffer()
-        sb.append("${String.format("%04d",Registry.currentSite)}|${listaPrecios.id}|${new Date().format("ddMMyyyy")}|")
+        sb.append("${StringUtils.trimToEmpty(centroCostos)}|${listaPrecios.id}|${new Date().format("ddMMyyyy")}|")
         strOut.println sb.toString()
         strOut.close()
         /*def urlTexto = generaUrlServicioWeb( TipoParametro.URL_RECIBE_LISTA_PRECIOS, listaPrecios.id, null )
@@ -133,14 +137,17 @@ class ListaPreciosServiceImpl implements ListaPreciosService {
         listaPrecios = listaPreciosRepository.save( listaPrecios )
         procesaCargaArticulos( articulos )
         if ( listaPrecios?.id ) {
-            String fichero = "${Registry.archivePath}/${Registry.currentSite}.${listaPrecios.id}.${new Date().format("yyyy-MM-dd")}.cargalp"
+            SucursalRepository sucRep = RepositoryFactory.siteRepository
+            Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+            String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
+            String fichero = "${Registry.archivePath}/${centroCostos}.${listaPrecios.id}.${new Date().format("yyyy-MM-dd")}.cargalp"
             log.debug( "Generando Fichero: ${ fichero }" )
             File file = new File( fichero )
             if ( file.exists() ) { file.delete() }
             log.debug( 'Creando Writer' )
             PrintStream strOut = new PrintStream( file )
             StringBuffer sb = new StringBuffer()
-            sb.append("${String.format("%04d",Registry.currentSite)}|${listaPrecios.id}|${new Date().format("ddMMyyyy")}|${listaPrecios.tipoCarga.startsWith('A') ? 'A' : 'M'}|")
+            sb.append("${StringUtils.trimToEmpty(centroCostos)}|${listaPrecios.id}|${new Date().format("ddMMyyyy")}|${listaPrecios.tipoCarga.startsWith('A') ? 'A' : 'M'}|")
             strOut.println sb.toString()
             strOut.close()
           /*def urlTexto = generaUrlServicioWeb( TipoParametro.URL_CARGA_LISTA_PRECIOS, listaPrecios.id, listaPrecios.tipoCarga )

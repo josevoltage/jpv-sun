@@ -81,7 +81,7 @@ ${COLUMNA_1}Importe en pesos(MXN)${COLUMNA_5}${importe_dolares_pesos}
 #end
 #* DEPOSITOS *#
 #if( $depositos )#NEGRITA()#DOBLE_ALTURA()#DOBLE_ANCHURA()#FUENTE_B()#DO()DEPOSITOS${LF}
-#foreach( $deposito in $depositos )#RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_1}Fecha: ${deposito.fechaCierre}${COLUMNA_5}${deposito.empleado.nombre}${COLUMNA_7}${deposito.tipoDeposito}
+#foreach( $deposito in $depositos )#RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_1}Fecha: ${deposito.fechaCierre}${COLUMNA_5}${deposito.monto}${COLUMNA_7}${deposito.tipoDeposito}
 #RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_1}${deposito.referencia}${LF}#end
 
 #if( $faltanteMN )#RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_1}Faltante MXN: ${faltanteMN}#end

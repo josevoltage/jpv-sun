@@ -10,6 +10,7 @@ import mx.lux.pos.ui.view.component.ComboBoxHintSelector
 import mx.lux.pos.ui.view.component.ComboBoxSelector
 import mx.lux.pos.ui.view.component.NavigationBar
 import net.miginfocom.swing.MigLayout
+import org.apache.commons.lang.StringUtils
 
 import java.awt.BorderLayout
 import java.awt.Font
@@ -90,6 +91,7 @@ class InvTrPanel extends JPanel {
   TableModel browserSku
   Boolean stock = true
   Sucursal site = new Sucursal()
+  String storage = ""
   Boolean newTransaction = true
 
   InvTrPanel( InvTrView pView ) {
@@ -219,6 +221,10 @@ class InvTrPanel extends JPanel {
   private def onSiteChange( ) {
     if( comboSiteTo?.comboBox?.selectedItem != null ){
       site = comboSiteTo.selection
+    }
+    if(StringUtils.trimToEmpty(comboViewMode?.comboBox?.selectedItem?.toString()).equalsIgnoreCase("[SALIDA] ENVIO A ALMACEN") &&
+            comboSiteTo?.comboBox?.selectedItem != null && StringUtils.trimToEmpty(comboSiteTo?.comboBox?.selectedItem?.toString()).length() > 0 ){
+      storage = StringUtils.trimToEmpty(comboSiteTo?.comboBox?.selectedItem?.toString())
     }
   }
 }

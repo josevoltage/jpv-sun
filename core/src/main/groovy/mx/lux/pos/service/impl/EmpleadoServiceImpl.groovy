@@ -5,11 +5,14 @@ import mx.lux.pos.model.CriterioDet
 import mx.lux.pos.model.Empleado
 import mx.lux.pos.model.Incidencia
 import mx.lux.pos.model.Parametro
+import mx.lux.pos.model.Sucursal
 import mx.lux.pos.model.TipoParametro
 import mx.lux.pos.repository.CriterioDetRepository
 import mx.lux.pos.repository.EmpleadoRepository
 import mx.lux.pos.repository.IncidenciaRepository
 import mx.lux.pos.repository.ParametroRepository
+import mx.lux.pos.repository.SucursalRepository
+import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.EmpleadoService
 import mx.lux.pos.service.business.Registry
 import org.apache.commons.lang3.StringUtils
@@ -106,8 +109,11 @@ class EmpleadoServiceImpl implements EmpleadoService {
 
 
     void creaArchivoIncidencia( Incidencia incidencia ){
+        SucursalRepository sucRep = RepositoryFactory.siteRepository
+        Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+        String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
         SimpleDateFormat df = new SimpleDateFormat('dd-MM-yyyy HH:mm')
-        String fichero = "${Registry.archivePath}/${incidencia.folioSoi}_${Registry.currentSite}.inc"
+        String fichero = "${Registry.archivePath}/${incidencia.folioSoi}_${centroCostos}.inc"
         log.debug( "Generando Fichero: ${ fichero }" )
         File file = new File( fichero )
         if ( file.exists() ) { file.delete() }

@@ -263,7 +263,7 @@ class IOServiceImpl implements IOService {
   }
 
 
-  void logRemittanceNotification( String idTipoTrans, Integer folio, String codigo ) {
+  void logRemittanceNotification( String idTipoTrans, Integer folio, String codigo, Boolean onlyGenerateFile ) {
     TransInvRepository transactionRep = RepositoryFactory.inventoryMaster
     TipoTransInvRepository tipoTransactionRep = RepositoryFactory.trTypes
     QTipoTransInv tipoTrans = QTipoTransInv.tipoTransInv
@@ -273,12 +273,14 @@ class IOServiceImpl implements IOService {
     if ( transInv != null ) {
       AcuseRepository acuses = RepositoryFactory.acknowledgements
       Acuse acuse = new Acuse()
-      acuse.idTipo = TAG_ACK_REMITTANCES
-      try {
-        acuse = acuses.saveAndFlush( acuse )
-        logger.debug( String.format( 'Acuse: (%d) %s -> %s', acuse.id, acuse.idTipo, acuse.contenido ) )
-      } catch ( Exception e ) {
-        logger.error( e.getMessage() )
+      if( !onlyGenerateFile ){
+        acuse.idTipo = TAG_ACK_REMITTANCES
+        try {
+              acuse = acuses.saveAndFlush( acuse )
+              logger.debug( String.format( 'Acuse: (%d) %s -> %s', acuse.id, acuse.idTipo, acuse.contenido ) )
+        } catch ( Exception e ) {
+              logger.error( e.getMessage() )
+        }
       }
       String referencia = transInv.referencia.substring(0,6)
       String tipo = transInv.referencia.substring( transInv.referencia.length()-1 )
@@ -295,17 +297,19 @@ class IOServiceImpl implements IOService {
         }
       }
       String letra = sistema.equalsIgnoreCase("A") ? "I" : "RAC"
-      acuse.contenido = String.format( 'sistemaVal=%s|', tipo.trim() )
-      acuse.contenido += String.format( 'id_sucVal=%s|', transInv.sucursal.toString().trim() )
-      acuse.contenido += String.format( 'horaVal=%s|', CustomDateUtils.format(transInv.fechaMod, 'HH:mm') )
-      acuse.contenido += String.format( 'doctoVal=%s|', String.format( '%s', letra+StringUtils.trimToEmpty(transInv.referencia).substring(0,6)) )
-      acuse.contenido += String.format( 'id_acuseVal=%s|', String.format( '%d', acuse.id ) )
-      acuse.contenido += String.format( 'transaVal=%s|', String.format( '%s', StringUtils.trimToEmpty(transInv.referencia).substring(0,6)) )
-      try {
-        acuse = acuses.saveAndFlush( acuse )
-        logger.debug( String.format( 'Acuse: (%d) %s -> %s', acuse.id, acuse.idTipo, acuse.contenido ) )
-      } catch ( Exception e ) {
-        logger.error( e.getMessage() )
+      if( !onlyGenerateFile ){
+        acuse.contenido = String.format( 'sistemaVal=%s|', tipo.trim() )
+        acuse.contenido += String.format( 'id_sucVal=%s|', transInv.sucursal.toString().trim() )
+        acuse.contenido += String.format( 'horaVal=%s|', CustomDateUtils.format(transInv.fechaMod, 'HH:mm') )
+        acuse.contenido += String.format( 'doctoVal=%s|', String.format( '%s', letra+StringUtils.trimToEmpty(transInv.referencia).substring(0,6)) )
+        acuse.contenido += String.format( 'id_acuseVal=%s|', String.format( '%d', acuse.id ) )
+        acuse.contenido += String.format( 'transaVal=%s|', String.format( '%s', StringUtils.trimToEmpty(transInv.referencia).substring(0,6)) )
+        try {
+          acuse = acuses.saveAndFlush( acuse )
+          logger.debug( String.format( 'Acuse: (%d) %s -> %s', acuse.id, acuse.idTipo, acuse.contenido ) )
+        } catch ( Exception e ) {
+          logger.error( e.getMessage() )
+        }
       }
 
       SucursalRepository sucRep = RepositoryFactory.siteRepository
@@ -342,7 +346,7 @@ class IOServiceImpl implements IOService {
       remesa = repo.findOne( rem.clave.eq(transInv.referencia.trim()) )
       if(remesa != null){
         remesa.estado = TAG_ESTADO_REM_CARGADA
-        remesa.fechaCarga = new Date()
+        remesa.fecha_carga = new Date()
         remesa = repo.save( remesa )
         repo.flush()
       } else {
@@ -366,9 +370,9 @@ class IOServiceImpl implements IOService {
         remesa.archivo = "4."+StringUtils.trimToEmpty(Registry.currentSite.toString())+".REM."+StringUtils.trimToEmpty(transInv.referencia)
         remesa.articulos = detalles.size()
         remesa.sistema = sistema
-        remesa.fechaRecibido = new Date()
+        remesa.fecha_recibido = new Date()
         remesa.estado = TAG_ESTADO_REM_CARGADA
-        remesa.fechaCarga = new Date()
+        remesa.fecha_carga = new Date()
         remesa = repo.save( remesa )
         repo.flush()
       }

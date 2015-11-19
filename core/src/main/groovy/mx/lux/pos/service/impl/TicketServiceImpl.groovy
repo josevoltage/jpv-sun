@@ -592,20 +592,38 @@ class TicketServiceImpl implements TicketService {
       BigDecimal dolaresPesos = BigDecimal.ZERO
       pagosDolares.each { pago -> dolaresPesos = dolaresPesos + MoneyUtils.parseNumber( pago.idPlan ) }
 
-      List<Deposito> depositos = depositoRepository.findBy_Fecha( fechaCierre )
+      List<Deposito> depositosTmp = depositoRepository.findBy_Fecha( fechaCierre )
+      def depositos = []
       BigDecimal totalDepositosMN = BigDecimal.ZERO
       BigDecimal totalDepositosUS = BigDecimal.ZERO
-      depositos.each { deposito ->
+      for(Deposito deposito : depositosTmp){
         if( TAG_DEPOSITO_MN.equalsIgnoreCase(deposito.tipoDeposito) ){
           totalDepositosMN = totalDepositosMN + deposito.monto
         } else if( TAG_DEPOSITO_US.equalsIgnoreCase(deposito.tipoDeposito) ){
           totalDepositosUS = totalDepositosUS + deposito.monto
         }
-        if( deposito.empleado == null ){
-          deposito.empleado = new Empleado()
-        }
-        deposito.empleado.nombre = String.format('%10s', formatter.format( deposito.monto ) )
+          //if( deposito.empleado == null ){
+        def dep = [
+                fechaCierre: deposito.fechaCierre,
+                monto: String.format('%10s', formatter.format( deposito.monto ) ),
+                tipoDeposito: deposito.tipoDeposito,
+        ]
+        //deposito.empleado = new Empleado()
+          //}
+        //deposito.empleado.nombre = String.format('%10s', formatter.format( deposito.monto ) )
+        depositos.add(deposito)
       }
+      /*depositosTmp.each { deposito ->
+        if( TAG_DEPOSITO_MN.equalsIgnoreCase(deposito.tipoDeposito) ){
+          totalDepositosMN = totalDepositosMN + deposito.monto
+        } else if( TAG_DEPOSITO_US.equalsIgnoreCase(deposito.tipoDeposito) ){
+          totalDepositosUS = totalDepositosUS + deposito.monto
+        }
+        //if( deposito.empleado == null ){
+          deposito.empleado = new Empleado()
+        //}
+        deposito.empleado.nombre = String.format('%10s', formatter.format( deposito.monto ) )
+      }*/
       BigDecimal efectivoNetoMN = cierreDiario.efectivoRecibido + cierreDiario.efectivoExternos - cierreDiario.efectivoDevoluciones
       BigDecimal efectivoNetoUS = dolaresPesos
       BigDecimal diferenciaEfectivoMN = totalDepositosMN - efectivoNetoMN
@@ -678,7 +696,8 @@ class TicketServiceImpl implements TicketService {
         Collections.sort(resumenesDiario, new Comparator<ResumenDiario>() {
             @Override
             int compare(ResumenDiario o1, ResumenDiario o2) {
-                return o1.idTerminal.compareTo(o2.idTerminal)
+                String thisIdTerm = o1?.idTerminal != null ? StringUtils.trimToEmpty(o1?.idTerminal) : "";
+                return thisIdTerm.compareTo(o2?.idTerminal != null ? o2?.idTerminal : "")
             }
         })
         for ( ResumenDiario resumen : resumenesDiario ) {
