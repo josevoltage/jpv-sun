@@ -16,11 +16,7 @@ class SiteAdapter extends StringAdapter<Sucursal> {
         suc = ""
       }
     } else {
-      if( pSucursal?.nombre?.contains("ALMACEN") ){
-        suc = String.format( "[%s] %s", pSucursal.centroCostos, pSucursal.nombre)
-      } else {
-        suc = String.format( "[%d] %s", pSucursal.id, pSucursal.nombre)
-      }
+      suc = String.format( "[%d] %s", pSucursal.id, pSucursal.nombre)
     }
     return suc;
   }
