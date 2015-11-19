@@ -24,6 +24,9 @@ class IOServiceImpl implements IOService {
   private static final String MSG_PART_CLASS_FILE_LOAD = 'Importar Clasificacion de Articulos'
   private static final String MSG_PART_CLASS_FILE_LOADED = 'Clasif de Articulos  Registros:%,d  Actualizados: %,d'
 
+  private static final String TAG_ACK_REMITTANCES = 'REM'
+  private static final String TAG_ESTADO_REM_CARGADA = 'cargado'
+
   private static final String TAG_ACK_SALES = AckType.VENTA_DIA
   private static final String TAG_ACK_ADJUST = AckType.MODIF_VENTA
 
@@ -258,5 +261,120 @@ class IOServiceImpl implements IOService {
   void saveAcknowledgementTrans(TransInv pAcknowledgement) {
       RepositoryFactory.inventoryMaster.saveAndFlush( pAcknowledgement )
   }
+
+
+  void logRemittanceNotification( String idTipoTrans, Integer folio, String codigo ) {
+    TransInvRepository transactionRep = RepositoryFactory.inventoryMaster
+    TipoTransInvRepository tipoTransactionRep = RepositoryFactory.trTypes
+    QTipoTransInv tipoTrans = QTipoTransInv.tipoTransInv
+    TipoTransInv tipoTransInv = tipoTransactionRep.findOne( idTipoTrans )
+    QTransInv trans = QTransInv.transInv
+    TransInv transInv = transactionRep.findOne(trans.idTipoTrans.eq(idTipoTrans).and(trans.folio.eq(tipoTransInv.ultimoFolio)))
+    if ( transInv != null ) {
+      AcuseRepository acuses = RepositoryFactory.acknowledgements
+      Acuse acuse = new Acuse()
+      acuse.idTipo = TAG_ACK_REMITTANCES
+      try {
+        acuse = acuses.saveAndFlush( acuse )
+        logger.debug( String.format( 'Acuse: (%d) %s -> %s', acuse.id, acuse.idTipo, acuse.contenido ) )
+      } catch ( Exception e ) {
+        logger.error( e.getMessage() )
+      }
+      String referencia = transInv.referencia.substring(0,6)
+      String tipo = transInv.referencia.substring( transInv.referencia.length()-1 )
+      println referencia
+      //acuse.contenido = String.format( 'ImporteVal=%s|', URLEncoder.encode( String.format( '%.2f', order.ventaNeta ), 'UTF-8' ) )
+      String sistema = ''
+      TransInvDetalleRepository transInvDetalleRepository = RepositoryFactory.inventoryDetail
+      List<TransInvDetalle> detalles = transInvDetalleRepository.findByIdTipoTransAndFolio(StringUtils.trimToEmpty(transInv.idTipoTrans), transInv.folio) as List<TransInvDetalle>
+      for( TransInvDetalle det : detalles ){
+        ArticuloRepository articuloRepository = RepositoryFactory.partMaster
+        Articulo articulo = articuloRepository.findOne(det.sku)
+        if( articulo != null ){
+          sistema = StringUtils.trimToEmpty(articulo.idGenerico)
+        }
+      }
+      String letra = sistema.equalsIgnoreCase("A") ? "I" : "RAC"
+      acuse.contenido = String.format( 'sistemaVal=%s|', tipo.trim() )
+      acuse.contenido += String.format( 'id_sucVal=%s|', transInv.sucursal.toString().trim() )
+      acuse.contenido += String.format( 'horaVal=%s|', CustomDateUtils.format(transInv.fechaMod, 'HH:mm') )
+      acuse.contenido += String.format( 'doctoVal=%s|', String.format( '%s', letra+StringUtils.trimToEmpty(transInv.referencia).substring(0,6)) )
+      acuse.contenido += String.format( 'id_acuseVal=%s|', String.format( '%d', acuse.id ) )
+      acuse.contenido += String.format( 'transaVal=%s|', String.format( '%s', StringUtils.trimToEmpty(transInv.referencia).substring(0,6)) )
+      try {
+        acuse = acuses.saveAndFlush( acuse )
+        logger.debug( String.format( 'Acuse: (%d) %s -> %s', acuse.id, acuse.idTipo, acuse.contenido ) )
+      } catch ( Exception e ) {
+        logger.error( e.getMessage() )
+      }
+
+      SucursalRepository sucRep = RepositoryFactory.siteRepository
+      Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+      String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
+      Integer idSuc = Registry.currentSite
+      ParametroRepository repoParam = RepositoryFactory.registry
+      String rutaPorEnviar = Registry.archivePath.trim()
+      File file = new File( "${rutaPorEnviar}/4.${centroCostos}.REM.${transInv.referencia}.ACU" )
+      PrintStream strOut = new PrintStream( file )
+      StringBuffer sb = new StringBuffer()
+      sb.append("${centroCostos}|REM|${StringUtils.trimToEmpty(transInv.referencia).substring(0,6)}|")
+      sb.append( "\n" )
+      sb.append("${transInv.fecha.format('dd/MM/yyyy')}|${new Date().format('HH:mm')}|${letra}${StringUtils.trimToEmpty(transInv.referencia).substring(0,6)}|${sistema.trim()}|")
+      strOut.println sb.toString()
+      strOut.close()
+      logger.debug(file.absolutePath)
+    }
+  }
+
+
+
+  Remesas updateRemesa( String idTipoTrans ){
+    Remesas remesa = new Remesas()
+    TransInvRepository transactionRep = RepositoryFactory.inventoryMaster
+    TipoTransInvRepository tipoTransactionRep = RepositoryFactory.trTypes
+    QTipoTransInv tipoTrans = QTipoTransInv.tipoTransInv
+    TipoTransInv tipoTransInv = tipoTransactionRep.findOne( idTipoTrans )
+    QTransInv trans = QTransInv.transInv
+    TransInv transInv = transactionRep.findOne(trans.idTipoTrans.eq(idTipoTrans).and(trans.folio.eq(tipoTransInv.ultimoFolio)))
+    if ( transInv != null ) {
+      RemesasRepository repo = RepositoryFactory.remittanceRepository
+      QRemesas rem = QRemesas.remesas
+      remesa = repo.findOne( rem.clave.eq(transInv.referencia.trim()) )
+      if(remesa != null){
+        remesa.estado = TAG_ESTADO_REM_CARGADA
+        remesa.fechaCarga = new Date()
+        remesa = repo.save( remesa )
+        repo.flush()
+      } else {
+        String sistema = ''
+        TransInvDetalleRepository transInvDetalleRepository = RepositoryFactory.inventoryDetail
+        List<TransInvDetalle> detalles = transInvDetalleRepository.findByIdTipoTransAndFolio(StringUtils.trimToEmpty(transInv.idTipoTrans), transInv.folio) as List<TransInvDetalle>
+        for( TransInvDetalle det : detalles ){
+          ArticuloRepository articuloRepository = RepositoryFactory.partMaster
+          Articulo articulo = articuloRepository.findOne(det.sku)
+          if( articulo != null ){
+            sistema = StringUtils.trimToEmpty(articulo.idGenerico)
+          }
+        }
+        String letra = sistema.equalsIgnoreCase("A") ? "I" : "RAC"
+        remesa = new Remesas()
+        remesa.idTipoDocto = "RN"
+        remesa.idDocto = letra+StringUtils.trimToEmpty(transInv.referencia).substring(0,6)
+        remesa.docto = StringUtils.trimToEmpty(transInv.referencia).substring(0,6)
+        remesa.clave = StringUtils.trimToEmpty(transInv.referencia)
+        remesa.letra = letra
+        remesa.archivo = "4."+StringUtils.trimToEmpty(Registry.currentSite.toString())+".REM."+StringUtils.trimToEmpty(transInv.referencia)
+        remesa.articulos = detalles.size()
+        remesa.sistema = sistema
+        remesa.fechaRecibido = new Date()
+        remesa.estado = TAG_ESTADO_REM_CARGADA
+        remesa.fechaCarga = new Date()
+        remesa = repo.save( remesa )
+        repo.flush()
+      }
+    }
+    return remesa
+  }
+
 
 }
