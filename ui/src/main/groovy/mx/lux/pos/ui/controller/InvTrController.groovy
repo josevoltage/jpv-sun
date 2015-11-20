@@ -528,7 +528,7 @@ class InvTrController {
         }
         pView.fireResetUI()
         pView.data.clear()
-        if ( InvTrViewMode.RECEIPT.equals( viewMode ) || InvTrViewMode.FILE_ADJUST.equals( viewMode ) ) {
+        if ( InvTrViewMode.RECEIPT.equals( viewMode ) || InvTrViewMode.FILE_ADJUST.equals( viewMode ) || InvTrViewMode.ISSUE.equals( viewMode )) {
           InvTrController controller = this
           SwingUtilities.invokeLater( new Runnable() {
             void run( ) {

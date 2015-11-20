@@ -225,6 +225,8 @@ class InvTrPanel extends JPanel {
     if(StringUtils.trimToEmpty(comboViewMode?.comboBox?.selectedItem?.toString()).equalsIgnoreCase("[SALIDA] ENVIO A ALMACEN") &&
             comboSiteTo?.comboBox?.selectedItem != null && StringUtils.trimToEmpty(comboSiteTo?.comboBox?.selectedItem?.toString()).length() > 0 ){
       storage = StringUtils.trimToEmpty(comboSiteTo?.comboBox?.selectedItem?.toString())
+    } else if(!StringUtils.trimToEmpty(comboViewMode?.comboBox?.selectedItem?.toString()).equalsIgnoreCase("[SALIDA] ENVIO A ALMACEN")) {
+      storage = ""
     }
   }
 }

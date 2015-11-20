@@ -55,6 +55,16 @@ class InvTrIssueDriver extends InvTrDriver {
   Boolean assign( InvTrView pView ) {
     Boolean validated = false
     // Validate
+    List<Sucursal> lstStorages = InvTrController.instance.listaAlmacenes()
+    for( Sucursal storage : lstStorages ){
+      String[] name = pView.panel.storage.split("]")
+      if( name.length > 1 ){
+        if( StringUtils.trimToEmpty(name[1]).equalsIgnoreCase(StringUtils.trimToEmpty(storage.nombre)) ){
+          pView.panel.comboSiteTo.setSelection( storage )
+          pView.panel.comboSiteTo.comboBox.setSelectedItem(StringUtils.trimToEmpty(pView.panel.storage))
+        }
+      }
+    }
     pView.data.flagOnSiteTo = ( pView.panel.comboSiteTo.selection == null || pView.panel.comboSiteTo.selection.id == null )
     pView.data.flagOnPartSeed = ( pView.data.getSkuList( ).size( ) == 0 )
     pView.data.flagOnRemarks = ( ! isRemarksValid( pView ) )
