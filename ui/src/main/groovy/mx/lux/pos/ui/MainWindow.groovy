@@ -75,6 +75,7 @@ class MainWindow extends JFrame implements KeyListener {
   private JMenuItem cancellationReportMenuItem
   private JMenuItem correctTransactionsMenuItem
   private JMenuItem dailyCloseReportMenuItem
+  private JMenuItem skuByBrandReportMenuItem
   private JMenuItem incomePerBranchReportMenuItem
   private JMenuItem sellerRevenueReportMenuItem
   private JMenuItem undeliveredJobsReportMenuItem
@@ -311,6 +312,7 @@ class MainWindow extends JFrame implements KeyListener {
                 kardexMenuItem.visible = userLoggedIn
                 salesTodayMenuItem.visible = userLoggedIn
                 salesByPeriodMenuItem.visible = userLoggedIn
+                skuByBrandReportMenuItem.visible = userLoggedIn
                 //examsMenuItem.visible = userLoggedIn
                 //optometristSalesMenuItem.visible = userLoggedIn
               }
@@ -403,6 +405,12 @@ class MainWindow extends JFrame implements KeyListener {
                 visible: false,
                 actionPerformed: {
                   ReportController.fireReport( ReportController.Report.Promotions )
+                }
+            )
+            skuByBrandReportMenuItem = menuItem( text: "Sku Por Marca",
+                visible: false,
+                actionPerformed: {
+                  ReportController.fireReport( ReportController.Report.SkuByBrand )
                 }
             )
             salesReportMenuItem = menuItem( text: "Ventas",

@@ -310,6 +310,10 @@ class Registry {
     return asString( TipoParametro.RUTA_POR_ENVIAR )
   }
 
+  static String getWebBrowserPath( ) {
+    return asString( TipoParametro.RUTA_NAVEGADOR_WEB )
+  }
+
   static String getDiferencesPath( ) {
     return asString( TipoParametro.RUTA_INVENTARIO_FISICO_DIFERENCIAS )
   }

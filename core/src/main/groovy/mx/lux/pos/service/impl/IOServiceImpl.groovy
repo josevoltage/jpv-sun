@@ -323,7 +323,7 @@ class IOServiceImpl implements IOService {
       StringBuffer sb = new StringBuffer()
       sb.append("${centroCostos}|REM|${StringUtils.trimToEmpty(transInv.referencia).substring(0,6)}|")
       sb.append( "\n" )
-      sb.append("${transInv.fecha.format('dd/MM/yyyy')}|${new Date().format('HH:mm')}|${StringUtils.trimToEmpty(transInv.referencia).substring(0,6)}|${sistema.trim()}|")
+      sb.append("${transInv.fecha.format('dd/MM/yyyy')}|${new Date().format('HH:mm')}|${!onlyGenerateFile ? letra : ""}${StringUtils.trimToEmpty(transInv.referencia).substring(0,6)}|${sistema.trim()}|")
       strOut.println sb.toString()
       strOut.close()
       logger.debug(file.absolutePath)

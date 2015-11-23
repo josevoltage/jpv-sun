@@ -6,6 +6,8 @@ import mx.lux.pos.model.*;
 import mx.lux.pos.repository.*;
 import mx.lux.pos.service.impl.ReportServiceImpl;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.export.JRTextExporter;
+import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -90,6 +92,7 @@ public class ReportBusiness {
     private OrdenPromDetRepository ordenPromDetRepository;
 
     private static final String TAG_CANCELADO = "T";
+    private static final String SO_WINDOWS = "Windows";
 
     public List<IngresoPorDia> obtenerIngresoporDia( Date fechaInicio, Date fechaFin ) {
         log.info( "obtenerIngresoporDia()" );
@@ -216,6 +219,60 @@ public class ReportBusiness {
             JasperExportManager.exportReportToHtmlFile( jasperPrint, report.getPath() );
             Desktop.getDesktop().open( report );
             log.info( "Mostrar Reporte" );
+
+            return report.getPath();
+        } catch ( JRException e ) {
+            log.error( "error al compilar y generar reporte", e );
+        } catch ( IOException e ) {
+            log.error( "error al compilar y generar reporte", e );
+        }
+        return report.getPath();
+    }
+
+
+    public String CompilayGeneraReporteTxt( org.springframework.core.io.Resource template, Map<String, Object> parametros,  File report ) {
+        try {
+
+            JasperReport jasperReport = JasperCompileManager.compileReport( template.getInputStream() );
+            JasperPrint jasperPrint = JasperFillManager.fillReport( jasperReport, parametros, new JREmptyDataSource() );
+            //jasperPrint.setProperty("net.sf.jasperreports.expo rt.character.encoding", "ISO-8859-1");
+
+            try{
+                JRTextExporter exporter = new JRTextExporter();
+                /*exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+                exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, report.getAbsolutePath() );
+                exporter.setParameter(JRTextExporterParameter.CHARACTER_WIDTH, new Float(7));
+                exporter.setParameter(JRTextExporterParameter.CHARACTER_HEIGHT, new Float(11));
+                exporter.setParameter(JRTextExporterParameter.PAGE_WIDTH, new Float(300));
+                exporter.setParameter(JRTextExporterParameter.PAGE_HEIGHT, new Float(500));
+                exporter.setParameter(JRTextExporterParameter.BETWEEN_PAGES_TEXT, "");*/
+                exporter.setParameter(JRTextExporterParameter.PAGE_WIDTH, 80);
+                exporter.setParameter(JRTextExporterParameter.PAGE_HEIGHT, 40);
+                exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+                exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, report.getAbsolutePath());
+                exporter.exportReport();
+                //Runtime.getRuntime().exec("firefox "+report.getAbsolutePath());
+            } catch (JRException jRException) {
+                System.err.println(jRException);
+            }
+            String sSistemaOperativo = System.getProperty("os.name");
+            log.debug(sSistemaOperativo);
+            if( sSistemaOperativo.trim().startsWith( SO_WINDOWS ) ){
+              String [] cmds = new String [1];
+              cmds[0] = "\""+Registry.getWebBrowserPath()+"\" "+"\""+report.getAbsolutePath()+"\"";
+              log.debug("Ejecuta: "+cmds.toString());
+              Process p = Runtime.getRuntime().exec(cmds);
+            } else {
+              //Runtime.getRuntime().exec("firefox "+report.getAbsolutePath());
+              Desktop.getDesktop().open( report );
+            }
+
+            //Desktop.getDesktop().open( report );
+
+            log.info( "Mostrar Reporte" );
+
+            Runtime garbage = Runtime.getRuntime();
+            garbage.gc();
 
             return report.getPath();
         } catch ( JRException e ) {
@@ -1829,4 +1886,44 @@ public class ReportBusiness {
         return found;
     }
 
+
+    public List<Skus> obtenerSkuporMarca( String marca ) {
+      log.info( "obtenerSkuporMarca()" );
+      QArticulo articulo = QArticulo.articulo1;
+      log.info( "Verifica que se halla seleccionado un articulo especifico" );
+      List<Articulo> lstArt = new ArrayList<Articulo>();
+      List<Skus> lstSkus = new ArrayList<Skus>();
+      if( StringUtils.trimToEmpty(marca).length() > 0 ){
+        lstArt = ( List<Articulo> ) articuloRepository.findAll( articulo.marca.eq(StringUtils.trimToEmpty(marca)).
+                and(articulo.cantExistencia.goe(0)), articulo.marca.asc() );
+      } else {
+        lstArt = ( List<Articulo> ) articuloRepository.findAll( articulo.cantExistencia.goe(0), articulo.marca.asc() );
+      }
+
+      for ( Articulo artic : lstArt ) {
+        if( artic.getCantExistencia() > 0 ){
+          for(int i=0;i < artic.getCantExistencia();i++){
+            Skus skus = findOrCreateSkus( lstSkus, artic.getMarca() );
+            skus.acumulaSkusPorMarca( artic.getId() );
+          }
+        }
+      }
+
+      return lstSkus;
+    }
+
+    public Skus findOrCreateSkus( List<Skus> lstSkus, String marca ) {
+      Skus found = null;
+      for ( Skus marcaTmp : lstSkus ) {
+        if ( marcaTmp.getMarca().equals(marca) ) {
+          found = marcaTmp;
+          break;
+        }
+      }
+      if ( found == null ) {
+        found = new Skus(StringUtils.trimToEmpty(marca));
+        lstSkus.add( found );
+      }
+      return found;
+    }
 }

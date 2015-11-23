@@ -30,10 +30,12 @@ class ArticleSelectionFilterDialog extends JDialog {
   private Date selectedDateStart
   private Date selectedDateEnd
   private String selectedArticle
+  private Boolean showCheckBox
 
   public boolean button = false
 
-  ArticleSelectionFilterDialog( ) {
+  ArticleSelectionFilterDialog( Boolean showCheckBox ) {
+    this.showCheckBox = showCheckBox
     buildUI()
   }
 
@@ -55,7 +57,7 @@ class ArticleSelectionFilterDialog extends JDialog {
           label( text: "Marca:" )
           txtLine = textField( document: new UpperCaseDocument() )
           label( text: " " )
-          cbResume = checkBox( text: "Resumido", selected: true )
+          cbResume = checkBox( text: "Resumido", selected: true, visible: showCheckBox )
           /*panel( constraints: "span", layout: new MigLayout( "wrap 3", "30[][grow,fill]30", "" ) ) {
             lentTipo = buttonGroup()
             todo = radioButton( text: "Todos", buttonGroup: lentTipo, selected: true )

@@ -75,4 +75,6 @@ public interface ReportService {
 
     public String obtenerReporteDeIngresosPorPeriodo( Date dateStart, Date dateEnd );
 
+    String obtenerReporteSkuporMarca( String marca );
+
 }
