@@ -7,7 +7,7 @@
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement uuid="7a1a6466-4bce-4c4d-a485-0a561432fc93" x="0" y="0" width="140" height="20"/>
+				<reportElement uuid="7a1a6466-4bce-4c4d-a485-0a561432fc93" stretchType="RelativeToBandHeight" x="0" y="0" width="140" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>

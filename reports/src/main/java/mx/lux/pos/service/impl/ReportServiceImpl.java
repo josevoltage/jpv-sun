@@ -1377,7 +1377,7 @@ public class ReportServiceImpl implements ReportService {
       log.info( "obtenerReporteSkuporMarca()" );
 
       Random random = new Random();
-      File report = new File( System.getProperty( "java.io.tmpdir" ), String.format("Sku-Por-Marca%s.html", random.nextInt()) );
+      File report = new File( System.getProperty( "java.io.tmpdir" ), String.format("Sku-Por-Marca%s.txt", random.nextInt()) );
       org.springframework.core.io.Resource template = new ClassPathResource( SKU_POR_MARCA );
       log.info( "Ruta: ", report.getAbsolutePath() );
 
@@ -1398,7 +1398,7 @@ public class ReportServiceImpl implements ReportService {
         parametros.put( "lstSkus", lstSkus );
         parametros.put( "marca", marca );
 
-        String reporte = reportBusiness.CompilayGeneraReporte( template, parametros, report );
+        String reporte = reportBusiness.CompilayGeneraReporteTxt( template, parametros, report );
         log.info( "reporte:{}", reporte );
 
         return null;

@@ -246,8 +246,8 @@ public class ReportBusiness {
                 exporter.setParameter(JRTextExporterParameter.PAGE_WIDTH, new Float(300));
                 exporter.setParameter(JRTextExporterParameter.PAGE_HEIGHT, new Float(500));
                 exporter.setParameter(JRTextExporterParameter.BETWEEN_PAGES_TEXT, "");*/
-                exporter.setParameter(JRTextExporterParameter.PAGE_WIDTH, 80);
-                exporter.setParameter(JRTextExporterParameter.PAGE_HEIGHT, 40);
+                exporter.setParameter(JRTextExporterParameter.PAGE_WIDTH, 100);
+                exporter.setParameter(JRTextExporterParameter.PAGE_HEIGHT, 200);
                 exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
                 exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, report.getAbsolutePath());
                 exporter.exportReport();
@@ -263,8 +263,8 @@ public class ReportBusiness {
               log.debug("Ejecuta: "+cmds.toString());
               Process p = Runtime.getRuntime().exec(cmds);
             } else {
-              //Runtime.getRuntime().exec("firefox "+report.getAbsolutePath());
-              Desktop.getDesktop().open( report );
+              Runtime.getRuntime().exec("firefox "+report.getAbsolutePath());
+              //Desktop.getDesktop().open( report );
             }
 
             //Desktop.getDesktop().open( report );

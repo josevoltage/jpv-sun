@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sku_Por_Marca" language="groovy" pageWidth="612" pageHeight="1008" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f20c10cb-3384-4aa9-a2a0-315c04911dc4">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="72"/>
+	<property name="ireport.y" value="0"/>
 	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
 	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
 	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
@@ -67,9 +67,9 @@
 		</band>
 	</title>
 	<detail>
-		<band height="300" splitType="Stretch">
+		<band height="35" splitType="Stretch">
 			<subreport>
-				<reportElement uuid="45d3464d-b9b5-40a5-b4b0-c8dd7bbf23c5" x="0" y="15" width="612" height="285" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<reportElement uuid="45d3464d-b9b5-40a5-b4b0-c8dd7bbf23c5" x="0" y="15" width="612" height="20" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
 				<subreportParameter name="fechaActual"/>
 				<subreportParameter name="sucursal"/>
 				<subreportParameter name="lstSkus"/>
