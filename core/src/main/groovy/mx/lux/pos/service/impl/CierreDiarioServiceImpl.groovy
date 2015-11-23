@@ -848,9 +848,13 @@ class CierreDiarioServiceImpl implements CierreDiarioService {
   private void generarFicheroInv( ){
     log.debug( "generarArchivoInventario( )" )
 
+
     Parametro ubicacion = Registry.find( TipoParametro.RUTA_CIERRE )
-    Parametro sucursal = Registry.find( TipoParametro.ID_SUCURSAL )
-    String nombreFichero = "${ String.format("%02d", NumberFormat.getInstance().parse(sucursal.valor)) }.${ CustomDateUtils.format( new Date(), 'dd-MM-yyyy' ) }.${ CustomDateUtils.format( new Date(), 'HHmm' ) }.inv"
+    //Parametro sucursal = Registry.find( TipoParametro.ID_SUCURSAL )
+    SucursalRepository sucRep = RepositoryFactory.siteRepository
+    Sucursal sucursal = sucRep.findOne( Registry.currentSite )
+    String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
+    String nombreFichero = "${ String.format("%02d", NumberFormat.getInstance().parse(centroCostos)) }.${ CustomDateUtils.format( new Date(), 'dd-MM-yyyy' ) }.${ CustomDateUtils.format( new Date(), 'HHmm' ) }.inv"
     log.info( "Generando archivo ${ nombreFichero }" )
     QArticulo articulo = QArticulo.articulo1
     List<Articulo> lstArticulos = articuloRepository.findAll( articulo.cantExistencia.ne( 0 ).and(articulo.cantExistencia.isNotNull()), articulo.id.asc() )
