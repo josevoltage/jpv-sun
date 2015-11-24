@@ -1,5 +1,7 @@
 package mx.lux.pos.model;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -10,9 +12,11 @@ public class Skus {
     public Skus( String marca ){
       this.setMarca( marca );
       lstSku = new ArrayList<Sku>();
+      sku = "";
     }
 
     private String marca;
+    private String sku;
     private List<Sku> lstSku;
 
     public String getMarca() {
@@ -31,9 +35,18 @@ public class Skus {
         this.lstSku = lstSku;
     }
 
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
     public void acumulaSkusPorMarca(Integer sku) {
-      Sku skuTmp = new Sku( sku );
-      lstSku.add(skuTmp);
+      //Sku skuTmp = new Sku( sku );
+      //lstSku.add(skuTmp);
+      this.sku = this.sku+", "+ StringUtils.trimToEmpty(sku.toString());
     }
 
 

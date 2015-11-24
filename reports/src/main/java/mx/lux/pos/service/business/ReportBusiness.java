@@ -1897,7 +1897,7 @@ public class ReportBusiness {
         lstArt = ( List<Articulo> ) articuloRepository.findAll( articulo.marca.eq(StringUtils.trimToEmpty(marca)).
                 and(articulo.cantExistencia.goe(0)), articulo.marca.asc() );
       } else {
-        lstArt = ( List<Articulo> ) articuloRepository.findAll( articulo.cantExistencia.goe(0), articulo.marca.asc() );
+        lstArt = ( List<Articulo> ) articuloRepository.findAll( articulo.cantExistencia.goe(0), articulo.marca.asc(), articulo.id.asc() );
       }
 
       for ( Articulo artic : lstArt ) {
@@ -1909,6 +1909,9 @@ public class ReportBusiness {
         }
       }
 
+      for(Skus data : lstSkus){
+        data.setSku(data.getSku().replaceFirst(", ", ""));
+      }
       return lstSkus;
     }
 
