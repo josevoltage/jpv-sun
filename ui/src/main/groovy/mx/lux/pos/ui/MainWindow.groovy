@@ -312,7 +312,7 @@ class MainWindow extends JFrame implements KeyListener {
                 kardexMenuItem.visible = userLoggedIn
                 salesTodayMenuItem.visible = userLoggedIn
                 salesByPeriodMenuItem.visible = userLoggedIn
-                skuByBrandReportMenuItem.visible = userLoggedIn
+                skuByBrandReportMenuItem.visible = false
                 //examsMenuItem.visible = userLoggedIn
                 //optometristSalesMenuItem.visible = userLoggedIn
               }

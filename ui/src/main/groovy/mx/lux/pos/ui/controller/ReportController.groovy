@@ -272,7 +272,7 @@ class ReportController {
     if ( articleSelectionFilterDialog == null ) {
       articleSelectionFilterDialog = new ArticleSelectionFilterDialog( false )
     }
-    articleSelectionFilterDialog.setTitle( "Reporte de Existencias por Marca" )
+    articleSelectionFilterDialog.setTitle( "Reporte de Sku por Marca" )
     articleSelectionFilterDialog.activate()
     String brand = articleSelectionFilterDialog.getselectedArticle()
     if ( articleSelectionFilterDialog.button ) {
