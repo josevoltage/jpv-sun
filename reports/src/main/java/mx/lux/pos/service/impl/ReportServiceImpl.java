@@ -1373,7 +1373,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
-    public String obtenerReporteSkuporMarca( String marca ){
+    public String obtenerReporteSkuporMarca( String marca, Boolean todo, Boolean armazon, Boolean accesorio ){
       log.info( "obtenerReporteSkuporMarca()" );
 
       Random random = new Random();
@@ -1381,7 +1381,7 @@ public class ReportServiceImpl implements ReportService {
       org.springframework.core.io.Resource template = new ClassPathResource( SKU_POR_MARCA );
       log.info( "Ruta: ", report.getAbsolutePath() );
 
-      List<Skus> lstSkus = reportBusiness.obtenerSkuporMarca(marca);
+      List<Skus> lstSkus = reportBusiness.obtenerSkuporMarca(marca, todo, armazon, accesorio);
       for(Skus sku : lstSkus){
         Collections.sort( sku.getLstSku(), new Comparator<Sku>() {
             @Override

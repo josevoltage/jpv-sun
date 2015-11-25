@@ -24,6 +24,7 @@ class ReportController {
   private static TwoDatesSelectionFilterBrandDialog twoDatesSelectionFilterBrandDialog
   private static TwoDatesSelectionFilterBrandArticleDialog twoDatesSelectionFilterBrandArticleDialog
   private static ArticleSelectionFilterDialog articleSelectionFilterDialog
+  private static SkuByBrandSelectionFilterDialog skuByBrandSelectionFilterDialog
   private static ArticleAndColorSelectionFilterDialog articleAndColorSelectionFilterDialog
   private static FilterDialog filterDialog
   private static TwoDatesSelectionFilterbyEmployeeDialog twoDatesSelectionFilterbyEmployeeDialog
@@ -269,15 +270,18 @@ class ReportController {
 
 
   static void fireSkubyBrandReport( ) {
-    if ( articleSelectionFilterDialog == null ) {
-      articleSelectionFilterDialog = new ArticleSelectionFilterDialog( false )
+    if ( skuByBrandSelectionFilterDialog == null ) {
+        skuByBrandSelectionFilterDialog = new SkuByBrandSelectionFilterDialog()
     }
-    articleSelectionFilterDialog.setTitle( "Reporte de Sku por Marca" )
-    articleSelectionFilterDialog.activate()
-    String brand = articleSelectionFilterDialog.getselectedArticle()
-    if ( articleSelectionFilterDialog.button ) {
+    skuByBrandSelectionFilterDialog.setTitle( "Reporte de Sku por Marca" )
+    skuByBrandSelectionFilterDialog.activate()
+    Boolean all = skuByBrandSelectionFilterDialog.cbTodo
+    Boolean frame = skuByBrandSelectionFilterDialog.cbFrame
+    Boolean accessory = skuByBrandSelectionFilterDialog.cbAccessory
+    String brand = skuByBrandSelectionFilterDialog.getselectedArticle()
+    if ( skuByBrandSelectionFilterDialog.button ) {
       log.debug( "Imprime el reporte de Sku por Marca" )
-      reportService.obtenerReporteSkuporMarca( brand )
+      reportService.obtenerReporteSkuporMarca( brand, all, frame, accessory )
     }
   }
 

@@ -93,6 +93,8 @@ public class ReportBusiness {
 
     private static final String TAG_CANCELADO = "T";
     private static final String SO_WINDOWS = "Windows";
+    private static final String TAG_GENERICO_ARMAZON = "A";
+    private static final String TAG_GENERICO_ACCESORIO = "E";
 
     public List<IngresoPorDia> obtenerIngresoporDia( Date fechaInicio, Date fechaFin ) {
         log.info( "obtenerIngresoporDia()" );
@@ -1887,17 +1889,25 @@ public class ReportBusiness {
     }
 
 
-    public List<Skus> obtenerSkuporMarca( String marca ) {
+    public List<Skus> obtenerSkuporMarca( String marca, Boolean todo, Boolean armazon, Boolean accesorio ) {
       log.info( "obtenerSkuporMarca()" );
       QArticulo articulo = QArticulo.articulo1;
       log.info( "Verifica que se halla seleccionado un articulo especifico" );
       List<Articulo> lstArt = new ArrayList<Articulo>();
       List<Skus> lstSkus = new ArrayList<Skus>();
+      BooleanBuilder builder = new BooleanBuilder();
+      if ( armazon ) {
+        builder.and( articulo.idGenerico.eq( TAG_GENERICO_ARMAZON ) );
+      } else if ( accesorio ) {
+        builder.and( articulo.idGenerico.eq( TAG_GENERICO_ACCESORIO ) );
+      } else {
+        builder.and( articulo.idGenerico.isNotNull() );
+      }
       if( StringUtils.trimToEmpty(marca).length() > 0 ){
         lstArt = ( List<Articulo> ) articuloRepository.findAll( articulo.marca.eq(StringUtils.trimToEmpty(marca)).
-                and(articulo.cantExistencia.goe(0)), articulo.marca.asc() );
+                and(articulo.cantExistencia.goe(0)).and(builder), articulo.marca.asc() );
       } else {
-        lstArt = ( List<Articulo> ) articuloRepository.findAll( articulo.cantExistencia.goe(0), articulo.marca.asc(), articulo.id.asc() );
+        lstArt = ( List<Articulo> ) articuloRepository.findAll( articulo.cantExistencia.goe(0).and(builder), articulo.marca.asc(), articulo.id.asc() );
       }
 
       for ( Articulo artic : lstArt ) {

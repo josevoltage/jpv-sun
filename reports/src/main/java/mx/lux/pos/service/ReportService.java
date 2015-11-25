@@ -75,6 +75,6 @@ public interface ReportService {
 
     public String obtenerReporteDeIngresosPorPeriodo( Date dateStart, Date dateEnd );
 
-    String obtenerReporteSkuporMarca( String marca );
+    String obtenerReporteSkuporMarca( String marca, Boolean todo, Boolean armazon, Boolean accesorio );
 
 }
