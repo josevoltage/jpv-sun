@@ -46,7 +46,7 @@ public class Skus {
     public void acumulaSkusPorMarca(Integer sku) {
       //Sku skuTmp = new Sku( sku );
       //lstSku.add(skuTmp);
-      this.sku = this.sku+", "+ StringUtils.trimToEmpty(sku.toString());
+      this.sku = this.sku+", "+ StringUtils.trimToEmpty(String.format("%06d",sku));
     }
 
 

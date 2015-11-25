@@ -48,7 +48,7 @@ class SkuByBrandSelectionFilterDialog extends JDialog {
         resizable: true,
         pack: true,
         modal: true,
-        preferredSize: [ 450, 250 ],
+        preferredSize: [ 460, 250 ],
         location: [ 200, 250 ],
     ) {
       panel() {
@@ -62,8 +62,8 @@ class SkuByBrandSelectionFilterDialog extends JDialog {
           panel( constraints: "span", layout: new MigLayout( "wrap 3", "30[][grow,fill]30", "" ) ) {
             group = buttonGroup()
             rbAll = radioButton( text: "Todos", buttonGroup: group, selected: true )
-            rbFrame = radioButton( text: "Armazon", buttonGroup: group )
-            rbAccessory = radioButton( text: "Accesorio", buttonGroup: group )
+            rbFrame = radioButton( text: "Armazones", buttonGroup: group )
+            rbAccessory = radioButton( text: "Accesorios", buttonGroup: group )
           }
         }
 
