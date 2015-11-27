@@ -130,7 +130,12 @@ class InventarioServiceImpl implements InventarioService {
       if(articulos.startsWith(",")){
         articulos = articulos.replaceFirst(",","")
       }
-      TAG_GENERICO_INVALIDO = String.format("%s para los articulos %s", lstArticulos[0], articulos)
+      if(StringUtils.trimToEmpty(lstArticulos[0]).equalsIgnoreCase("vacio")){
+        TAG_GENERICO_INVALIDO = String.format("Articulo(s) %s sin generico", articulos)
+      } else {
+        TAG_GENERICO_INVALIDO = String.format("No existe el generico %s para los articulos %s", lstArticulos[0], articulos)
+      }
+      //TAG_GENERICO_INVALIDO = String.format("%s para los articulos %s", lstArticulos[0], articulos)
       return TAG_GENERICO_INVALIDO
   }
 
