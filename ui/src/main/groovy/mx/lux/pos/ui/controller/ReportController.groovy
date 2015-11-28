@@ -24,6 +24,7 @@ class ReportController {
   private static TwoDatesSelectionFilterBrandDialog twoDatesSelectionFilterBrandDialog
   private static TwoDatesSelectionFilterBrandArticleDialog twoDatesSelectionFilterBrandArticleDialog
   private static ArticleSelectionFilterDialog articleSelectionFilterDialog
+  private static SkuByBrandSelectionFilterDialog skuByBrandSelectionFilterDialog
   private static ArticleAndColorSelectionFilterDialog articleAndColorSelectionFilterDialog
   private static FilterDialog filterDialog
   private static TwoDatesSelectionFilterbyEmployeeDialog twoDatesSelectionFilterbyEmployeeDialog
@@ -39,7 +40,8 @@ class ReportController {
     StockbyBrand, StockbyBrandColor, JobControl,
     WorkSubmitted, TaxBills, Discounts, PromotionsinSales,
     Payments, Quote, Exams, OptometristSales,
-    Promotions, Kardex, SalesToday, PaymentsbyPeriod
+    Promotions, Kardex, SalesToday, PaymentsbyPeriod,
+    SkuByBrand
   }
 
   @Autowired
@@ -246,7 +248,7 @@ class ReportController {
 
   static void fireStockbyBrandReport( ) {
     if ( articleSelectionFilterDialog == null ) {
-      articleSelectionFilterDialog = new ArticleSelectionFilterDialog()
+      articleSelectionFilterDialog = new ArticleSelectionFilterDialog( true )
     }
     articleSelectionFilterDialog.setTitle( "Reporte de Existencias por Marca" )
     articleSelectionFilterDialog.activate()
@@ -265,6 +267,24 @@ class ReportController {
       }
     }
   }
+
+
+  static void fireSkubyBrandReport( ) {
+    if ( skuByBrandSelectionFilterDialog == null ) {
+        skuByBrandSelectionFilterDialog = new SkuByBrandSelectionFilterDialog()
+    }
+    skuByBrandSelectionFilterDialog.setTitle( "Reporte de Sku por Marca" )
+    skuByBrandSelectionFilterDialog.activate()
+    Boolean all = skuByBrandSelectionFilterDialog.cbTodo
+    Boolean frame = skuByBrandSelectionFilterDialog.cbFrame
+    Boolean accessory = skuByBrandSelectionFilterDialog.cbAccessory
+    String brand = skuByBrandSelectionFilterDialog.getselectedArticle()
+    if ( skuByBrandSelectionFilterDialog.button ) {
+      log.debug( "Imprime el reporte de Sku por Marca" )
+      reportService.obtenerReporteSkuporMarca( brand, all, frame, accessory )
+    }
+  }
+
 
   static void fireStockbyBrandColorReport( ) {
     if ( articleAndColorSelectionFilterDialog == null ) {
@@ -538,6 +558,7 @@ class ReportController {
       case Report.Kardex: kardexByDateAndSkuReport(); break;
       case Report.SalesToday: todaySales(); break;
       case Report.PaymentsbyPeriod: paymentsByPeriod(); break;
+      case Report.SkuByBrand: fireSkubyBrandReport(); break;
     }
   }
 }

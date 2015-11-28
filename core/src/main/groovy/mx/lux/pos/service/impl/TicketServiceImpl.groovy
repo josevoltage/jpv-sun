@@ -696,7 +696,8 @@ class TicketServiceImpl implements TicketService {
         Collections.sort(resumenesDiario, new Comparator<ResumenDiario>() {
             @Override
             int compare(ResumenDiario o1, ResumenDiario o2) {
-                return o1.idTerminal.compareTo(o2.idTerminal)
+                String thisIdTerm = o1?.idTerminal != null ? StringUtils.trimToEmpty(o1?.idTerminal) : "";
+                return thisIdTerm.compareTo(o2?.idTerminal != null ? o2?.idTerminal : "")
             }
         })
         for ( ResumenDiario resumen : resumenesDiario ) {

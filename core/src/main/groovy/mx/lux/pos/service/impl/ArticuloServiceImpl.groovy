@@ -147,7 +147,11 @@ class ArticuloServiceImpl implements ArticuloService {
     Articulo articulo = articuloRepository.findOne( id )
     if( articulo != null ){
       if( articulo.generico == null ){
-        genericoInvalido = StringUtils.trimToEmpty(articulo.idGenerico)
+        if(StringUtils.trimToEmpty(articulo.idGenerico).length() > 0){
+          genericoInvalido =  StringUtils.trimToEmpty(articulo.idGenerico)
+        } else if( articulo.idGenerico == null || StringUtils.trimToEmpty(articulo.idGenerico).length() <= 0 ){
+          genericoInvalido =  "vacio"
+        }
       } else if( !articulo.generico.inventariable ){
         genericoInvalido = TAG_GENERICO_NO_INVENTARIABLE
       }

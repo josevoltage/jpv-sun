@@ -54,6 +54,7 @@ enum TipoParametro {
   RUTA_REMISION( 'ruta_remision', 'C:/Documents and Settings/mensajero/remision' ),
   RUTA_LISTA_PRECIOS( 'ruta_lista_precios', 'C:/Documents and Settings/mensajero/lp' ),
   RUTA_POR_ENVIAR( 'ruta_por_enviar', 'C:/Documents and Settings/mensajero/por_enviar' ),
+  RUTA_NAVEGADOR_WEB( 'ruta_navegador_web', 'C:/Program Files (x86)/Internet Explorer/iexplore.exe' ),
   RUTA_POR_ENVIAR_DROPBOX( 'ruta_por_enviar_dropbox', 'C:/Dropbox/' ),
   RUTA_POR_RECIBIR( 'ruta_por_recibir', 'C:/Documents and Settings/mensajero/por_recibir' ),
   CONTRASENA_SOPORTE( 'contrasena_soporte', 's0p0rt3' ),

@@ -29,7 +29,7 @@ class InvTrPanel extends JPanel {
   static final String MSG_CONFIRM_TO_PROCEED = "Confirme para pasar a: %s"
   static final String MSG_NO_RESULTS_FOUND = "No se encontraron resultados para: <%s>"
   static final String MSG_POST_FAILED = "La transacción NO fue registrada.\nNotifique a soporte técnico."
-  static final String MSG_GENERIC_INVALID = "La transacción NO fue registrada.\nNo existe el generico %s."
+  static final String MSG_GENERIC_INVALID = "La transacción NO fue registrada.\n%s."
   static final String MSG_NO_DOCUMENT_AVAILABLE = "Remisión no disponible."
   static final String MSG_DOCUMENT_ALREADY_PROCCESED = "El archivo ya fue cargado."
   static final String MSG_ARTICLE_NOT_FOUND = "Articulo %s no existe."
@@ -225,6 +225,8 @@ class InvTrPanel extends JPanel {
     if(StringUtils.trimToEmpty(comboViewMode?.comboBox?.selectedItem?.toString()).equalsIgnoreCase("[SALIDA] ENVIO A ALMACEN") &&
             comboSiteTo?.comboBox?.selectedItem != null && StringUtils.trimToEmpty(comboSiteTo?.comboBox?.selectedItem?.toString()).length() > 0 ){
       storage = StringUtils.trimToEmpty(comboSiteTo?.comboBox?.selectedItem?.toString())
+    } else if(!StringUtils.trimToEmpty(comboViewMode?.comboBox?.selectedItem?.toString()).equalsIgnoreCase("[SALIDA] ENVIO A ALMACEN")) {
+      storage = ""
     }
   }
 }

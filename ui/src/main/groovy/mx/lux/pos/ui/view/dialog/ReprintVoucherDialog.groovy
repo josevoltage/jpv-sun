@@ -73,7 +73,7 @@ class ReprintVoucherDialog extends JDialog {
   }
 
   protected void onButtonOk( ) {
-    String ticket = StringUtils.trimToEmpty((Registry.currentSite+2000).toString())+"-"+StringUtils.trimToEmpty(txtTicket.text)
+    String ticket = StringUtils.trimToEmpty((Registry.currentSite+20000).toString())+"-"+StringUtils.trimToEmpty(txtTicket.text)
     Order order = OrderController.findOrderByTicket( ticket )
     Boolean hasPayCard = false
     for(Payment pago : order?.payments){

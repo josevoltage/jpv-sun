@@ -46,7 +46,7 @@ public interface IOService {
 
   void saveAcknowledgementTrans(TransInv pAcknowledgement)
 
-  void logRemittanceNotification( String idTipoTrans, Integer folio, String codigo )
+  void logRemittanceNotification( String idTipoTrans, Integer folio, String codigo, Boolean onlyGenerateFile )
 
   Remesas updateRemesa( String idTipoTrans )
 

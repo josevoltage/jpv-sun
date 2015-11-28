@@ -131,26 +131,35 @@ class PrepareInvTrBusiness {
       valid = sites.validarSucursal( pRequest.siteTo )
 
     // Part
+    String articleInvalid = ""
+    Boolean vacio = false
     if ( valid ) {
       for ( part in pRequest.skuList ) {
         if ( valid )
           valid = parts.validarArticulo( part.sku )
-          if(StringUtils.trimToEmpty(genericoInvalido).length() <= 0){
-            genericoInvalido = StringUtils.trimToEmpty(parts.validarGenericoArticulo( part.sku ))
-          }
-          if( genericoInvalido.equalsIgnoreCase(TAG_GENERICO_NO_INVENTARIABLE)){
+          articleInvalid = ""
+          //if(StringUtils.trimToEmpty(articleInvalid).length() <= 0){
+            articleInvalid = StringUtils.trimToEmpty(parts.validarGenericoArticulo( part.sku ))
+          //}
+          if( articleInvalid.equalsIgnoreCase(TAG_GENERICO_NO_INVENTARIABLE)){
             Articulo articulo = parts.buscaArticulo( part.sku )
             genericoInvalido = ""
             genericoInvalido = articulo.idGenerico+","+part.sku
             valid = false
             break
-          } else if(StringUtils.trimToEmpty(genericoInvalido).length() > 0){
+          } else if(StringUtils.trimToEmpty(articleInvalid).length() > 0){
             genericoInvalido = genericoInvalido+","+part.sku
+            vacio = true
+            valid = false
+            //break
           }
           valid = genericoInvalido.length() > 0 ? false : true
       }
     }
 
+    if( vacio ){
+      genericoInvalido = "vacio"+genericoInvalido
+    }
     return valid
   }
 

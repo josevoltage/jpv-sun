@@ -181,11 +181,14 @@ class InvTrController {
   }
        */
 
-  protected String confirmaEntrada(InvTrViewMode viewMode, InvTrView pView){
+  protected String confirmaEntrada(InvTrViewMode viewMode, InvTrView pView, Boolean onlyGenerateFile){
       String url = Registry.getURLConfirmacion( viewMode.trType.idTipoTrans );
       if( TAG_REMESA.equalsIgnoreCase(viewMode.trType.idTipoTrans.trim()) ){
-        ServiceManager.getIoServices().updateRemesa( viewMode.trType.idTipoTrans.trim() )
-        ServiceManager.getIoServices().logRemittanceNotification( viewMode.trType.idTipoTrans.trim(), viewMode.trType.ultimoFolio+1, pView.data.receiptDocument.code )
+        if( !onlyGenerateFile ){
+          ServiceManager.getIoServices().updateRemesa( viewMode.trType.idTipoTrans.trim() )
+        }
+        ServiceManager.getIoServices().logRemittanceNotification( viewMode.trType.idTipoTrans.trim(), viewMode.trType.ultimoFolio+1,
+                pView.data.receiptDocument.code, onlyGenerateFile )
       } else if ( StringUtils.trimToNull( url ) != null ) {
         String variable = pView.data.claveCodificada + ">" + pView.data.postTrType.ultimoFolio
         url += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', variable ), 'UTF-8' ) )
@@ -469,7 +472,7 @@ class InvTrController {
     log.debug( "[Controller] Save and Print" )
     InvTrRequest request = RequestAdapter.getRequest( pView.data )
     if ( request != null ) {
-     Boolean generateFile = true
+     Boolean onlyGenerateFile = false
         request.remarks = request.remarks.replaceAll("[^a-zA-Z0-9]+"," ");
       Integer trNbr = ServiceManager.getInventoryService().solicitarTransaccion( request )
       if ( trNbr != null && trNbr > -1 ) {
@@ -487,7 +490,7 @@ class InvTrController {
                 Integer iLine = 0
                 pView.data.inFile.eachLine() {
                   if( it.contains(",") ){
-                    generateFile = false
+                    onlyGenerateFile = true
                   }
                 }
                 FileInputStream inFile = new FileInputStream(pView.data.inFile);
@@ -516,10 +519,8 @@ class InvTrController {
             || InvTrViewMode.RECEIPT.equals( viewMode ) || InvTrViewMode.OUTBOUND.equals( viewMode )
             || InvTrViewMode.INBOUND.equals( viewMode )) {
           dispatchPrintTransaction( viewMode.trType.idTipoTrans, trNbr )
-          if (InvTrViewMode.INBOUND.equals( viewMode )) {
-            String resultado = confirmaEntrada(viewMode, pView)
-          } else if( InvTrViewMode.RECEIPT.equals( viewMode ) && generateFile){
-            String resultado = confirmaEntrada(viewMode, pView)
+          if (InvTrViewMode.INBOUND.equals( viewMode ) || InvTrViewMode.RECEIPT.equals( viewMode )) {
+            String resultado = confirmaEntrada(viewMode, pView, onlyGenerateFile)
           }
           if( ServiceManager.getInventoryService().isReceiptDuplicate() ){
             dispatchPrintTransaction( viewMode.trType.idTipoTrans, trNbr )
@@ -527,7 +528,7 @@ class InvTrController {
         }
         pView.fireResetUI()
         pView.data.clear()
-        if ( InvTrViewMode.RECEIPT.equals( viewMode ) || InvTrViewMode.FILE_ADJUST.equals( viewMode ) ) {
+        if ( InvTrViewMode.RECEIPT.equals( viewMode ) || InvTrViewMode.FILE_ADJUST.equals( viewMode ) || InvTrViewMode.ISSUE.equals( viewMode )) {
           InvTrController controller = this
           SwingUtilities.invokeLater( new Runnable() {
             void run( ) {

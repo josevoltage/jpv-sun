@@ -42,6 +42,7 @@ public class ReportServiceImpl implements ReportService {
     private static String VENTA_POR_MARCA = "reports/Ventas_Por_Marca.jrxml";
     private static String VENTA_POR_VENDEDOR_MARCA = "reports/Ventas_Por_Vendedor_Por_Marca.jrxml";
     private static String EXISTENCIAS_POR_MARCA = "reports/Existencias_Por_Marca.jrxml";
+    private static String SKU_POR_MARCA = "reports/Sku_Por_Marca.jrxml";
     private static String EXISTENCIAS_POR_MARCA_RESUMIDO = "reports/Existencias_Por_Marca_Resumido.jrxml";
     private static String EXISTENCIAS_POR_ARTICULO = "reports/Existencias_Por_Articulo.jrxml";
     private static String CONTROL_DE_TRABAJOS = "reports/Control_de_Trabajos.jrxml";
@@ -1371,4 +1372,35 @@ public class ReportServiceImpl implements ReportService {
         return null;
     }
 
+
+    public String obtenerReporteSkuporMarca( String marca, Boolean todo, Boolean armazon, Boolean accesorio ){
+      log.info( "obtenerReporteSkuporMarca()" );
+
+      Random random = new Random();
+      File report = new File( System.getProperty( "java.io.tmpdir" ), String.format("Sku-Por-Marca%s.html", random.nextInt()) );
+      org.springframework.core.io.Resource template = new ClassPathResource( SKU_POR_MARCA );
+      log.info( "Ruta: ", report.getAbsolutePath() );
+
+      List<Skus> lstSkus = reportBusiness.obtenerSkuporMarca(marca, todo, armazon, accesorio);
+      for(Skus sku : lstSkus){
+        Collections.sort( sku.getLstSku(), new Comparator<Sku>() {
+            @Override
+            public int compare(Sku o1, Sku o2) {
+                return o1.getSku().compareTo(o2.getSku());
+            }
+        });
+      }
+        Sucursal sucursal = sucursalService.obtenSucursalActual();
+
+        Map<String, Object> parametros = new HashMap<String, Object>();
+        parametros.put( "fechaActual", new SimpleDateFormat( "hh:mm" ).format( new Date() ) );
+        parametros.put( "sucursal", sucursal.getNombre() );
+        parametros.put( "lstSkus", lstSkus );
+        parametros.put( "marca", marca );
+
+        String reporte = reportBusiness.CompilayGeneraReporte( template, parametros, report );
+        log.info( "reporte:{}", reporte );
+
+        return null;
+    }
 }

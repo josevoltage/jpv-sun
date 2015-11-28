@@ -9,4 +9,3 @@ import org.springframework.data.querydsl.QueryDslPredicateExecutor
 interface RemesasRepository extends JpaRepository<Remesas, Integer>, QueryDslPredicateExecutor<Remesas> {
 
 }
-
