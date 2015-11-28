@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory
 class InvTrFile {
 
   private static enum DetFld {
-    Sku, Article, Color, ModSend, Qty, Remarks, MovType
+    Article, Color, ModSend, Qty, Remarks, MovType, Sku
   }
   private static enum HdrFld {
     TrNbr, LineNum
