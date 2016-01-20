@@ -18,7 +18,9 @@ import javax.annotation.Resource
 import mx.lux.pos.model.*
 import mx.lux.pos.repository.*
 
+import java.text.DateFormat
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 
 @Slf4j
 @Service( 'notaVentaService' )
@@ -567,6 +569,76 @@ class NotaVentaServiceImpl implements NotaVentaService {
         logTpvRepository.saveAndFlush( logTpv )
       } catch ( Exception e ){ println e }
     }
+  }
+
+
+  @Override
+  @Transactional
+  void guardaClaveSeguro( BigDecimal montoGarantia, Integer idArticulo, String idNota ){
+    NotaVenta nota = notaVentaRepository.findOne( StringUtils.trimToEmpty(idNota) )
+    if( nota != null ){
+      DateFormat df = new SimpleDateFormat( "dd-MM-yy" )
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTime(new Date());
+      calendar.add(Calendar.YEAR, 1);
+      String date = df.format(calendar.getTime())
+      Integer fecha = 0
+      try{
+        fecha = NumberFormat.getInstance().parse(date.replace("-",""))
+      } catch ( NumberFormatException e ){ println e }
+      Integer porcGar = Registry.percentageWarranty
+      BigDecimal porcentaje = montoGarantia.multiply(porcGar/100)
+      Integer monto = porcentaje.intValue()
+      String clave = claveAleatoria( fecha, monto )
+      String claveFull = StringUtils.trimToEmpty(nota.udf4).length() > 0 ? ("|")+StringUtils.trimToEmpty(clave)+","+StringUtils.trimToEmpty(idArticulo.toString()): ("")+StringUtils.trimToEmpty(clave)+","+StringUtils.trimToEmpty(idArticulo.toString())
+      nota.udf4 = StringUtils.trimToEmpty(nota.udf4)+claveFull
+      notaVentaRepository.save( nota )
+      notaVentaRepository.flush()
+    }
+  }
+
+
+
+  protected static  String claveAleatoria(Integer fecha, Integer monto) {
+    String folioAux = "" + monto.intValue();
+    String sucursalAux = "" + fecha.intValue()
+    String abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (folioAux.size() < 5) {
+      folioAux = folioAux?.padLeft( 5, '0' )
+    } else {
+      folioAux = folioAux.substring(0,5);
+    }
+    String resultado = sucursalAux?.padLeft( 6, '0' ) + folioAux
+    for (int i = 0; i < resultado.size(); i++) {
+      int numAleatorio = (int) (Math.random() * abc.size());
+      if (resultado.charAt(i) == '0') {
+        resultado = replaceCharAt(resultado, i, abc.charAt(numAleatorio))
+      } else {
+        int numero = Integer.parseInt ("" + resultado.charAt(i));
+        numero = 10 - numero
+        char diff = Character.forDigit(numero, 10);
+        resultado = replaceCharAt(resultado, i, diff)
+      }
+    }
+    return resultado;
+  }
+
+
+
+  protected static String replaceCharAt(String s, int pos, char c) {
+    StringBuffer buf = new StringBuffer( s );
+    buf.setCharAt( pos, c );
+    return buf.toString( );
+  }
+
+
+
+  @Override
+  NotaVenta obtenerNotaVentaPorClaveSeguro( String clave ) {
+    log.debug( "obtenerNotaVentaPorClaveSeguro( ${clave} )" )
+    QNotaVenta qNotaVenta = QNotaVenta.notaVenta
+    NotaVenta notaVenta = notaVentaRepository.findOne(qNotaVenta.udf4.contains(clave))
+    return notaVenta
   }
 
 

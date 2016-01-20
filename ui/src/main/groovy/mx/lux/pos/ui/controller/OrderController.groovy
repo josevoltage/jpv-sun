@@ -690,4 +690,10 @@ class OrderController {
     notaVentaService.guardaLogTpv( idOrder, user.username )
   }
 
+
+  static NotaVenta findOrderByEnsureKey( String key ) {
+    log.info( "buscando orden por clave de seguro: ${key}" )
+    NotaVenta result = notaVentaService.obtenerNotaVentaPorClaveSeguro( key )
+    return result
+  }
 }

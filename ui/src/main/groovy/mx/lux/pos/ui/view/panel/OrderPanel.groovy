@@ -709,7 +709,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
         if ( StringUtils.isNotBlank( newOrder?.id ) ) {
             OrderController.printOrder( newOrder.id )
             for(Warranty warranty : lstWarranty){
-              ItemController.printWarranty( warranty.amount, warranty.idItem)
+              ItemController.printWarranty( warranty.amount, warranty.idItem, order.id )
             }
             lstWarranty.clear()
             OrderController.printVoucherTpv( newOrder.id, false )

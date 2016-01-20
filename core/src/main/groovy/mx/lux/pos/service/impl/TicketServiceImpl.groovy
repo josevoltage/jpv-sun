@@ -2015,32 +2015,44 @@ class TicketServiceImpl implements TicketService {
 
 
 
-  void imprimeGarantia( BigDecimal montoGarantia, Integer idArticulo ){
+  void imprimeGarantia( BigDecimal montoGarantia, Integer idArticulo, String idNota ){
     log.debug( "imprimeGarantia( )" )
-    DateFormat df = new SimpleDateFormat( "dd-MM-yy" )
-    Articulo articulo = articuloRepository.findOne( idArticulo )
-    Sucursal site = ServiceFactory.sites.obtenSucursalActual()
-    AddressAdapter companyAddress = Registry.companyAddress
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(new Date());
-    calendar.add(Calendar.YEAR, 1);
-    String date = df.format(calendar.getTime())
-    Integer fecha = 0
-    try{
-      fecha = NumberFormat.getInstance().parse(date.replace("-",""))
-    } catch ( NumberFormatException e ){ println e }
-    Integer porcGar = Registry.percentageWarranty
-    BigDecimal porcentaje = montoGarantia.multiply(porcGar/100)
-    Integer monto = porcentaje.intValue()
-    String clave = claveAleatoria( fecha, monto )
-    def data = [
-        date: df.format( calendar.getTime() ),
-        thisSite: site,
-        compania: companyAddress,
-        codaleatorio: clave,
-        articulo: articulo != null ? StringUtils.trimToEmpty(articulo.articulo) : ""
-    ]
-    imprimeTicket( "template/ticket-garantia.vm", data )
+    NotaVenta notaVenta = notaVentaRepository.findOne( StringUtils.trimToEmpty(idNota) )
+    if( notaVenta != null && StringUtils.trimToEmpty(notaVenta.udf4).length() > 2 ){
+      DateFormat df = new SimpleDateFormat( "dd-MM-yy" )
+      Sucursal site = ServiceFactory.sites.obtenSucursalActual()
+      AddressAdapter companyAddress = Registry.companyAddress
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTime(new Date());
+      calendar.add(Calendar.YEAR, 1);
+      String date = df.format(calendar.getTime())
+      String[] dataSeg = StringUtils.trimToEmpty(notaVenta.udf4).split(/\|/)
+      Integer contador = 0
+      for(String d : dataSeg){
+        if( d.contains(StringUtils.trimToEmpty(idArticulo.toString())) ){
+          break
+        } else {
+          contador = contador+1
+        }
+      }
+      String[] key = StringUtils.trimToEmpty(dataSeg[contador]).split(",")
+      if( key.length > 1 ){
+        String clave = key[0]
+        Integer idArt = idArticulo
+        try{
+          idArt = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(key[1]))
+        } catch ( NumberFormatException e ){ print e.message }
+        Articulo articulo = articuloRepository.findOne( idArt )
+        def data = [
+                date: date,
+                thisSite: site,
+                compania: companyAddress,
+                codaleatorio: StringUtils.trimToEmpty(clave),
+                articulo: articulo != null ? StringUtils.trimToEmpty(articulo.articulo) : ""
+        ]
+        imprimeTicket( "template/ticket-garantia.vm", data )
+      }
+    }
   }
 
 

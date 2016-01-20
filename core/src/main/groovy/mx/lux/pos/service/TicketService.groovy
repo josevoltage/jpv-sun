@@ -43,7 +43,7 @@ interface TicketService {
 
   void imprimeIncidencias( Incidencia incidencia )
 
-  void imprimeGarantia( BigDecimal montoGarantia, Integer idArticulo )
+  void imprimeGarantia( BigDecimal montoGarantia, Integer idArticulo, String idNota )
 
   void imprimeVoucherTpv( Pago pago, String copia, Boolean reimpresion )
 

@@ -45,4 +45,8 @@ interface NotaVentaService {
   List<NotaVenta> obtenerNotasCanSinTransaccion( )
 
   void guardaLogTpv( String idFactura, String idEmpleado )
+
+  void guardaClaveSeguro( BigDecimal montoGarantia, Integer idArticulo, String idNota )
+
+  NotaVenta obtenerNotaVentaPorClaveSeguro( String clave )
 }

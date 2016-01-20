@@ -7,6 +7,7 @@ import mx.lux.pos.model.InventarioFisico
 import mx.lux.pos.model.MontoGarantia
 import mx.lux.pos.service.ArticuloService
 import mx.lux.pos.service.DetalleNotaVentaService
+import mx.lux.pos.service.NotaVentaService
 import mx.lux.pos.service.TicketService
 import mx.lux.pos.ui.model.Differences
 import mx.lux.pos.ui.model.Item
@@ -41,12 +42,15 @@ class ItemController {
   private static ArticuloService articuloService
   private static TicketService ticketService
   private static DetalleNotaVentaService detalleNotaVentaService
+  private static NotaVentaService notaVentaService
 
   @Autowired
-  public ItemController( ArticuloService articuloService, TicketService ticketService, DetalleNotaVentaService detalleNotaVentaService ) {
+  public ItemController( ArticuloService articuloService, TicketService ticketService, DetalleNotaVentaService detalleNotaVentaService,
+                         NotaVentaService notaVentaService ) {
     this.articuloService = articuloService
     this.ticketService = ticketService
     this.detalleNotaVentaService = detalleNotaVentaService
+    this.notaVentaService = notaVentaService
   }
 
   static Item findItem( Integer id ) {
@@ -295,8 +299,9 @@ class ItemController {
 
 
 
-  static void printWarranty( BigDecimal amount, Integer idItem ){
-    ticketService.imprimeGarantia( amount, idItem )
+  static void printWarranty( BigDecimal amount, Integer idItem, String idOrder ){
+    notaVentaService.guardaClaveSeguro( amount, idItem, idOrder )
+    ticketService.imprimeGarantia( amount, idItem, idOrder )
   }
 
   static MontoGarantia findWarranty( BigDecimal warrantyAmount ){

@@ -1,9 +1,12 @@
 package mx.lux.pos.ui.view.dialog
 
 import groovy.swing.SwingBuilder
+import mx.lux.pos.model.NotaVenta
 import mx.lux.pos.service.business.Registry
+import mx.lux.pos.ui.controller.ItemController
 import mx.lux.pos.ui.controller.OrderController
 import mx.lux.pos.ui.model.ICorporateKeyVerifier
+import mx.lux.pos.ui.model.Order
 import mx.lux.pos.ui.resources.UI_Standards
 import mx.lux.pos.ui.view.component.NumericTextField
 import mx.lux.pos.ui.view.component.PercentTextField
@@ -270,6 +273,24 @@ class WarrantyDiscountDialog extends JDialog {
           clave = clave+0
         }
       }
+      NotaVenta order = OrderController.findOrderByEnsureKey( StringUtils.trimToEmpty(StringUtils.trimToEmpty(txtCorporateKey.text)) )
+      Integer idEnsureArt = 0
+      String[] keys = order.udf4.split(/\|/)
+      Integer contador = 0
+      for(String d : keys){
+        if( d.contains(StringUtils.trimToEmpty(txtCorporateKey.text)) ){
+          break
+        } else {
+          contador = contador+1
+        }
+      }
+      String[] keyArt = StringUtils.trimToEmpty(keys[contador]).split(",")
+      if( keyArt.length > 1 ){
+        try{
+          idEnsureArt = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(keyArt[1]))
+        } catch ( NumberFormatException e ){ print e.message }
+      }
+      Item itemEnsured = ItemController.findItem( idEnsureArt )
       String dateStr = StringUtils.trimToEmpty(clave).substring(0,6)
       String amountStr = StringUtils.trimToEmpty(clave).substring(6,11)
       Date date = null
@@ -284,7 +305,7 @@ class WarrantyDiscountDialog extends JDialog {
       }
       if( date.compareTo(new Date()) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0 &&
               OrderController.keyFree(StringUtils.trimToEmpty(txtCorporateKey.text).toUpperCase()) ){
-        if( item != null && item.price.compareTo(amount) < 0 ){
+        if( item != null && item.price.compareTo(itemEnsured.price) < 0 ){
           txtDiscountAmount.setText( StringUtils.trimToEmpty((item.price.multiply(new BigDecimal(Registry.percentageWarranty/100))).toString()) )
         } else {
           txtDiscountAmount.setText( StringUtils.trimToEmpty(amount.doubleValue().toString()) )
