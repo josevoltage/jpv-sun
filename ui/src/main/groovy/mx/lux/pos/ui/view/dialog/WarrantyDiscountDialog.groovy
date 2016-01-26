@@ -13,6 +13,7 @@ import mx.lux.pos.ui.view.component.PercentTextField
 import mx.lux.pos.ui.model.Item
 import net.miginfocom.swing.MigLayout
 import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.time.DateUtils
 
 import javax.swing.*
 import java.awt.*
@@ -275,7 +276,8 @@ class WarrantyDiscountDialog extends JDialog {
       }
       NotaVenta order = OrderController.findOrderByEnsureKey( StringUtils.trimToEmpty(StringUtils.trimToEmpty(txtCorporateKey.text)) )
       Integer idEnsureArt = 0
-      String[] keys = order.udf4.split(/\|/)
+      if( order != null ){
+      String[] keys = StringUtils.trimToEmpty(order.udf4).split(/\|/)
       Integer contador = 0
       for(String d : keys){
         if( d.contains(StringUtils.trimToEmpty(txtCorporateKey.text)) ){
@@ -290,6 +292,7 @@ class WarrantyDiscountDialog extends JDialog {
           idEnsureArt = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(keyArt[1]))
         } catch ( NumberFormatException e ){ print e.message }
       }
+      }
       Item itemEnsured = ItemController.findItem( idEnsureArt )
       String dateStr = StringUtils.trimToEmpty(clave).substring(0,6)
       String amountStr = StringUtils.trimToEmpty(clave).substring(6,11)
@@ -303,12 +306,21 @@ class WarrantyDiscountDialog extends JDialog {
       } catch ( NumberFormatException e) {
           e.printStackTrace()
       }
+      date = new Date( DateUtils.ceiling( date, Calendar.DAY_OF_MONTH ).getTime() - 1 );
       if( date.compareTo(new Date()) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0 &&
               OrderController.keyFree(StringUtils.trimToEmpty(txtCorporateKey.text).toUpperCase()) ){
-        if( item != null && item.price.compareTo(itemEnsured.price) < 0 ){
-          txtDiscountAmount.setText( StringUtils.trimToEmpty((item.price.multiply(new BigDecimal(Registry.percentageWarranty/100))).toString()) )
+        if( itemEnsured != null ){
+          if( item != null && item.price.compareTo(itemEnsured.price) < 0 ){
+            txtDiscountAmount.setText( StringUtils.trimToEmpty((item.price.multiply(new BigDecimal(Registry.percentageWarranty/100))).toString()) )
+          } else {
+            txtDiscountAmount.setText( StringUtils.trimToEmpty(amount.doubleValue().toString()) )
+          }
         } else {
-          txtDiscountAmount.setText( StringUtils.trimToEmpty(amount.doubleValue().toString()) )
+          if( item != null && item.price.compareTo(amount) < 0 ){
+            txtDiscountAmount.setText( StringUtils.trimToEmpty((item.price.multiply(new BigDecimal(Registry.percentageWarranty/100))).toString()) )
+          } else {
+            txtDiscountAmount.setText( StringUtils.trimToEmpty(amount.doubleValue().toString()) )
+          }
         }
         valid = true
       }
