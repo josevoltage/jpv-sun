@@ -324,6 +324,9 @@ class WarrantyDiscountDialog extends JDialog {
         }
         valid = true
       }
+      if( order != null && StringUtils.trimToEmpty(order.sFactura).equalsIgnoreCase("T") ){
+        valid = false
+      }
     }
     return valid
   }
