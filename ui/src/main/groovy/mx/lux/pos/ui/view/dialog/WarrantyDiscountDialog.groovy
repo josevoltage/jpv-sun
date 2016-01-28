@@ -326,6 +326,7 @@ class WarrantyDiscountDialog extends JDialog {
       }
       if( order != null && StringUtils.trimToEmpty(order.sFactura).equalsIgnoreCase("T") ){
         valid = false
+        lblStatus.setText("Garantia cancelada")
       }
     }
     return valid
