@@ -7,6 +7,7 @@ import mx.lux.pos.ui.model.InvTrViewMode
 import mx.lux.pos.ui.model.adapter.InvTrAdapter
 import mx.lux.pos.ui.view.component.NavigationBar.Command
 import mx.lux.pos.ui.view.component.NavigationBarListener
+import org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -95,7 +96,8 @@ class InvTrView implements NavigationBarListener {
   void notifyDocument( InvAdjustSheet pDocument ) {
     data.receiptDocument = null
     data.adjustDocument = pDocument
-    if ( pDocument.site == ( Session.get( SessionItem.BRANCH ) as Branch ).id ) {
+    Branch b = Session.get( SessionItem.BRANCH ) as Branch
+    if ( StringUtils.trimToEmpty(pDocument.site.toString()) == b.costCenter ) {
       driver.processAdjust( this )
       fireResetUI()
       fireDisplay()
