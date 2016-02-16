@@ -16,6 +16,7 @@ import mx.lux.pos.ui.view.dialog.ChangeSellerDialog
 import mx.lux.pos.ui.view.dialog.ChargeDialog
 import mx.lux.pos.ui.view.dialog.CorrectedOrdersDialog
 import mx.lux.pos.ui.view.dialog.PartClassDialog
+import mx.lux.pos.ui.view.dialog.ReprintWarrantyDialog
 import mx.lux.pos.ui.view.dialog.SupportDialog
 import mx.lux.pos.ui.view.dialog.ReprintVoucherDialog
 import mx.lux.pos.ui.view.dialog.TransactionsDateSelectionDialog
@@ -113,6 +114,7 @@ class MainWindow extends JFrame implements KeyListener {
   private JMenuItem captureIncidentsMenuItem
   private JMenu sendReceivedInventoryMenu
   private JMenuItem reprintVoucherMenuItem
+  private JMenuItem reprintWarrantyMenuItem
   private PromotionService promotionService
 
 
@@ -461,6 +463,7 @@ class MainWindow extends JFrame implements KeyListener {
                 captureIncidentsMenuItem.visible = userLoggedIn
                 correctTransactionsMenuItem.visible = userLoggedIn
                 reprintVoucherMenuItem.visible = userLoggedIn
+                reprintWarrantyMenuItem.visible = userLoggedIn
               }
           ) {
             changePasswordMenuItem = menuItem( text: 'Cambio de Password',
@@ -530,6 +533,13 @@ class MainWindow extends JFrame implements KeyListener {
                 visible: true,
                 actionPerformed: {
                   ReprintVoucherDialog dialog = new ReprintVoucherDialog()
+                  dialog.show()
+                }
+            )
+            reprintWarrantyMenuItem = menuItem( text: 'Reimprimir Garantia',
+                visible: true,
+                actionPerformed: {
+                  ReprintWarrantyDialog dialog = new ReprintWarrantyDialog()
                   dialog.show()
                 }
             )

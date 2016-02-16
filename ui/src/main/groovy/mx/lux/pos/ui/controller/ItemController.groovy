@@ -5,6 +5,9 @@ import mx.lux.pos.model.Articulo
 import mx.lux.pos.model.DetalleNotaVenta
 import mx.lux.pos.model.InventarioFisico
 import mx.lux.pos.model.MontoGarantia
+import mx.lux.pos.model.NotaVenta
+import mx.lux.pos.model.Sucursal
+import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.ArticuloService
 import mx.lux.pos.service.DetalleNotaVentaService
 import mx.lux.pos.service.NotaVentaService
@@ -22,6 +25,8 @@ import mx.lux.pos.ui.view.dialog.ImportPartMasterDialog
 import javax.swing.JOptionPane
 import javax.swing.JDialog
 import mx.lux.pos.service.business.Registry
+
+import java.text.NumberFormat
 
 @Slf4j
 @Component
@@ -308,5 +313,34 @@ class ItemController {
     return articuloService.obtenerMontoGarantia( warrantyAmount )
   }
 
-
+  static Boolean reprintWarranty( String ticket ){
+    Boolean success = true
+    try{
+      Sucursal suc = RepositoryFactory.siteRepository.findOne( Registry.currentSite )
+      NotaVenta nv = notaVentaService.obtenerNotaVentaPorTicket(StringUtils.trimToEmpty(StringUtils.trimToEmpty(suc.centroCostos)+"-"+ticket))
+      if(nv != null && StringUtils.trimToEmpty(nv.udf4).length() > 0 ){
+        String[] warranties = StringUtils.trimToEmpty(nv.udf4).split(/\|/)
+        for(String warranty : warranties){
+          String[] data = warranty.split(",")
+          if( data.length >= 2 ){
+            BigDecimal amount = BigDecimal.ZERO
+            Integer idItem = 0
+            try{
+              idItem = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(data[1]))
+            } catch (NumberFormatException e ){
+              println e.message
+              success = false
+            }
+            ticketService.imprimeGarantia( amount, idItem, StringUtils.trimToEmpty(nv.id) )
+          }
+        }
+      } else {
+        success = false
+      }
+    } catch ( Exception e ){
+      println e.message
+      success = false
+    }
+    return success
+  }
 }
