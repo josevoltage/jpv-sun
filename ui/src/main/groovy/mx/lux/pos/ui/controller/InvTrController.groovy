@@ -36,8 +36,6 @@ import javax.swing.SwingUtilities
 import mx.lux.pos.model.InvAdjustSheet
 import mx.lux.pos.service.business.Registry
 
-import java.nio.channels.FileChannel
-
 class InvTrController {
 
   private static final Logger log = LoggerFactory.getLogger( InvTrController.class )
@@ -481,9 +479,9 @@ class InvTrController {
         if ( pView.data.inFile != null ) {
           try {
             File moved = new File( SettingsController.instance.processedPath, pView.data.inFile.name )
-            if (InvTrViewMode.OUTBOUND.equals( pView.data.viewMode ) && !InvTrViewMode.FILE_ADJUST.equals( pView.data.viewMode )) {
+            if (InvTrViewMode.OUTBOUND.equals( pView.data.viewMode ) || InvTrViewMode.FILE_ADJUST.equals( pView.data.viewMode )) {
                 pView.data.inFile.delete();
-            } else if(!InvTrViewMode.FILE_ADJUST.equals( pView.data.viewMode )){
+            } else {
               List<File> lstFiles = new ArrayList<>();
               if(moved.exists()) {
                 moved.delete()
@@ -523,9 +521,6 @@ class InvTrController {
           dispatchPrintTransaction( viewMode.trType.idTipoTrans, trNbr )
           if (InvTrViewMode.INBOUND.equals( viewMode ) || InvTrViewMode.RECEIPT.equals( viewMode )) {
             String resultado = confirmaEntrada(viewMode, pView, onlyGenerateFile)
-          }
-          if( InvTrViewMode.FILE_ADJUST.equals( viewMode ) ){
-            generaAcuseAjusteInventario(viewMode, pView)
           }
           if( ServiceManager.getInventoryService().isReceiptDuplicate() ){
             dispatchPrintTransaction( viewMode.trType.idTipoTrans, trNbr )
@@ -576,32 +571,6 @@ class InvTrController {
   void requestPrintTransactions( Date fechaTicket ){
     log.debug( "requestPrintTransactions" )
     ServiceManager.ticketService.imprimeTransaccionesInventario( fechaTicket )
-  }
-
-  protected void generaAcuseAjusteInventario(InvTrViewMode viewMode, InvTrView pView){
-    String[] dataFileName = pView.data.inFile.name.split(/\./)
-    String newFileName = ""
-    if( dataFileName.length >= 3 ){
-      newFileName = dataFileName[0]+"."+dataFileName[1]+"."+"aja"
-    } else {
-      newFileName = pView.data.inFile.name
-    }
-    File deleted = new File( SettingsController.instance.processedPath, pView.data.inFile.name )
-    FileChannel source = null;
-    FileChannel destination = null;
-    source = new FileInputStream(pView.data.inFile).getChannel();
-    destination = new FileOutputStream(deleted).getChannel();
-    if (destination != null && source != null) {
-      destination.transferFrom(source, 0, source.size());
-    }
-    if (source != null) {
-      source.close();
-    }
-    if (destination != null) {
-      destination.close();
-    }
-    File moved = new File( Registry.archivePath, newFileName )
-    pView.data.inFile.renameTo( moved )
   }
 
 
