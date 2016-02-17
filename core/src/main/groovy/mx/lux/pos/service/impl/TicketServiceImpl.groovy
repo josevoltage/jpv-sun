@@ -2020,12 +2020,9 @@ class TicketServiceImpl implements TicketService {
     NotaVenta notaVenta = notaVentaRepository.findOne( StringUtils.trimToEmpty(idNota) )
     if( notaVenta != null && StringUtils.trimToEmpty(notaVenta.udf4).length() > 2 ){
       DateFormat df = new SimpleDateFormat( "dd-MM-yy" )
+      DateFormat df2 = new SimpleDateFormat( "ddMMyy" )
       Sucursal site = ServiceFactory.sites.obtenSucursalActual()
       AddressAdapter companyAddress = Registry.companyAddress
-      Calendar calendar = Calendar.getInstance();
-      calendar.setTime(new Date());
-      calendar.add(Calendar.YEAR, 1);
-      String date = df.format(calendar.getTime())
       String[] dataSeg = StringUtils.trimToEmpty(notaVenta.udf4).split(/\|/)
       Integer contador = 0
       for(String d : dataSeg){
@@ -2039,6 +2036,23 @@ class TicketServiceImpl implements TicketService {
       if( key.length > 1 ){
         String clave = key[0]
         Integer idArt = idArticulo
+        String txtDate = clave.substring(0,6)
+        String txtDateFormat = ""
+        for(int i=0;i<txtDate.length();i++){
+          if(txtDate.charAt(i).isDigit()){
+            Integer number = 0
+            try{
+              number = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(txtDate.charAt(i).toString())).intValue()
+            } catch (NumberFormatException e){
+              println e.message
+            }
+            txtDateFormat = txtDateFormat+StringUtils.trimToEmpty((10-number).toString())
+          } else {
+            txtDateFormat = txtDateFormat+"0"
+          }
+        }
+        Date fecha = df2.parse(txtDateFormat)
+        String date = df.format(fecha)
         try{
           idArt = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(key[1]))
         } catch ( NumberFormatException e ){ print e.message }
