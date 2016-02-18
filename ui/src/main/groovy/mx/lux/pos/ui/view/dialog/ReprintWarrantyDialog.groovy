@@ -42,7 +42,7 @@ class ReprintWarrantyDialog extends JDialog {
         panel( constraints: BorderLayout.CENTER, layout: new MigLayout( "wrap 2", "20[][grow,fill]40", "20[]10[]" ) ) {
           label( text: "Ticket:" )
           txtTicket = textField( maximumSize: [ 70, 30 ] )
-          lblWarning = label( text: "<html>La factura no existe<br>o no tiene seguro.</html>", constraints: 'hidemode 3,span', visible: false, foreground: UI_Standards.WARNING_FOREGROUND )
+          lblWarning = label( text: "<html>La factura no existe<br>o no tiene garantia.</html>", constraints: 'hidemode 3,span', visible: false, foreground: UI_Standards.WARNING_FOREGROUND )
         }
         panel( constraints: BorderLayout.PAGE_END ) {
           borderLayout()

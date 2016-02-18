@@ -179,10 +179,12 @@ class WarrantyDiscountDialog extends JDialog {
       if ( requestVerify( ) ) {
         lblStatus.text = TXT_VERIFY_PASS
         lblStatus.foreground = UI_Standards.NORMAL_FOREGROUND
+        lblStatus.visible = false
         btnOk.setEnabled( true )
       } else {
-        lblStatus.text = TXT_VERIFY_FAILED
+        //lblStatus.text = TXT_VERIFY_FAILED
         lblStatus.foreground = UI_Standards.WARNING_FOREGROUND
+        lblStatus.visible = true
         btnOk.setEnabled( false )
       }
     } else {
@@ -307,8 +309,8 @@ class WarrantyDiscountDialog extends JDialog {
           e.printStackTrace()
       }
       date = new Date( DateUtils.ceiling( date, Calendar.DAY_OF_MONTH ).getTime() - 1 );
-      if( date.compareTo(new Date()) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0 &&
-              OrderController.keyFree(StringUtils.trimToEmpty(txtCorporateKey.text).toUpperCase()) ){
+      if( date.compareTo(new Date()) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0  ){
+        if( OrderController.keyFree(StringUtils.trimToEmpty(txtCorporateKey.text).toUpperCase()) ){
         if( itemEnsured != null ){
           if( item != null && item.price.compareTo(itemEnsured.price) < 0 ){
             txtDiscountAmount.setText( StringUtils.trimToEmpty((item.price.multiply(new BigDecimal(Registry.percentageWarranty/100))).toString()) )
@@ -322,12 +324,17 @@ class WarrantyDiscountDialog extends JDialog {
             txtDiscountAmount.setText( StringUtils.trimToEmpty(amount.doubleValue().toString()) )
           }
         }
-        valid = true
+          valid = true
+        } else {
+          lblStatus.setText( "La garantia ya esta aplicada" )
+        }
       }
       if( order != null && StringUtils.trimToEmpty(order.sFactura).equalsIgnoreCase("T") ){
         valid = false
         lblStatus.setText("Garantia cancelada")
       }
+    } else {
+      lblStatus.setText("Formato de clave incorrecto")
     }
     return valid
   }
