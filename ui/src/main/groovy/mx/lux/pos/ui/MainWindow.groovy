@@ -597,7 +597,7 @@ class MainWindow extends JFrame implements KeyListener {
         DailyCloseController.validPendingClosedDays()
       }
       DailyCloseController.openDay()
-      IOController.getInstance().loadAdjustFile()
+      //IOController.getInstance().loadAdjustFile()
       IOController.getInstance().loadMessageTicketFile()
       IOController.getInstance().autoUpdateFxRates()
       DailyCloseController.RegistrarPromociones()
@@ -605,6 +605,8 @@ class MainWindow extends JFrame implements KeyListener {
       IOController.getInstance().startAsyncNotifyDispatcher()
       IOController.getInstance().autoUpdateSubtype()
       AccessController.makeIN2()
+      InvTrController controllerInv = InvTrController.instance
+      controllerInv.readAdjutFile()
     }
   }
 

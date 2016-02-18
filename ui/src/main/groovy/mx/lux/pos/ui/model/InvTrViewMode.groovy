@@ -41,11 +41,11 @@ class InvTrViewMode {
       QUERY = new InvTrViewMode( "Consulta" )
       ADJUST = new InvTrViewMode( inventory.obtenerTipoTransaccionAjuste() )
       RETURN = new InvTrViewMode( inventory.obtenerTipoTransaccionDevolucionExtraordinaria() )
-      FILE_ADJUST = new InvTrViewMode( 'Ajuste archivo' )
+      //FILE_ADJUST = new InvTrViewMode( 'Ajuste archivo' )
       OUTBOUND = new InvTrViewMode( inventory.obtenerTipoTransaccionSalidaAlmacen() )
       INBOUND = new InvTrViewMode( inventory.obtenerTipoTransaccionEntradaAlmacen() )
-      FILE_ADJUST.trType = inventory.obtenerTipoTransaccionAjuste()
-      list.addAll( [QUERY, ISSUE, RECEIPT, ADJUST, OUTBOUND,INBOUND, FILE_ADJUST] )
+      //FILE_ADJUST.trType = inventory.obtenerTipoTransaccionAjuste()
+      list.addAll( [QUERY, ISSUE, RECEIPT, ADJUST, OUTBOUND,INBOUND] )
     }
     return list
   }

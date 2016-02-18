@@ -1,16 +1,22 @@
 package mx.lux.pos.ui.controller
 
 import mx.lux.pos.model.Articulo
+import mx.lux.pos.model.InvAdjustLine
 import mx.lux.pos.model.InvTrRequest
+import mx.lux.pos.model.Parametro
 import mx.lux.pos.model.Shipment
 import mx.lux.pos.model.ShipmentLine
 import mx.lux.pos.model.Sucursal
+import mx.lux.pos.model.TipoParametro
 import mx.lux.pos.model.TransInv
+import mx.lux.pos.repository.impl.RepositoryFactory
 import mx.lux.pos.service.ArticuloService
 import mx.lux.pos.service.InventarioService
 import mx.lux.pos.service.SucursalService
 import mx.lux.pos.service.business.InventorySearch
 import mx.lux.pos.ui.MainWindow
+import mx.lux.pos.ui.model.InvTr
+import mx.lux.pos.ui.model.InvTrSku
 import mx.lux.pos.ui.model.InvTrViewMode
 import mx.lux.pos.ui.model.Session
 import mx.lux.pos.ui.model.SessionItem
@@ -524,9 +530,9 @@ class InvTrController {
           if (InvTrViewMode.INBOUND.equals( viewMode ) || InvTrViewMode.RECEIPT.equals( viewMode )) {
             String resultado = confirmaEntrada(viewMode, pView, onlyGenerateFile)
           }
-          if( InvTrViewMode.FILE_ADJUST.equals( viewMode ) ){
+          /*if( InvTrViewMode.FILE_ADJUST.equals( viewMode ) ){
             generaAcuseAjusteInventario(viewMode, pView)
-          }
+          }*/
           if( ServiceManager.getInventoryService().isReceiptDuplicate() ){
             dispatchPrintTransaction( viewMode.trType.idTipoTrans, trNbr )
           }
@@ -578,18 +584,18 @@ class InvTrController {
     ServiceManager.ticketService.imprimeTransaccionesInventario( fechaTicket )
   }
 
-  protected void generaAcuseAjusteInventario(InvTrViewMode viewMode, InvTrView pView){
-    String[] dataFileName = pView.data.inFile.name.split(/\./)
+  protected void generaAcuseAjusteInventario(File inFile){
+    String[] dataFileName = inFile.name.split(/\./)
     String newFileName = ""
     if( dataFileName.length >= 3 ){
       newFileName = dataFileName[0]+"."+dataFileName[1]+"."+"aja"
     } else {
-      newFileName = pView.data.inFile.name
+      newFileName = inFile.name
     }
-    File deleted = new File( SettingsController.instance.processedPath, pView.data.inFile.name )
+    File deleted = new File( SettingsController.instance.processedPath, inFile.name )
     FileChannel source = null;
     FileChannel destination = null;
-    source = new FileInputStream(pView.data.inFile).getChannel();
+    source = new FileInputStream(inFile).getChannel();
     destination = new FileOutputStream(deleted).getChannel();
     if (destination != null && source != null) {
       destination.transferFrom(source, 0, source.size());
@@ -601,7 +607,7 @@ class InvTrController {
       destination.close();
     }
     File moved = new File( Registry.archivePath, newFileName )
-    pView.data.inFile.renameTo( moved )
+    inFile.renameTo( moved )
   }
 
 
@@ -616,6 +622,61 @@ class InvTrController {
       JOptionPane.showMessageDialog( new JDialog(), MSJ_ARCHIVO_NO_GENERADO, TXT_ARCHIVO_GENERADO, JOptionPane.INFORMATION_MESSAGE )
     }
   }
+
+
+    void readAdjutFile(){
+        Parametro ubicacion = Registry.find( TipoParametro.RUTA_POR_RECIBIR )
+        Parametro parametro = RepositoryFactory.registry.findOne( TipoParametro.RUTA_RECIBIDOS.value )
+        String ubicacionSource = ubicacion.valor
+        String ubicacionsDestination = parametro.valor
+        File source = new File( ubicacionSource )
+        File destination = new File( ubicacionsDestination )
+        if ( source.exists() && destination.exists() ) {
+            source.eachFile() { file ->
+                if ( file.getName().endsWith( ".ajs" ) ) {
+                    InvTr data = new InvTr()
+                    InvAdjustSheet document = null
+                    String filename = null
+                    filename = file.absolutePath
+                    log.debug( String.format( "[Controller] File found: %s", filename ) )
+                    document = ServiceManager.getInventoryService().leerArchivoAjuste( filename )
+                    data.inFile = new File( filename )
+                    data.postRemarks = document.trReason
+                    data.postReference = document.ref
+                    data.postSiteTo = null
+                    data.postTrType = RepositoryFactory.trTypes.findOne("AJUSTE")
+                    Integer contador = 1
+                    for ( InvAdjustLine det in document.lines ) {
+                        Articulo part = ServiceManager.partService.obtenerArticulo( det.sku, false )
+                        data.skuList.add( new InvTrSku( data, contador, part, det.qty ) )
+                        contador = contador+1
+                    }
+                    InvTrRequest request = RequestAdapter.getRequest( data )
+                    request.remarks = request.remarks.replaceAll("[^a-zA-Z0-9]+"," ");
+                    Integer trNbr = null
+                    if( validReference(StringUtils.trimToEmpty(data.postTrType.idTipoTrans), StringUtils.trimToEmpty(data.postReference)) ){
+                        trNbr = ServiceManager.getInventoryService().solicitarTransaccion( request )
+                    }
+                    if ( trNbr != null ) {
+                        //File moved = new File( SettingsController.instance.processedPath, data.inFile.name )
+                        //data.inFile.renameTo( moved )
+                        generaAcuseAjusteInventario(data.inFile)
+                        dispatchPrintTransaction( data.postTrType.idTipoTrans, trNbr )
+                    }
+                }
+            }
+        }
+    }
+
+
+    Boolean validReference( String idTipoTrans, String ref ){
+      List<TransInv> lstTrans = RepositoryFactory.inventoryMaster.findByIdTipoTransAndReferencia( idTipoTrans, ref )
+      if( lstTrans.size() > 0 ){
+        return false
+      } else {
+        return true
+      }
+    }
 
 
 }
