@@ -1507,9 +1507,11 @@ public class ReportBusiness {
             NotaVenta venta = notaVentaRepository.findOne( movimiento.getTransInv().getReferencia() );
             String factura;
             if( venta != null ){
-                 factura = sucursal.getCentroCostos()+"-"+venta.getFactura();
+              factura = sucursal.getCentroCostos()+"-"+venta.getFactura();
+            } else if(StringUtils.trimToEmpty(movimiento.getIdTipoTrans()).equalsIgnoreCase("AJUSTE")){
+              factura = StringUtils.trimToEmpty(movimiento.getTransInv().getReferencia());
             } else {
-                factura = "-";
+              factura = "-";
             }
             KardexPorArticulo kardexArticulo = new KardexPorArticulo( movimiento, factura );
             kardexArticulo.setFecha( movimiento.getTransInv().getFecha() );
