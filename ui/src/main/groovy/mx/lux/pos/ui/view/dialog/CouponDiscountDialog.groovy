@@ -263,12 +263,13 @@ class CouponDiscountDialog extends JDialog {
     SimpleDateFormat formatter = new SimpleDateFormat("ddMMyy");
     SimpleDateFormat formatter2 = new SimpleDateFormat("yy");
     String clave = ""
-    if( StringUtils.trimToEmpty(txtCorporateKey.text).length() >= 11 && StringUtils.trimToEmpty(txtCorporateKey.text).startsWith("C")){
+    if( StringUtils.trimToEmpty(txtCorporateKey.text).length() >= 11 &&
+            StringUtils.trimToEmpty(txtCorporateKey.text).toUpperCase().startsWith("C")){
       for(int i=0;i<StringUtils.trimToEmpty(txtCorporateKey.text).length();i++){
-        if(StringUtils.trimToEmpty(txtCorporateKey.text.charAt(i).toString()).isNumber()){
+        if(StringUtils.trimToEmpty(txtCorporateKey.text.toUpperCase().charAt(i).toString()).isNumber()){
           Integer number = 0
           try{
-            number = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(txtCorporateKey.text.charAt(i).toString()))
+            number = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(txtCorporateKey.text.toUpperCase().charAt(i).toString()))
           } catch ( NumberFormatException e ) { println e }
           clave = clave+StringUtils.trimToEmpty((10-number).toString())
         } else {
@@ -290,7 +291,7 @@ class CouponDiscountDialog extends JDialog {
           e.printStackTrace()
       }
       Boolean keyFree = OrderController.keyFree(StringUtils.trimToEmpty(clave).toUpperCase())
-      if( date.compareTo(new Date()) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0 ){
+      if( date.compareTo(new Date()) >= 0 ){
         if( keyFree ){
           BigDecimal montoMinimo = new BigDecimal(Registry.minimumAmountApplyCoupon)
           println "monto minimo para aplicar cupon: ${montoMinimo}"
@@ -309,9 +310,14 @@ class CouponDiscountDialog extends JDialog {
           this.clave = ""
         }
       } else {
+        lblStatus.setText("La clave no es vigente")
         clave = null
         this.clave = ""
       }
+    } else {
+      lblStatus.setText("Formato de clave incorrecto")
+      clave = null
+      this.clave = ""
     }
     return clave
   }
