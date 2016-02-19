@@ -98,7 +98,6 @@ ${COLUMNA_1}Importe en pesos(MXN)${COLUMNA_5}${importe_dolares_pesos}
 
 #if( $resumen_terminales_tpv )#NEGRITA()#DOBLE_ALTURA()#DOBLE_ANCHURA()#FUENTE_B()#DO()SOI TPV${LF}
 #foreach( $resumen_terminal_tpv in $resumen_terminales_tpv )
-#RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_1}${resumen_terminal_tpv.idTerminal}${COLUMNA_3}#if( $resumen_terminal_tpv.plan != '0' ) #end${COLUMNA_5}${resumen_terminal_tpv.formaPago.descripcion}
 #end
 #end${LF}
 #if( $resumen_terminales_tpv_can )#NEGRITA()#DOBLE_ALTURA()#DOBLE_ANCHURA()#FUENTE_B()#DO()CANCELACIONES TPV${LF}
@@ -106,6 +105,12 @@ ${COLUMNA_1}Importe en pesos(MXN)${COLUMNA_5}${importe_dolares_pesos}
 #RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_1}${resumen_terminal_tpv_can.idTerminal}${COLUMNA_3}#if( $resumen_terminal_tpv_can.plan != '0' )  ${resumen_terminal_tpv_can.plan} USD#end${COLUMNA_5}${resumen_terminal_tpv_can.formaPago.descripcion}
 #end
 #end
+
+#if( $cupones )#NEGRITA()#DOBLE_ALTURA()#DOBLE_ANCHURA()#FUENTE_B()#DO()CUPONES${LF}
+#foreach( $cupon in $cupones )
+#RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_1}${cupon.factura}${COLUMNA_3}${cupon.monto}  ${cupon.tipo}
+#end
+#end${LF}
 
 #if( $retornos )#NEGRITA()#DOBLE_ALTURA()#DOBLE_ANCHURA()#FUENTE_B()#DO()RETORNOS${LF}
 #RESET_TEXTO()#FUENTE_B()#DO()${COLUMNA_0}No.${COLUMNA_1}Importe${COLUMNA_4}Ticket

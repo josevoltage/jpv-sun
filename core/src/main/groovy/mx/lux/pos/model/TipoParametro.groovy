@@ -41,6 +41,7 @@ enum TipoParametro {
   MAX_DISCOUNT_STORE( 'tope_descto_tienda', '10.0' ),
   MAX_LONG_DESC_FACTURA( 'max_long_desc_efactura', '50' ),
   MONTO_MAXIMO_DOLARES( 'monto_maximo_dolares', '250' ),
+  MONTO_MINIMO_APLICA_CUPON( 'monto_minimo_aplica_cupon', '0' ),
   PIDE_FACTURA( 'pide_factura', '' ),
   PLAN_NORMAL_TARJETA_CREDITO( 'plan_normal_tarjeta_credito', 'NORMAL TARJETA DE CREDITO' ),
   PORCENTAJE_ANTICIPO( 'porcentaje_anticipo', '100.0' ),
