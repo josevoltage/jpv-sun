@@ -50,7 +50,7 @@ class DiscountContextMenu extends JPopupMenu {
   void activate( MouseEvent pEvent ) {
     menuDiscount.setEnabled( driver.isDiscountEnabled( ) )
     menuCorporateDiscount.setEnabled( driver.isCorporateDiscountEnabled( ) )
-    menuCouponDiscount.setEnabled( driver.isCorporateDiscountEnabled( ) && validToWarranty() )
+    menuCouponDiscount.setEnabled( driver.isCorporateDiscountEnabled( ) && validToCupon() )
     menuWarrantyDiscount.setEnabled( driver.isCorporateDiscountEnabled( ) && validToWarranty() )
     show( pEvent.getComponent(), pEvent.getX(), pEvent.getY() )
   } 
@@ -87,4 +87,14 @@ class DiscountContextMenu extends JPopupMenu {
     }
     return  valid
   }
+
+
+  Boolean validToCupon(){
+    Boolean valid = false
+    if( driver.view.promotionListSelected.size() <= 0 ){
+      valid = true
+    }
+    return  valid
+  }
+
 }
