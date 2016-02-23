@@ -179,6 +179,7 @@ class WarrantyDiscountDialog extends JDialog {
       } else {
         lblStatus.text = TXT_VERIFY_FAILED
         lblStatus.foreground = UI_Standards.WARNING_FOREGROUND
+        lblStatus.visible = true
         btnOk.setEnabled( false )
       }
     } else {
@@ -282,7 +283,8 @@ class WarrantyDiscountDialog extends JDialog {
       } catch ( NumberFormatException e) {
           e.printStackTrace()
       }
-      if( date.compareTo(new Date()) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0 &&
+      if( date.compareTo(new Date()) >= 0
+              && amount.compareTo(BigDecimal.ZERO) > 0 &&
               OrderController.keyFree(StringUtils.trimToEmpty(txtCorporateKey.text).toUpperCase()) ){
         if( item != null && item.price.compareTo(amount) < 0 ){
           txtDiscountAmount.setText( StringUtils.trimToEmpty((item.price.multiply(new BigDecimal(Registry.percentageWarranty/100))).toString()) )

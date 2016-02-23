@@ -464,6 +464,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 updateOrder( order?.id )
             }
       } else if ( SwingUtilities.isRightMouseButton( ev ) && ev.source.selectedElement != null ) {
+        if( getPromotionListSelected().size() <= 0 ){
             OrderItem orderItem = ev.source.selectedElement
             List<IPromotionAvailable> lstPromosArt = lstPromotionsAvalibles( orderItem )
             Collections.sort(lstPromosArt, new Comparator<IPromotionAvailable>() {
@@ -479,6 +480,7 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
                 onTogglePromotion( promotionSelectionDialog.promotionSelected, true )
                 doBindings()
             }
+        }
       }
     }
   }

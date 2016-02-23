@@ -49,7 +49,7 @@ class DiscountContextMenu extends JPopupMenu {
   // Public Methods
   void activate( MouseEvent pEvent ) {
     menuDiscount.setEnabled( driver.isDiscountEnabled( ) )
-    menuCorporateDiscount.setEnabled( driver.isCorporateDiscountEnabled( ) )
+    menuCorporateDiscount.setEnabled( driver.isCorporateDiscountEnabled( ) && validToCupon() )
     menuCouponDiscount.setEnabled( driver.isCorporateDiscountEnabled( ) && validToCupon() )
     menuWarrantyDiscount.setEnabled( driver.isCorporateDiscountEnabled( ) && validToWarranty() )
     show( pEvent.getComponent(), pEvent.getX(), pEvent.getY() )
