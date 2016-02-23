@@ -295,7 +295,7 @@ class CouponDiscountDialog extends JDialog {
         if( keyFree ){
           BigDecimal montoMinimo = new BigDecimal(Registry.minimumAmountApplyCoupon)
           println "monto minimo para aplicar cupon: ${montoMinimo}"
-          if( item.price.compareTo(montoMinimo) > 0 ){
+          if( item.price.compareTo(montoMinimo) >= 0 ){
             println clave.substring(5,6)
             if( clave.substring(5,6).equalsIgnoreCase("1") ){
               txtDiscountAmount.setText( StringUtils.trimToEmpty((new BigDecimal(amount).multiply(new BigDecimal(10))).toString()) )
@@ -303,6 +303,11 @@ class CouponDiscountDialog extends JDialog {
               txtDiscountAmount.setText( StringUtils.trimToEmpty((item.price.multiply(new BigDecimal(amount/100))).toString()) )
             }
             this.clave = clave
+          } else {
+            NumberFormat nf = NumberFormat.getCurrencyInstance( Locale.US )
+            lblStatus.setText("El monto minimo de la nota debe ser de ${nf.format(montoMinimo)}")
+            clave = null
+            this.clave = ""
           }
         } else {
           lblStatus.setText("Clave ya aplicada")
