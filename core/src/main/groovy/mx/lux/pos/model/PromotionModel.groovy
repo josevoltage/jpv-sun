@@ -215,6 +215,11 @@ class PromotionModel {
       orderDiscount.discountType.idType = "GR"
       orderDiscount.discountType.description = "GARANTIA"
       orderDiscount.discountType.text = "Garantia"
+    } else if( StringUtils.trimToEmpty(pCorporateKey).length() == 11 &&
+            StringUtils.trimToEmpty(pCorporateKey).startsWith("C")){
+      orderDiscount.discountType.idType = "C"
+      orderDiscount.discountType.description = "CUPON"
+      orderDiscount.discountType.text = "Cupon"
     }
   }
 

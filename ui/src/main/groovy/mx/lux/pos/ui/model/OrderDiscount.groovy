@@ -4,6 +4,9 @@ import groovy.beans.Bindable
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import mx.lux.pos.model.NotaVenta
+import mx.lux.pos.ui.controller.OrderController
+import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.RandomStringUtils
 
 @Bindable
 @ToString
@@ -27,7 +30,10 @@ class OrderDiscount implements IPromotion {
   String getDescripcion( ) {
     String desc = "N/A"
     if ( notaVenta != null ) {
-      desc = String.format( DESCRIPCION, notaVenta.por100Descuento.toString() )
+      desc = OrderController.descriptionDiscount( notaVenta.id )
+      if( StringUtils.trimToEmpty(desc).length() <= 0 ){
+        desc = String.format( DESCRIPCION, notaVenta.por100Descuento.toString() )
+      }
     }
     return desc
   }

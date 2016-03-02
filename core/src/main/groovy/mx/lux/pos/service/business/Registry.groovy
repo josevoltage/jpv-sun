@@ -475,6 +475,10 @@ class Registry {
     return asDouble( TipoParametro.ACUSE_RETRASO )
   }
 
+  static Double getMinimumAmountApplyCoupon( ) {
+    return asDouble( TipoParametro.MONTO_MINIMO_APLICA_CUPON )
+  }
+
   static Boolean isAckDebugEnabled() {
     return isTrue( TipoParametro.ACUSE_LOG_DETALLE )
   }

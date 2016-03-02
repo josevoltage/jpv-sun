@@ -145,6 +145,9 @@ class TicketServiceImpl implements TicketService {
   private SucursalRepository sucursalRepository
 
   @Resource
+  private DescuentoRepository descuentoRepository
+
+  @Resource
   private ClienteRepository clienteRepository
 
   @Resource
@@ -974,6 +977,30 @@ class TicketServiceImpl implements TicketService {
 
       }
 
+      def cupones = []
+      QDescuento qDescuento = QDescuento.descuento
+      List<Descuento> lstCupones = descuentoRepository.findAll(qDescuento.fecha.between(fechaStart,fechaEnd),
+              qDescuento.idFactura.asc()) as List<Descuento>
+      for(Descuento desCupon : lstCupones){
+        if( StringUtils.trimToEmpty(desCupon.tipoClave).equalsIgnoreCase("CUPON") ){
+          String monto = ""
+          String tipo = ""
+          String key = StringUtils.trimToEmpty(desCupon.clave).substring(5,6)
+          if( key == "1" ){
+            monto = String.format('%10s', formatter.format(desCupon?.notaVenta?.montoDescuento))
+            tipo = "M"
+          } else if( key == "0" ){
+            monto = String.format('%10s', StringUtils.trimToEmpty(desCupon?.porcentaje))
+            tipo = "D"
+          }
+          def cupon = [
+                  factura: StringUtils.trimToEmpty(desCupon?.notaVenta?.factura),
+                  monto: monto,
+                  tipo: tipo
+          ]
+          cupones.add(cupon)
+        }
+      }
       Sucursal sucursal = sucursalRepository.findOne(Registry.currentSite)
       def datos = [ nombre_ticket: 'ticket-resumen-diario',
           fecha_cierre: MyDateUtils.format( fechaCierre, 'dd-MM-yyyy' ),
@@ -1019,6 +1046,7 @@ class TicketServiceImpl implements TicketService {
           faltanteUS: diferenciaEfectivoUS < 0 ? String.format('%10s', formatter.format( diferenciaEfectivoUS ) ) : null,
           sobranteUS: diferenciaEfectivoUS > 0 ? String.format('%10s', formatter.format( diferenciaEfectivoUS ) ) : null,
           resumen_terminales: resumenTerminales.size() > 0 ? resumenTerminales : null,
+          cupones: cupones,
           resumen_terminales_tpv: resumenTerminalesTpv.size() > 0 ? resumenTerminalesTpv : null,
           resumen_terminales_tpv_can: resumenTerminalesTpvCan.size() > 0 ? resumenTerminalesTpvCan : null,
           numero_vales: vales.size(),

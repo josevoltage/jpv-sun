@@ -696,4 +696,15 @@ class OrderController {
     NotaVenta result = notaVentaService.obtenerNotaVentaPorClaveSeguro( key )
     return result
   }
+
+
+  static String descriptionDiscount( String idOrder ){
+    List<Descuento> lstDescuento = RepositoryFactory.discounts.findByIdFactura( StringUtils.trimToEmpty(idOrder) )
+    if( lstDescuento.size() > 0 ){
+      return lstDescuento.first().tipoClave
+    } else {
+      return ""
+    }
+  }
+
 }
