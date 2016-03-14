@@ -290,7 +290,7 @@ class CouponDiscountDialog extends JDialog {
       } catch ( NumberFormatException e) {
           e.printStackTrace()
       }
-      Boolean keyFree = OrderController.keyFree(StringUtils.trimToEmpty(clave).toUpperCase())
+      Boolean keyFree = true//OrderController.keyFree(StringUtils.trimToEmpty(clave).toUpperCase())
       if( date.compareTo(new Date()) >= 0 ){
         if( keyFree ){
           BigDecimal montoMinimo = new BigDecimal(Registry.minimumAmountApplyCoupon)
