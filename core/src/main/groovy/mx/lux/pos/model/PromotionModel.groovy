@@ -205,6 +205,9 @@ class PromotionModel {
     } else if ( key.length() > 0 ) {
       this.orderDiscount = PromotionDiscount.corporateDiscountInstance
       this.orderDiscount.corporateKey = pCorporateKey
+        orderDiscount.discountType.idType = "AP"
+        orderDiscount.discountType.description = "DIRECCION"
+        orderDiscount.discountType.text = "Descuento Corporativo"
     }
     if ( this.hasOrderDiscountApplied() ) {
       this.orderDiscount.order = this.order
