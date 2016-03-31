@@ -2201,7 +2201,13 @@ class TicketServiceImpl implements TicketService {
     BigDecimal pagosMonto = BigDecimal.ZERO
     def pagosCan = [ ]
     for(Pago pago : selected){
-      pago.idRecibo = String.format('%1$#15s', formatter.format(pago.monto) );
+      //pago.idRecibo = String.format('%1$#15s', formatter.format(pago.monto) );
+      String data = StringUtils.trimToEmpty(formatter.format(pago.monto))
+      Integer sizeData = data.length()
+      for(int i=0;i<15-sizeData;i++){
+        data = " "+data
+      }
+      pago.idRecibo = String.format('%s', data );
       if(StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("UV") || StringUtils.trimToEmpty(pago.idPlan).equalsIgnoreCase("1")){
         pago.idPlan = ""
       }
@@ -2220,10 +2226,16 @@ class TicketServiceImpl implements TicketService {
           if(StringUtils.trimToEmpty(pago.idFPago).equalsIgnoreCase("UV") || StringUtils.trimToEmpty(pago.idPlan).equalsIgnoreCase("1")){
             pago.idPlan = ""
           }
+            String data1 = StringUtils.trimToEmpty(formatter.format(pago.monto))
+            Integer sizeData = data1.length()
+            for(int i=0;i<15-sizeData;i++){
+                data1 = " "+data1
+            }
+            pago.idRecibo = String.format('%s', data1 );
           def data = [
             factura: StringUtils.trimToEmpty(modificacion.notaVenta.factura),
             plan: StringUtils.trimToEmpty(pago.idPlan),
-            importe: String.format('%1$#15s', "(${StringUtils.trimToEmpty(formatter.format(pago.monto))})${status}")
+            importe: String.format('%s', "(${StringUtils.trimToEmpty(data1)})${status}")
           ]
           pagosCan.add(data)
           pagosMonto = pagosMonto.subtract(pago.monto)
