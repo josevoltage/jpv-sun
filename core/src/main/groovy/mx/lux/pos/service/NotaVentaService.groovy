@@ -49,4 +49,6 @@ interface NotaVentaService {
   void guardaClaveSeguro( BigDecimal montoGarantia, Integer idArticulo, String idNota )
 
   NotaVenta obtenerNotaVentaPorClaveSeguro( String clave )
+
+  void restableceTransaccionesInconclusas( Date fecha )
 }

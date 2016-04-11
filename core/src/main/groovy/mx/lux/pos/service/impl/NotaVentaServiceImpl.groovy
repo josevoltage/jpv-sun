@@ -57,6 +57,9 @@ class NotaVentaServiceImpl implements NotaVentaService {
   @Resource
   private ModificacionRepository modificacionRepository
 
+  @Resource
+  private DevolucionRepository devolucionRepository
+
   @Override
   NotaVenta obtenerNotaVenta( String idNotaVenta ) {
     log.info( "obteniendo notaVenta: ${idNotaVenta}" )
@@ -639,6 +642,43 @@ class NotaVentaServiceImpl implements NotaVentaService {
     QNotaVenta qNotaVenta = QNotaVenta.notaVenta
     NotaVenta notaVenta = notaVentaRepository.findOne(qNotaVenta.udf4.contains(clave))
     return notaVenta
+  }
+
+
+  @Override
+  void restableceTransaccionesInconclusas( Date fecha ){
+    log.info( "restablece Transacciones Inconclusas del dia: ${fecha}" )
+    Date fechaInicio = DateUtils.truncate( fecha, Calendar.DAY_OF_MONTH );
+    Date fechaFin = new Date( DateUtils.ceiling( fecha, Calendar.DAY_OF_MONTH ).getTime() - 1 );
+    List<NotaVenta> lstNotasVentas = new ArrayList<NotaVenta>()
+    QModificacion mod = QModificacion.modificacion
+    List<Modificacion> lstModificaciones = modificacionRepository.findAll( mod.fecha.between(fechaInicio, fechaFin).
+            and(mod.tipo.equalsIgnoreCase('can'))) as List<Modificacion>
+    List<Devolucion> lstDevFail = new ArrayList<>()
+    for(Modificacion modificacion : lstModificaciones){
+      List<Devolucion> lstDevs = devolucionRepository.findByIdModOrderByFechaAsc( modificacion.id )
+      for(Devolucion dev : lstDevs){
+        if(StringUtils.trimToEmpty(dev.tipo).equalsIgnoreCase('t')){
+          NotaVenta notaTransf = notaVentaRepository.findOne( StringUtils.trimToEmpty(dev.transf) )
+          if(notaTransf != null){
+            if(StringUtils.trimToEmpty(notaTransf.factura).length() <= 0){
+              lstDevFail.add(dev)
+            }
+          } else {
+            lstDevFail.add(dev)
+          }
+        }
+      }
+    }
+    for(Devolucion devFail : lstDevFail){
+      Pago pago = pagoRepository.findOne( devFail.idPago )
+      if( pago != null ){
+        pago.porDevolver = pago.porDevolver.add(devFail.monto);
+        devolucionRepository.delete(devFail.id)
+      }
+    }
+    pagoRepository.flush()
+    devolucionRepository.flush()
   }
 
 

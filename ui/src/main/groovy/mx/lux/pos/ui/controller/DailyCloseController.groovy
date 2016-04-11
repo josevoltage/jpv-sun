@@ -136,6 +136,7 @@ class DailyCloseController {
 
   static boolean closeDailyClose( Date closeDate, String observations, Boolean cierre ) {
     try {
+      notaVentaService.restableceTransaccionesInconclusas( closeDate )
       Map<Integer, String> creditRefunds = [ : ]
       List<Pago> payments = new ArrayList<Pago>()
       List<NotaVenta> notas = notaVentaService.obtenerDevolucionesPendientes( closeDate )

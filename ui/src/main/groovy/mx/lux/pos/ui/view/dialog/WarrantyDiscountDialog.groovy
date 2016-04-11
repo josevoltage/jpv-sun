@@ -308,22 +308,23 @@ class WarrantyDiscountDialog extends JDialog {
       } catch ( NumberFormatException e) {
           e.printStackTrace()
       }
+      BigDecimal amountEnsure = item.price.multiply(new BigDecimal(Registry.percentageWarranty/100))
       date = new Date( DateUtils.ceiling( date, Calendar.DAY_OF_MONTH ).getTime() - 1 );
       if( date.compareTo(new Date()) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0  ){
         if( OrderController.keyFree(StringUtils.trimToEmpty(txtCorporateKey.text).toUpperCase()) ){
-        if( itemEnsured != null ){
-          if( item != null && item.price.compareTo(itemEnsured.price) < 0 ){
-            txtDiscountAmount.setText( StringUtils.trimToEmpty((item.price.multiply(new BigDecimal(Registry.percentageWarranty/100))).toString()) )
+        //if( itemEnsured != null ){
+          if( item != null && amountEnsure.compareTo(itemEnsured.price) < 0 ){
+            txtDiscountAmount.setText( StringUtils.trimToEmpty(amountEnsure.toString()) )
           } else {
             txtDiscountAmount.setText( StringUtils.trimToEmpty(amount.doubleValue().toString()) )
           }
-        } else {
+        /*} else {
           if( item != null && item.price.compareTo(amount) < 0 ){
             txtDiscountAmount.setText( StringUtils.trimToEmpty((item.price.multiply(new BigDecimal(Registry.percentageWarranty/100))).toString()) )
           } else {
             txtDiscountAmount.setText( StringUtils.trimToEmpty(amount.doubleValue().toString()) )
           }
-        }
+        }*/
           valid = true
         } else {
           lblStatus.setText( "La garantia ya esta aplicada" )
