@@ -94,6 +94,9 @@ class PrepareInvTrBusiness {
                 println e
             }
             log.debug( "respuesta: ${response}" )
+            if(StringUtils.trimToEmpty(response).length() > 6 ){
+              response = response.substring(0,6)
+            }
             trMstr.referencia = aleatoria
             insertAcuseTransaction( trMstr, variable, response, trType.idTipoTrans )
             } else {
