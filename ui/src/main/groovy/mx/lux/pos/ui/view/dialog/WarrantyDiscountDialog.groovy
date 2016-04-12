@@ -313,7 +313,7 @@ class WarrantyDiscountDialog extends JDialog {
       if( date.compareTo(new Date()) >= 0 && amount.compareTo(BigDecimal.ZERO) > 0  ){
         if( OrderController.keyFree(StringUtils.trimToEmpty(txtCorporateKey.text).toUpperCase()) ){
         //if( itemEnsured != null ){
-          if( item != null && amountEnsure.compareTo(itemEnsured.price) < 0 ){
+          if( item != null && amountEnsure.compareTo(amount) < 0 ){
             txtDiscountAmount.setText( StringUtils.trimToEmpty(amountEnsure.toString()) )
           } else {
             txtDiscountAmount.setText( StringUtils.trimToEmpty(amount.doubleValue().toString()) )
