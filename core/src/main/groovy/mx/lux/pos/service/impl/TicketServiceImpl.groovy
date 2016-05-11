@@ -1205,6 +1205,7 @@ class TicketServiceImpl implements TicketService {
         cantidad = cantidad+trDet.cantidad
       parts.add( tkPart )
     }
+    String barcode = ""
     AddressAdapter companyAddress = Registry.companyAddress
     Sucursal site = sucursalRepository.findOne( pTrans.sucursal )
     Sucursal siteTo = null
@@ -1218,6 +1219,7 @@ class TicketServiceImpl implements TicketService {
       mgr = empleadoRepository.findById( site.idGerente )
     }
     if ( InventorySearch.esTipoTransaccionSalida( pTrans.idTipoTrans ) ) {
+      barcode = StringUtils.trimToEmpty(site.centroCostos)+StringUtils.trimToEmpty(String.format("%06d",pTrans.folio))
       def tkInvTr = [
           nombre_ticket: "ticket-salida-inventario",
           effDate: adapter.getText( pTrans, adapter.FLD_TR_EFF_DATE ),
@@ -1229,7 +1231,9 @@ class TicketServiceImpl implements TicketService {
           remarks_1: ( remarks.size() > 0 ? remarks.get( 0 ) : "" ),
           remarks_2: ( remarks.size() > 1 ? remarks.get( 1 ) : "" ),
           quantity: cantidad,
-          parts: parts
+          parts: parts,
+          barcode: barcode,
+          mostrarCodigo: true,
       ]
       imprimeTicket( "template/ticket-salida-inventario.vm", tkInvTr )
     } else if ( InventorySearch.esTipoTransaccionAjuste( pTrans.idTipoTrans ) ) {

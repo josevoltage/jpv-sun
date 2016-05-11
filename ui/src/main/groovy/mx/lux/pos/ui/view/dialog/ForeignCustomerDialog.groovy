@@ -102,7 +102,8 @@ class ForeignCustomerDialog extends JDialog {
         resizable: false,
         modal: true,
         pack: true,
-        layout: new MigLayout( 'fill,wrap', '[fill]' )
+        layout: new MigLayout( 'fill,wrap', '[fill]' ),
+        defaultCloseOperation: DO_NOTHING_ON_CLOSE
     ) {
       panel( border: titledBorder( 'Datos Generales' ), layout: new MigLayout( 'wrap 4', '[][fill,100!][][fill]' ) ) {
         label( 'Nombre' )

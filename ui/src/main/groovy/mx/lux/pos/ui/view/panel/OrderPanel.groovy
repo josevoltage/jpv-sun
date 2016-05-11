@@ -343,6 +343,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           dialog.show()
           if ( !dialog.canceled ) {
             customer = dialog.customer
+          } else if(customer == null || customer.id == null){
+            customer = CustomerController.findDefaultCustomer()
+            operationType.selectedItem = OperationType.DEFAULT
           }
           break
         case OperationType.DOMESTIC:
@@ -350,7 +353,15 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           CustomerSearchDialog dialog = new CustomerSearchDialog( ev.source as Component, order )
           dialog.show()
           if ( !dialog.canceled ) {
-            customer = dialog.customer
+            if(dialog.customer == null || dialog.customer.id == null){
+              customer = CustomerController.findDefaultCustomer()
+              operationType.selectedItem = OperationType.DEFAULT
+            } else {
+              customer = dialog.customer
+            }
+          } else if(customer == null || customer.id == null){
+            customer = CustomerController.findDefaultCustomer()
+            operationType.selectedItem = OperationType.DEFAULT
           }
           break
         case OperationType.FOREIGN:
@@ -359,6 +370,9 @@ class OrderPanel extends JPanel implements IPromotionDrivenPanel, FocusListener 
           dialog.show()
           if ( !dialog.canceled ) {
             customer = dialog.customer
+          } else if(customer == null || customer.id == null) {
+            customer = CustomerController.findDefaultCustomer()
+            operationType.selectedItem = OperationType.DEFAULT
           }
           break
         case OperationType.QUOTE:

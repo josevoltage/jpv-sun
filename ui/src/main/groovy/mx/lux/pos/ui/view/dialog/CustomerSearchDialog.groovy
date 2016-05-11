@@ -53,7 +53,8 @@ class CustomerSearchDialog extends JDialog {
         resizable: false,
         modal: true,
         pack: true,
-        layout: new MigLayout( 'wrap 2', '[fill][fill]' )
+        layout: new MigLayout( 'wrap 2', '[fill][fill]' ),
+        defaultCloseOperation: DO_NOTHING_ON_CLOSE
     ) {
       panel( layout: new MigLayout( 'wrap 2', '[][fill,270!]' ) ) {
         label( 'Nombre' )
