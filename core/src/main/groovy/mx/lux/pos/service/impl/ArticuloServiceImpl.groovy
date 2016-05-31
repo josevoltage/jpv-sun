@@ -578,6 +578,53 @@ class ArticuloServiceImpl implements ArticuloService {
                     System.out.println( e )
                 }
             }
+            source.eachFileMatch( ~/.+_.+_.+\.txt/ ) { File file ->
+                String[] archivoName = file.name.split("_")
+                //Integer.parseInt(mystring));
+                String idSucursal = String.format("%02d", Registry.currentSite)
+                if( archivoName[0].equalsIgnoreCase( idSucursal ) ){
+                    file.eachLine { String line ->
+                        if( StringUtils.trimToEmpty(line).length() > 0 ){
+                            InventarioFisico inventarioFisico = new InventarioFisico()
+                            String[] registro = line.split(/\|/)
+                            Integer cantidad = 1
+                            Integer idArticulo = 0
+                            if( StringUtils.trimToEmpty(registro[1].toString()).length() >= 6 ){
+                                try{
+                                    //cantidad = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[0]))
+                                    idArticulo = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(registro[1]).substring(0,6))
+                                } catch ( NumberFormatException e ) { println e }
+                            } else {
+                                println "Articulo menor a 6 digitos: "+registro[1]
+                            }
+                            Articulo articulo = articuloRepository.findOne( idArticulo )
+                            if( articulo != null ){
+                                inventarioFisico.idArticulo = articulo.id
+                                inventarioFisico.cantidadFisico = cantidad
+                                lstInventarioFisico.add( inventarioFisico )
+                            }
+                        } else {
+                            println "Registro vacio"
+                        }
+                    }
+                }
+                File newFile = new File( destination, file.name )
+                if(newFile.exists()) {
+                    newFile.delete()
+                }
+                try {
+                    FileInputStream inFile = new FileInputStream(file);
+                    FileOutputStream outFile = new FileOutputStream(newFile);
+                    Integer c;
+                    lstFiles.add(file)
+                    while( (c = inFile.read() ) != -1)
+                        outFile.write(c);
+                    inFile.close();
+                    outFile.close();
+                } catch(IOException e) {
+                    System.out.println( e )
+                }
+            }
             for(File files : lstFiles){
                 files.delete()
             }
