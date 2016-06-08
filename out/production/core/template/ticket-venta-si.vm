@@ -38,6 +38,7 @@ ${COLUMNAS}
 #ALINEAR_DERECHA()#SET_STYLE(${FUENTE_B} 0 0 0 0)#altnull(${texto_venta_neta})${CR}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $pago in $pagos )${COL_DET_1}${pago.tipo_pago}${COL_DET_3}${pago.monto}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)#if( $tipoPagoUsd )${COL_DET_1}USD${COL_DET_3}${pago.dolares}#end${LF}#end${CR}
+#ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} ${NEGRITA} ${DOBLE_ALTURA} ${DOBLE_ANCHURA} 0)#if( $tipoPagoUsd )      [ T.C. - ${tipoCambio} ]${LF}#end${CR}
 #ALINEAR_IZQUIERDA()#SET_STYLE(${FUENTE_B} 0 0 0 0)#foreach( $comentario in $comentarios )${comentario}${LF}#end${CR}
 #if( $existPromo != '' )#SET_STYLE(${FUENTE_B} ${NEGRITA} 0 0 0)                      PROMOCIONES:
 #foreach( $promocion in $promociones )          ${promocion}${LF}#end${CR}

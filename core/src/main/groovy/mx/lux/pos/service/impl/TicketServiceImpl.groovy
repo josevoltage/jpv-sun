@@ -362,6 +362,8 @@ class TicketServiceImpl implements TicketService {
           }
       }
 
+      MonedaDetalle tipoCambio = monedaExtranjeraService.findActiveRate( "USD", notaVenta.fechaHoraFactura )
+
       def items = [
           nombre_ticket: 'ticket-venta',
           nota_venta: notaVenta,
@@ -386,7 +388,8 @@ class TicketServiceImpl implements TicketService {
           promociones: promociones,
           existPromo: promociones.size() > 0 ? 'existe' : '',
           mensajesPromo: msjPromo,
-          formaPago: pagoUsd
+          formaPago: pagoUsd,
+          tipoCambio: String.format( "%,.2f", tipoCambio.tipoCambio )
       ] as Map<String, Object>
       imprimeTicket( 'template/ticket-venta-si.vm', items )
       if ( Registry.isReceiptDuplicate() && pNewOrder ) {
