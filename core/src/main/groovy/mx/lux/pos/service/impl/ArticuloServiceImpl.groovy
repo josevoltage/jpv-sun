@@ -409,9 +409,10 @@ class ArticuloServiceImpl implements ArticuloService {
   List<Diferencia> obtenerDiferencias(  ) {
     //return diferenciaRepository.findAll()
     QDiferencia qDiferencia = QDiferencia.diferencia
-    List<Diferencia> lstDiferencias = diferenciaRepository.findAll( qDiferencia.diferencias.isNotNull().
+    /*List<Diferencia> lstDiferencias = diferenciaRepository.findAll( qDiferencia.diferencias.isNotNull().
           and(qDiferencia.diferencias.goe(1).or(qDiferencia.diferencias.loe(-1))), qDiferencia.id.asc() )
-    return lstDiferencias
+    return lstDiferencias*/
+    return  diferenciaRepository.obtenerDiferencias( )
   }
 
 
@@ -530,6 +531,8 @@ class ArticuloServiceImpl implements ArticuloService {
         File destination = new File( Registry.physicalInventoryFileReadPath )
         List<File> lstFiles = new ArrayList<>();
         List<InventarioFisico> lstInventarioFisico = new ArrayList<>()
+        println source.exists()
+        println destination.exists()
         if( source.exists() && destination.exists() ){
             source.eachFileMatch( ~/.+_.+_.+\.TXT/ ) { File file ->
                 String[] archivoName = file.name.split("_")
@@ -702,14 +705,17 @@ class ArticuloServiceImpl implements ArticuloService {
   @Override
   Boolean generarArchivoDiferencias( ){
     log.debug( "Generando archivo de diferencias" )
+    Runtime garbage = Runtime.getRuntime();
+    garbage.gc();
     Boolean generated = false
     SucursalRepository sucRep = RepositoryFactory.siteRepository
     Sucursal sucursal = sucRep.findOne( Registry.currentSite )
     String centroCostos = sucursal != null ? StringUtils.trimToEmpty(sucursal.centroCostos) : StringUtils.trimToEmpty(Registry.currentSite.toString())
     File file = new File( "${Registry.diferencesPath}/${StringUtils.trimToEmpty(centroCostos)}_${new Date().format("ddMMyy")}_dif.TXT" )
-    QDiferencia qDiferencia = QDiferencia.diferencia
+    /*QDiferencia qDiferencia = QDiferencia.diferencia
       List<Diferencia> lstDiferencias = diferenciaRepository.findAll( qDiferencia.diferencias.isNotNull().
-            and(qDiferencia.diferencias.goe(1).or(qDiferencia.diferencias.loe(-1))), qDiferencia.id.asc() )
+            and(qDiferencia.diferencias.goe(1).or(qDiferencia.diferencias.loe(-1))), qDiferencia.id.asc() )*/
+      List<Diferencia> lstDiferencias = diferenciaRepository.obtenerDiferencias( )
       try{
           PrintStream strOut = new PrintStream( file )
           StringBuffer sb = new StringBuffer()
