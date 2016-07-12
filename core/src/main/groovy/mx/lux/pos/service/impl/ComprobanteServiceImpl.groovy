@@ -15,6 +15,9 @@ import mx.lux.pos.model.*
 import mx.lux.pos.repository.*
 import mx.lux.pos.service.business.Registry
 
+import java.text.NumberFormat
+import java.text.ParseException
+
 @Slf4j
 @Service( 'comprobanteService' )
 @Transactional( readOnly = true )
@@ -305,42 +308,68 @@ class ComprobanteServiceImpl implements ComprobanteService {
           }
 
 
-            String metodoPago = pago?.eTipoPago?.descripcion
-            String referenciaPago = pago?.referenciaPago
-            if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_TARJETA_CREDITO) ){
-                metodoPago = TAG_TARJETA_CREDITO
-                referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
-            } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_TARJETA_DEBITO) ){
-                metodoPago = TAG_TARJETA_DEBITO
-                referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
-            } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_EFECTIVO) ){
-                metodoPago = TAG_EFECTIVO.substring(0)
-                referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
-            } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_CHEQUE) ){
-                metodoPago = TAG_CHEQUE.substring(0)
-                referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
-            } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).equalsIgnoreCase(TAG_TRANSFERENCIA) ){
-                NotaVenta notaTrans = notaVentaRepository.findOne( StringUtils.trimToEmpty(pago?.referenciaPago))
-                if (notaTrans != null ){
-                    List<Pago> lstPayments = new ArrayList<>(notaTrans.pagos)
-                    Pago pagoTranf = new Pago()
-                    for(Pago pago1 : lstPayments){
-                      if( !pago1.eTipoPago.descripcion.contains(TAG_CUPON) ){
-                        pagoTranf = pago1
-                      }
-                    }
-                    if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_TARJETA_CREDITO) ){
+            String metodoPago = ""//pago?.eTipoPago?.descripcion
+            String referenciaPago = ""//pago?.referenciaPago
+            List<Pago> lstPagos = venta.pagos as List<Pago>
+            for(Pago payment : lstPagos){
+                if( !StringUtils.trimToEmpty(payment.eTipoPago.descripcion).startsWith(TAG_CUPON) ){
+                    /*if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_TARJETA_CREDITO) ){
                         metodoPago = TAG_TARJETA_CREDITO
-                        referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
-                    } else if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_TARJETA_DEBITO) ){
+                        referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
+                    } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_TARJETA_DEBITO) ){
                         metodoPago = TAG_TARJETA_DEBITO
-                        referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
-                    } else if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_EFECTIVO) ){
+                        referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
+                    } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_EFECTIVO) ){
                         metodoPago = TAG_EFECTIVO.substring(0)
-                        referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
+                        referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
                     } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_CHEQUE) ){
                         metodoPago = TAG_CHEQUE.substring(0)
                         referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
+                    } else*/ if( StringUtils.trimToEmpty(payment?.eTipoPago?.id).equalsIgnoreCase(TAG_TRANSFERENCIA) ){
+                        //NotaVenta notaTrans = notaVentaRepository.findOne( StringUtils.trimToEmpty(payment?.referenciaPago))
+                        //if (notaTrans != null ){
+                        //List<Pago> lstPayments = new ArrayList<>(notaTrans.pagos)
+                        String[] pagoRef = payment.referenciaClave.split(":")
+                        if( pagoRef.length > 1 ){
+                            Integer idPago = 0
+                            try{
+                                idPago = NumberFormat.getInstance().parse(StringUtils.trimToEmpty(pagoRef[1]))
+                            } catch ( ParseException e ){
+                                println e.message
+                            }
+                            Pago pago1 = pagoRepository.findOne(idPago)
+                            //for(Pago pago1 : lstPayments){
+                            if( !pago1.eTipoPago.descripcion.contains(TAG_CUPON) ){
+                                //pagoTranf = pago1
+                                if( StringUtils.trimToEmpty(pago1?.eTipoPago?.id).startsWith(TAG_TARJETA_CREDITO) ||
+                                        StringUtils.trimToEmpty(pago1?.eTipoPago?.id).startsWith(TAG_TARJETA_DEBITO)){
+                                    metodoPago = metodoPago+","+StringUtils.trimToEmpty(pago1?.idFPago)+":"+StringUtils.trimToEmpty(pago1?.referenciaPago)
+                                } else {
+                                    metodoPago = metodoPago+","+StringUtils.trimToEmpty(pago1?.idFPago)
+                                }
+                                //}
+                            }
+                            /*if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_TARJETA_CREDITO) ){
+                                metodoPago = TAG_TARJETA_CREDITO
+                                referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
+                            } else if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_TARJETA_DEBITO) ){
+                                metodoPago = TAG_TARJETA_DEBITO
+                                referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
+                            } else if( StringUtils.trimToEmpty(pagoTranf?.eTipoPago?.id).startsWith(TAG_EFECTIVO) ){
+                                metodoPago = TAG_EFECTIVO.substring(0)
+                                referenciaPago = StringUtils.trimToEmpty(pagoTranf?.referenciaPago)
+                            } else if( StringUtils.trimToEmpty(pago?.eTipoPago?.id).startsWith(TAG_CHEQUE) ){
+                                metodoPago = TAG_CHEQUE.substring(0)
+                                referenciaPago = StringUtils.trimToEmpty(pago?.referenciaPago)
+                            }*/
+                        }
+                    } else {
+                        if( StringUtils.trimToEmpty(payment?.eTipoPago?.id).startsWith(TAG_TARJETA_CREDITO) ||
+                                StringUtils.trimToEmpty(payment?.eTipoPago?.id).startsWith(TAG_TARJETA_DEBITO)){
+                            metodoPago = metodoPago+","+StringUtils.trimToEmpty(payment?.idFPago)+":"+StringUtils.trimToEmpty(payment?.referenciaPago)
+                        } else {
+                            metodoPago = metodoPago+","+StringUtils.trimToEmpty(payment?.idFPago)
+                        }
                     }
                 }
             }
@@ -352,7 +381,7 @@ class ComprobanteServiceImpl implements ComprobanteService {
           comprobante.impuestos = impuestos
           comprobante.estatus = 'N'
           comprobante.formaPago = 'UNA SOLA EXHIBICION'
-          comprobante.metodoPago = "${metodoPago ?: ''}:${referenciaPago ?: ''}"
+          comprobante.metodoPago = metodoPago.replaceFirst(",","")//:${referenciaPago ?: ''}"
 
           log.debug( "genera comprobante ${comprobante.dump()}" )
 
