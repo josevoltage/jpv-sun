@@ -12,7 +12,7 @@ interface DiferenciaRepository extends JpaRepository<Diferencia, Integer>, Query
 
     @Modifying
     @Transactional
-    @Query( value = "INSERT INTO diferencias (id_articulo,cantidad_soi) (SELECT id_articulo,existencia FROM articulos WHERE id_generico = 'A')", nativeQuery = true)
+    @Query( value = "INSERT INTO diferencias (id_articulo,cantidad_soi,cantidad_fisico) (SELECT id_articulo,COALESCE(max(existencia),0),0 FROM articulos WHERE id_generico = 'A' GROUP BY id_articulo)", nativeQuery = true)
     void inicializarInventario()
 
     @Modifying
@@ -29,6 +29,12 @@ interface DiferenciaRepository extends JpaRepository<Diferencia, Integer>, Query
     @Transactional
     @Query( value = "UPDATE diferencias set cantidad_fisico = ?1 WHERE id_articulo = ?2", nativeQuery = true )
     void actualizaCantFisico( Integer cantidadFisico, Integer pIdArticulo )
+
+
+    @Modifying
+    @Transactional
+    @Query( value = "UPDATE diferencias set cantidad_fisico = ?1 WHERE cantidad_fisico IS NULL", nativeQuery = true )
+    void actualizaCantFisicoPen( Integer cantidadFisico )
 
     @Modifying
     @Transactional
@@ -50,5 +56,9 @@ interface DiferenciaRepository extends JpaRepository<Diferencia, Integer>, Query
     @Transactional
     @Query( value = "UPDATE diferencias SET diferencias = 0 WHERE cantidad_soi = cantidad_fisico", nativeQuery = true)
     void insertaDiferenciasCero( )
+
+    @Transactional
+    @Query( value = "SELECT * FROM diferencias WHERE diferencias IS NOT NULL AND diferencias > 0 OR diferencias < 0", nativeQuery = true )
+    List<Diferencia> obtenerDiferencias( )
 }
 
