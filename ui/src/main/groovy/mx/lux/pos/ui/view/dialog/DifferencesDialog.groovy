@@ -2,6 +2,7 @@ package mx.lux.pos.ui.view.dialog
 
 import groovy.model.DefaultTableModel
 import groovy.swing.SwingBuilder
+import mx.lux.pos.model.Diferencia
 import mx.lux.pos.service.business.Registry
 import mx.lux.pos.ui.controller.ItemController
 import mx.lux.pos.ui.model.Differences
@@ -19,7 +20,7 @@ class DifferencesDialog extends JDialog {
 
   private SwingBuilder sb
   private String code
-  private List<Differences> suggestions = new ArrayList<Differences>()
+  private List<Diferencia> suggestions = new ArrayList<Diferencia>()
   private DefaultTableModel model
   private JTable tableItems
   private static final Integer COLUMN_ID = 0
@@ -50,11 +51,11 @@ class DifferencesDialog extends JDialog {
       scrollPane( constraints: BorderLayout.CENTER ) {
         tableItems = table( selectionMode: ListSelectionModel.SINGLE_SELECTION ) {
           model = tableModel( list: suggestions ) {
-            closureColumn( header: 'Sku', read: {Differences tmp -> tmp?.sku}, maxWidth: 110 )
-            closureColumn( header: 'Articulo', read: {Differences tmp -> tmp?.article.articulo}, maxWidth: 200 )
-            closureColumn( header: 'Cant. Fisico', read: {Differences tmp -> tmp?.physicalDiff}, maxWidth: 115 )
-            closureColumn( header: 'Cant. Soi', read: {Differences tmp -> tmp?.soiDiff}, maxWidth: 115 )
-            closureColumn( header: 'Diferencias', read: {Differences tmp -> tmp?.differences}, maxWidth: 115 )
+            closureColumn( header: 'Sku', read: {Diferencia tmp -> tmp?.id}, maxWidth: 110 )
+            closureColumn( header: 'Articulo', read: {Diferencia tmp -> tmp?.articulo.articulo}, maxWidth: 200 )
+            closureColumn( header: 'Cant. Fisico', read: {Diferencia tmp -> tmp?.cantidadFisico}, maxWidth: 115 )
+            closureColumn( header: 'Cant. Soi', read: {Diferencia tmp -> tmp?.cantidadSoi}, maxWidth: 115 )
+            closureColumn( header: 'Diferencias', read: {Diferencia tmp -> tmp?.diferencias}, maxWidth: 115 )
           } as DefaultTableModel
         }
       }

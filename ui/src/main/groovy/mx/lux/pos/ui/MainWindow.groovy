@@ -255,17 +255,23 @@ class MainWindow extends JFrame implements KeyListener {
             ){
                 sendInventoryMenuItem = menuItem( text: 'Inicializar',
                         actionPerformed: {
+                          Runtime garbage = Runtime.getRuntime();
+                          garbage.gc();
                           initializingInventory()
                         }
                 )
                 receivedDiferencesMenuItem = menuItem( text: 'Cargar Archivo',
                         actionPerformed: {
+                          Runtime garbage = Runtime.getRuntime();
+                          garbage.gc();
                           diferencesPhysicalInventory()
                         }
                 )
                 generatedInventoryFileMenuItem = menuItem( text: 'Imprime Diferencias',
                         actionPerformed: {
                           //diferencesPhysicalInventoryPrint()
+                          Runtime garbage = Runtime.getRuntime();
+                          garbage.gc();
                           receivedDifferencesFile()
                         }
                 )

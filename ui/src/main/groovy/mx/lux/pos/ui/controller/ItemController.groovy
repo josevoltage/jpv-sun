@@ -3,6 +3,7 @@ package mx.lux.pos.ui.controller
 import groovy.util.logging.Slf4j
 import mx.lux.pos.model.Articulo
 import mx.lux.pos.model.DetalleNotaVenta
+import mx.lux.pos.model.Diferencia
 import mx.lux.pos.model.InventarioFisico
 import mx.lux.pos.model.MontoGarantia
 import mx.lux.pos.model.NotaVenta
@@ -189,12 +190,13 @@ class ItemController {
       }*/
   }
 
-  static List<Differences> findAllDifferences( ) {
+  static List<Diferencia> findAllDifferences( ) {
     log.debug('findAllDifferences( )')
-    List<Differences> lstDifferences = articuloService.obtenerDiferencias()
+    /*List<Diferencia> lstDifferences = articuloService.obtenerDiferencias()
     lstDifferences.collect {
         Differences.toDifferences( it )
-    }
+    }*/
+    return articuloService.obtenerDiferencias()
   }
 
   static void printDifferences( ){

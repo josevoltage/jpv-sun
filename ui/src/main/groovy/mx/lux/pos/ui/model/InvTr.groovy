@@ -95,11 +95,11 @@ class InvTr {
 
   void addPart( Articulo pPart ) {
     Integer qty = postQty
-    if ( InvTrViewMode.ADJUST.equals( viewMode ) ) {
+    /*if ( InvTrViewMode.ADJUST.equals( viewMode ) ) {
       if ( skuList.size() > 0 ) {
         qty = -1 * postQty
       }
-    }
+    }*/
       if ( InvTrViewMode.RETURN.equals( viewMode ) ) {
           String[] part = partSeed.split(",")
           if( part.length > 1 ){
