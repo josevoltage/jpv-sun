@@ -522,6 +522,9 @@ class ArticuloServiceImpl implements ArticuloService {
           println e
         }
       }
+      if( lstDiferencias.size() <= 0 ){
+        cargado = true
+      }
       return cargado
     }
 
