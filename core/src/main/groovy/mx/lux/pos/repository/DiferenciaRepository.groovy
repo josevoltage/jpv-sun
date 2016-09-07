@@ -49,7 +49,7 @@ interface DiferenciaRepository extends JpaRepository<Diferencia, Integer>, Query
 
     @Modifying
     @Transactional
-    @Query( value = "UPDATE diferencias SET diferencias = (SELECT cantidad_soi-cantidad_fisico FROM diferencias WHERE id_articulo = ?1) WHERE id_articulo = ?1", nativeQuery = true)
+    @Query( value = "UPDATE diferencias SET diferencias = (SELECT cantidad_fisico-cantidad_soi FROM diferencias WHERE id_articulo = ?1) WHERE id_articulo = ?1", nativeQuery = true)
     void calcularDiferencias( Integer idArticulo )
 
     @Modifying

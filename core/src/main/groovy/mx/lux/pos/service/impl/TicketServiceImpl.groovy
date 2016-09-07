@@ -2011,12 +2011,36 @@ class TicketServiceImpl implements TicketService {
     QDiferencia qDiferencia = QDiferencia.diferencia
     List<Diferencia> lstDiferencias = diferenciaRepository.findAll( qDiferencia.diferencias.isNotNull().
             and(qDiferencia.diferencias.goe(1).or(qDiferencia.diferencias.loe(-1))), qDiferencia.id.asc() )
+    def diferencias = []
+    for( Diferencia dif : lstDiferencias ){
+      String articulo = ""
+      String color = ""
+      if( dif.articulo != null ){
+        if( StringUtils.trimToEmpty(dif.articulo.articulo).contains("-") ){
+          String[] data = StringUtils.trimToEmpty(dif.articulo.articulo).split("-")
+          articulo = StringUtils.trimToEmpty(data[0])
+          color = StringUtils.trimToEmpty(data[1])
+        } else {
+          articulo = StringUtils.trimToEmpty(dif.articulo.articulo)
+          color = StringUtils.trimToEmpty(dif.articulo.codigoColor)
+        }
+      }
+      def diferencia = [
+        id: dif.id,
+        articulo: articulo,
+        color: color,
+        cantidadFisico: dif.cantidadFisico,
+        cantidadSoi: dif.cantidadSoi,
+        diferencias: dif.diferencias < 0 ? StringUtils.trimToEmpty(dif.diferencias.toString()) : " "+StringUtils.trimToEmpty(dif.diferencias.toString())
+      ]
+        diferencias.add(diferencia)
+    }
     if(lstDiferencias.size() > 0){
         def datos = [
             nombre_ticket: "ticket-diferencias",
             thisSite: sucursal,
             date: df.format( new Date() ),
-            diferencias: lstDiferencias
+            diferencias: diferencias
         ]
         imprimeTicket( 'template/ticket-diferencias.vm', datos )
     } else {
