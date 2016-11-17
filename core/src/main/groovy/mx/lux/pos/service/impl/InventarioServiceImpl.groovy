@@ -265,7 +265,8 @@ class InventarioServiceImpl implements InventarioService {
   Shipment obtieneArticuloEntrada(String clave, Integer sucursal, String pIdTipoTrans) {
       String url = Registry.getURL( pIdTipoTrans );
       if ( StringUtils.trimToNull( url ) != null ) {
-          String variable = clave + ">" + sucursal
+          Sucursal suc = sucursalService.obtenerSucursal(sucursal)
+          String variable = clave + ">" + StringUtils.trimToEmpty(suc.centroCostos)
           //String variable = clave + ">" + "1"
           url += String.format( '?arg=%s', URLEncoder.encode( String.format( '%s', variable ), 'UTF-8' ) )
           log.debug(url)

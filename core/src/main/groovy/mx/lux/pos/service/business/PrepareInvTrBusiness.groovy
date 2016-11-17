@@ -74,9 +74,11 @@ class PrepareInvTrBusiness {
         String aleatoria = claveAleatoria(trMstr.sucursal, trType.ultimoFolio+1)
         Parametro p = Registry.find( TipoParametro.TRANS_INV_TIPO_SALIDA_ALMACEN )
         if (trType.idTipoTrans.equalsIgnoreCase(p.valor)) {
+            Sucursal sucursalOrigen = sites.obtenerSucursal( trMstr.sucursal )
+            Sucursal sucursalDestino = sites.obtenerSucursal( trMstr.sucursalDestino )
             Integer ultimoFolio = trType.ultimoFolio+1
             String url = Registry.getURL( trType.idTipoTrans);
-            String variable = trMstr.sucursal + '>' + trMstr.sucursalDestino + '>' +
+            String variable = StringUtils.trimToEmpty(sucursalOrigen.centroCostos) + '>' + StringUtils.trimToEmpty(sucursalDestino.centroCostos) + '>' +
                      ultimoFolio+ '>' +
                     aleatoria + '>' +
                     trMstr.idEmpleado.trim() + '>'

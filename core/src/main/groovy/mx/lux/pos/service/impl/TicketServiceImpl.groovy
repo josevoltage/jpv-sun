@@ -2018,8 +2018,12 @@ class TicketServiceImpl implements TicketService {
       if( dif.articulo != null ){
         if( StringUtils.trimToEmpty(dif.articulo.articulo).contains("-") ){
           String[] data = StringUtils.trimToEmpty(dif.articulo.articulo).split("-")
-          articulo = StringUtils.trimToEmpty(data[0])
-          color = StringUtils.trimToEmpty(data[1])
+          if( data.size() > 1 ){
+            articulo = StringUtils.trimToEmpty(data[0])
+            color = StringUtils.trimToEmpty(data[1])
+          } else {
+            articulo = StringUtils.trimToEmpty(data[0])
+          }
         } else {
           articulo = StringUtils.trimToEmpty(dif.articulo.articulo)
           color = StringUtils.trimToEmpty(dif.articulo.codigoColor)
